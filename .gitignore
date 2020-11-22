@@ -1,0 +1,16 @@
+node_modules
+package-lock.json
+build
+Compiler-web/target/classes
+Compiler-web/target/generated*
+Compiler-web/target/maven*
+Compiler-web/target/*.war
+Compiler-web/target/web-1.0-SNAPSHOT/*INF
+Compiler-web/target/web-1.0-SNAPSHOT/teavm/classes.js.map
+Compiler-web/target/web-1.0-SNAPSHOT/teavm/classes.js.teavmdbg
+Compiler-web/target/web-1.0-SNAPSHOT/teavm/src
+Compiler-web/Compiler-web.iml
+Compiler-web/.idea
+.DS_Store
+VM-web/VM.html
+VM-web/*.o

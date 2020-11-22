@@ -1,0 +1,46 @@
+html, body {
+  margin: 0;
+  font-family: "Source Code Pro", monospace;
+}
+* {
+  box-sizing: border-box;
+}
+#editor.dark {
+  background: #343434;
+  color: white;
+}
+#editor {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 20px;
+  padding: 10px;
+  tab-size: 4;
+  resize: none !important;
+}
+#console2 {
+  font-family: "Source Code Pro", monospace;
+  overflow-y: scroll;
+  max-height: calc(100% - 30px);
+}
+#console2.dark {
+  background-color: #232323;
+  color: white;
+}
+#console.dark {
+  background-color: #232323;
+}
+#console {
+  background-color: #ddd;
+}
+#console2 * {
+  padding: 0;
+  margin: 0;
+}
+h4 {
+  font-family: "Source Code Pro", monospace;
+}
+.expand {
+  height: 100%;
+}

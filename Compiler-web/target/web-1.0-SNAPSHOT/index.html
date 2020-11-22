@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta charset="UTF-8">
+    <meta name="description" content="test for compiler (github.com/radinParsaei/Compiler)">
+    <meta name="author" content="radinParsaei">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" charset="utf-8" src="VM.js"></script>
+    <script type="text/javascript" charset="utf-8" src="teavm/classes.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin-top: 0 !important;
+            margin: 0px;
+            height: 100%
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .light {
+            background: #fff;
+            color: black;
+        }
+
+        button.light {
+            background: #23ABDE;
+        }
+
+        header {
+            height: 30px;
+        }
+
+        .dark {
+            background: #343434;
+            color: white;
+        }
+
+        button.dark {
+            background: #0189bc;
+        }
+
+        .editor {
+            box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.14), 10px 7px 11px 0 rgba(0, 0, 0, 0.12), 0 6px 4px -1px rgba(0, 0, 0, 0.2), 0 6px 4px -1px rgba(0, 0, 0, 0.01);
+            resize: none !important;
+            border-radius: 6px;
+            font-family: "Source Code Pro", monospace;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: normal;
+            line-height: 20px;
+            padding: 7px;
+            tab-size: 4;
+        }
+
+        button {
+            margin-top: 7px;
+            background: #343434;
+            border: none;
+            padding: 10px;
+            padding-right: 10px;
+            padding-left: 10px;
+            border: none;
+            border-radius: 45px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            outline: none;
+            margin-bottom: 10px;
+            margin-left: 20px;
+        }
+
+        #run {
+            margin-left: 5px;
+        }
+
+        .darkBack {
+            background: gray;
+        }
+
+        div {
+            height: 100%;
+        }
+
+        main {
+            height: calc(100% - 229px);
+            margin: 20px;
+            margin-top: 5px;
+            margin-bottom: 0;
+        }
+
+        #console {
+            height: 140px;
+            margin-top: 12px !important;
+            margin: 20px;
+            overflow-y: scroll;
+        }
+
+        #console2 {
+            height: 100px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body class="darkBack" onload="main()" id="pageBody">
+    <button id="chtheme" class="dark" onclick="changeTheme()">change theme</button>
+    <button id="run" class="dark">Run Code</button>
+    <main>
+        <div id="editor" class="editor dark"></div>
+    </main>
+    <div id="console" class="editor dark">
+        <h4 style="color: gray;">OUTPUT</h4>
+        <div id="console2"></div>
+    </div>
+<script type="module">
+      import {CodeJar} from 'https://medv.io/codejar/codejar.js'
+      //import {withLineNumbers} from 'https://medv.io/codejar/linenumbers.js';
+
+      const editor = document.querySelector('.editor')
+
+      const highlight = editor => {
+        // highlight.js does not trim old tags,
+        // let's do it by this hack.
+        //editor.textContent = editor.textContent
+        //hljs.highlightBlock(editor)
+        document.getElementById("callColor").click();
+      }
+
+      const jar = CodeJar(editor, /*withLineNumbers(*/highlight/*)*/, {
+        indentOn: /[(\[{]$/
+      })
+
+      jar.updateCode(localStorage.getItem('code'))
+      jar.onUpdate(code => {
+        localStorage.setItem('code', code)
+      })
+      if (!(localStorage.getItem('theme') == "dark" || localStorage.getItem('theme') == "light")) {
+        localStorage.setItem('theme', "dark");
+      }
+      if (localStorage.getItem('theme') == "light") {
+        changeThemeWithoutSwap();
+      }
+    </script>
+<script>
+      function changeThemeWithoutSwap() {
+        document.getElementById("editor").classList.toggle('dark');
+        document.getElementById("editor").classList.toggle('light');
+        document.getElementById("chtheme").classList.toggle('dark');
+        document.getElementById("chtheme").classList.toggle('light');
+        document.getElementById("run").classList.toggle('dark');
+        document.getElementById("run").classList.toggle('light');
+        document.getElementById("console").classList.toggle('dark');
+        document.getElementById("console").classList.toggle('light');
+        document.getElementById("pageBody").classList.toggle('darkBack');
+      }
+
+      function changeTheme() {
+        changeThemeWithoutSwap();
+        var tmp = localStorage.getItem('theme');
+        if (tmp == "light")
+            localStorage.setItem('theme', 'dark');
+        else
+            localStorage.setItem('theme', 'light');
+      }
+    </script>
+<button hidden id="callColor"></button>
+</body>
+</html>

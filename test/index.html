@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" charset="utf-8" src="VM.js"></script>
+    <script type="text/javascript" charset="utf-8" src="teavm/classes.js"></script>
+    <title>Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/test/styles.css">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta charset="UTF-8">
+    <meta name="description" content="test for compiler (github.com/radinParsaei/Compiler)">
+    <meta name="author" content="radinParsaei">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+
+  <body style="margin: 0; padding: 0;" id="main" class="dark expand" onload="main()">
+    <xml id="toolbox" style="display: none">
+      <category name="Math" colour="#5b67a5">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+        <block type="math_arithmetic">
+          <field name="OP">ADD</field>
+          <value name="A">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="B">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="math_modulo">
+          <value name="DIVIDEND">
+            <shadow type="math_number">
+              <field name="NUM">64</field>
+            </shadow>
+          </value>
+          <value name="DIVISOR">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+        </block>
+      </category>
+      <category name="Text" colour="#5ba58c">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+        <block type="text_isEmpty">
+          <value name="VALUE">
+            <shadow type="text">
+              <field name="TEXT"></field>
+            </shadow>
+          </value>
+        </block>
+        <block type="text_print">
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">abc</field>
+            </shadow>
+          </value>
+        </block>
+      </category>
+      <sep></sep>
+      <category name="Variables" colour="#a55b80" custom="VARIABLE"></category>
+      <category name="Functions" colour="#995ba5" custom="PROCEDURE"></category>
+    </xml>
+    <button class="dark" type="button" name="button" id="run" style="height: 30px; background-color: #33f0e0; border-radius: 20%; border: none; margin: 0.1%;">run</button>
+    <button class="dark" type="button" name="button" style="height: 30px" onclick="changeTheme2()">changeTheme</button>
+    <button class="dark" type="button" name="button" style="height: 30px" onclick="changeView()">changeView</button>
+    <div style="margin: 0; padding: 0; height: calc(100% - 32px);">
+      <div class="dark" id="root" style="margin: 0; padding: 0; height: 75%"></div>
+      <div hidden class="dark editor" style="height: 75%;" id="editor"></div>
+      <div id="console" style="height: 25%" class="dark">
+        <h4 style="color: gray; margin: 0;padding: 5px;">OUTPUT</h4>
+        <div class="dark" id="console2" style="padding: 10px; padding-top: 0;"></div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      function changeTheme2() {
+         changeTheme();
+         document.getElementById('root').removeChild(document.getElementsByClassName('zelos-renderer')[0]);
+         injectBlockly();
+      }
+    </script>
+    <button hidden id="callColor"></button>
+    <script src="../build/test_bundle.js"></script>
+  </body>
+
+</html>

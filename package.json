@@ -1,0 +1,26 @@
+{
+  "name": "blockly-test",
+  "version": "1.0.0",
+  "description": "simple blockly test",
+  "scripts": {
+    "build": "blockly-scripts build",
+    "clean": "blockly-scripts clean",
+    "start": "blockly-scripts start"
+  },
+  "author": "radinParsaei",
+  "devDependencies": {
+    "@blockly/dev-scripts": "^0.20200403.8",
+    "@blockly/dev-tools": "^0.20200313.9",
+    "blockly": "^3.20200402.1"
+  },
+  "peerDependencies": {
+    "blockly": ">=3.30300123.0"
+  },
+  "eslintConfig": {
+    "extends": "@blockly/eslint-config"
+  },
+  "dependencies": {
+    "codejar": "^3.2.2",
+    "html2canvas": "^1.0.0-rc.7"
+  }
+}
