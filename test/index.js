@@ -8,7 +8,7 @@ import { CodeJar } from 'CodeJar';
   // });
 // }
 
-var isDark = true;
+var isLight = false;
 var isFirst = true;
 let workspace;
 
@@ -33,7 +33,7 @@ function injectBlockly() {
   }
   const options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isDark? Blockly.Themes.Dark : Blockly.Themes.Classic,
+    theme: isLight? Blockly.Themes.Dark : Blockly.Themes.Classic,
     renderer: 'zelos',
     collapse : true,
     comments : false,
@@ -101,7 +101,7 @@ function changeThemeWithoutSwap() {
   document.getElementById("editor").classList.toggle('dark');
   document.getElementById("console").classList.toggle('dark');
   document.getElementById("console2").classList.toggle('dark');
-  isDark = !isDark;
+  isLight = !isLight;
 }
 
 function changeTheme() {
@@ -117,28 +117,31 @@ jar.updateCode(localStorage.getItem('code'))
 jar.onUpdate(code => {
   localStorage.setItem('code', code)
 });
+
+if (!(localStorage.getItem('mode') == "block" || localStorage.getItem('mode') == "code")) {
+  localStorage.setItem('mode', "code");
+}
+if (localStorage.getItem('mode') == "block") {
+  changeViewWithoutSwap();
+}
 if (!(localStorage.getItem('theme') == "dark" || localStorage.getItem('theme') == "light")) {
   localStorage.setItem('theme', "dark");
 }
 if (localStorage.getItem('theme') == "light") {
   changeThemeWithoutSwap();
 }
-if (!(localStorage.getItem('mode') == "block" || localStorage.getItem('mode') == "code")) {
-  localStorage.setItem('mode', "block");
-}
-if (localStorage.getItem('mode') == "code") {
-  changeViewWithoutSwap();
-}
 
 function changeViewWithoutSwap() {
   try {
     document.getElementById("editor").hidden = !document.getElementById("editor").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
-    isDark = !isDark;
+    isLight = !isLight;
     document.getElementById('root').removeChild(document.getElementsByClassName('zelos-renderer')[0]);
     injectBlockly();
     document.getElementById("callColor").click();
   } catch(e) {}
+  document.getElementById("gotocode").classList.toggle('selected');
+  document.getElementById("gotoblock").classList.toggle('selected');
 }
 
 function changeView() {
@@ -148,6 +151,7 @@ function changeView() {
       localStorage.setItem('mode', 'block');
   else
       localStorage.setItem('mode', 'code');
+  workspace.trashcan.emptyContents();
 }
 
 export { workspace, changeTheme, changeView, /*genPhoto,*/ injectBlockly, runCode };

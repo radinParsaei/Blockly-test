@@ -68,13 +68,24 @@
       <category name="Variables" colour="#a55b80" custom="VARIABLE"></category>
       <category name="Functions" colour="#995ba5" custom="PROCEDURE"></category>
     </xml>
-    <button class="dark" type="button" name="button" id="run" style="height: 30px; background-color: #33f0e0; border-radius: 20%; border: none; margin: 0.1%;">run</button>
-    <button class="dark" type="button" name="button" style="height: 30px" onclick="changeTheme2()">changeTheme</button>
-    <button class="dark" type="button" name="button" style="height: 30px" onclick="changeView()">changeView</button>
-    <div style="margin: 0; padding: 0; height: calc(100% - 32px);">
-      <div class="dark" id="root" style="margin: 0; padding: 0; height: 75%"></div>
-      <div hidden class="dark editor" style="height: 75%;" id="editor"></div>
-      <div id="console" style="height: 25%" class="dark">
+    <div style="height: 50px; width: 100%; background: #555;">
+      <div style="height: 50px; width: 100%; min-width: 320px; max-width: 500px; background: #555;padding-left: 5px">
+        <button class="selected" id="run">Run</button>
+        <span style="color: white;font-size: 75%;position: absolute">Dark Mode</span>
+        <label class="switch">
+          <input type="checkbox" checked onchange="changeTheme2()">
+          <span class="slider round"></span>
+        </label>
+        <span id="modeContainer">
+          <button id="gotoblock" onclick="goToBlock()">Blocks</button>
+          <button id="gotocode" class="selected" onclick="goToCode()">Code</button>
+        </span>
+      </div>
+    </div>
+    <div style="margin: 0; padding: 0; height: calc(100% - 50px);">
+      <div hidden class="dark" id="root" style="margin: 0; padding: 0; height: 75%; max-height: calc(100% - 100px)"></div>
+      <div class="dark editor" style="height: 75%;max-height: calc(100% - 100px)" id="editor"></div>
+      <div id="console" style="height: 25%; min-height: 100px;" class="dark">
         <h4 style="color: gray; margin: 0;padding: 5px;">OUTPUT</h4>
         <div class="dark" id="console2" style="padding: 10px; padding-top: 0;"></div>
       </div>
@@ -85,9 +96,14 @@
          document.getElementById('root').removeChild(document.getElementsByClassName('zelos-renderer')[0]);
          injectBlockly();
       }
+      function goToBlock() {
+        if (localStorage.getItem('mode') == 'code') changeView();
+      }
+      function goToCode() {
+        if (localStorage.getItem('mode') == 'block') changeView();
+      }
     </script>
     <button hidden id="callColor"></button>
-    <script src="../build/test_bundle.js"></script>
     <script src="build/test_bundle.js"></script>
   </body>
 
