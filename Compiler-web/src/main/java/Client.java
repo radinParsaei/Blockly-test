@@ -3,6 +3,7 @@ import org.teavm.jso.dom.events.EventListener;
 import org.teavm.jso.dom.html.*;
 
 public class Client extends CompilerMain {
+    private static boolean isFirst = true;
     public static void main(String[] args) {
         HTMLDocument document = HTMLDocument.current();
         HTMLElement button = document.getElementById("run");
@@ -12,9 +13,15 @@ public class Client extends CompilerMain {
                 SyntaxTree.getFunctions().clear();
                 SyntaxTree.getVariables().clear();
                 SyntaxTree.getClassesParameters().clear();
+                SyntaxTree.CreateLambda.setCounter(0);
                 document.getElementById("console2").setInnerHTML("");
                 Compiler compiler = new Compiler(null, true, null, null, null);
+                CustomCompileStep.used = false;
+                REPLReader.setReadCode(false);
                 compile(compiler);
+                REPLReader.setReadCode(true);
+                compile(compiler);
+                CustomCompileStep.used = true;
             }
         });
 
@@ -69,6 +76,17 @@ public class Client extends CompilerMain {
             }
         }
         document.getElementById("editor").setInnerHTML(coloredText.toString());
+        if (isFirst) {
+            isFirst = false;
+            return;
+        }
+        SyntaxTree.getFunctions().clear();
+        SyntaxTree.getVariables().clear();
+        SyntaxTree.getClassesParameters().clear();
+        SyntaxTree.CreateLambda.setCounter(0);
+        REPLReader.setReadCode(false);
+        compile(compiler);
+        REPLReader.setReadCode(true);
         CustomCompileStep.used = true;
         compile(compiler);
         CustomCompileStep.used = false;

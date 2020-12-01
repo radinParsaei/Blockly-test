@@ -15,7 +15,7 @@
   </head>
   <body style="margin: 0; padding: 0;" id="main" class="dark expand" onload="main()">
     <xml id="toolbox" style="display: none">
-      <category name="Math" colour="#5b67a5">
+      <category id="MathCategory" name="Math" colour="#5b67a5">
         <block type="math_number">
           <field name="NUM">0</field>
         </block>
@@ -45,7 +45,7 @@
           </value>
         </block>
       </category>
-      <category name="Text" colour="#5ba58c">
+      <category id="TextCategory" name="Text" colour="#5ba58c">
         <block type="text">
           <field name="TEXT"></field>
         </block>
@@ -91,9 +91,12 @@
       </div>
     </div>
     <script type="text/javascript">
+      var functions = {};
+      var functionCodes = '';
+
       function changeTheme2() {
          changeTheme();
-         document.getElementById('root').removeChild(document.getElementsByClassName('zelos-renderer')[0]);
+         document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
          injectBlockly();
       }
       function goToBlock() {

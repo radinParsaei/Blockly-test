@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "6820aa3ac609efcd9f30";
+/******/ 	var hotCurrentHash = "84659634b31c5a058967";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -13595,6 +13595,165 @@ module.exports.formatError = function(err) {
 
 /***/ }),
 
+/***/ "./test/blocks.js":
+/*!************************!*\
+  !*** ./test/blocks.js ***!
+  \************************/
+/*! exports provided: initBlocks */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initBlocks", function() { return initBlocks; });
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function initBlocks() {
+  function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName, blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl) {
+    var element = document.createElement("block");
+    element.setAttribute('type', blockName);
+    document.getElementById(blockCategory + "Category").appendChild(element);
+    element.innerHTML = blockDefaultValues;
+
+    if (blockFunctionName != undefined) {
+      var functionNameInBackend = blockFunctionName + ":";
+
+      var _iterator = _createForOfIteratorHelper(blockFunctionParameters),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var tmp = _step.value;
+          functionNameInBackend += "," + tmp;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      functions[functionNameInBackend] = blockName;
+    } else return;
+
+    Blockly.Blocks[blockName] = {
+      init: function init() {
+        this.setTooltip(tooltip);
+        this.setHelpUrl(helpUrl);
+        var i = 0;
+
+        var _iterator2 = _createForOfIteratorHelper(blockUI),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var tmp = _step2.value;
+
+            if (tmp == null) {
+              if (paramTypes[i]) {
+                this.appendValueInput("ARG" + i).setCheck(null);
+              } else {
+                this.appendStatementInput("ARG" + i).setCheck(null);
+              }
+
+              i++;
+            } else if (typeof tmp == 'string') {
+              this.appendDummyInput().appendField(tmp);
+            } else if (typeof tmp == 'function') {
+              tmp(this);
+            }
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(document.getElementById(blockCategory + "Category").getAttribute('colour'));
+      }
+    };
+
+    Blockly.genCode[blockName] = function (block) {
+      var code = blockFunctionName + "(";
+
+      for (var i = 0; i < paramTypes.length; i++) {
+        if (paramTypes[i]) code += Blockly.genCode.valueToCode(block, 'ARG' + i, Blockly.genCode.ORDER_ATOMIC);else code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
+        if (i != paramTypes.length - 1) code += ', ';
+      }
+
+      return code + ')\n';
+    };
+
+    functionCodes += functionCode;
+  }
+
+  function createShadows(values) {
+    var counter = 0;
+
+    var _iterator3 = _createForOfIteratorHelper(values),
+        _step3;
+
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var i = _step3.value;
+
+        if (typeof i == 'number') {
+          out += '<value name="ARG' + counter++ + '"><shadow type="math_number"><field name="NUM">' + i + '</field></shadow></value>';
+        } else if (typeof i == 'string') {
+          out += '<value name="ARG' + counter++ + '"><shadow type="text"><field name="TEXT">' + i + '</field></shadow></value>';
+        }
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
+
+    return out;
+  } // addBlock("math_arithmetic", "Math", `<field name="OP">ADD</field>
+  // <value name="A">
+  // <shadow type="math_number">
+  // <field name="NUM">1</field>
+  // </shadow>
+  // </value>
+  // <value name="B">
+  // <shadow type="math_number">
+  // <field name="NUM">1</field>
+  // </shadow>
+  // </value>`);
+
+
+  addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false], "func test(v, f) {\n      print v\n      print \"\\n\"\n      f!()\n    }", ['text 1', null, "text 2", null, function (block) {
+    //image field
+    block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, {
+      alt: "*",
+      flipRtl: "FALSE"
+    }));
+  }], 'tooltip', 'helpUrl');
+  Blockly.defineBlocksWithJsonArray([{
+    "type": "text",
+    "message0": "\"%1\"",
+    "args0": [{
+      "type": "field_input",
+      "name": "TEXT",
+      "text": ""
+    }],
+    "output": "String",
+    "style": "text_blocks",
+    "helpUrl": "%{BKY_TEXT_TEXT_HELPURL}",
+    "tooltip": "%{BKY_TEXT_TEXT_TOOLTIP}",
+    "extensions": ["parent_tooltip_when_inline"]
+  }]);
+}
+
+
+
+/***/ }),
+
 /***/ "./test/genCode.js":
 /*!*************************!*\
   !*** ./test/genCode.js ***!
@@ -13753,8 +13912,8 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrubNakedValue = function (line
 };
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].quote_ = function (string) {
-  string = string.replace(/\\/g, '\\\\').replace(/\n/g, '\\\n').replace(/'/g, '\\\'');
-  return '\'' + string + '\'';
+  string = string.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'');
+  return '"' + string + '"';
 };
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].multiline_quote_ = function (string) {
@@ -13890,7 +14049,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Blockly", function() { return blockly__WEBPACK_IMPORTED_MODULE_0__; });
 /* harmony import */ var CodeJar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! CodeJar */ "./node_modules/CodeJar/codejar.js");
-/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
+/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
 
  // import html2canvas from 'html2canvas';
 // function genPhoto() {
@@ -13917,13 +14080,15 @@ function createWorkspace(blocklyDiv, options) {
 
 
 function injectBlockly() {
+  var _options;
+
   var xml;
 
   if (!isFirst) {
     xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].workspaceToDom(workspace);
   }
 
-  var options = {
+  var options = (_options = {
     toolbox: document.getElementById('toolbox'),
     theme: isLight ? blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Dark : blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Classic,
     renderer: 'zelos',
@@ -13946,15 +14111,18 @@ function injectBlockly() {
     //   colour : '#f00',
     //   snap : true
     // },
-    zoom: {
+    zoom: _defineProperty({
       controls: true,
-      wheel: false,
+      wheel: true,
       startScale: 1,
-      maxScale: 3,
-      minScale: 0.3,
+      maxScale: 2,
+      minScale: 0.5,
       scaleSpeed: 1.2
-    }
-  };
+    }, "controls", true)
+  }, _defineProperty(_options, "scrollbars", true), _defineProperty(_options, "move", {
+    drag: true,
+    wheel: true
+  }), _options);
   createWorkspace(document.getElementById('root'), options);
 
   if (isFirst) {
@@ -13970,7 +14138,10 @@ function injectBlockly() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', injectBlockly);
+document.addEventListener('DOMContentLoaded', function () {
+  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_2__["initBlocks"])();
+  injectBlockly();
+});
 
 function runCode() {
   var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].workspaceToCode(workspace);
@@ -14033,7 +14204,7 @@ function changeViewWithoutSwap() {
     document.getElementById("editor").hidden = !document.getElementById("editor").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
     isLight = !isLight;
-    document.getElementById('root').removeChild(document.getElementsByClassName('zelos-renderer')[0]);
+    document.getElementById('root').removeChild(blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().injectionDiv_);
     injectBlockly();
     document.getElementById("callColor").click();
   } catch (e) {}
@@ -14047,6 +14218,7 @@ function changeView() {
   var tmp = localStorage.getItem('mode');
   if (tmp == "code") localStorage.setItem('mode', 'block');else localStorage.setItem('mode', 'code');
   workspace.trashcan.emptyContents();
+  blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().cleanUp();
 }
 
 

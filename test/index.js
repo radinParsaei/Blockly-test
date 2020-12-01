@@ -1,5 +1,6 @@
 import * as Blockly from 'blockly';
 import { CodeJar } from 'CodeJar';
+import { initBlocks, functions, functionCodes } from './blocks.js';
 // import html2canvas from 'html2canvas';
 
 // function genPhoto() {
@@ -56,11 +57,17 @@ function injectBlockly() {
     // },
     zoom : {
       controls : true,
-      wheel : false,
+      wheel : true,
       startScale : 1,
-      maxScale : 3,
-      minScale : 0.3,
-      scaleSpeed : 1.2
+      maxScale : 2,
+      minScale : 0.5,
+      scaleSpeed : 1.2,
+      controls: true,
+    },
+    scrollbars: true,
+    move: {
+        drag: true,
+        wheel: true
     }
   };
   createWorkspace(document.getElementById('root'), options);
@@ -75,7 +82,10 @@ function injectBlockly() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', injectBlockly);
+document.addEventListener('DOMContentLoaded', function() {
+  initBlocks();
+  injectBlockly();
+});
 
 function runCode() {
   const code = Blockly.genCode.workspaceToCode(workspace);
@@ -136,7 +146,7 @@ function changeViewWithoutSwap() {
     document.getElementById("editor").hidden = !document.getElementById("editor").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
     isLight = !isLight;
-    document.getElementById('root').removeChild(document.getElementsByClassName('zelos-renderer')[0]);
+    document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
     injectBlockly();
     document.getElementById("callColor").click();
   } catch(e) {}
@@ -152,6 +162,7 @@ function changeView() {
   else
       localStorage.setItem('mode', 'code');
   workspace.trashcan.emptyContents();
+  Blockly.getMainWorkspace().cleanUp();
 }
 
 export { workspace, changeTheme, changeView, /*genPhoto,*/ injectBlockly, runCode };
