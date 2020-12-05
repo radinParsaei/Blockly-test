@@ -136,3 +136,26 @@ input:checked + .slider:before {
 .blocklyTreeLabel {
 	font-family: "Trebuchet MS", sans-serif !important;
 }
+
+.blocklyTreeLabel {
+  color: white;
+}
+.blocklyToolboxContents {
+  flex-wrap: nowrap !important;
+  padding: .5em;
+}
+.blocklyTreeRow {
+  margin-bottom: .5em;
+  border-radius: 7px;
+}
+.customIcon {
+  color: white;
+}
+.blocklyTreeRowContentContainer {
+  display: flex;
+  align-items: center;
+}
+.blocklyTreeRow {
+  height: initial;
+  padding-right: 0 !important;
+}

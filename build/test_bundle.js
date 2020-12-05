@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "d567963abf73ffe4dacf";
+/******/ 	var hotCurrentHash = "0e7cde689bf767809ffd";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -14046,6 +14046,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
 /* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
 /* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
+/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
@@ -14075,6 +14076,7 @@ function createWorkspace(blocklyDiv, options) {
 
 
 
+
 function injectBlockly() {
   var _options;
 
@@ -14093,20 +14095,18 @@ function injectBlockly() {
     disable: true,
     maxBlocks: Infinity,
     trashcan: true,
-    // horizontalLayout : true,
-    toolboxPosition: 'start',
     css: true,
     // media : 'http://localhost:3000',
     rtl: false,
     scrollbars: true,
     sounds: false,
     oneBasedIndex: true,
-    // grid : {
-    //   spacing : 20,
-    //   length : 2,
-    //   colour : '#fff1',
-    //   snap : true
-    // },
+    grid: {
+      spacing: 20,
+      length: 2,
+      colour: '#fff1',
+      snap: true
+    },
     zoom: _defineProperty({
       controls: true,
       wheel: true,
@@ -14119,6 +14119,20 @@ function injectBlockly() {
     drag: true,
     wheel: true
   }), _options);
+  var element = document.getElementById('style');
+  if (element != null) element.remove();
+  var sheet = document.createElement('style');
+  sheet.setAttribute('id', 'style');
+
+  if (window.innerHeight > window.innerWidth) {
+    options['horizontalLayout'] = true;
+    options['toolboxPosition'] = 'end';
+    sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
+  } else {
+    sheet.innerHTML = "";
+  }
+
+  document.body.appendChild(sheet);
   createWorkspace(document.getElementById('root'), options);
 
   if (isFirst) {
@@ -14133,6 +14147,11 @@ function injectBlockly() {
     blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToWorkspace(xml, workspace);
   }
 }
+
+window.onresize = function (event) {
+  changeViewWithoutSwap();
+  changeViewWithoutSwap();
+};
 
 document.addEventListener('DOMContentLoaded', function () {
   Object(_blocks_js__WEBPACK_IMPORTED_MODULE_2__["initBlocks"])();
@@ -14261,6 +14280,104 @@ var LightTheme = blockly__WEBPACK_IMPORTED_MODULE_0__["Theme"].defineTheme('Ligh
   }
 });
 
+
+/***/ }),
+
+/***/ "./test/toolbox.js":
+/*!*************************!*\
+  !*** ./test/toolbox.js ***!
+  \*************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
+/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+var CustomCategory = /*#__PURE__*/function (_Blockly$ToolboxCateg) {
+  _inherits(CustomCategory, _Blockly$ToolboxCateg);
+
+  var _super = _createSuper(CustomCategory);
+
+  function CustomCategory(a, b, c) {
+    var _this;
+
+    _classCallCheck(this, CustomCategory);
+
+    _this = _super.call(this, a, b, c);
+    _this.name = a.name;
+    return _this;
+  }
+
+  _createClass(CustomCategory, [{
+    key: "addColourBorder_",
+    value: function addColourBorder_(colour) {
+      this.rowDiv_.style.backgroundColor = colour;
+    }
+  }, {
+    key: "setSelected",
+    value: function setSelected(isSelected) {
+      var label = this.rowDiv_.getElementsByClassName('blocklyTreeLabel')[0];
+
+      if (isSelected) {
+        this.rowDiv_.style.backgroundColor = 'white';
+        label.style.color = this.colour_;
+        this.iconDom_.style.color = this.colour_;
+      } else {
+        this.rowDiv_.style.backgroundColor = this.colour_;
+        label.style.color = 'white';
+        this.iconDom_.style.color = 'white';
+      }
+
+      blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].aria.setState(this.htmlDiv_, blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].aria.State.SELECTED, isSelected);
+    }
+  }, {
+    key: "createIconDom_",
+    value: function createIconDom_() {
+      var icon = document.createElement('img'); // icon.src = './' + this.name + '.svg';
+
+      icon.src = 'https://developers.google.com/blockly/images/logos/logo_only.svg';
+
+      if (window.innerHeight > window.innerWidth) {
+        icon.width = '25';
+        icon.height = '25';
+      } else {
+        icon.width = '50';
+        icon.height = '50';
+      }
+
+      return icon;
+    }
+  }]);
+
+  return CustomCategory;
+}(blockly__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"]);
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].register(blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].Type.TOOLBOX_ITEM, blockly__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"].registrationName, CustomCategory, true);
 
 /***/ }),
 

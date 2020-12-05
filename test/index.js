@@ -27,6 +27,7 @@ export { Blockly };
 
 import './genCode.js';
 import { DarkTheme, LightTheme } from './themes.js';
+import './toolbox.js'
 
 function injectBlockly() {
   var xml;
@@ -42,20 +43,18 @@ function injectBlockly() {
     disable : true,
     maxBlocks : Infinity,
     trashcan : true,
-    // horizontalLayout : true,
-    toolboxPosition : 'start',
     css : true,
     // media : 'http://localhost:3000',
     rtl : false,
     scrollbars : true,
     sounds : false,
     oneBasedIndex : true,
-    // grid : {
-    //   spacing : 20,
-    //   length : 2,
-    //   colour : '#fff1',
-    //   snap : true
-    // },
+    grid : {
+      spacing : 20,
+      length : 2,
+      colour : '#fff1',
+      snap : true
+    },
     zoom : {
       controls : true,
       wheel : true,
@@ -71,6 +70,18 @@ function injectBlockly() {
         wheel: true
     }
   };
+  let element = document.getElementById('style');
+  if (element != null) element.remove();
+  let sheet = document.createElement('style');
+  sheet.setAttribute('id', 'style');
+  if(window.innerHeight > window.innerWidth){
+    options['horizontalLayout'] = true;
+    options['toolboxPosition'] = 'end';
+    sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
+  } else {
+    sheet.innerHTML = "";
+  }
+  document.body.appendChild(sheet);
   createWorkspace(document.getElementById('root'), options);
   if (isFirst) {
     isFirst = false;
@@ -81,6 +92,11 @@ function injectBlockly() {
   } else {
     Blockly.Xml.domToWorkspace(xml, workspace);
   }
+}
+
+window.onresize = function(event) {
+  changeViewWithoutSwap();
+  changeViewWithoutSwap();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
