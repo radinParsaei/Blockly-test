@@ -51,9 +51,9 @@ function injectBlockly() {
     sounds : false,
     oneBasedIndex : true,
     // grid : {
-    //   spacing : 21,
-    //   length : 3,
-    //   colour : '#f00',
+    //   spacing : 20,
+    //   length : 2,
+    //   colour : '#fff1',
     //   snap : true
     // },
     zoom : {

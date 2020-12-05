@@ -12,6 +12,26 @@ public class BlockTool {
             return "<block type=\"math_number\"><field name=\"NUM\">" + val + "</field></block>";
         } else if (val instanceof SyntaxTree.Text) {
             return "<block type=\"text\"><field name=\"TEXT\">" + val + "</field></block>";
+        } else if (val instanceof SyntaxTree.Add) {
+            return "<block type=\"math_arithmetic\"><field name=\"OP\">ADD</field><value name=\"A\">" +
+                    putVals(((SyntaxTree.Add) val).getV1()) + "</value><value name=\"B\">" +
+                    putVals(((SyntaxTree.Add) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.Sub) {
+            return "<block type=\"math_arithmetic\"><field name=\"OP\">MINUS</field><value name=\"A\">" +
+                    putVals(((SyntaxTree.Sub) val).getV1()) + "</value><value name=\"B\">" +
+                    putVals(((SyntaxTree.Sub) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.Mul) {
+            return "<block type=\"math_arithmetic\"><field name=\"OP\">MULTIPLY</field><value name=\"A\">" +
+                    putVals(((SyntaxTree.Mul) val).getV1()) + "</value><value name=\"B\">" +
+                    putVals(((SyntaxTree.Mul) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.Div) {
+            return "<block type=\"math_arithmetic\"><field name=\"OP\">DIVIDE</field><value name=\"A\">" +
+                    putVals(((SyntaxTree.Div) val).getV1()) + "</value><value name=\"B\">" +
+                    putVals(((SyntaxTree.Div) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.Pow) {
+            return "<block type=\"math_arithmetic\"><field name=\"OP\">POWER</field><value name=\"A\">" +
+                    putVals(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
+                    putVals(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.CallFunction) {
             ((SyntaxTree.CallFunction) val).findFunction();
             StringBuilder tmp = new StringBuilder("<block type=\"");

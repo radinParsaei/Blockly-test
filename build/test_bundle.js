@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "a89ae17efb1b44123763";
+/******/ 	var hotCurrentHash = "d567963abf73ffe4dacf";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -14102,9 +14102,9 @@ function injectBlockly() {
     sounds: false,
     oneBasedIndex: true,
     // grid : {
-    //   spacing : 21,
-    //   length : 3,
-    //   colour : '#f00',
+    //   spacing : 20,
+    //   length : 2,
+    //   colour : '#fff1',
     //   snap : true
     // },
     zoom: _defineProperty({
