@@ -1,6 +1,6 @@
 html, body {
   margin: 0;
-  font-family: "Source Code Pro", monospace;
+  font-family: "Source Code Pro", monospace !important;
 }
 * {
   box-sizing: border-box;
@@ -10,7 +10,7 @@ html, body {
   color: white;
 }
 #editor {
-  font-family: 'Source Code Pro', monospace;
+  font-family: "Source Code Pro", monospace !important;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: normal;
@@ -20,7 +20,7 @@ html, body {
   resize: none !important;
 }
 #console2 {
-  font-family: "Source Code Pro", monospace;
+  font-family: "Source Code Pro", monospace !important;
   overflow-y: scroll;
   max-height: calc(100% - 30px);
 }
@@ -39,7 +39,7 @@ html, body {
   margin: 0;
 }
 h4 {
-  font-family: "Source Code Pro", monospace;
+  font-family: "Source Code Pro", monospace !important;
 }
 .expand {
   height: 100%;
@@ -61,7 +61,7 @@ button {
 }
 #modeContainer {
   padding: 2.1%;
-  padding-top: 2.5%;
+  padding-top: 2%;
   padding-left: 0;
   padding-right: 0;
   background: #777a;
@@ -131,4 +131,8 @@ input:checked + .slider:before {
 }
 .slider.round:before {
   border-radius: 50%;
+}
+
+.blocklyTreeLabel {
+	font-family: "Trebuchet MS", sans-serif !important;
 }

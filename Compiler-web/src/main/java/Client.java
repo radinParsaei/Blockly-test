@@ -1,37 +1,28 @@
-import org.teavm.jso.dom.events.Event;
-import org.teavm.jso.dom.events.EventListener;
-import org.teavm.jso.dom.html.*;
+import org.teavm.jso.dom.html.HTMLDocument;
+import org.teavm.jso.dom.html.HTMLElement;
 
 public class Client extends CompilerMain {
     private static boolean isFirst = true;
     public static void main(String[] args) {
         HTMLDocument document = HTMLDocument.current();
         HTMLElement button = document.getElementById("run");
-        button.addEventListener("click", new EventListener<Event>() {
-            @Override
-            public void handleEvent(Event evt) {
-                SyntaxTree.getFunctions().clear();
-                SyntaxTree.getVariables().clear();
-                SyntaxTree.getClassesParameters().clear();
-                SyntaxTree.CreateLambda.setCounter(0);
-                document.getElementById("console2").setInnerHTML("");
-                Compiler compiler = new Compiler(null, true, null, null, null);
-                CustomCompileStep.used = false;
-                REPLReader.setReadCode(false);
-                compile(compiler);
-                REPLReader.setReadCode(true);
-                compile(compiler);
-                CustomCompileStep.used = true;
-            }
+        button.addEventListener("click", evt -> {
+            SyntaxTree.getFunctions().clear();
+            SyntaxTree.getVariables().clear();
+            SyntaxTree.getClassesParameters().clear();
+            SyntaxTree.CreateLambda.setCounter(0);
+            document.getElementById("console2").setInnerHTML("");
+            Compiler compiler = new Compiler(null, true, null, null, null);
+            CustomCompileStep.used = false;
+            REPLReader.setReadCode(false);
+            compile(compiler);
+            REPLReader.setReadCode(true);
+            compile(compiler);
+            CustomCompileStep.used = true;
         });
 
         HTMLElement buttonTmp = document.getElementById("callColor");
-        buttonTmp.addEventListener("click", new EventListener<Event>() {
-            @Override
-            public void handleEvent(Event evt) {
-                color();
-            }
-        });
+        buttonTmp.addEventListener("click", evt -> color());
         color();
     }
 

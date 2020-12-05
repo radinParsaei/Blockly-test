@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "84659634b31c5a058967";
+/******/ 	var hotCurrentHash = "a89ae17efb1b44123763";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -13725,15 +13725,17 @@ function initBlocks() {
   // <field name="NUM">1</field>
   // </shadow>
   // </value>`);
+  // addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false],
+  //   `func test(v, f) {
+  //     print v
+  //     print "\\n"
+  //     f!()
+  //   }`, ['text 1', null, "text 2", null, function(block) { //image field
+  //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
+  //   }], 'tooltip', 'helpUrl'
+  // );
 
 
-  addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false], "func test(v, f) {\n      print v\n      print \"\\n\"\n      f!()\n    }", ['text 1', null, "text 2", null, function (block) {
-    //image field
-    block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, {
-      alt: "*",
-      flipRtl: "FALSE"
-    }));
-  }], 'tooltip', 'helpUrl');
   Blockly.defineBlocksWithJsonArray([{
     "type": "text",
     "message0": "\"%1\"",
@@ -13767,77 +13769,51 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"] = new blockly__WEBPACK_IMPORTED_MODULE_0__["Generator"]('genCode');
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].addReservedWords('func,if,return,var,while,null,true,false,', Object.getOwnPropertyNames(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].global).join(',')); //copied from Blockly javascript generator
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].addReservedWords('func,if,return,var,while,null,true,false,', Object.getOwnPropertyNames(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].global).join(',')); //copied from Blockly python generator
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC = 0; // 0 "" ...
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NEW = 1.1; // new
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_COLLECTION = 1; // tuples, lists, dictionaries
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MEMBER = 1.2; // . []
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_STRING_CONVERSION = 1; // `expression...`
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL = 2; // ()
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MEMBER = 2.1; // . []
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_INCREMENT = 3; // ++
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL = 2.2; // ()
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_DECREMENT = 3; // --
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_EXPONENTIATION = 3; // **
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_NOT = 4.1; // ~
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_UNARY_SIGN = 4; // + -
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_UNARY_PLUS = 4.2; // +
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_NOT = 4; // ~
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_UNARY_NEGATION = 4.3; // -
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE = 5; // * / // %
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_NOT = 4.4; // !
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE = 6; // + -
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_TYPEOF = 4.5; // typeof
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_SHIFT = 7; // << >>
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_VOID = 4.6; // void
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_AND = 8; // &
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_DELETE = 4.7; // delete
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_XOR = 9; // ^
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_AWAIT = 4.8; // await
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_OR = 10; // |
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_EXPONENTIATION = 5.0; // **
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL = 11; // in, not in, is, is not,
+//     <, <=, >, >=, <>, !=, ==
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATION = 5.1; // *
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_NOT = 12; // not
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_DIVISION = 5.2; // /
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_AND = 13; // and
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MODULUS = 5.3; // %
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR = 14; // or
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_SUBTRACTION = 6.1; // -
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_CONDITIONAL = 15; // if else
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITION = 6.2; // +
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_SHIFT = 7; // << >> >>>
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL = 8; // < <= > >=
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_IN = 8; // in
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_INSTANCEOF = 8; // instanceof
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_EQUALITY = 9; // == != === !==
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_AND = 10; // &
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_XOR = 11; // ^
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_OR = 12; // |
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_AND = 13; // &&
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR = 14; // ||
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_CONDITIONAL = 15; // ?:
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ASSIGNMENT = 16; // = += -= **= *= /= %= <<= >>= ...
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_YIELD = 17; // yield
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_COMMA = 18; // ,
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LAMBDA = 16; // lambda
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE = 99; // (...)
+//copied from Blockly javascript generator
 
 /**
  * List of outer-inner pairings that do NOT require parentheses.
@@ -14029,6 +14005,24 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_number'] = function (block
   return [code, order];
 };
 
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_arithmetic'] = function (block) {
+  var OPERATORS = {
+    'ADD': [' + ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE],
+    'MINUS': [' - ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE],
+    'MULTIPLY': [' * ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE],
+    'DIVIDE': [' / ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE],
+    'POWER': [' ** ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_EXPONENTIATION]
+  };
+  var tuple = OPERATORS[block.getFieldValue('OP')];
+  var operator = tuple[0];
+  var order = tuple[1];
+  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'A', order) || '0';
+  var argument1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'B', order) || '0';
+  var code;
+  code = argument0 + operator + argument1;
+  return [code, order];
+};
+
 /***/ }),
 
 /***/ "./test/index.js":
@@ -14051,6 +14045,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var CodeJar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! CodeJar */ "./node_modules/CodeJar/codejar.js");
 /* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
 /* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
@@ -14079,6 +14074,7 @@ function createWorkspace(blocklyDiv, options) {
 
 
 
+
 function injectBlockly() {
   var _options;
 
@@ -14090,7 +14086,7 @@ function injectBlockly() {
 
   var options = (_options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isLight ? blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Dark : blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Classic,
+    theme: isLight ? _themes_js__WEBPACK_IMPORTED_MODULE_4__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_4__["LightTheme"],
     renderer: 'zelos',
     collapse: true,
     comments: false,
@@ -14140,6 +14136,7 @@ function injectBlockly() {
 
 document.addEventListener('DOMContentLoaded', function () {
   Object(_blocks_js__WEBPACK_IMPORTED_MODULE_2__["initBlocks"])();
+  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["MATH_POWER_SYMBOL"] = "**";
   injectBlockly();
 });
 
@@ -14221,6 +14218,48 @@ function changeView() {
   blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().cleanUp();
 }
 
+
+
+/***/ }),
+
+/***/ "./test/themes.js":
+/*!************************!*\
+  !*** ./test/themes.js ***!
+  \************************/
+/*! exports provided: DarkTheme, LightTheme */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DarkTheme", function() { return DarkTheme; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LightTheme", function() { return LightTheme; });
+/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
+/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
+
+var DarkTheme = blockly__WEBPACK_IMPORTED_MODULE_0__["Theme"].defineTheme('DarkTheme', {
+  'base': blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Dark,
+  // 'componentStyles': {
+  // "workspaceBackgroundColour": "#1e1e1e",
+  // "toolboxBackgroundColour": "#333"
+  // },
+  'fontStyle': {
+    "family": "Source Code Pro, monospace",
+    "weight": "bold",
+    "size": 12
+  }
+});
+var LightTheme = blockly__WEBPACK_IMPORTED_MODULE_0__["Theme"].defineTheme('LightTheme', {
+  'base': blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Classic,
+  // 'componentStyles': {
+  // "workspaceBackgroundColour": "#1e1e1e",
+  // "toolboxBackgroundColour": "#333"
+  // },
+  'fontStyle': {
+    "family": "Source Code Pro, monospace",
+    "weight": "bold",
+    "size": 12
+  }
+});
 
 
 /***/ }),

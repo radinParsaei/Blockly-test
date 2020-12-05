@@ -26,6 +26,7 @@ function createWorkspace(blocklyDiv, options) {
 export { Blockly };
 
 import './genCode.js';
+import { DarkTheme, LightTheme } from './themes.js';
 
 function injectBlockly() {
   var xml;
@@ -34,7 +35,7 @@ function injectBlockly() {
   }
   const options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isLight? Blockly.Themes.Dark : Blockly.Themes.Classic,
+    theme: isLight? DarkTheme : LightTheme,
     renderer: 'zelos',
     collapse : true,
     comments : false,
@@ -84,6 +85,7 @@ function injectBlockly() {
 
 document.addEventListener('DOMContentLoaded', function() {
   initBlocks();
+  Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
   injectBlockly();
 });
 

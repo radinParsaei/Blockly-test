@@ -6,43 +6,31 @@ Blockly.genCode.addReservedWords(
     'func,if,return,var,while,null,true,false,',
     Object.getOwnPropertyNames(Blockly.utils.global).join(','));
 
-//copied from Blockly javascript generator
-Blockly.genCode.ORDER_ATOMIC = 0;           // 0 "" ...
-Blockly.genCode.ORDER_NEW = 1.1;            // new
-Blockly.genCode.ORDER_MEMBER = 1.2;         // . []
-Blockly.genCode.ORDER_FUNCTION_CALL = 2;    // ()
-Blockly.genCode.ORDER_INCREMENT = 3;        // ++
-Blockly.genCode.ORDER_DECREMENT = 3;        // --
-Blockly.genCode.ORDER_BITWISE_NOT = 4.1;    // ~
-Blockly.genCode.ORDER_UNARY_PLUS = 4.2;     // +
-Blockly.genCode.ORDER_UNARY_NEGATION = 4.3; // -
-Blockly.genCode.ORDER_LOGICAL_NOT = 4.4;    // !
-Blockly.genCode.ORDER_TYPEOF = 4.5;         // typeof
-Blockly.genCode.ORDER_VOID = 4.6;           // void
-Blockly.genCode.ORDER_DELETE = 4.7;         // delete
-Blockly.genCode.ORDER_AWAIT = 4.8;          // await
-Blockly.genCode.ORDER_EXPONENTIATION = 5.0; // **
-Blockly.genCode.ORDER_MULTIPLICATION = 5.1; // *
-Blockly.genCode.ORDER_DIVISION = 5.2;       // /
-Blockly.genCode.ORDER_MODULUS = 5.3;        // %
-Blockly.genCode.ORDER_SUBTRACTION = 6.1;    // -
-Blockly.genCode.ORDER_ADDITION = 6.2;       // +
-Blockly.genCode.ORDER_BITWISE_SHIFT = 7;    // << >> >>>
-Blockly.genCode.ORDER_RELATIONAL = 8;       // < <= > >=
-Blockly.genCode.ORDER_IN = 8;               // in
-Blockly.genCode.ORDER_INSTANCEOF = 8;       // instanceof
-Blockly.genCode.ORDER_EQUALITY = 9;         // == != === !==
-Blockly.genCode.ORDER_BITWISE_AND = 10;     // &
-Blockly.genCode.ORDER_BITWISE_XOR = 11;     // ^
-Blockly.genCode.ORDER_BITWISE_OR = 12;      // |
-Blockly.genCode.ORDER_LOGICAL_AND = 13;     // &&
-Blockly.genCode.ORDER_LOGICAL_OR = 14;      // ||
-Blockly.genCode.ORDER_CONDITIONAL = 15;     // ?:
-Blockly.genCode.ORDER_ASSIGNMENT = 16;      // = += -= **= *= /= %= <<= >>= ...
-Blockly.genCode.ORDER_YIELD = 17;           // yield
-Blockly.genCode.ORDER_COMMA = 18;           // ,
-Blockly.genCode.ORDER_NONE = 99;            // (...)
+//copied from Blockly python generator
+Blockly.genCode.ORDER_ATOMIC = 0;            // 0 "" ...
+Blockly.genCode.ORDER_COLLECTION = 1;        // tuples, lists, dictionaries
+Blockly.genCode.ORDER_STRING_CONVERSION = 1; // `expression...`
+Blockly.genCode.ORDER_MEMBER = 2.1;          // . []
+Blockly.genCode.ORDER_FUNCTION_CALL = 2.2;   // ()
+Blockly.genCode.ORDER_EXPONENTIATION = 3;    // **
+Blockly.genCode.ORDER_UNARY_SIGN = 4;        // + -
+Blockly.genCode.ORDER_BITWISE_NOT = 4;       // ~
+Blockly.genCode.ORDER_MULTIPLICATIVE = 5;    // * / // %
+Blockly.genCode.ORDER_ADDITIVE = 6;          // + -
+Blockly.genCode.ORDER_BITWISE_SHIFT = 7;     // << >>
+Blockly.genCode.ORDER_BITWISE_AND = 8;       // &
+Blockly.genCode.ORDER_BITWISE_XOR = 9;       // ^
+Blockly.genCode.ORDER_BITWISE_OR = 10;       // |
+Blockly.genCode.ORDER_RELATIONAL = 11;       // in, not in, is, is not,
+                                            //     <, <=, >, >=, <>, !=, ==
+Blockly.genCode.ORDER_LOGICAL_NOT = 12;      // not
+Blockly.genCode.ORDER_LOGICAL_AND = 13;      // and
+Blockly.genCode.ORDER_LOGICAL_OR = 14;       // or
+Blockly.genCode.ORDER_CONDITIONAL = 15;      // if else
+Blockly.genCode.ORDER_LAMBDA = 16;           // lambda
+Blockly.genCode.ORDER_NONE = 99;             // (...)
 
+//copied from Blockly javascript generator
 /**
  * List of outer-inner pairings that do NOT require parentheses.
  * @type {!Array.<!Array.<number>>}
@@ -237,5 +225,23 @@ Blockly.genCode['math_number'] = function(block) {
   var code = Number(block.getFieldValue('NUM'));
   var order = code >= 0 ? Blockly.genCode.ORDER_ATOMIC :
               Blockly.genCode.ORDER_UNARY_NEGATION;
+  return [code, order];
+};
+
+Blockly.genCode['math_arithmetic'] = function(block) {
+  var OPERATORS = {
+    'ADD': [' + ', Blockly.genCode.ORDER_ADDITIVE],
+    'MINUS': [' - ', Blockly.genCode.ORDER_ADDITIVE],
+    'MULTIPLY': [' * ', Blockly.genCode.ORDER_MULTIPLICATIVE],
+    'DIVIDE': [' / ', Blockly.genCode.ORDER_MULTIPLICATIVE],
+    'POWER': [' ** ', Blockly.genCode.ORDER_EXPONENTIATION]
+  };
+  var tuple = OPERATORS[block.getFieldValue('OP')];
+  var operator = tuple[0];
+  var order = tuple[1];
+  var argument0 = Blockly.genCode.valueToCode(block, 'A', order) || '0';
+  var argument1 = Blockly.genCode.valueToCode(block, 'B', order) || '0';
+  var code;
+  code = argument0 + operator + argument1;
   return [code, order];
 };
