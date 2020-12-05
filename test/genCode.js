@@ -245,3 +245,12 @@ Blockly.genCode['math_arithmetic'] = function(block) {
   code = argument0 + operator + argument1;
   return [code, order];
 };
+
+Blockly.genCode['math_modulo'] = function(block) {
+  var argument0 = Blockly.genCode.valueToCode(block, 'DIVIDEND',
+      Blockly.genCode.ORDER_MULTIPLICATIVE) || '0';
+  var argument1 = Blockly.genCode.valueToCode(block, 'DIVISOR',
+      Blockly.genCode.ORDER_MULTIPLICATIVE) || '0';
+  var code = argument0 + ' % ' + argument1;
+  return [code, Blockly.genCode.ORDER_MULTIPLICATIVE];
+};

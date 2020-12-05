@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "0e7cde689bf767809ffd";
+/******/ 	var hotCurrentHash = "ed8135afb6fbd02c83ba";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -14023,6 +14023,13 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_arithmetic'] = function (b
   return [code, order];
 };
 
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_modulo'] = function (block) {
+  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DIVIDEND', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE) || '0';
+  var argument1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DIVISOR', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE) || '0';
+  var code = argument0 + ' % ' + argument1;
+  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE];
+};
+
 /***/ }),
 
 /***/ "./test/index.js":
@@ -14318,19 +14325,58 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+var ToolboxLabel = /*#__PURE__*/function (_Blockly$ToolboxItem) {
+  _inherits(ToolboxLabel, _Blockly$ToolboxItem);
+
+  var _super = _createSuper(ToolboxLabel);
+
+  function ToolboxLabel(toolboxItemDef, parentToolbox) {
+    var _this;
+
+    _classCallCheck(this, ToolboxLabel);
+
+    _this = _super.call(this, toolboxItemDef, parentToolbox);
+    _this.label = null;
+    return _this;
+  }
+
+  _createClass(ToolboxLabel, [{
+    key: "init",
+    value: function init() {
+      this.label = document.createElement('label');
+      this.label.textContent = this.toolboxItemDef_['name'];
+      this.label.style.color = this.toolboxItemDef_['colour'];
+      var cssConfig = this.toolboxItemDef_['cssconfig'];
+
+      if (cssConfig) {
+        this.label.classList.add(cssConfig['label']);
+      }
+    }
+  }, {
+    key: "getDiv",
+    value: function getDiv() {
+      return this.label;
+    }
+  }]);
+
+  return ToolboxLabel;
+}(blockly__WEBPACK_IMPORTED_MODULE_0__["ToolboxItem"]);
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].register(blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].Type.TOOLBOX_ITEM, 'toolboxlabel', ToolboxLabel);
+
 var CustomCategory = /*#__PURE__*/function (_Blockly$ToolboxCateg) {
   _inherits(CustomCategory, _Blockly$ToolboxCateg);
 
-  var _super = _createSuper(CustomCategory);
+  var _super2 = _createSuper(CustomCategory);
 
   function CustomCategory(a, b, c) {
-    var _this;
+    var _this2;
 
     _classCallCheck(this, CustomCategory);
 
-    _this = _super.call(this, a, b, c);
-    _this.name = a.name;
-    return _this;
+    _this2 = _super2.call(this, a, b, c);
+    _this2.name = a.name;
+    return _this2;
   }
 
   _createClass(CustomCategory, [{

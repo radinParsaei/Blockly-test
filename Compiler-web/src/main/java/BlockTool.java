@@ -28,6 +28,10 @@ public class BlockTool {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">DIVIDE</field><value name=\"A\">" +
                     putVals(((SyntaxTree.Div) val).getV1()) + "</value><value name=\"B\">" +
                     putVals(((SyntaxTree.Div) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.Mod) {
+            return "<block type=\"math_modulo\"><value name=\"DIVIDEND\">" +
+                    putVals(((SyntaxTree.Mod) val).getV1()) + "</value><value name=\"DIVISOR\">" +
+                    putVals(((SyntaxTree.Mod) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Pow) {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">POWER</field><value name=\"A\">" +
                     putVals(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
