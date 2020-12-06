@@ -1,6 +1,8 @@
 import * as Blockly from 'blockly';
 import { CodeJar } from 'CodeJar';
 import { initBlocks, functions, functionCodes } from './blocks.js';
+import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
+import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 // import html2canvas from 'html2canvas';
 
 // function genPhoto() {
@@ -9,7 +11,7 @@ import { initBlocks, functions, functionCodes } from './blocks.js';
   // });
 // }
 
-var isLight = false;
+var isDark = false;
 var isFirst = true;
 let workspace;
 
@@ -18,6 +20,10 @@ function createWorkspace(blocklyDiv, options) {
   workspace.addChangeListener(function(event) {
     if (localStorage.getItem('mode') == 'block') {
       runCode();
+      try {
+        if (event.element && event.element != "category")
+          Blockly.flyOutClose();
+      } catch (e) {}
     }
   });
   return workspace;
@@ -36,7 +42,7 @@ function injectBlockly() {
   }
   const options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isLight? DarkTheme : LightTheme,
+    theme: isDark? DarkTheme : LightTheme,
     renderer: 'zelos',
     collapse : true,
     comments : false,
@@ -52,7 +58,7 @@ function injectBlockly() {
     grid : {
       spacing : 20,
       length : 2,
-      colour : '#fff1',
+      colour : isDark? '#fff2':'#7772',
       snap : true
     },
     zoom : {
@@ -79,6 +85,10 @@ function injectBlockly() {
     options['toolboxPosition'] = 'end';
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
   } else {
+    options['plugins'] = {
+      'toolbox': ContinuousToolbox,
+      'flyoutsVerticalToolbox': ContinuousFlyout,
+    }
     sheet.innerHTML = "";
   }
   document.body.appendChild(sheet);
@@ -129,7 +139,7 @@ function changeThemeWithoutSwap() {
   document.getElementById("editor").classList.toggle('dark');
   document.getElementById("console").classList.toggle('dark');
   document.getElementById("console2").classList.toggle('dark');
-  isLight = !isLight;
+  isDark = !isDark;
 }
 
 function changeTheme() {
@@ -163,7 +173,7 @@ function changeViewWithoutSwap() {
   try {
     document.getElementById("editor").hidden = !document.getElementById("editor").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
-    isLight = !isLight;
+    isDark = !isDark;
     document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
     injectBlockly();
     document.getElementById("callColor").click();
@@ -182,5 +192,8 @@ function changeView() {
   workspace.trashcan.emptyContents();
   Blockly.getMainWorkspace().cleanUp();
 }
+
+if (isDark) document.getElementById('theme').checked = true;
+else document.getElementById('theme').checked = false;
 
 export { workspace, changeTheme, changeView, /*genPhoto,*/ injectBlockly, runCode };

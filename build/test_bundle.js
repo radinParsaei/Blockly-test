@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "ed8135afb6fbd02c83ba";
+/******/ 	var hotCurrentHash = "c62d42b1dcffe6822855";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -868,6 +868,965 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ })
 /************************************************************************/
 /******/ ({
+
+/***/ "./continuous-toolbox/src/ContinuousFlyout.js":
+/*!****************************************************!*\
+  !*** ./continuous-toolbox/src/ContinuousFlyout.js ***!
+  \****************************************************/
+/*! exports provided: ContinuousFlyout */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ContinuousFlyout", function() { return ContinuousFlyout; });
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ContinuousToolbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview Flyout that supports always-open continuous scrolling.
+ */
+
+
+/**
+ * Class for continuous flyout.
+ */
+
+var ContinuousFlyout = /*#__PURE__*/function (_Blockly$VerticalFlyo) {
+  _inherits(ContinuousFlyout, _Blockly$VerticalFlyo);
+
+  var _super = _createSuper(ContinuousFlyout);
+
+  /** @override */
+  function ContinuousFlyout(workspaceOptions) {
+    var _this;
+
+    _classCallCheck(this, ContinuousFlyout);
+
+    _this = _super.call(this, workspaceOptions);
+    /**
+     * List of scroll positions for each category.
+     * @type {!Array<{name: string, position: !Object}>}
+     */
+
+    _this.scrollPositions = [];
+    /**
+     * Target scroll position, used to smoothly scroll to a given category
+     * location when selected.
+     * @type {?number}
+     */
+
+    _this.scrollTarget = null;
+    /**
+     * The percentage of the distance to the scrollTarget that should be
+     * scrolled at a time. Lower values will produce a smoother, slower scroll.
+     * @type {number}
+     */
+
+    _this.scrollAnimationFraction = 0.3;
+    /**
+     * A list of blocks that can be recycled.
+     * @type {!Array.<!Blockly.BlockSvg>}
+     * @private
+     */
+
+    _this.recycleBlocks_ = [];
+    /**
+     * Whether to recycle blocks when refreshing the flyout. When false, do not
+     * allow anything to be recycled. The default is to recycle.
+     * @type {boolean}
+     * @private
+     */
+
+    _this.recyclingEnabled_ = true;
+    _this.autoClose = false;
+    return _this;
+  }
+  /**
+   * Gets parent toolbox.
+   * Since we registered the ContinuousToolbox, we know that's its type.
+   * @return {!ContinuousToolbox} Toolbox that owns this flyout.
+   * @private
+   */
+
+
+  _createClass(ContinuousFlyout, [{
+    key: "getParentToolbox_",
+    value: function getParentToolbox_() {
+      var toolbox = this.targetWorkspace.getToolbox();
+      return (
+        /** @type {!ContinuousToolbox} */
+        toolbox
+      );
+    }
+    /**
+     * Records scroll position for each category in the toolbox.
+     * The scroll position is determined by the coordinates of each category's
+     * label after the entire flyout has been rendered.
+     * @package
+     */
+
+  }, {
+    key: "recordScrollPositions",
+    value: function recordScrollPositions() {
+      var _this2 = this;
+
+      var categoryLabels = this.buttons_.filter(function (button) {
+        return button.isLabel() && _this2.getParentToolbox_().getCategoryByName(button.getButtonText());
+      });
+
+      var _iterator = _createForOfIteratorHelper(categoryLabels),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var button = _step.value;
+
+          if (button.isLabel()) {
+            this.scrollPositions.push({
+              name: button.getButtonText(),
+              position: button.getPosition()
+            });
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    }
+    /**
+     * Returns the scroll position for the given category name.
+     * @param {string} name Category name.
+     * @return {?Object} Scroll position for given category, or null if not found.
+     * @package
+     */
+
+  }, {
+    key: "getCategoryScrollPosition",
+    value: function getCategoryScrollPosition(name) {
+      var _iterator2 = _createForOfIteratorHelper(this.scrollPositions),
+          _step2;
+
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var scrollInfo = _step2.value;
+
+          if (scrollInfo.name === name) {
+            return scrollInfo.position;
+          }
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+
+      console.warn("Scroll position not recorded for category ".concat(name));
+      return null;
+    }
+    /**
+     * Selects an item in the toolbox based on the scroll position of the flyout.
+     * @param {number} position Current scroll position of the workspace.
+     * @private
+     */
+
+  }, {
+    key: "selectCategoryByScrollPosition_",
+    value: function selectCategoryByScrollPosition_(position) {
+      // If we are currently auto-scrolling, due to selecting a category by
+      // clicking on it, do not update the category selection.
+      if (this.scrollTarget) {
+        return;
+      }
+
+      var scaledPosition = Math.round(position / this.workspace_.scale); // Traverse the array of scroll positions in reverse, so we can select the
+      // furthest category that the scroll position is beyond.
+
+      for (var i = this.scrollPositions.length - 1; i >= 0; i--) {
+        var category = this.scrollPositions[i];
+
+        if (scaledPosition >= category.position.y) {
+          this.getParentToolbox_().selectCategoryByName(category.name);
+          return;
+        }
+      }
+    }
+    /**
+     * Scrolls flyout to given position.
+     * @param {number} position The x coordinate to scroll to.
+     */
+
+  }, {
+    key: "scrollTo",
+    value: function scrollTo(position) {
+      // Set the scroll target to either the scaled position or the lowest
+      // possible scroll point, whichever is smaller.
+      var metrics = this.workspace_.getMetrics();
+      this.scrollTarget = Math.min(position * this.workspace_.scale, metrics.contentHeight - metrics.viewHeight);
+      this.stepScrollAnimation_();
+    }
+    /**
+     * Step the scrolling animation by scrolling a fraction of the way to
+     * a scroll target, and request the next frame if necessary.
+     * @private
+     */
+
+  }, {
+    key: "stepScrollAnimation_",
+    value: function stepScrollAnimation_() {
+      if (!this.scrollTarget) {
+        return;
+      }
+
+      var currentScrollPos = -this.workspace_.scrollY;
+      var diff = this.scrollTarget - currentScrollPos;
+
+      if (Math.abs(diff) < 1) {
+        this.scrollbar.set(this.scrollTarget);
+        this.scrollTarget = null;
+        return;
+      }
+
+      this.scrollbar.set(currentScrollPos + diff * this.scrollAnimationFraction);
+      requestAnimationFrame(this.stepScrollAnimation_.bind(this));
+    }
+    /**
+     * Add additional padding to the bottom of the flyout if needed,
+     * in order to make it possible to scroll to the top of the last category.
+     * @param {!Blockly.utils.Metrics} metrics Default metrics for the flyout.
+     * @return {number} Additional bottom padding.
+     * @private
+     */
+
+  }, {
+    key: "calculateBottomPadding_",
+    value: function calculateBottomPadding_(metrics) {
+      if (this.scrollPositions.length > 0) {
+        var lastCategory = this.scrollPositions[this.scrollPositions.length - 1];
+        var lastPosition = lastCategory.position.y * this.workspace_.scale;
+        var lastCategoryHeight = metrics.contentHeight - lastPosition;
+
+        if (lastCategoryHeight < metrics.viewHeight) {
+          return metrics.viewHeight - lastCategoryHeight;
+        }
+      }
+
+      return 0;
+    }
+    /**
+     * @override
+     */
+
+  }, {
+    key: "getMetrics_",
+    value: function getMetrics_() {
+      var metrics = _get(_getPrototypeOf(ContinuousFlyout.prototype), "getMetrics_", this).call(this);
+
+      if (metrics) {
+        metrics.contentHeight += this.calculateBottomPadding_(metrics);
+      }
+
+      return metrics;
+    }
+    /** @override */
+
+  }, {
+    key: "setMetrics_",
+    value: function setMetrics_(xyRatio) {
+      _get(_getPrototypeOf(ContinuousFlyout.prototype), "setMetrics_", this).call(this, xyRatio);
+
+      if (this.scrollPositions) {
+        this.selectCategoryByScrollPosition_(-this.workspace_.scrollY);
+      }
+    }
+    /**
+     * Overrides the position function solely to change the x coord in RTL mode.
+     * The base function allows the workspace to go "under" the flyout, so
+     * to calculate the left edge of the flyout in RTL you would just subtract
+     * the flyout width from the total viewWidth to get x. However, in our
+     * flyout, the workspace already starts at the left edge of the flyout, so
+     * we don't need to subtract the flyout width again.
+     * Ideally there would be a smaller method for us to override instead,
+     * but for now we copy/paste this method and make our fixes.
+     * @override
+     */
+
+  }, {
+    key: "position",
+    value: function position() {
+      if (!this.isVisible()) {
+        return;
+      }
+
+      var targetWorkspaceMetrics = this.targetWorkspace.getMetrics();
+
+      if (!targetWorkspaceMetrics) {
+        // Hidden components will return null.
+        return;
+      } // Record the height for Blockly.Flyout.getMetrics_
+
+
+      this.height_ = targetWorkspaceMetrics.viewHeight;
+      var edgeWidth = this.width_ - this.CORNER_RADIUS;
+      var edgeHeight = targetWorkspaceMetrics.viewHeight - 2 * this.CORNER_RADIUS;
+      this.setBackgroundPath_(edgeWidth, edgeHeight); // Y is always 0 since this is a vertical flyout.
+
+      var y = 0;
+      var x = 0; // If this flyout is the toolbox flyout.
+
+      if (this.targetWorkspace.toolboxPosition == this.toolboxPosition_) {
+        // If there is a category toolbox.
+        if (targetWorkspaceMetrics.toolboxWidth) {
+          if (this.toolboxPosition_ == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"]) {
+            x = targetWorkspaceMetrics.toolboxWidth;
+          } else {
+            // TODO(https://github.com/google/blockly/issues/4396): Use a better
+            // API to adjust this value.
+            // This is the only line that changed from the original.
+            x = targetWorkspaceMetrics.viewWidth;
+          }
+        } else {
+          if (this.toolboxPosition_ == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"]) {
+            x = 0;
+          } else {
+            x = targetWorkspaceMetrics.viewWidth;
+          }
+        }
+      } else {
+        if (this.toolboxPosition_ == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"]) {
+          x = 0;
+        } else {
+          // Because the anchor point of the flyout is on the left, but we want
+          // to align the right edge of the flyout with the right edge of the
+          // blocklyDiv, we calculate the full width of the div minus the width
+          // of the flyout.
+          x = targetWorkspaceMetrics.viewWidth + targetWorkspaceMetrics.absoluteLeft - this.width_;
+        }
+      }
+
+      this.positionAt_(this.width_, this.height_, x, y);
+    }
+    /**
+     * @override
+     */
+
+  }, {
+    key: "show",
+    value: function show(flyoutDef) {
+      _get(_getPrototypeOf(ContinuousFlyout.prototype), "show", this).call(this, flyoutDef);
+
+      this.emptyRecycleBlocks_();
+    }
+    /**
+     * Empty out the recycled blocks, properly destroying everything.
+     * @protected
+     */
+
+  }, {
+    key: "emptyRecycleBlocks_",
+    value: function emptyRecycleBlocks_() {
+      // Clean out the old recycle bin.
+      var oldBlocks = this.recycleBlocks_;
+      this.recycleBlocks_ = [];
+
+      var _iterator3 = _createForOfIteratorHelper(oldBlocks),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var oldBlock = _step3.value;
+          oldBlock.dispose(false, false);
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+    }
+    /**
+     * @override
+     */
+
+  }, {
+    key: "createBlock_",
+    value: function createBlock_(blockXml) {
+      var blockType = blockXml.getAttribute('type');
+      var blockIdx = this.recycleBlocks_.findIndex(function (block) {
+        return block.type === blockType;
+      });
+      var curBlock;
+
+      if (blockIdx > -1) {
+        curBlock = this.recycleBlocks_.splice(blockIdx, 1)[0];
+      } else {
+        curBlock = blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToBlock(blockXml, this.workspace_);
+      }
+
+      if (!curBlock.isEnabled()) {
+        // Record blocks that were initially disabled.
+        // Do not enable these blocks as a result of capacity filtering.
+        this.permanentlyDisabled_.push(curBlock);
+      }
+
+      return curBlock;
+    }
+    /**
+     * @override
+     */
+
+  }, {
+    key: "clearOldBlocks_",
+    value: function clearOldBlocks_() {
+      // Delete any blocks from a previous showing.
+      var oldBlocks =
+      /** @type {!Array<!Blockly.BlockSvg>} */
+      this.workspace_.getTopBlocks(false);
+
+      var _iterator4 = _createForOfIteratorHelper(oldBlocks),
+          _step4;
+
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var block = _step4.value;
+
+          if (block.workspace == this.workspace_) {
+            if (this.recyclingEnabled_ && this.blockIsRecyclable_(block)) {
+              this.recycleBlock_(block);
+            } else {
+              block.dispose(false, false);
+            }
+          }
+        } // Delete any mats from a previous showing.
+
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+
+      var _iterator5 = _createForOfIteratorHelper(this.mats_),
+          _step5;
+
+      try {
+        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+          var rect = _step5.value;
+
+          if (rect) {
+            blockly_core__WEBPACK_IMPORTED_MODULE_0__["Tooltip"].unbindMouseEvents(rect);
+            blockly_core__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.removeNode(rect);
+          }
+        }
+      } catch (err) {
+        _iterator5.e(err);
+      } finally {
+        _iterator5.f();
+      }
+
+      this.mats_.length = 0; // Delete any buttons from a previous showing.
+
+      var _iterator6 = _createForOfIteratorHelper(this.buttons_),
+          _step6;
+
+      try {
+        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+          var button = _step6.value;
+          button.dispose();
+        }
+      } catch (err) {
+        _iterator6.e(err);
+      } finally {
+        _iterator6.f();
+      }
+
+      this.buttons_.length = 0; // Clear potential variables from the previous showing.
+
+      this.workspace_.getPotentialVariableMap().clear();
+    }
+    /**
+     * Determine if this block can be recycled in the flyout.  Blocks that have no
+     * variables and are not dynamic shadows can be recycled.
+     * @param {!Blockly.BlockSvg} block The block to attempt to recycle.
+     * @return {boolean} True if the block can be recycled.
+     * @protected
+     */
+
+  }, {
+    key: "blockIsRecyclable_",
+    value: function blockIsRecyclable_(block) {
+      // If the block needs to parse mutations, never recycle.
+      if (block.mutationToDom && block.domToMutation) {
+        return false;
+      }
+
+      var _iterator7 = _createForOfIteratorHelper(block.inputList),
+          _step7;
+
+      try {
+        for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+          var input = _step7.value;
+
+          var _iterator8 = _createForOfIteratorHelper(input.fieldRow),
+              _step8;
+
+          try {
+            for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+              var field = _step8.value;
+
+              // No variables.
+              if (field instanceof blockly_core__WEBPACK_IMPORTED_MODULE_0__["FieldVariable"]) {
+                return false;
+              }
+
+              if (field instanceof blockly_core__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"]) {
+                if (field.isOptionListDynamic()) {
+                  return false;
+                }
+              }
+            } // Check children.
+
+          } catch (err) {
+            _iterator8.e(err);
+          } finally {
+            _iterator8.f();
+          }
+
+          if (input.connection) {
+            var targetBlock =
+            /** @type {Blockly.BlockSvg} */
+            input.connection.targetBlock();
+
+            if (targetBlock && !this.blockIsRecyclable_(targetBlock)) {
+              return false;
+            }
+          }
+        }
+      } catch (err) {
+        _iterator7.e(err);
+      } finally {
+        _iterator7.f();
+      }
+
+      return true;
+    }
+    /**
+     * Sets the function used to determine whether a block is recyclable.
+     * @param {function(!Blockly.BlockSvg):boolean} func The function used to
+     *     determine if a block is recyclable.
+     * @public
+     */
+
+  }, {
+    key: "setBlockIsRecyclable",
+    value: function setBlockIsRecyclable(func) {
+      this.blockIsRecyclable_ = func;
+    }
+    /**
+     * Set whether the flyout can recycle blocks.
+     * @param {boolean} isEnabled True to allow blocks to be recycled, false
+     *     otherwise.
+     * @public
+     */
+
+  }, {
+    key: "setRecyclingEnabled",
+    value: function setRecyclingEnabled(isEnabled) {
+      this.recyclingEnabled_ = isEnabled;
+    }
+    /**
+     * Puts a previously created block into the recycle bin and moves it to the
+     * top of the workspace. Used during large workspace swaps to limit the number
+     * of new DOM elements we need to create.
+     * @param {!Blockly.BlockSvg} block The block to recycle.
+     * @protected
+     */
+
+  }, {
+    key: "recycleBlock_",
+    value: function recycleBlock_(block) {
+      var xy = block.getRelativeToSurfaceXY();
+      block.moveBy(-xy.x, -xy.y);
+      this.recycleBlocks_.push(block);
+    }
+  }]);
+
+  return ContinuousFlyout;
+}(blockly_core__WEBPACK_IMPORTED_MODULE_0__["VerticalFlyout"]);
+
+/***/ }),
+
+/***/ "./continuous-toolbox/src/ContinuousToolbox.js":
+/*!*****************************************************!*\
+  !*** ./continuous-toolbox/src/ContinuousToolbox.js ***!
+  \*****************************************************/
+/*! exports provided: ContinuousToolbox */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ContinuousToolbox", function() { return ContinuousToolbox; });
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ContinuousFlyout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview Toolbox that uses a continuous scrolling flyout.
+ */
+
+
+/**
+ * Class for continuous toolbox.
+ */
+
+var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
+  _inherits(ContinuousToolbox, _Blockly$Toolbox);
+
+  var _super = _createSuper(ContinuousToolbox);
+
+  /** @override */
+  function ContinuousToolbox(workspace) {
+    _classCallCheck(this, ContinuousToolbox);
+
+    return _super.call(this, workspace);
+  }
+  /** @override */
+
+
+  _createClass(ContinuousToolbox, [{
+    key: "init",
+    value: function init() {
+      _get(_getPrototypeOf(ContinuousToolbox.prototype), "init", this).call(this); // Populate the flyout with all blocks and show it immediately.
+
+
+      var flyout = this.getFlyout();
+      flyout.show(this.getInitialFlyoutContents_());
+      flyout.recordScrollPositions();
+      flyout.hide(this.getInitialFlyoutContents_()); // Replace workspace.getMetrics with a version that measures the flyout.
+      // Ideally this would be set using the workspace options struct but that
+      // is not currently possible.
+      // TODO(https://github.com/google/blockly/issues/4377): Replace via
+      // options struct when possible.
+
+      this.workspace_.getMetrics = this.workspaceGetMetrics_.bind(this.workspace_);
+      var self = this;
+
+      blockly_core__WEBPACK_IMPORTED_MODULE_0__["flyOutClose"] = function () {
+        if (self.selectedItem_) {
+          self.deselectItem_(self.selectedItem_);
+          flyout.hide(self.getInitialFlyoutContents_());
+        }
+      };
+    }
+    /** @override */
+
+  }, {
+    key: "getFlyout",
+    value: function getFlyout() {
+      return (
+        /** @type {ContinuousFlyout} */
+        _get(_getPrototypeOf(ContinuousToolbox.prototype), "getFlyout", this).call(this)
+      );
+    }
+    /**
+     * Gets the contents that should be shown in the flyout immediately.
+     * This includes all blocks and labels for each category of block.
+     * @return {!Blockly.utils.toolbox.FlyoutItemInfoArray} Flyout contents.
+     * @private
+     */
+
+  }, {
+    key: "getInitialFlyoutContents_",
+    value: function getInitialFlyoutContents_() {
+      /** @type {!Blockly.utils.toolbox.FlyoutItemInfoArray} */
+      var contents = [];
+
+      var _iterator = _createForOfIteratorHelper(this.contents_),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var toolboxItem = _step.value;
+
+          if (toolboxItem instanceof blockly_core__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"]) {
+            // Create a label node to go at the top of the category
+            contents.push({
+              kind: 'LABEL',
+              text: toolboxItem.getName()
+            });
+            /**
+             * @type {string|Blockly.utils.toolbox.FlyoutItemInfoArray|
+             *    Blockly.utils.toolbox.FlyoutItemInfo}
+             */
+
+            var itemContents = toolboxItem.getContents(); // Handle custom categories (e.g. variables and functions)
+
+            if (typeof itemContents === 'string') {
+              itemContents =
+              /** @type {!Blockly.utils.toolbox.DynamicCategoryInfo} */
+              {
+                custom: itemContents,
+                kind: 'CATEGORY'
+              };
+            }
+
+            contents = contents.concat(itemContents);
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return contents;
+    }
+    /** @override */
+
+  }, {
+    key: "refreshSelection",
+    value: function refreshSelection() {
+      this.getFlyout().show(this.getInitialFlyoutContents_());
+    }
+    /** @override */
+
+  }, {
+    key: "updateFlyout_",
+    value: function updateFlyout_(_oldItem, newItem) {
+      if (_oldItem == newItem) {
+        this.getFlyout().hide(this.getInitialFlyoutContents_());
+        this.deselectItem_(_oldItem);
+        return;
+      }
+
+      if (newItem) {
+        this.getFlyout().show(this.getInitialFlyoutContents_());
+
+        try {
+          var target = this.getFlyout().getCategoryScrollPosition(newItem.name_).y;
+          this.getFlyout().scrollTo(target);
+        } catch (e) {}
+      }
+    }
+    /** @override */
+
+  }, {
+    key: "shouldDeselectItem_",
+    value: function shouldDeselectItem_(oldItem, newItem) {
+      // Should not deselect if the same category is clicked again.
+      return oldItem && oldItem !== newItem;
+    }
+    /**
+     * Gets a category by name.
+     * @param {string} name Name of category to get.
+     * @return {?Blockly.ToolboxCategory} Category, or null if not
+     *    found.
+     * @package
+     */
+
+  }, {
+    key: "getCategoryByName",
+    value: function getCategoryByName(name) {
+      var category = this.contents_.find(function (item) {
+        return item instanceof blockly_core__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"] && item.isSelectable() && name === item.getName();
+      });
+
+      if (category) {
+        return (
+          /** @type {!Blockly.ToolboxCategory} */
+          category
+        );
+      }
+
+      return null;
+    }
+    /**
+     * Selects the category with the given name.
+     * Similar to setSelectedItem, but importantly, does not call updateFlyout
+     * because this is called while the flyout is being scrolled.
+     * @param {string} name Name of category to select.
+     * @package
+     */
+
+  }, {
+    key: "selectCategoryByName",
+    value: function selectCategoryByName(name) {
+      var newItem = this.getCategoryByName(name); // if (!newItem) {
+      //   return;
+      // }
+
+      var oldItem = this.selectedItem_; // if (this.shouldDeselectItem_(oldItem, newItem)) {
+
+      this.deselectItem_(oldItem); // }
+      // if (this.shouldSelectItem_(oldItem, newItem)) {
+
+      this.selectItem_(newItem, oldItem); // }
+    }
+    /** @override */
+
+  }, {
+    key: "getClientRect",
+    value: function getClientRect() {
+      // If the flyout never closes, it should be the deletable area.
+      var flyout = this.getFlyout();
+
+      if (flyout && !flyout.autoClose) {
+        return flyout.getClientRect();
+      }
+
+      return _get(_getPrototypeOf(ContinuousToolbox.prototype), "getClientRect", this).call(this);
+    }
+    /**
+     * Gets adjusted metrics for the workspace, accounting for the flyout width.
+     * This will be set as the WorkspaceSvg's getMetrics function, as there
+     * is currently no way to set this using the options struct.
+     * TODO(https://github.com/google/blockly/issues/4377): Replace via options.
+     * @return {!Blockly.utils.Metrics} Contains size and position metrics of a
+     *     top level workspace.
+     * @private
+     * @this {Blockly.WorkspaceSvg}
+     */
+
+  }, {
+    key: "workspaceGetMetrics_",
+    value: function workspaceGetMetrics_() {
+      var toolboxDimensions = blockly_core__WEBPACK_IMPORTED_MODULE_0__["WorkspaceSvg"].getDimensionsPx_(this.toolbox_);
+      var flyoutDimensions = blockly_core__WEBPACK_IMPORTED_MODULE_0__["WorkspaceSvg"].getDimensionsPx_(this.toolbox_.getFlyout()); // Contains height and width in CSS pixels.
+      // svgSize is equivalent to the size of the injectionDiv at this point.
+
+      var svgSize = blockly_core__WEBPACK_IMPORTED_MODULE_0__["svgSize"](this.getParentSvg());
+      var viewSize = {
+        height: svgSize.height,
+        width: svgSize.width
+      };
+
+      if (this.toolbox_) {
+        // Note: Not actually supported at this time due to ContinunousToolbox
+        // only supporting a vertical flyout. But included for completeness.
+        if (this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_TOP"] || this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_BOTTOM"]) {
+          viewSize.height -= toolboxDimensions.height + flyoutDimensions.height;
+        } else if (this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"] || this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_RIGHT"]) {
+          viewSize.width -= toolboxDimensions.width + flyoutDimensions.width;
+        }
+      } // svgSize is now the space taken up by the Blockly workspace, not including
+      // the toolbox.
+
+
+      var contentDimensions = blockly_core__WEBPACK_IMPORTED_MODULE_0__["WorkspaceSvg"].getContentDimensions_(this, viewSize);
+      var absoluteLeft = 0;
+
+      if (this.toolbox_ && this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"]) {
+        absoluteLeft = toolboxDimensions.width + flyoutDimensions.width;
+      }
+
+      var absoluteTop = 0;
+
+      if (this.toolbox_ && this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_TOP"]) {
+        absoluteTop = toolboxDimensions.height + flyoutDimensions.height;
+      }
+
+      var metrics = {
+        contentHeight: contentDimensions.height,
+        contentWidth: contentDimensions.width + flyoutDimensions.width + flyoutDimensions.width,
+        contentTop: contentDimensions.top,
+        contentLeft: contentDimensions.left - flyoutDimensions.width,
+        viewHeight: viewSize.height,
+        viewWidth: viewSize.width + flyoutDimensions.width,
+        viewTop: -this.scrollY,
+        viewLeft: -this.scrollX,
+        //+ (flyoutDimensions.width * 10),
+        absoluteTop: absoluteTop,
+        absoluteLeft: absoluteLeft - flyoutDimensions.width,
+        svgHeight: svgSize.height,
+        svgWidth: svgSize.width,
+        toolboxWidth: toolboxDimensions.width,
+        toolboxHeight: toolboxDimensions.height,
+        toolboxPosition: this.toolboxPosition,
+        flyoutWidth: flyoutDimensions.width,
+        flyoutHeight: flyoutDimensions.height
+      };
+      return metrics;
+    }
+  }]);
+
+  return ContinuousToolbox;
+}(blockly_core__WEBPACK_IMPORTED_MODULE_0__["Toolbox"]);
+blockly_core__WEBPACK_IMPORTED_MODULE_0__["Css"].register([".categoryBubble {\n      margin: 0 auto 0.125rem;\n      border-radius: 100%;\n      border: 1px solid;\n      width: 1.25rem;\n      height: 1.25rem;\n    }\n    .blocklyTreeRow {\n      height: initial;\n      padding: 3px 0;\n    }\n    .blocklyTreeRowContentContainer {\n      display: flex;\n      flex-direction: column;\n    }\n    .blocklyTreeLabel {\n      margin: auto;\n    }"]);
+
+/***/ }),
 
 /***/ "./node_modules/CodeJar/codejar.js":
 /*!*****************************************!*\
@@ -14051,10 +15010,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Blockly", function() { return blockly__WEBPACK_IMPORTED_MODULE_0__; });
 /* harmony import */ var CodeJar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! CodeJar */ "./node_modules/CodeJar/codejar.js");
 /* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
-/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
-/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
-/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
+/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
+/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
 
 
 
@@ -14065,7 +15028,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 // });
 // }
 
-var isLight = false;
+var isDark = false;
 var isFirst = true;
 var workspace;
 
@@ -14074,6 +15037,10 @@ function createWorkspace(blocklyDiv, options) {
   workspace.addChangeListener(function (event) {
     if (localStorage.getItem('mode') == 'block') {
       runCode();
+
+      try {
+        if (event.element && event.element != "category") blockly__WEBPACK_IMPORTED_MODULE_0__["flyOutClose"]();
+      } catch (e) {}
     }
   });
   return workspace;
@@ -14095,7 +15062,7 @@ function injectBlockly() {
 
   var options = (_options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isLight ? _themes_js__WEBPACK_IMPORTED_MODULE_4__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_4__["LightTheme"],
+    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_6__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_6__["LightTheme"],
     renderer: 'zelos',
     collapse: true,
     comments: false,
@@ -14111,7 +15078,7 @@ function injectBlockly() {
     grid: {
       spacing: 20,
       length: 2,
-      colour: '#fff1',
+      colour: isDark ? '#fff2' : '#7772',
       snap: true
     },
     zoom: _defineProperty({
@@ -14136,6 +15103,10 @@ function injectBlockly() {
     options['toolboxPosition'] = 'end';
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
   } else {
+    options['plugins'] = {
+      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__["ContinuousToolbox"],
+      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__["ContinuousFlyout"]
+    };
     sheet.innerHTML = "";
   }
 
@@ -14192,7 +15163,7 @@ function changeThemeWithoutSwap() {
   document.getElementById("editor").classList.toggle('dark');
   document.getElementById("console").classList.toggle('dark');
   document.getElementById("console2").classList.toggle('dark');
-  isLight = !isLight;
+  isDark = !isDark;
 }
 
 function changeTheme() {
@@ -14226,7 +15197,7 @@ function changeViewWithoutSwap() {
   try {
     document.getElementById("editor").hidden = !document.getElementById("editor").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
-    isLight = !isLight;
+    isDark = !isDark;
     document.getElementById('root').removeChild(blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().injectionDiv_);
     injectBlockly();
     document.getElementById("callColor").click();
@@ -14244,6 +15215,7 @@ function changeView() {
   blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().cleanUp();
 }
 
+if (isDark) document.getElementById('theme').checked = true;else document.getElementById('theme').checked = false;
 
 
 /***/ }),
@@ -14276,10 +15248,10 @@ var DarkTheme = blockly__WEBPACK_IMPORTED_MODULE_0__["Theme"].defineTheme('DarkT
 });
 var LightTheme = blockly__WEBPACK_IMPORTED_MODULE_0__["Theme"].defineTheme('LightTheme', {
   'base': blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Classic,
-  // 'componentStyles': {
-  // "workspaceBackgroundColour": "#1e1e1e",
-  // "toolboxBackgroundColour": "#333"
-  // },
+  'componentStyles': {
+    "workspaceBackgroundColour": "#EEE" // "toolboxBackgroundColour": "#333"
+
+  },
   'fontStyle': {
     "family": "Source Code Pro, monospace",
     "weight": "bold",
@@ -14325,58 +15297,19 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var ToolboxLabel = /*#__PURE__*/function (_Blockly$ToolboxItem) {
-  _inherits(ToolboxLabel, _Blockly$ToolboxItem);
-
-  var _super = _createSuper(ToolboxLabel);
-
-  function ToolboxLabel(toolboxItemDef, parentToolbox) {
-    var _this;
-
-    _classCallCheck(this, ToolboxLabel);
-
-    _this = _super.call(this, toolboxItemDef, parentToolbox);
-    _this.label = null;
-    return _this;
-  }
-
-  _createClass(ToolboxLabel, [{
-    key: "init",
-    value: function init() {
-      this.label = document.createElement('label');
-      this.label.textContent = this.toolboxItemDef_['name'];
-      this.label.style.color = this.toolboxItemDef_['colour'];
-      var cssConfig = this.toolboxItemDef_['cssconfig'];
-
-      if (cssConfig) {
-        this.label.classList.add(cssConfig['label']);
-      }
-    }
-  }, {
-    key: "getDiv",
-    value: function getDiv() {
-      return this.label;
-    }
-  }]);
-
-  return ToolboxLabel;
-}(blockly__WEBPACK_IMPORTED_MODULE_0__["ToolboxItem"]);
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].register(blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].Type.TOOLBOX_ITEM, 'toolboxlabel', ToolboxLabel);
-
 var CustomCategory = /*#__PURE__*/function (_Blockly$ToolboxCateg) {
   _inherits(CustomCategory, _Blockly$ToolboxCateg);
 
-  var _super2 = _createSuper(CustomCategory);
+  var _super = _createSuper(CustomCategory);
 
   function CustomCategory(a, b, c) {
-    var _this2;
+    var _this;
 
     _classCallCheck(this, CustomCategory);
 
-    _this2 = _super2.call(this, a, b, c);
-    _this2.name = a.name;
-    return _this2;
+    _this = _super.call(this, a, b, c);
+    _this.name = a.name;
+    return _this;
   }
 
   _createClass(CustomCategory, [{

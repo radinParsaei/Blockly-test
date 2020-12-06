@@ -15,10 +15,10 @@ let DarkTheme = Blockly.Theme.defineTheme('DarkTheme', {
 
 let LightTheme = Blockly.Theme.defineTheme('LightTheme', {
   'base': Blockly.Themes.Classic,
-  // 'componentStyles': {
-    // "workspaceBackgroundColour": "#1e1e1e",
+  'componentStyles': {
+    "workspaceBackgroundColour": "#EEE",
     // "toolboxBackgroundColour": "#333"
-  // },
+  },
   'fontStyle': {
     "family": "Source Code Pro, monospace",
     "weight": "bold",
