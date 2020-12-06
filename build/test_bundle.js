@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "ba14e90ff2119b88554c";
+/******/ 	var hotCurrentHash = "064fcb7dc23144e05e09";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1810,8 +1810,8 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
         //+ (flyoutDimensions.width * 10),
         absoluteTop: absoluteTop,
         absoluteLeft: absoluteLeft - flyoutDimensions.width,
-        svgHeight: svgSize.height,
-        svgWidth: svgSize.width,
+        // svgHeight: svgSize.height,
+        // svgWidth: svgSize.width,
         toolboxWidth: toolboxDimensions.width,
         toolboxHeight: toolboxDimensions.height,
         toolboxPosition: this.toolboxPosition,

@@ -164,3 +164,7 @@ input:checked + .slider:before {
 .blocklyFlyoutLabelText {
   font: bold 18pt Source Code Pro, "Trebuchet MS", sans-serif !important;
 }
+
+.blocklyToolboxDelete {
+  cursor: grab !important;
+}
