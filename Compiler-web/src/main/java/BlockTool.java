@@ -36,6 +36,17 @@ public class BlockTool {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">POWER</field><value name=\"A\">" +
                     putVals(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
                     putVals(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.Equals) {
+            if (((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV1().toString().equals("") &&
+                    !(((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Boolean)) {
+                return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
+                        putVals(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
+            } else if (((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV2().toString().equals("") &&
+                    !(((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Boolean)) {
+                return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
+                        putVals(((SyntaxTree.Equals) val).getV1()) + "</value></block>";
+            }
+            return "";
         } else if (val instanceof SyntaxTree.CallFunction) {
             ((SyntaxTree.CallFunction) val).findFunction();
             StringBuilder tmp = new StringBuilder("<block type=\"");

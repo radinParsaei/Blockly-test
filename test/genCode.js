@@ -254,3 +254,9 @@ Blockly.genCode['math_modulo'] = function(block) {
   var code = argument0 + ' % ' + argument1;
   return [code, Blockly.genCode.ORDER_MULTIPLICATIVE];
 };
+
+Blockly.genCode['text_isEmpty'] = function(block) {
+  var text = Blockly.genCode.valueToCode(block, 'VALUE',
+      Blockly.genCode.ORDER_MEMBER) || '\'\'';
+  return [text + ' == ""', Blockly.genCode.ORDER_RELATIONAL];
+};
