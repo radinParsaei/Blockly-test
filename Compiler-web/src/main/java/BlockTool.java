@@ -1,8 +1,11 @@
 import org.teavm.jso.JSBody;
 
+import java.util.ArrayList;
+
 public class BlockTool {
     int blockCount = 0;
     private static boolean addXml = true;
+    private ArrayList<String> variables = new ArrayList<>();
 
     @JSBody(params = { "functionName" }, script = "return functions[functionName] || null")
     public static native String getFunctionBlock(String functionName);
@@ -36,6 +39,8 @@ public class BlockTool {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">POWER</field><value name=\"A\">" +
                     putVals(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
                     putVals(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.Variable) {
+            return "<block type=\"variables_get\"><field name=\"VAR\">" + ((SyntaxTree.Variable) val).getVariableName() + "</field></block>";
         } else if (val instanceof SyntaxTree.Equals) {
             if (((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV1().toString().equals("") &&
                     !(((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Boolean)) {
@@ -103,6 +108,21 @@ public class BlockTool {
                 blockCount++;
                 if (i < args.length - 1) {
                     result.append("<next><block type=\"text_print\">" + "<value name=\"TEXT\">").append(putVals(((SyntaxTree.Print) program).getSeparator()))
+                            .append("</value>");
+                    blockCount++;
+                }
+            }
+        } else if (program instanceof SyntaxTree.SetVariable) {
+            if (variables.contains(((SyntaxTree.SetVariable) program).getVariableName())) {
+                result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                        .append("</field><value name=\"VALUE\">").append(putVals(((SyntaxTree.SetVariable) program).getVariableValue()))
+                        .append("</value>");
+                blockCount++;
+            } else {
+                variables.add(((SyntaxTree.SetVariable) program).getVariableName());
+                if (!(((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Null)) {
+                    result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                            .append("</field><value name=\"VALUE\">").append(putVals(((SyntaxTree.SetVariable) program).getVariableValue()))
                             .append("</value>");
                     blockCount++;
                 }

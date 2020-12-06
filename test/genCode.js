@@ -260,3 +260,17 @@ Blockly.genCode['text_isEmpty'] = function(block) {
       Blockly.genCode.ORDER_MEMBER) || '\'\'';
   return [text + ' == ""', Blockly.genCode.ORDER_RELATIONAL];
 };
+
+Blockly.genCode['variables_get'] = function(block) {
+  var code = Blockly.genCode.variableDB_.getName(block.getFieldValue('VAR'),
+      Blockly.VARIABLE_CATEGORY_NAME);
+  return [code, Blockly.genCode.ORDER_ATOMIC];
+};
+
+Blockly.genCode['variables_set'] = function(block) {
+  var argument0 = Blockly.genCode.valueToCode(block, 'VALUE',
+      Blockly.genCode.ORDER_NONE) || '0';
+  var varName = Blockly.genCode.variableDB_.getName(
+      block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
+  return varName + ' = ' + argument0 + '\n';
+};
