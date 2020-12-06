@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "064fcb7dc23144e05e09";
+/******/ 	var hotCurrentHash = "c41b5a12841f227d1d33";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -976,7 +976,7 @@ var ContinuousFlyout = /*#__PURE__*/function (_Blockly$VerticalFlyo) {
      */
 
     _this.recyclingEnabled_ = true;
-    _this.autoClose = false;
+    _this.autoClose = true;
     return _this;
   }
   /**
@@ -1548,6 +1548,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  */
 
 
+var swap = false;
 /**
  * Class for continuous toolbox.
  */
@@ -1672,8 +1673,12 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
         return;
       }
 
+      if (_oldItem == null) {
+        swap = true;
+      }
+
       if (newItem) {
-        this.getFlyout().show(this.getInitialFlyoutContents_());
+        if (!this.getFlyout().isVisible()) this.getFlyout().show(this.getInitialFlyoutContents_());
 
         try {
           var target = this.getFlyout().getCategoryScrollPosition(newItem.name_).y;
@@ -1720,20 +1725,47 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
      * @param {string} name Name of category to select.
      * @package
      */
+    // selectCategoryByName(name) {
+    //   const newItem = this.getCategoryByName(name);
+    //   // if (!newItem) {
+    //   //   return;
+    //   // }
+    //   const oldItem = this.selectedItem_;
+    //
+    //   // if (this.shouldDeselectItem_(oldItem, newItem)) {
+    //     this.deselectItem_(oldItem);
+    //   // }
+    //
+    //   // if (this.shouldSelectItem_(oldItem, newItem)) {
+    //   this.selectItem_(newItem, oldItem);
+    //   // }
+    // }
 
   }, {
     key: "selectCategoryByName",
     value: function selectCategoryByName(name) {
-      var newItem = this.getCategoryByName(name); // if (!newItem) {
-      //   return;
-      // }
+      var newItem = this.getCategoryByName(name);
 
-      var oldItem = this.selectedItem_; // if (this.shouldDeselectItem_(oldItem, newItem)) {
+      if (!newItem) {
+        return;
+      }
 
-      this.deselectItem_(oldItem); // }
-      // if (this.shouldSelectItem_(oldItem, newItem)) {
+      var oldItem = this.selectedItem_;
 
-      this.selectItem_(newItem, oldItem); // }
+      if (swap) {
+        swap = false;
+        var tmp = oldItem;
+        oldItem = newItem;
+        newItem = tmp;
+      }
+
+      if (this.shouldDeselectItem_(oldItem, newItem)) {
+        this.deselectItem_(oldItem);
+      }
+
+      if (this.shouldSelectItem_(oldItem, newItem)) {
+        this.selectItem_(oldItem, newItem);
+      }
     }
     /** @override */
 
@@ -1824,7 +1856,6 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
 
   return ContinuousToolbox;
 }(blockly_core__WEBPACK_IMPORTED_MODULE_0__["Toolbox"]);
-blockly_core__WEBPACK_IMPORTED_MODULE_0__["Css"].register([".categoryBubble {\n      margin: 0 auto 0.125rem;\n      border-radius: 100%;\n      border: 1px solid;\n      width: 1.25rem;\n      height: 1.25rem;\n    }\n    .blocklyTreeRow {\n      height: initial;\n      padding: 3px 0;\n    }\n    .blocklyTreeRowContentContainer {\n      display: flex;\n      flex-direction: column;\n    }\n    .blocklyTreeLabel {\n      margin: auto;\n    }"]);
 
 /***/ }),
 
@@ -15052,11 +15083,10 @@ function createWorkspace(blocklyDiv, options) {
   workspace = blockly__WEBPACK_IMPORTED_MODULE_0__["inject"](blocklyDiv, options);
   workspace.addChangeListener(function (event) {
     if (localStorage.getItem('mode') == 'block') {
-      runCode();
-
-      try {
-        if (event.element && event.element != "category") blockly__WEBPACK_IMPORTED_MODULE_0__["flyOutClose"]();
-      } catch (e) {}
+      runCode(); // try {
+      // if (event.element && event.element != "category")
+      // Blockly.flyOutClose();
+      // } catch (e) {}
     }
   });
   return workspace;

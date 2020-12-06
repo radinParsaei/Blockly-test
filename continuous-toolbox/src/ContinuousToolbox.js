@@ -11,6 +11,8 @@
 import * as Blockly from 'blockly/core';
 import {ContinuousFlyout} from './ContinuousFlyout';
 
+var swap = false;
+
 /**
  * Class for continuous toolbox.
  */
@@ -96,8 +98,12 @@ export class ContinuousToolbox extends Blockly.Toolbox {
       this.deselectItem_(_oldItem);
       return;
     }
+    if (_oldItem == null) {
+      swap = true;
+    }
     if (newItem) {
-      this.getFlyout().show(this.getInitialFlyoutContents_());
+      if (!this.getFlyout().isVisible())
+        this.getFlyout().show(this.getInitialFlyoutContents_());
       try {
         const target = this.getFlyout()
             .getCategoryScrollPosition(newItem.name_).y;
@@ -136,20 +142,43 @@ export class ContinuousToolbox extends Blockly.Toolbox {
    * @param {string} name Name of category to select.
    * @package
    */
+  // selectCategoryByName(name) {
+  //   const newItem = this.getCategoryByName(name);
+  //   // if (!newItem) {
+  //   //   return;
+  //   // }
+  //   const oldItem = this.selectedItem_;
+  //
+  //   // if (this.shouldDeselectItem_(oldItem, newItem)) {
+  //     this.deselectItem_(oldItem);
+  //   // }
+  //
+  //   // if (this.shouldSelectItem_(oldItem, newItem)) {
+  //   this.selectItem_(newItem, oldItem);
+  //   // }
+  // }
+
   selectCategoryByName(name) {
-    const newItem = this.getCategoryByName(name);
-    // if (!newItem) {
-    //   return;
-    // }
-    const oldItem = this.selectedItem_;
+    var newItem = this.getCategoryByName(name);
+    if (!newItem) {
+      return;
+    }
+    var oldItem = this.selectedItem_;
 
-    // if (this.shouldDeselectItem_(oldItem, newItem)) {
+    if (swap) {
+      swap = false;
+      var tmp = oldItem;
+      oldItem = newItem;
+      newItem = tmp;
+    }
+
+    if (this.shouldDeselectItem_(oldItem, newItem)) {
       this.deselectItem_(oldItem);
-    // }
+    }
 
-    // if (this.shouldSelectItem_(oldItem, newItem)) {
-    this.selectItem_(newItem, oldItem);
-    // }
+    if (this.shouldSelectItem_(oldItem, newItem)) {
+      this.selectItem_(oldItem, newItem);
+    }
   }
 
   /** @override */
@@ -236,25 +265,3 @@ export class ContinuousToolbox extends Blockly.Toolbox {
     return metrics;
   }
 }
-
-
-Blockly.Css.register([
-  `.categoryBubble {
-      margin: 0 auto 0.125rem;
-      border-radius: 100%;
-      border: 1px solid;
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-    .blocklyTreeRow {
-      height: initial;
-      padding: 3px 0;
-    }
-    .blocklyTreeRowContentContainer {
-      display: flex;
-      flex-direction: column;
-    }
-    .blocklyTreeLabel {
-      margin: auto;
-    }`,
-]);

@@ -54,7 +54,7 @@ export class ContinuousFlyout extends Blockly.VerticalFlyout {
      */
     this.recyclingEnabled_ = true;
 
-    this.autoClose = false;
+    this.autoClose = true;
   }
 
   /**
