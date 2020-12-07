@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "c41b5a12841f227d1d33";
+/******/ 	var hotCurrentHash = "b586742ec5693c431de3";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -15261,7 +15261,7 @@ function changeView() {
   blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().cleanUp();
 }
 
-if (isDark) document.getElementById('theme').checked = true;else document.getElementById('theme').checked = false;
+if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').checked = true;else document.getElementById('theme').checked = false;
 
 
 /***/ }),

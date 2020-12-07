@@ -193,7 +193,7 @@ function changeView() {
   Blockly.getMainWorkspace().cleanUp();
 }
 
-if (isDark) document.getElementById('theme').checked = true;
+if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').checked = true;
 else document.getElementById('theme').checked = false;
 
 export { workspace, changeTheme, changeView, /*genPhoto,*/ injectBlockly, runCode };
