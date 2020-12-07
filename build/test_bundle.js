@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "b586742ec5693c431de3";
+/******/ 	var hotCurrentHash = "a4f0301bf6cd10737b71";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -15185,7 +15185,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function runCode() {
   var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].workspaceToCode(workspace);
-  document.getElementById('editor').textContent = code;
+  jar.updateCode(code);
+  localStorage.setItem('code', code);
 
   if (localStorage.getItem("mode") == "code") {
     document.getElementById("callColor").click();

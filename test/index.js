@@ -117,7 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function runCode() {
   const code = Blockly.genCode.workspaceToCode(workspace);
-  document.getElementById('editor').textContent = code;
+  jar.updateCode(code);
+  localStorage.setItem('code', code);
   if (localStorage.getItem("mode") == "code") {
     document.getElementById("callColor").click();
   }
