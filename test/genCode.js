@@ -274,3 +274,11 @@ Blockly.genCode['variables_set'] = function(block) {
       block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
   return varName + ' = ' + argument0 + '\n';
 };
+
+Blockly.genCode['math_change'] = function(block) {
+  var argument0 = Blockly.genCode.valueToCode(block, 'DELTA',
+      Blockly.genCode.ORDER_ADDITIVE) || '0';
+  var varName = Blockly.genCode.variableDB_.getName(
+      block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
+  return varName + ' += ' + argument0 + '\n';
+};

@@ -20,10 +20,6 @@ function createWorkspace(blocklyDiv, options) {
   workspace.addChangeListener(function(event) {
     if (localStorage.getItem('mode') == 'block') {
       runCode();
-      // try {
-        // if (event.element && event.element != "category")
-          // Blockly.flyOutClose();
-      // } catch (e) {}
     }
   });
   return workspace;

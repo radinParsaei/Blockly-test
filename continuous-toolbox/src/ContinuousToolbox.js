@@ -39,13 +39,6 @@ export class ContinuousToolbox extends Blockly.Toolbox {
     // options struct when possible.
     this.workspace_.getMetrics =
         this.workspaceGetMetrics_.bind(this.workspace_);
-    let self = this;
-    Blockly.flyOutClose = function() {
-      if (self.selectedItem_) {
-        self.deselectItem_(self.selectedItem_);
-        flyout.hide(self.getInitialFlyoutContents_());
-      }
-    };
   }
 
   /** @override */
@@ -88,7 +81,8 @@ export class ContinuousToolbox extends Blockly.Toolbox {
 
   /** @override */
   refreshSelection() {
-    this.getFlyout().show(this.getInitialFlyoutContents_());
+    if (localStorage.getItem('mode') == 'block')
+      this.getFlyout().show(this.getInitialFlyoutContents_());
   }
 
   /** @override */

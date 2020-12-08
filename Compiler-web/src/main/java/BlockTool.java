@@ -114,16 +114,28 @@ public class BlockTool {
             }
         } else if (program instanceof SyntaxTree.SetVariable) {
             if (variables.contains(((SyntaxTree.SetVariable) program).getVariableName())) {
-                result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
-                        .append("</field><value name=\"VALUE\">").append(putVals(((SyntaxTree.SetVariable) program).getVariableValue()))
-                        .append("</value>");
+                if (((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Add) {
+                    result.append("<block type=\"math_change\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                            .append("</field><value name=\"DELTA\">").append(putVals(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
+                            .append("</value>");
+                } else {
+                    result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                            .append("</field><value name=\"VALUE\">").append(putVals(((SyntaxTree.SetVariable) program).getVariableValue()))
+                            .append("</value>");
+                }
                 blockCount++;
             } else {
                 variables.add(((SyntaxTree.SetVariable) program).getVariableName());
                 if (!(((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Null)) {
-                    result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
-                            .append("</field><value name=\"VALUE\">").append(putVals(((SyntaxTree.SetVariable) program).getVariableValue()))
-                            .append("</value>");
+                    if (((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Add) {
+                        result.append("<block type=\"math_change\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                                .append("</field><value name=\"DELTA\">").append(putVals(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
+                                .append("</value>");
+                    } else {
+                        result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                                .append("</field><value name=\"VALUE\">").append(putVals(((SyntaxTree.SetVariable) program).getVariableValue()))
+                                .append("</value>");
+                    }
                     blockCount++;
                 }
             }

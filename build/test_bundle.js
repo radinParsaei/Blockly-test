@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "a4f0301bf6cd10737b71";
+/******/ 	var hotCurrentHash = "5422e74ac12bfac80af4";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1583,14 +1583,6 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
       // options struct when possible.
 
       this.workspace_.getMetrics = this.workspaceGetMetrics_.bind(this.workspace_);
-      var self = this;
-
-      blockly_core__WEBPACK_IMPORTED_MODULE_0__["flyOutClose"] = function () {
-        if (self.selectedItem_) {
-          self.deselectItem_(self.selectedItem_);
-          flyout.hide(self.getInitialFlyoutContents_());
-        }
-      };
     }
     /** @override */
 
@@ -1660,7 +1652,7 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
   }, {
     key: "refreshSelection",
     value: function refreshSelection() {
-      this.getFlyout().show(this.getInitialFlyoutContents_());
+      if (localStorage.getItem('mode') == 'block') this.getFlyout().show(this.getInitialFlyoutContents_());
     }
     /** @override */
 
@@ -15036,6 +15028,12 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variables_set'] = function (blo
   return varName + ' = ' + argument0 + '\n';
 };
 
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_change'] = function (block) {
+  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DELTA', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE) || '0';
+  var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+  return varName + ' += ' + argument0 + '\n';
+};
+
 /***/ }),
 
 /***/ "./test/index.js":
@@ -15083,10 +15081,7 @@ function createWorkspace(blocklyDiv, options) {
   workspace = blockly__WEBPACK_IMPORTED_MODULE_0__["inject"](blocklyDiv, options);
   workspace.addChangeListener(function (event) {
     if (localStorage.getItem('mode') == 'block') {
-      runCode(); // try {
-      // if (event.element && event.element != "category")
-      // Blockly.flyOutClose();
-      // } catch (e) {}
+      runCode();
     }
   });
   return workspace;
