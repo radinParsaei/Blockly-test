@@ -2,6 +2,8 @@ import * as Blockly from 'blockly';
 
 Blockly.genCode = new Blockly.Generator('genCode');
 
+var usedVariables = {};
+
 Blockly.genCode.addReservedWords(
     'func,if,return,var,while,null,true,false,',
     Object.getOwnPropertyNames(Blockly.utils.global).join(','));
@@ -73,6 +75,20 @@ Blockly.genCode.init = function(workspace) {
     Blockly.genCode.variableDB_.reset();
   }
 
+  if (!Blockly.genCode.functionsDB_) {
+    Blockly.genCode.functionsDB_ =
+        new Blockly.Names(Blockly.genCode.RESERVED_WORDS_);
+  } else {
+    Blockly.genCode.functionsDB_.reset();
+  }
+
+  if (!Blockly.genCode.parameterDB_) {
+    Blockly.genCode.parameterDB_ =
+        new Blockly.Names(Blockly.genCode.RESERVED_WORDS_);
+  } else {
+    Blockly.genCode.parameterDB_.reset();
+  }
+
   Blockly.genCode.variableDB_.setVariableMap(workspace.getVariableMap());
 
   var defvars = [];
@@ -91,9 +107,12 @@ Blockly.genCode.init = function(workspace) {
   }
 
   // Declare all of the variables.
-  if (defvars.length) {
-    Blockly.genCode.definitions_['variables'] =
-        'var ' + defvars.join(', ') + ';';
+  // if (defvars.length) {
+  //   Blockly.genCode.definitions_['variables'] =
+  //       'var ' + defvars.join(';\nvar ') + ';';
+  // }
+  for (var i of defvars) {
+    usedVariables[i] = false;
   }
 };
 
@@ -107,7 +126,15 @@ Blockly.genCode.finish = function(code) {
   delete Blockly.genCode.definitions_;
   delete Blockly.genCode.functionNames_;
   Blockly.genCode.variableDB_.reset();
-  return definitions.join('\n\n') + '\n\n\n' + code;
+  Blockly.genCode.parameterDB_.reset();
+  Blockly.genCode.functionsDB_.reset();
+  var vars = '';
+  for (var i = 0; i < Object.keys(usedVariables).length; i++) {
+    if (usedVariables[Object.keys(usedVariables)[i]]) {
+      vars += "var " + Object.keys(usedVariables)[i] + "\n";
+    }
+  }
+  return (vars + '\n' + definitions.join('\n\n') + '\n' + code).trim();
 };
 
 Blockly.genCode.scrubNakedValue = function(line) {
@@ -264,6 +291,17 @@ Blockly.genCode['text_isEmpty'] = function(block) {
 Blockly.genCode['variables_get'] = function(block) {
   var code = Blockly.genCode.variableDB_.getName(block.getFieldValue('VAR'),
       Blockly.VARIABLE_CATEGORY_NAME);
+  parent = block.parentBlock_;
+  var markAsUsed = true;
+  while (parent) {
+    parent = parent.parentBlock_ || parent.previousConnection;
+    if (parent && parent.callType_ && parent.callType_.startsWith('procedures')) {
+      if (parent.getVars().includes(code)) {
+        markAsUsed = false;
+      }
+    }
+  }
+  if (markAsUsed) usedVariables[code] = true;
   return [code, Blockly.genCode.ORDER_ATOMIC];
 };
 
@@ -281,4 +319,101 @@ Blockly.genCode['math_change'] = function(block) {
   var varName = Blockly.genCode.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
   return varName + ' += ' + argument0 + '\n';
+};
+
+
+Blockly.genCode['procedures_defreturn'] = function(block) {
+  var varName;
+  var workspace = block.workspace;
+  var variables = Blockly.Variables.allUsedVarModels(workspace) || [];
+  var funcName = Blockly.genCode.functionsDB_.getName(
+      block.getFieldValue('NAME'), Blockly.PROCEDURE_CATEGORY_NAME);
+  var xfix1 = '';
+  if (Blockly.genCode.STATEMENT_PREFIX) {
+    xfix1 += Blockly.genCode.injectId(Blockly.genCode.STATEMENT_PREFIX, block);
+  }
+  if (Blockly.genCode.STATEMENT_SUFFIX) {
+    xfix1 += Blockly.genCode.injectId(Blockly.genCode.STATEMENT_SUFFIX, block);
+  }
+  if (xfix1) {
+    xfix1 = Blockly.genCode.prefixLines(xfix1, Blockly.genCode.INDENT);
+  }
+  var loopTrap = '';
+  if (Blockly.genCode.INFINITE_LOOP_TRAP) {
+    loopTrap = Blockly.genCode.prefixLines(
+        Blockly.genCode.injectId(Blockly.genCode.INFINITE_LOOP_TRAP, block),
+        Blockly.genCode.INDENT);
+  }
+  var branch = Blockly.genCode.statementToCode(block, 'STACK');
+  var returnValue = Blockly.genCode.valueToCode(block, 'RETURN',
+      Blockly.genCode.ORDER_NONE) || '';
+  var xfix2 = '';
+  if (branch && returnValue) {
+    // After executing the function body, revisit this block for the return.
+    xfix2 = xfix1;
+  }
+  if (returnValue) {
+    returnValue = Blockly.genCode.INDENT + 'return ' + returnValue + '\n';
+  }
+  var args = [];
+  var variables = block.getVars();
+  for (var i = 0; i < variables.length; i++) {
+    args[i] = Blockly.genCode.parameterDB_.getName(variables[i],
+        Blockly.VARIABLE_CATEGORY_NAME);
+  }
+  var code = 'func ' + funcName + '(' + args.join(', ') + '){\n' +
+     xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';
+  code = Blockly.genCode.scrub_(block, code);
+  // Add % so as not to collide with helper functions in definitions list.
+  Blockly.genCode.definitions_['%' + funcName] = code;
+  return null;
+};
+
+// Defining a procedure without a return value uses the same generator as
+// a procedure with a return value.
+Blockly.genCode['procedures_defnoreturn'] =
+    Blockly.genCode['procedures_defreturn'];
+
+Blockly.genCode['procedures_callreturn'] = function(block) {
+  // Call a procedure with a return value.
+  var funcName = Blockly.genCode.functionsDB_.getName(block.getFieldValue('NAME'),
+      Blockly.PROCEDURE_CATEGORY_NAME);
+  var args = [];
+  var variables = block.getVars();
+  for (var i = 0; i < variables.length; i++) {
+    args[i] = Blockly.genCode.valueToCode(block, 'ARG' + i,
+        Blockly.genCode.ORDER_NONE) || 'null';
+  }
+  var code = funcName + '(' + args.join(', ') + ')';
+  return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+};
+
+Blockly.genCode['procedures_callnoreturn'] = function(block) {
+  // Call a procedure with no return value.
+  // Generated code is for a function call as a statement is the same as a
+  // function call as a value, with the addition of line ending.
+  var tuple = Blockly.genCode['procedures_callreturn'](block);
+  return tuple[0] + '\n';
+};
+
+Blockly.genCode['procedures_ifreturn'] = function(block) {
+  // Conditionally return value from a procedure.
+  var condition = Blockly.genCode.valueToCode(block, 'CONDITION',
+      Blockly.genCode.ORDER_NONE) || 'false';
+  var code = 'if ' + condition + '{\n';
+  if (Blockly.genCode.STATEMENT_SUFFIX) {
+    // Inject any statement suffix here since the regular one at the end
+    // will not get executed if the return is triggered.
+    code += Blockly.genCode.prefixLines(
+        Blockly.genCode.injectId(Blockly.genCode.STATEMENT_SUFFIX, block),
+        Blockly.genCode.INDENT);
+  }
+  if (block.hasReturnValue_) {
+    var value = Blockly.genCode.valueToCode(block, 'VALUE',
+        Blockly.genCode.ORDER_NONE) || 'null';
+    code += Blockly.genCode.INDENT + 'return ' + value + '\n}\n';
+  } else {
+    code += Blockly.genCode.INDENT + 'return\n}\n';
+  }
+  return code;
 };

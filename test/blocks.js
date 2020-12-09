@@ -76,15 +76,15 @@ function initBlocks() {
     // </shadow>
   // </value>`);
 
-  // addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false],
-  //   `func test(v, f) {
-  //     print v
-  //     print "\\n"
-  //     f!()
-  //   }`, ['text 1', null, "text 2", null, function(block) { //image field
-  //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
-  //   }], 'tooltip', 'helpUrl'
-  // );
+  addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false],
+    `func test(v, f) {
+      print v
+      print "\\n"
+      f!()
+    }`, ['text 1', null, "text 2", null, function(block) { //image field
+      block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
+    }], 'tooltip', 'helpUrl'
+  );
 
   Blockly.defineBlocksWithJsonArray([
     {

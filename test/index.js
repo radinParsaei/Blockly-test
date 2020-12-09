@@ -3,6 +3,7 @@ import { CodeJar } from 'CodeJar';
 import { initBlocks, functions, functionCodes } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
+import './procedures.js';
 // import html2canvas from 'html2canvas';
 
 // function genPhoto() {

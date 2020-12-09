@@ -1,11 +1,15 @@
 import org.teavm.jso.JSBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BlockTool {
     int blockCount = 0;
     private static boolean addXml = true;
-    private ArrayList<String> variables = new ArrayList<>();
+    private final ArrayList<String> variables = new ArrayList<>();
+    private final StringBuilder functions = new StringBuilder();
+    private static boolean parentIsExecuteValue = false;
+    private final HashMap<String, ArrayList<String>> functionParameters = new HashMap<>();
 
     @JSBody(params = { "functionName" }, script = "return functions[functionName] || null")
     public static native String getFunctionBlock(String functionName);
@@ -40,7 +44,8 @@ public class BlockTool {
                     putVals(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
                     putVals(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Variable) {
-            return "<block type=\"variables_get\"><field name=\"VAR\">" + ((SyntaxTree.Variable) val).getVariableName() + "</field></block>";
+            String[] varName = ((SyntaxTree.Variable) val).getVariableName().split(":");
+            return "<block type=\"variables_get\"><field name=\"VAR\">" + varName[varName.length - 1] + "</field></block>";
         } else if (val instanceof SyntaxTree.Equals) {
             if (((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV1().toString().equals("") &&
                     !(((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Boolean)) {
@@ -53,45 +58,72 @@ public class BlockTool {
             }
             return "";
         } else if (val instanceof SyntaxTree.CallFunction) {
+            String functionName = ((SyntaxTree.CallFunction) val).getFunctionName();
             ((SyntaxTree.CallFunction) val).findFunction();
             StringBuilder tmp = new StringBuilder("<block type=\"");
-            tmp.append(getFunctionBlock(((SyntaxTree.CallFunction) val).getFunctionName())).append("\">");
-            int counter = 0;
-            for (ProgramBase value : ((SyntaxTree.CallFunction) val).getVariableSetters()) {
-                if (((SyntaxTree.SetVariable) value).getVariableValue() instanceof SyntaxTree.Lambda) {
-                    addXml = false;
-                    int pBlockCount = blockCount;
-                    blockCount = 0;
-                    tmp.append("<statement name=\"ARG").append(counter++).append("\">")
-                            .append(syntaxTreeToBlocksXML(((SyntaxTree.Lambda) ((SyntaxTree.SetVariable) value).getVariableValue()).getCreateLambda().getProgram()))
-                            .append("</statement>");
-                    addXml = true;
-                    blockCount = pBlockCount;
-                } else {
-                    tmp.append("<value name=\"ARG").append(counter++).append("\">")
-                            .append(putVals(((SyntaxTree.SetVariable) value).getVariableValue())).append("</value>");
+            if (getFunctionBlock(((SyntaxTree.CallFunction) val).getFunctionName()) == null) {
+                if (parentIsExecuteValue)
+                    tmp.append("procedures_callnoreturn");
+                else
+                    tmp.append("procedures_callreturn");
+                tmp.append("\"><mutation name=\"").append(functionName).append("\">");
+                StringBuilder args = new StringBuilder();
+                int counter = 0;
+                System.out.println(functionName);
+                for (String string : functionParameters.keySet()) {
+                    System.out.println(string);
                 }
+                for (String i : functionParameters.get(functionName)) {
+                    System.out.println(i);
+                    args.append("<value name=\"ARG").append(counter).append("\">")
+                            .append(putVals(((SyntaxTree.SetVariable)((SyntaxTree.CallFunction) val).getVariableSetters()[counter]).getVariableValue()))
+                            .append("</value>");
+                    tmp.append("<arg name=\"").append(i).append("\"></arg>");
+                    counter++;
+                }
+                tmp.append("</mutation>").append(args).append("</block>");
+            } else {
+                tmp.append(getFunctionBlock(((SyntaxTree.CallFunction) val).getFunctionName())).append("\">");
+                int counter = 0;
+                for (ProgramBase value : ((SyntaxTree.CallFunction) val).getVariableSetters()) {
+                    if (((SyntaxTree.SetVariable) value).getVariableValue() instanceof SyntaxTree.Lambda) {
+                        addXml = false;
+                        int pBlockCount = blockCount;
+                        tmp.append("<statement name=\"ARG").append(counter++).append("\">")
+                                .append(syntaxTreeToBlocksXML(((SyntaxTree.Lambda) ((SyntaxTree.SetVariable) value).getVariableValue()).getCreateLambda().getProgram()))
+                                .append("</statement>");
+                        addXml = true;
+                        blockCount = pBlockCount;
+                    } else {
+                        tmp.append("<value name=\"ARG").append(counter++).append("\">")
+                                .append(putVals(((SyntaxTree.SetVariable) value).getVariableValue())).append("</value>");
+                    }
+                }
+                blockCount++;
             }
-            blockCount++;
             return tmp.toString();
         }
         return "";
     }
 
     public String syntaxTreeToBlocksXML(ProgramBase program) {
-        StringBuilder tmp = new StringBuilder((addXml? "<xml xmlns=\"https://developers.google.com/blockly/xml\">\n" : "") + syntaxTreeToBlocksXML1(program));
+        StringBuilder tmp = new StringBuilder((addXml? "<xml xmlns=\"https://developers.google.com/blockly/xml\">" : ""));
+        String xml = syntaxTreeToBlocksXML1(program);
+        if (addXml) tmp.append(functions.toString());
+        tmp.append(xml);
         blockCount--;
         for (int i = 0; i < blockCount; i++) {
             tmp.append("</block></next>");
         }
         if (blockCount >= 0) tmp.append("</block>");
         tmp.append(addXml? "</xml>":"");
+        System.out.println(tmp);
         return tmp.toString();
     }
 
     public String syntaxTreeToBlocksXML1(ProgramBase program) {
         StringBuilder result;
-        if (blockCount != 0) {
+        if (blockCount != 0 && !(program instanceof SyntaxTree.Function)) {
             result = new StringBuilder("<next>");
         } else {
             result = new StringBuilder();
@@ -140,8 +172,54 @@ public class BlockTool {
                 }
             }
         } else if (program instanceof SyntaxTree.ExecuteValue) {
+            parentIsExecuteValue = true;
             result.append(putVals(((SyntaxTree.ExecuteValue) program).getValue()));
+            parentIsExecuteValue = false;
+        } else if (program instanceof SyntaxTree.Function) {
+            if (getFunctionBlock((((SyntaxTree.Function) program).getFunctionName())) == null) {
+                boolean hasReturn = hasReturn(((SyntaxTree.Function) program).getProgram());
+                if (!functionParameters.containsKey(((SyntaxTree.Function) program).getFunctionName())) {
+                    functionParameters.put(((SyntaxTree.Function) program).getFunctionName().split(":")[0], new ArrayList<>());
+                }
+                if (hasReturn) {
+                    functions.append("<block type=\"procedures_defreturn\"><mutation>");
+                    for (String i : ((SyntaxTree.Function) program).getArgs()) {
+                        functionParameters.get(((SyntaxTree.Function) program).getFunctionName().split(":")[0]).add(i);
+                        functions.append("<arg name=\"").append(i).append("\"></arg>");
+                    }
+                    addXml = false;
+                    int pBlockCount = blockCount;
+                    functions.append("</mutation>").append("<field name=\"NAME\">").append(((SyntaxTree.Function) program)
+                            .getFunctionName().split(":")[0]).append("</field><statement name=\"STACK\">")
+                            .append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram())).append("</statement></block>");
+                    addXml = true;
+                    blockCount = pBlockCount;
+                } else {
+                    functions.append("<block type=\"procedures_defnoreturn\"><mutation>");
+                    for (String i : ((SyntaxTree.Function) program).getArgs()) {
+                        functionParameters.get(((SyntaxTree.Function) program).getFunctionName().split(":")[0]).add(i);
+                        functions.append("<arg name=\"").append(i).append("\"></arg>");
+                    }
+                    addXml = false;
+                    int pBlockCount = blockCount;
+                    functions.append("</mutation><field name=\"NAME\">").append(((SyntaxTree.Function) program).getFunctionName().split(":")[0])
+                            .append("</field><statement name=\"STACK\">").append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram()))
+                            .append("</statement></block>");
+                    addXml = true;
+                    blockCount = pBlockCount;
+                }
+            }
         }
         return result.toString();
+    }
+
+    private boolean hasReturn(ProgramBase program) {
+        boolean hasReturn = false;
+        if (program instanceof SyntaxTree.Programs) {
+            for (ProgramBase program1 : ((SyntaxTree.Programs) program).getPrograms()) {
+                hasReturn |= hasReturn(program1);
+            }
+        } else return program instanceof SyntaxTree.Return;
+        return hasReturn;
     }
 }

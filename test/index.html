@@ -105,6 +105,11 @@
       function goToCode() {
         if (localStorage.getItem('mode') == 'block') changeView();
       }
+
+      function setXML() {
+        const xml = Blockly.Xml.textToDom(prompt("xml"));
+        Blockly.Xml.domToWorkspace(xml, Blockly.getMainWorkspace());
+      }
     </script>
     <button hidden id="callColor"></button>
     <script src="build/test_bundle.js"></script>

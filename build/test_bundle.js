@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "5422e74ac12bfac80af4";
+/******/ 	var hotCurrentHash = "2836a82053c0c4656102";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1652,7 +1652,7 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
   }, {
     key: "refreshSelection",
     value: function refreshSelection() {
-      if (localStorage.getItem('mode') == 'block') this.getFlyout().show(this.getInitialFlyoutContents_());
+      if (localStorage.getItem('mode') == 'block' && this.getFlyout().isVisible()) this.getFlyout().show(this.getInitialFlyoutContents_());
     }
     /** @override */
 
@@ -14707,17 +14707,15 @@ function initBlocks() {
   // <field name="NUM">1</field>
   // </shadow>
   // </value>`);
-  // addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false],
-  //   `func test(v, f) {
-  //     print v
-  //     print "\\n"
-  //     f!()
-  //   }`, ['text 1', null, "text 2", null, function(block) { //image field
-  //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
-  //   }], 'tooltip', 'helpUrl'
-  // );
 
 
+  addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false], "func test(v, f) {\n      print v\n      print \"\\n\"\n      f!()\n    }", ['text 1', null, "text 2", null, function (block) {
+    //image field
+    block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, {
+      alt: "*",
+      flipRtl: "FALSE"
+    }));
+  }], 'tooltip', 'helpUrl');
   Blockly.defineBlocksWithJsonArray([{
     "type": "text",
     "message0": "\"%1\"",
@@ -14738,6 +14736,154 @@ function initBlocks() {
 
 /***/ }),
 
+/***/ "./test/field_minus.js":
+/*!*****************************!*\
+  !*** ./test/field_minus.js ***!
+  \*****************************/
+/*! exports provided: createMinusField */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createMinusField", function() { return createMinusField; });
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview A function that creates a minus button used for mutation.
+ */
+
+
+
+/**
+ * Creates a minus image field used for mutation.
+ * @param {Object=} opt_args Untyped args passed to block.minus when the field
+ *     is clicked.
+ * @return {Blockly.FieldImage} The minus field.
+ */
+
+function createMinusField(opt_args) {
+  var minus = new blockly_core__WEBPACK_IMPORTED_MODULE_0__["FieldImage"](minusImage, 40, 40, undefined, onClick_);
+  /**
+   * Untyped args passed to block.minus when the field is clicked.
+   * @type {Object}
+   * @private
+   */
+
+  minus.args_ = opt_args;
+  return minus;
+}
+/**
+ * Calls block.minus(args) when the minus field is clicked.
+ * @param {Blockly.FieldImage} minusField The field being clicked.
+ * @private
+ */
+
+function onClick_(minusField) {
+  // TODO: This is a dupe of the mutator code, anyway to unify?
+  var block = minusField.getSourceBlock();
+
+  if (block.isInFlyout) {
+    return;
+  }
+
+  blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].setGroup(true);
+  var oldMutationDom = block.mutationToDom();
+  var oldMutation = oldMutationDom && blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToText(oldMutationDom);
+  block.minus(minusField.args_);
+  var newMutationDom = block.mutationToDom();
+  var newMutation = newMutationDom && blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToText(newMutationDom);
+
+  if (oldMutation != newMutation) {
+    blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].fire(new blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].BlockChange(block, 'mutation', null, oldMutation, newMutation));
+  }
+
+  blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].setGroup(false);
+}
+
+var minusImage = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAw' + 'MC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPS' + 'JNMTggMTFoLTEyYy0xLjEwNCAwLTIgLjg5Ni0yIDJzLjg5NiAyIDIgMmgxMmMxLjEwNCAw' + 'IDItLjg5NiAyLTJzLS44OTYtMi0yLTJ6IiBmaWxsPSJ3aGl0ZSIgLz48L3N2Zz4K';
+
+/***/ }),
+
+/***/ "./test/field_plus.js":
+/*!****************************!*\
+  !*** ./test/field_plus.js ***!
+  \****************************/
+/*! exports provided: createPlusField */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPlusField", function() { return createPlusField; });
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview A field for a plus button used for mutation.
+ */
+
+
+
+/**
+ * Creates a plus image field used for mutation.
+ * @param {Object=} opt_args Untyped args passed to block.minus when the field
+ *     is clicked.
+ * @return {Blockly.FieldImage} The Plus field.
+ */
+
+function createPlusField(opt_args) {
+  var plus = new blockly_core__WEBPACK_IMPORTED_MODULE_0__["FieldImage"](plusImage, 40, 40, undefined, onClick_);
+  /**
+   * Untyped args passed to block.plus when the field is clicked.
+   * @type {Object}
+   * @private
+   */
+
+  plus.args_ = opt_args;
+  return plus;
+}
+/**
+ * Calls block.plus(args) when the plus field is clicked.
+ * @param {!Blockly.FieldImage} plusField The field being clicked.
+ * @private
+ */
+
+function onClick_(plusField) {
+  // TODO: This is a dupe of the mutator code, anyway to unify?
+  var block = plusField.getSourceBlock();
+
+  if (block.isInFlyout) {
+    return;
+  }
+
+  blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].setGroup(true);
+  var oldMutationDom = block.mutationToDom();
+  var oldMutation = oldMutationDom && blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToText(oldMutationDom);
+  block.plus(plusField.args_);
+  var newMutationDom = block.mutationToDom();
+  var newMutation = newMutationDom && blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToText(newMutationDom);
+
+  if (oldMutation != newMutation) {
+    blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].fire(new blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].BlockChange(block, 'mutation', null, oldMutation, newMutation));
+  }
+
+  blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].setGroup(false);
+}
+
+var plusImage = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC' + '9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPSJNMT' + 'ggMTBoLTR2LTRjMC0xLjEwNC0uODk2LTItMi0ycy0yIC44OTYtMiAybC4wNzEgNGgtNC4wNz' + 'FjLTEuMTA0IDAtMiAuODk2LTIgMnMuODk2IDIgMiAybDQuMDcxLS4wNzEtLjA3MSA0LjA3MW' + 'MwIDEuMTA0Ljg5NiAyIDIgMnMyLS44OTYgMi0ydi00LjA3MWw0IC4wNzFjMS4xMDQgMCAyLS' + '44OTYgMi0ycy0uODk2LTItMi0yeiIgZmlsbD0id2hpdGUiIC8+PC9zdmc+Cg==';
+
+/***/ }),
+
 /***/ "./test/genCode.js":
 /*!*************************!*\
   !*** ./test/genCode.js ***!
@@ -14751,6 +14897,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"] = new blockly__WEBPACK_IMPORTED_MODULE_0__["Generator"]('genCode');
+var usedVariables = {};
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].addReservedWords('func,if,return,var,while,null,true,false,', Object.getOwnPropertyNames(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].global).join(',')); //copied from Blockly python generator
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC = 0; // 0 "" ...
@@ -14828,6 +14975,18 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].init = function (workspace) {
     blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.reset();
   }
 
+  if (!blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_) {
+    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_ = new blockly__WEBPACK_IMPORTED_MODULE_0__["Names"](blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].RESERVED_WORDS_);
+  } else {
+    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.reset();
+  }
+
+  if (!blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_) {
+    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_ = new blockly__WEBPACK_IMPORTED_MODULE_0__["Names"](blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].RESERVED_WORDS_);
+  } else {
+    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_.reset();
+  }
+
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.setVariableMap(workspace.getVariableMap());
   var defvars = []; // Add developer variables (not created or named by the user).
 
@@ -14843,10 +15002,15 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].init = function (workspace) {
   for (var i = 0; i < variables.length; i++) {
     defvars.push(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(variables[i].getId(), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]));
   } // Declare all of the variables.
+  // if (defvars.length) {
+  //   Blockly.genCode.definitions_['variables'] =
+  //       'var ' + defvars.join(';\nvar ') + ';';
+  // }
 
 
-  if (defvars.length) {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_['variables'] = 'var ' + defvars.join(', ') + ';';
+  for (var _i = 0, _defvars = defvars; _i < _defvars.length; _i++) {
+    var i = _defvars[_i];
+    usedVariables[i] = false;
   }
 };
 
@@ -14862,7 +15026,17 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].finish = function (code) {
   delete blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_;
   delete blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionNames_;
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.reset();
-  return definitions.join('\n\n') + '\n\n\n' + code;
+  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_.reset();
+  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.reset();
+  var vars = '';
+
+  for (var i = 0; i < Object.keys(usedVariables).length; i++) {
+    if (usedVariables[Object.keys(usedVariables)[i]]) {
+      vars += "var " + Object.keys(usedVariables)[i] + "\n";
+    }
+  }
+
+  return (vars + '\n' + definitions.join('\n\n') + '\n' + code).trim();
 };
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrubNakedValue = function (line) {
@@ -15019,6 +15193,20 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['text_isEmpty'] = function (bloc
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variables_get'] = function (block) {
   var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+  parent = block.parentBlock_;
+  var markAsUsed = true;
+
+  while (parent) {
+    parent = parent.parentBlock_ || parent.previousConnection;
+
+    if (parent && parent.callType_ && parent.callType_.startsWith('procedures')) {
+      if (parent.getVars().includes(code)) {
+        markAsUsed = false;
+      }
+    }
+  }
+
+  if (markAsUsed) usedVariables[code] = true;
   return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC];
 };
 
@@ -15032,6 +15220,105 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_change'] = function (block
   var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DELTA', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE) || '0';
   var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
   return varName + ' += ' + argument0 + '\n';
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defreturn'] = function (block) {
+  var varName;
+  var workspace = block.workspace;
+  var variables = blockly__WEBPACK_IMPORTED_MODULE_0__["Variables"].allUsedVarModels(workspace) || [];
+  var funcName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["PROCEDURE_CATEGORY_NAME"]);
+  var xfix1 = '';
+
+  if (blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_PREFIX) {
+    xfix1 += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].injectId(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_PREFIX, block);
+  }
+
+  if (blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_SUFFIX) {
+    xfix1 += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].injectId(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_SUFFIX, block);
+  }
+
+  if (xfix1) {
+    xfix1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].prefixLines(xfix1, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT);
+  }
+
+  var loopTrap = '';
+
+  if (blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INFINITE_LOOP_TRAP) {
+    loopTrap = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].prefixLines(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].injectId(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INFINITE_LOOP_TRAP, block), blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT);
+  }
+
+  var branch = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].statementToCode(block, 'STACK');
+  var returnValue = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'RETURN', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '';
+  var xfix2 = '';
+
+  if (branch && returnValue) {
+    // After executing the function body, revisit this block for the return.
+    xfix2 = xfix1;
+  }
+
+  if (returnValue) {
+    returnValue = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT + 'return ' + returnValue + '\n';
+  }
+
+  var args = [];
+  var variables = block.getVars();
+
+  for (var i = 0; i < variables.length; i++) {
+    args[i] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_.getName(variables[i], blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+  }
+
+  var code = 'func ' + funcName + '(' + args.join(', ') + '){\n' + xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';
+  code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrub_(block, code); // Add % so as not to collide with helper functions in definitions list.
+
+  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_['%' + funcName] = code;
+  return null;
+}; // Defining a procedure without a return value uses the same generator as
+// a procedure with a return value.
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defnoreturn'] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defreturn'];
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_callreturn'] = function (block) {
+  // Call a procedure with a return value.
+  var funcName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["PROCEDURE_CATEGORY_NAME"]);
+  var args = [];
+  var variables = block.getVars();
+
+  for (var i = 0; i < variables.length; i++) {
+    args[i] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'ARG' + i, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || 'null';
+  }
+
+  var code = funcName + '(' + args.join(', ') + ')';
+  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL];
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_callnoreturn'] = function (block) {
+  // Call a procedure with no return value.
+  // Generated code is for a function call as a statement is the same as a
+  // function call as a value, with the addition of line ending.
+  var tuple = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_callreturn'](block);
+  return tuple[0] + '\n';
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_ifreturn'] = function (block) {
+  // Conditionally return value from a procedure.
+  var condition = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'CONDITION', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || 'false';
+  var code = 'if ' + condition + '{\n';
+
+  if (blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_SUFFIX) {
+    // Inject any statement suffix here since the regular one at the end
+    // will not get executed if the return is triggered.
+    code += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].prefixLines(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].injectId(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_SUFFIX, block), blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT);
+  }
+
+  if (block.hasReturnValue_) {
+    var value = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || 'null';
+    code += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT + 'return ' + value + '\n}\n';
+  } else {
+    code += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT + 'return\n}\n';
+  }
+
+  return code;
 };
 
 /***/ }),
@@ -15057,10 +15344,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
 /* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
 /* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
-/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
-/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
-/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
+/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
+/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
+/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -15103,7 +15392,7 @@ function injectBlockly() {
 
   var options = (_options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_6__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_6__["LightTheme"],
+    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_7__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_7__["LightTheme"],
     renderer: 'zelos',
     collapse: true,
     comments: false,
@@ -15259,6 +15548,648 @@ function changeView() {
 
 if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').checked = true;else document.getElementById('theme').checked = false;
 
+
+/***/ }),
+
+/***/ "./test/procedures.js":
+/*!****************************!*\
+  !*** ./test/procedures.js ***!
+  \****************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _field_minus__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./field_minus */ "./test/field_minus.js");
+/* harmony import */ var _field_plus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./field_plus */ "./test/field_plus.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview Changes the procedure blocks to use a +/- mutator UI.
+ */
+
+
+
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURE_VARIABLE'] = 'variable:';
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_DEFRETURN_TITLE'] = 'define';
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_DEFNORETURN_TITLE'] = 'define';
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_DEFRETURN_TITLE_OUTPUT'] = 'with output';
+/* eslint-disable quotes */
+
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.defineBlocksWithJsonArray([{
+  "type": "procedures_defnoreturn",
+  "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE} %1 %2",
+  "message1": "%{BKY_PROCEDURES_DEFNORETURN_DO} %1",
+  "args0": [{
+    "type": "field_input",
+    "name": "NAME",
+    "text": ""
+  }, {
+    "type": "input_dummy",
+    "name": "TOP"
+  }],
+  "args1": [{
+    "type": "input_statement",
+    "name": "STACK"
+  }],
+  "style": "procedure_blocks",
+  "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
+  "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
+  "extensions": ["get_procedure_def_no_return", "procedure_context_menu", "procedure_rename", "procedure_vars"],
+  "mutator": "procedure_def_mutator"
+}, {
+  "type": "procedures_defreturn",
+  "message0": "%{BKY_PROCEDURES_DEFRETURN_TITLE} %1 %{BKY_PROCEDURES_DEFRETURN_TITLE_OUTPUT} %2",
+  "message1": "%{BKY_PROCEDURES_DEFRETURN_DO} %1",
+  // "message2": "%{BKY_PROCEDURES_DEFRETURN_RETURN} %1",
+  "args0": [{
+    "type": "field_input",
+    "name": "NAME",
+    "text": ""
+  }, {
+    "type": "input_dummy",
+    "name": "TOP"
+  }],
+  "args1": [{
+    "type": "input_statement",
+    "name": "STACK"
+  }],
+  // "args2": [
+  //   {
+  //     "type": "input_value",
+  //     "align": "right",
+  //     "name": "RETURN",
+  //   },
+  // ],
+  "style": "procedure_blocks",
+  "helpUrl": "%{BKY_PROCEDURES_DEFRETURN_HELPURL}",
+  "tooltip": "%{BKY_PROCEDURES_DEFRETURN_TOOLTIP}",
+  "extensions": ["get_procedure_def_return", "procedure_context_menu", "procedure_rename", "procedure_vars"],
+  "mutator": "procedure_def_mutator"
+}]);
+/* eslint-enable quotes */
+
+/**
+ * Defines the what are essentially info-getters for the procedures_defnoreturn
+ * block.
+ * @type {{callType_: string, getProcedureDef: (function(): *[])}}
+ */
+
+var getDefNoReturn = {
+  /**
+   * Returns info about this block to be used by the Blockly.Procedures.
+   * @return {Array} An array of info.
+   * @this Blockly.Block
+   */
+  getProcedureDef: function getProcedureDef() {
+    var argNames = this.argData_.map(function (elem) {
+      return elem.model.name;
+    });
+    return [this.getFieldValue('NAME'), argNames, false];
+  },
+
+  /**
+   * Used by the context menu to create a caller block.
+   * @type {string}
+   */
+  callType_: 'procedures_callnoreturn'
+};
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMixin('get_procedure_def_no_return', getDefNoReturn);
+/**
+ * Defines what are essentially info-getters for the procedures_def_return
+ * block.
+ * @type {{callType_: string, getProcedureDef: (function(): *[])}}
+ */
+
+var getDefReturn = {
+  /**
+   * Returns info about this block to be used by the Blockly.Procedures.
+   * @return {Array} An array of info.
+   * @this Blockly.Block
+   */
+  getProcedureDef: function getProcedureDef() {
+    var argNames = this.argData_.map(function (elem) {
+      return elem.model.name;
+    });
+    return [this.getFieldValue('NAME'), argNames, true];
+  },
+
+  /**
+   * Used by the context menu to create a caller block.
+   * @type {string}
+   */
+  callType_: 'procedures_callreturn'
+};
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMixin('get_procedure_def_return', getDefReturn);
+var procedureContextMenu = {
+  /**
+   * Adds an option to create a caller block.
+   * Adds an option to create a variable getter for each variable included in
+   * the procedure definition.
+   * @this Blockly.Block
+   * @param {!Array} options The current options for the context menu.
+   */
+  customContextMenu: function customContextMenu(options) {
+    if (this.isInFlyout) {
+      return;
+    } // Add option to create caller.
+
+
+    var name = this.getFieldValue('NAME');
+    var text = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_CREATE_DO'].replace('%1', name);
+    var xml = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('block');
+    xml.setAttribute('type', this.callType_);
+    xml.appendChild(this.mutationToDom(true));
+    var callback = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.ContextMenu.callbackFactory(this, xml);
+    options.push({
+      enabled: true,
+      text: text,
+      callback: callback
+    });
+
+    if (this.isCollapsed()) {
+      return;
+    } // Add options to create getters for each parameter.
+
+
+    var varModels = this.getVarModels();
+
+    var _iterator = _createForOfIteratorHelper(varModels),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var model = _step.value;
+
+        var _text = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['VARIABLES_SET_CREATE_GET'].replace('%1', model.name);
+
+        var _xml = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('block');
+
+        _xml.setAttribute('type', 'variables_get');
+
+        _xml.appendChild(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Variables.generateVariableFieldDom(model));
+
+        var _callback = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.ContextMenu.callbackFactory(this, _xml);
+
+        options.push({
+          enabled: true,
+          text: _text,
+          callback: _callback
+        });
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  }
+};
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMixin('procedure_context_menu', procedureContextMenu);
+var procedureDefMutator = {
+  /**
+   * Create XML to represent the argument inputs.
+   * @param {boolean=} isForCaller If true include the procedure name and
+   *     argument IDs. Used by Blockly.Procedures.mutateCallers for
+   *     reconnection.
+   * @return {!Element} XML storage element.
+   * @this Blockly.Block
+   */
+  mutationToDom: function mutationToDom() {
+    var isForCaller = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var container = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('mutation');
+
+    if (isForCaller) {
+      container.setAttribute('name', this.getFieldValue('NAME'));
+    }
+
+    this.argData_.forEach(function (element) {
+      var argument = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('arg');
+      var argModel = element.model;
+      argument.setAttribute('name', argModel.name);
+      argument.setAttribute('varid', argModel.getId());
+
+      if (isForCaller) {
+        argument.setAttribute('paramid', element.argId);
+      }
+
+      container.appendChild(argument);
+    }); // Not used by this block, but necessary if switching back and forth
+    // between this mutator UI and the default UI.
+
+    if (!this.hasStatements_) {
+      container.setAttribute('statements', 'false');
+    }
+
+    return container;
+  },
+
+  /**
+   * Parse XML to restore the argument inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function domToMutation(xmlElement) {
+    // We have to handle this so that the user doesn't add blocks to the stack,
+    // in which case it would be impossible to return to the old mutators.
+    this.hasStatements_ = xmlElement.getAttribute('statements') !== 'false';
+
+    if (!this.hasStatements_) {
+      this.removeInput('STACK');
+    }
+
+    var names = [];
+    var ids = [];
+
+    var _iterator2 = _createForOfIteratorHelper(xmlElement.childNodes),
+        _step2;
+
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var childNode = _step2.value;
+
+        if (childNode.nodeName.toLowerCase() == 'arg') {
+          names.push(childNode.getAttribute('name'));
+          ids.push(childNode.getAttribute('varid') || childNode.getAttribute('varId'));
+        }
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+
+    this.updateShape_(names, ids);
+  },
+
+  /**
+   * Adds arguments to the block until it matches the targets.
+   * @param {!Array<string>} names An array of argument names to display.
+   * @param {!Array<string>} varIds An array of variable IDs associated with
+   *     those names.
+   * @this Blockly.Block
+   * @private
+   */
+  updateShape_: function updateShape_(names, varIds) {
+    if (names.length != varIds.length) {
+      throw Error('names and varIds must have the same length.');
+    } // Usually it's more efficient to modify the block, rather than tearing it
+    // down and rebuilding (less render calls), but in this case it's easier
+    // to just work from scratch.
+    // We need to remove args in reverse order so that it doesn't mess up
+    // as removeArg_ modifies our array.
+
+
+    for (var i = this.argData_.length - 1; i >= 0; i--) {
+      this.removeArg_(this.argData_[i].argId);
+    }
+
+    this.argData_ = [];
+    var length = varIds.length;
+
+    for (var _i = 0; _i < length; _i++) {
+      this.addArg_(names[_i], varIds[_i]);
+    }
+
+    blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(this);
+  },
+
+  /**
+   * Callback for the plus image. Adds an argument to the block and mutates
+   * callers to match.
+   */
+  plus: function plus() {
+    this.addArg_();
+    blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(this);
+  },
+
+  /**
+   * Callback for the minus image. Removes the argument associated with the
+   * given argument ID and mutates the callers to match.
+   * @param {string} argId The argId of the argument to remove.
+   * @this Blockly.Block
+   */
+  minus: function minus(argId) {
+    if (!this.argData_.length) {
+      return;
+    }
+
+    this.removeArg_(argId);
+    blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(this);
+  },
+
+  /**
+   * Adds an argument to the block and updates the block's parallel tracking
+   * arrays as appropriate.
+   * @param {?string=} name An optional name for the argument.
+   * @param {?string=} varId An optional variable ID for the argument.
+   * @this Blockly.Block
+   * @private
+   */
+  addArg_: function addArg_() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var varId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    if (!this.argData_.length) {
+      var withField = new blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.FieldLabel(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_BEFORE_PARAMS']);
+      this.getInput('TOP').appendField(withField, 'WITH');
+    }
+
+    var argNames = this.argData_.map(function (elem) {
+      return elem.model.name;
+    });
+    name = name || blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Variables.generateUniqueNameFromOptions(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.DEFAULT_ARG, argNames);
+    var variable = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Variables.getOrCreateVariablePackage(this.workspace, varId, name, '');
+    var argId = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.genUid();
+    this.addVarInput_(name, argId);
+
+    if (this.getInput('STACK')) {
+      this.moveInputBefore(argId, 'STACK');
+    } else {
+      this.moveInputBefore(argId, 'RETURN');
+    }
+
+    this.argData_.push({
+      model: variable,
+      argId: argId
+    });
+  },
+
+  /**
+   * Removes the argument associated with the given argument ID from the block.
+   * @param {string} argId An ID used to track arguments on the block.
+   * @private
+   */
+  removeArg_: function removeArg_(argId) {
+    if (this.removeInput(argId, true)) {
+      if (this.argData_.length == 1) {
+        // Becoming argumentless.
+        this.getInput('TOP').removeField('WITH');
+      }
+
+      this.argData_ = this.argData_.filter(function (element) {
+        return element.argId != argId;
+      });
+    }
+  },
+
+  /**
+   * Appends the actual inputs and fields associated with an argument to the
+   * block.
+   * @param {string} name The name of the argument.
+   * @param {string} argId The UUID of the argument (different from var ID).
+   * @this Blockly.Block
+   * @private
+   */
+  addVarInput_: function addVarInput_(name, argId) {
+    var nameField = new blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.FieldTextInput(name, this.validator_);
+    nameField.onFinishEditing_ = this.finishEditing_.bind(nameField);
+    nameField.varIdsToDelete_ = [];
+    nameField.preEditVarModel_ = null;
+    this.appendDummyInput(argId).setAlign(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.ALIGN_RIGHT).appendField(Object(_field_minus__WEBPACK_IMPORTED_MODULE_1__["createMinusField"])(argId)).appendField(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURE_VARIABLE']) // Untranslated!
+    .appendField(nameField, argId); // The name of the field is the arg id.
+  },
+
+  /**
+   * Validates text entered into the argument name field.
+   * @param {string} newName The new text entered into the field.
+   * @return {?string} The field's new value.
+   * @this Blockly.FieldTextInput
+   */
+  validator_: function validator_(newName) {
+    var _this = this;
+
+    var sourceBlock = this.getSourceBlock();
+    var workspace = sourceBlock.workspace;
+    var argData = sourceBlock.argData_;
+    var argDatum = sourceBlock.argData_.find(function (element) {
+      return element.argId == _this.name;
+    });
+    var currId = argDatum.model.getId(); // Replace all whitespace with normal spaces, then trim.
+
+    newName = newName.replace(/[\s\xa0]+/g, ' ').trim();
+    var caselessName = newName.toLowerCase();
+    /**
+     * Returns true if the given argDatum is associated with this field, or has
+     * a different caseless name than the argDatum associated with this field.
+     * @param {{model: Blockly.VariableModel, argId:string}} argDatum The
+     *     argDatum we want to make sure does not conflict with the argDatum
+     *     associated with this field.
+     * @return {boolean} True if the given datum does not conflict with the
+     *     datum associated with this field.
+     * @this Blockly.FieldTextInput
+     */
+
+    var hasDifName = function hasDifName(argDatum) {
+      // The field name (aka id) is always equal to the arg id.
+      return argDatum.argId == _this.name || caselessName != argDatum.model.name.toLowerCase();
+    };
+    /**
+     * Returns true if the variable associated with this field is only used
+     * by this block, or callers of this procedure.
+     * @return {boolean} True if the variable associated with this field is only
+     *     used by this block, or callers of this procedure.
+     */
+
+
+    var varOnlyUsedHere = function varOnlyUsedHere() {
+      return workspace.getVariableUsesById(currId).every(function (block) {
+        return block.id == sourceBlock.id || block.getProcedureCall && block.getProcedureCall() == sourceBlock.getProcedureDef()[0];
+      });
+    };
+
+    if (!newName || !argData.every(hasDifName)) {
+      if (this.preEditVarModel_) {
+        argDatum.model = this.preEditVarModel_;
+        this.preEditVarModel_ = null;
+      }
+
+      blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(sourceBlock);
+      return null;
+    }
+
+    if (!this.varIdsToDelete_.length) {
+      this.preEditVarModel_ = argDatum.model;
+
+      if (varOnlyUsedHere()) {
+        this.varIdsToDelete_.push(currId);
+      }
+    } // Create new vars instead of renaming the old ones, so users can't
+    // accidentally rename/coalesce vars.
+
+
+    var model = workspace.getVariable(newName, '');
+
+    if (!model) {
+      model = workspace.createVariable(newName, '');
+      this.varIdsToDelete_.push(model.getId());
+    } else if (model.name != newName) {
+      // Blockly is case-insensitive so we have to update the var instead of
+      // creating a new one.
+      workspace.renameVariableById(model.getId(), newName);
+    }
+
+    if (model.getId() != currId) {
+      argDatum.model = model;
+    }
+
+    blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(sourceBlock);
+    return newName;
+  },
+
+  /**
+   * Removes any unused vars that were created as a result of editing.
+   * @param {string} _finalName The final value of the field.
+   * @this Blockly.FieldTextInput
+   */
+  finishEditing_: function finishEditing_(_finalName) {
+    var _this2 = this;
+
+    var source = this.getSourceBlock();
+    var argDatum = source.argData_.find(function (element) {
+      return element.argId == _this2.name;
+    });
+    var currentVarId = argDatum.model.getId();
+    this.varIdsToDelete_.forEach(function (id) {
+      if (id != currentVarId) {
+        source.workspace.deleteVariableById(id);
+      }
+    });
+    this.varIdsToDelete_.length = 0;
+    this.preEditVarModel_ = null;
+  }
+};
+/**
+ * Initializes some private variables for procedure blocks.
+ * @this Blockly.Block
+ */
+
+var procedureDefHelper = function procedureDefHelper() {
+  /**
+   * An array of objects containing data about the args belonging to the
+   * procedure definition.
+   * @type {!Array<{
+   *          model:Blockly.VariableModel,
+   *          argId: string
+   *       }>}
+   * @private
+   */
+  this.argData_ = [];
+  /**
+   * Does this block have a 'STACK' input for statements?
+   * @type {boolean}
+   * @private
+   */
+
+  this.hasStatements_ = true;
+  this.getInput('TOP').insertFieldAt(0, Object(_field_plus__WEBPACK_IMPORTED_MODULE_2__["createPlusField"])(), 'PLUS');
+};
+
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMutator('procedure_def_mutator', procedureDefMutator, procedureDefHelper);
+/**
+ * Sets the validator for the procedure's name field.
+ * @this Blockly.Block
+ */
+
+var procedureRename = function procedureRename() {
+  this.getField('NAME').setValidator(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.rename);
+};
+
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.register('procedure_rename', procedureRename);
+/**
+ * Defines functions for dealing with variables and renaming variables.
+ * @this Blockly.Block
+ */
+
+var procedureVars = function procedureVars() {
+  // This is a hack to get around the don't-override-builtins check.
+  var mixin = {
+    /**
+     * Return all variables referenced by this block.
+     * @return {!Array.<string>} List of variable names.
+     * @this Blockly.Block
+     */
+    getVars: function getVars() {
+      return this.argData_.map(function (elem) {
+        return elem.model.name;
+      });
+    },
+
+    /**
+     * Return all variables referenced by this block.
+     * @return {!Array.<!Blockly.VariableModel>} List of variable models.
+     * @this Blockly.Block
+     */
+    getVarModels: function getVarModels() {
+      return this.argData_.map(function (elem) {
+        return elem.model;
+      });
+    },
+
+    /**
+     * Notification that a variable was renamed to the same name as an existing
+     * variable. These variables are coalescing into a single variable with the
+     * ID of the variable that was already using the name.
+     * @param {string} oldId The ID of the variable that was renamed.
+     * @param {string} newId The ID of the variable that was already using
+     *     the name.
+     */
+    renameVarById: function renameVarById(oldId, newId) {
+      var argData = this.argData_.find(function (element) {
+        return element.model.getId() == oldId;
+      });
+
+      if (!argData) {
+        return; // Not on this block.
+      }
+
+      var newVar = this.workspace.getVariableById(newId);
+      var newName = newVar.name;
+      this.addVarInput_(newName, newId);
+      this.moveInputBefore(newId, oldId);
+      this.removeInput(oldId);
+      argData.model = newVar;
+      blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(this);
+    },
+
+    /**
+     * Notification that a variable is renaming but keeping the same ID.  If the
+     * variable is in use on this block, rerender to show the new name.
+     * @param {!Blockly.VariableModel} variable The variable being renamed.
+     * @package
+     * @override
+     * @this Blockly.Block
+     */
+    updateVarName: function updateVarName(variable) {
+      var id = variable.getId();
+      var argData = this.argData_.find(function (element) {
+        return element.model.getId() == id;
+      });
+
+      if (!argData) {
+        return; // Not on this block.
+      }
+
+      this.setFieldValue(variable.name, argData.argId);
+      argData.model = variable;
+    }
+  };
+  this.mixin(mixin, true);
+};
+
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.register('procedure_vars', procedureVars);
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Blocks["procedures_ifreturn"] = undefined;
 
 /***/ }),
 

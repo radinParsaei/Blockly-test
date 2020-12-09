@@ -28,7 +28,9 @@ public class Client extends CompilerMain {
 
     public static void color() {
         HTMLDocument document = HTMLDocument.current();
+        REPLReader.setReadCode(true);
         String text = REPLReader.readLine();
+        REPLReader.setReadCode(false);
         text = text.replace("<", "&lt;");
         text = text.replace(">", "&gt;");
         Compiler compiler = new Compiler(null, true, null, null, null);

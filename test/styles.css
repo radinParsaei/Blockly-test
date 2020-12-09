@@ -165,6 +165,10 @@ input:checked + .slider:before {
   font: bold 18pt Source Code Pro, "Trebuchet MS", sans-serif !important;
 }
 
-.blocklyToolboxDelete {
-  cursor: grab !important;
+.blocklyFlyoutButtonShadow {
+  visibility: hidden;
+}
+
+.blocklyFlyoutButtonBackground {
+  fill: rgba(128, 128, 128, 0.5);
 }

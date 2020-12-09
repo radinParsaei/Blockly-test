@@ -81,7 +81,7 @@ export class ContinuousToolbox extends Blockly.Toolbox {
 
   /** @override */
   refreshSelection() {
-    if (localStorage.getItem('mode') == 'block')
+    if (localStorage.getItem('mode') == 'block' && this.getFlyout().isVisible())
       this.getFlyout().show(this.getInitialFlyoutContents_());
   }
 
