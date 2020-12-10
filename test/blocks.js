@@ -102,8 +102,98 @@ function initBlocks() {
       "extensions": [
         "parent_tooltip_when_inline"
       ]
+    }, {
+      "type": "return_statement",
+      "message0": "%{BKY_RETURN_STATEMENT_TEXT} %1",
+      "args0": [{
+        "type": "input_value",
+        "name": "VALUE"
+      }],
+      "previousStatement": null,
+      "style": "procedure_blocks",
+      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
+      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
     }]
   );
+  Blockly.Procedures.flyoutCategory = function(workspace) {
+    var xmlList = [];
+    if (Blockly.Blocks['procedures_defnoreturn']) {
+      // <block type="procedures_defnoreturn" gap="16">
+      //     <field name="NAME">do something</field>
+      // </block>
+      var block = Blockly.utils.xml.createElement('block');
+      block.setAttribute('type', 'procedures_defnoreturn');
+      block.setAttribute('gap', 16);
+      var nameField = Blockly.utils.xml.createElement('field');
+      nameField.setAttribute('name', 'NAME');
+      nameField.appendChild(Blockly.utils.xml.createTextNode(
+          Blockly.Msg['PROCEDURES_DEFNORETURN_PROCEDURE']));
+      block.appendChild(nameField);
+      xmlList.push(block);
+    }
+    if (Blockly.Blocks['procedures_defreturn']) {
+      // <block type="procedures_defreturn" gap="16">
+      //     <field name="NAME">do something</field>
+      // </block>
+      var block = Blockly.utils.xml.createElement('block');
+      block.setAttribute('type', 'procedures_defreturn');
+      block.setAttribute('gap', 16);
+      var nameField = Blockly.utils.xml.createElement('field');
+      nameField.setAttribute('name', 'NAME');
+      nameField.appendChild(Blockly.utils.xml.createTextNode(
+          Blockly.Msg['PROCEDURES_DEFRETURN_PROCEDURE']));
+      block.appendChild(nameField);
+      xmlList.push(block);
+    }
+    if (Blockly.Blocks['procedures_ifreturn']) {
+      // <block type="procedures_ifreturn" gap="16"></block>
+      var block = Blockly.utils.xml.createElement('block');
+      block.setAttribute('type', 'procedures_ifreturn');
+      block.setAttribute('gap', 16);
+      xmlList.push(block);
+    }
+    if (xmlList.length) {
+      // Add slightly larger gap between system blocks and user calls.
+      xmlList[xmlList.length - 1].setAttribute('gap', 24);
+    }
+
+    function populateProcedures(procedureList, templateName) {
+      for (var i = 0; i < procedureList.length; i++) {
+        var name = procedureList[i][0];
+        var args = procedureList[i][1];
+        // <block type="procedures_callnoreturn" gap="16">
+        //   <mutation name="do something">
+        //     <arg name="x"></arg>
+        //   </mutation>
+        // </block>
+        var block = Blockly.utils.xml.createElement('block');
+        block.setAttribute('type', templateName);
+        block.setAttribute('gap', 16);
+        var mutation = Blockly.utils.xml.createElement('mutation');
+        mutation.setAttribute('name', name);
+        block.appendChild(mutation);
+        for (var j = 0; j < args.length; j++) {
+          var arg = Blockly.utils.xml.createElement('arg');
+          arg.setAttribute('name', args[j]);
+          mutation.appendChild(arg);
+        }
+        xmlList.push(block);
+      }
+    }
+
+    var tuple = Blockly.Procedures.allProcedures(workspace);
+    populateProcedures(tuple[0], 'procedures_callnoreturn');
+    populateProcedures(tuple[1], 'procedures_callreturn');
+    var block2 = Blockly.utils.xml.createElement('block');
+    block2.setAttribute('type', 'return_statement');
+    block2.setAttribute('gap', 16);
+    xmlList.push(block2);
+    return xmlList;
+  };
+  Blockly.Msg['RETURN_STATEMENT_TEXT'] = 'return';
 }
 
 export { initBlocks };

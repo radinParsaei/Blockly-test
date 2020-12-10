@@ -69,12 +69,7 @@ public class BlockTool {
                 tmp.append("\"><mutation name=\"").append(functionName).append("\">");
                 StringBuilder args = new StringBuilder();
                 int counter = 0;
-                System.out.println(functionName);
-                for (String string : functionParameters.keySet()) {
-                    System.out.println(string);
-                }
                 for (String i : functionParameters.get(functionName)) {
-                    System.out.println(i);
                     args.append("<value name=\"ARG").append(counter).append("\">")
                             .append(putVals(((SyntaxTree.SetVariable)((SyntaxTree.CallFunction) val).getVariableSetters()[counter]).getVariableValue()))
                             .append("</value>");
@@ -117,7 +112,6 @@ public class BlockTool {
         }
         if (blockCount >= 0) tmp.append("</block>");
         tmp.append(addXml? "</xml>":"");
-        System.out.println(tmp);
         return tmp.toString();
     }
 
@@ -131,6 +125,7 @@ public class BlockTool {
         if (program instanceof SyntaxTree.Programs) {
             for (ProgramBase program1 : ((SyntaxTree.Programs) program).getPrograms()) {
                 result.append(syntaxTreeToBlocksXML1(program1));
+                if (program1 instanceof SyntaxTree.Return) break;
             }
         } else if (program instanceof SyntaxTree.Print) {
             ValueBase[] args = ((SyntaxTree.Print) program).getArgs();
@@ -175,6 +170,10 @@ public class BlockTool {
             parentIsExecuteValue = true;
             result.append(putVals(((SyntaxTree.ExecuteValue) program).getValue()));
             parentIsExecuteValue = false;
+        } else if (program instanceof SyntaxTree.Return) {
+            result.append("<block type=\"return_statement\"><value name=\"VALUE\">")
+                    .append(putVals(((SyntaxTree.Return) program).getValue())).append("</value>");
+            blockCount++;
         } else if (program instanceof SyntaxTree.Function) {
             if (getFunctionBlock((((SyntaxTree.Function) program).getFunctionName())) == null) {
                 boolean hasReturn = hasReturn(((SyntaxTree.Function) program).getProgram());

@@ -417,3 +417,9 @@ Blockly.genCode['procedures_ifreturn'] = function(block) {
   }
   return code;
 };
+
+Blockly.genCode['return_statement'] = function(block) {
+  var msg = Blockly.genCode.valueToCode(block, 'VALUE',
+      Blockly.genCode.ORDER_NONE) || 'null';
+  return 'return ' + msg + '\n';
+};
