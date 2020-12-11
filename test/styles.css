@@ -19,6 +19,12 @@ html, body {
   tab-size: 4;
   resize: none !important;
 }
+.codejar-wrap {
+  height: 100%;
+}
+.editor {
+  height: 100%;
+}
 #console2 {
   font-family: "Source Code Pro", monospace !important;
   overflow-y: scroll;

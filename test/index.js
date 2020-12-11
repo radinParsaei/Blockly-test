@@ -1,5 +1,6 @@
 import * as Blockly from 'blockly';
 import { CodeJar } from 'CodeJar';
+import { withLineNumbers } from 'codejar/linenumbers';
 import { initBlocks, functions, functionCodes } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
@@ -131,7 +132,7 @@ const highlight = (editor) => {
     document.getElementById("callColor").click();
   }
 }
-let jar = CodeJar(document.querySelector('#editor'), highlight);
+let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
 
 function changeThemeWithoutSwap() {
   document.getElementById("editor").classList.toggle('dark');
@@ -169,7 +170,7 @@ if (localStorage.getItem('theme') == "light") {
 
 function changeViewWithoutSwap() {
   try {
-    document.getElementById("editor").hidden = !document.getElementById("editor").hidden;
+    document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
     isDark = !isDark;
     document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);

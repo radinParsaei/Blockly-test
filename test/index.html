@@ -84,7 +84,9 @@
     </div>
     <div style="margin: 0; padding: 0; height: calc(100% - 50px);">
       <div hidden class="dark" id="root" style="margin: 0; padding: 0; height: 75%; max-height: calc(100% - 100px)"></div>
-      <div class="dark editor" style="height: 75%;max-height: calc(100% - 100px)" id="editor"></div>
+      <div id="editor2" style="height: 75%;max-height: calc(100% - 100px);overflow: scroll">
+        <div class="dark editor" id="editor"></div>
+      </div>
       <div id="console" style="height: 25%; min-height: 100px;" class="dark">
         <h4 style="color: gray; margin: 0;padding: 5px;">OUTPUT</h4>
         <div class="dark" id="console2" style="padding: 10px; padding-top: 0;"></div>
@@ -114,5 +116,4 @@
     <button hidden id="callColor"></button>
     <script src="build/test_bundle.js"></script>
   </body>
-
 </html>

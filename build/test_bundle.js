@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "bb964fc405d000b24398";
+/******/ 	var hotCurrentHash = "488c5d142d4105d26f04";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -2159,7 +2159,7 @@ function CodeJar(editor, highlight, opt = {}) {
         const pos = save();
         insert(text);
         highlight(editor);
-        restore({ start: pos.end + text.length, end: pos.end + text.length });
+        restore({ start: pos.start + text.length, end: pos.start + text.length });
     }
     function visit(editor, visitor) {
         const queue = [];
@@ -2180,10 +2180,10 @@ function CodeJar(editor, highlight, opt = {}) {
         return event.metaKey || event.ctrlKey;
     }
     function isUndo(event) {
-        return isCtrl(event) && !event.shiftKey && event.code === "KeyZ";
+        return isCtrl(event) && !event.shiftKey && event.key === "z";
     }
     function isRedo(event) {
-        return isCtrl(event) && event.shiftKey && event.code === "KeyZ";
+        return isCtrl(event) && event.shiftKey && event.key === "z";
     }
     function insert(text) {
         text = text
@@ -4900,6 +4900,77 @@ Blockly.Msg["COLOUR_HUE"] = "20";
 Blockly.Msg["VARIABLES_DYNAMIC_HUE"] = "310";
 return Blockly.Msg;
 })); 
+
+
+/***/ }),
+
+/***/ "./node_modules/codejar/linenumbers.js":
+/*!*********************************************!*\
+  !*** ./node_modules/codejar/linenumbers.js ***!
+  \*********************************************/
+/*! exports provided: withLineNumbers */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "withLineNumbers", function() { return withLineNumbers; });
+function withLineNumbers(highlight, options = {}) {
+    const opts = Object.assign({ class: "codejar-linenumbers", wrapClass: "codejar-wrap", width: "35px", backgroundColor: "rgba(128, 128, 128, 0.15)", color: "" }, options);
+    let lineNumbers;
+    return function (editor) {
+        highlight(editor);
+        if (!lineNumbers) {
+            lineNumbers = init(editor, opts);
+            editor.addEventListener("scroll", () => lineNumbers.style.top = `-${editor.scrollTop}px`);
+        }
+        const code = editor.textContent || "";
+        const linesCount = code.replace(/\n+$/, "\n").split("\n").length + 1;
+        let text = "";
+        for (let i = 1; i < linesCount; i++) {
+            text += `${i}\n`;
+        }
+        lineNumbers.innerText = text;
+    };
+}
+function init(editor, opts) {
+    const css = getComputedStyle(editor);
+    const wrap = document.createElement("div");
+    wrap.className = opts.wrapClass;
+    wrap.style.position = "relative";
+    const gutter = document.createElement("div");
+    gutter.className = opts.class;
+    wrap.appendChild(gutter);
+    // Add own styles
+    gutter.style.position = "absolute";
+    gutter.style.top = "0px";
+    gutter.style.left = "0px";
+    gutter.style.bottom = "0px";
+    gutter.style.width = opts.width;
+    gutter.style.overflow = "hidden";
+    gutter.style.backgroundColor = opts.backgroundColor;
+    gutter.style.color = opts.color || css.color;
+    gutter.style.setProperty("mix-blend-mode", "difference");
+    // Copy editor styles
+    gutter.style.fontFamily = css.fontFamily;
+    gutter.style.fontSize = css.fontSize;
+    gutter.style.lineHeight = css.lineHeight;
+    gutter.style.paddingTop = css.paddingTop;
+    gutter.style.paddingLeft = css.paddingLeft;
+    gutter.style.borderTopLeftRadius = css.borderTopLeftRadius;
+    gutter.style.borderBottomLeftRadius = css.borderBottomLeftRadius;
+    // Add line numbers
+    const lineNumbers = document.createElement("div");
+    lineNumbers.style.position = "relative";
+    lineNumbers.style.top = "0px";
+    gutter.appendChild(lineNumbers);
+    // Tweak editor styles
+    editor.style.paddingLeft = `calc(${opts.width} + ${gutter.style.paddingLeft})`;
+    editor.style.whiteSpace = "pre";
+    // Swap editor with a wrap
+    editor.parentNode.insertBefore(wrap, editor);
+    wrap.appendChild(editor);
+    return lineNumbers;
+}
 
 
 /***/ }),
@@ -14707,15 +14778,17 @@ function initBlocks() {
   // <field name="NUM">1</field>
   // </shadow>
   // </value>`);
+  // addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false],
+  //   `func test(v, f) {
+  //     print v
+  //     print "\\n"
+  //     f!()
+  //   }`, ['text 1', null, "text 2", null, function(block) { //image field
+  //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
+  //   }], 'tooltip', 'helpUrl'
+  // );
 
 
-  addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false], "func test(v, f) {\n      print v\n      print \"\\n\"\n      f!()\n    }", ['text 1', null, "text 2", null, function (block) {
-    //image field
-    block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, {
-      alt: "*",
-      flipRtl: "FALSE"
-    }));
-  }], 'tooltip', 'helpUrl');
   Blockly.defineBlocksWithJsonArray([{
     "type": "text",
     "message0": "\"%1\"",
@@ -15440,14 +15513,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Blockly", function() { return blockly__WEBPACK_IMPORTED_MODULE_0__; });
 /* harmony import */ var CodeJar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! CodeJar */ "./node_modules/CodeJar/codejar.js");
-/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
-/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
-/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
-/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
-/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
+/* harmony import */ var codejar_linenumbers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! codejar/linenumbers */ "./node_modules/codejar/linenumbers.js");
+/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
+/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
+/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
+/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -15491,7 +15566,7 @@ function injectBlockly() {
 
   var options = (_options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_7__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_7__["LightTheme"],
+    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_8__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_8__["LightTheme"],
     renderer: 'zelos',
     collapse: true,
     comments: false,
@@ -15533,8 +15608,8 @@ function injectBlockly() {
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
   } else {
     options['plugins'] = {
-      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__["ContinuousToolbox"],
-      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__["ContinuousFlyout"]
+      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_4__["ContinuousToolbox"],
+      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_5__["ContinuousFlyout"]
     };
     sheet.innerHTML = "";
   }
@@ -15561,7 +15636,7 @@ window.onresize = function (event) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_2__["initBlocks"])();
+  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_3__["initBlocks"])();
   blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["MATH_POWER_SYMBOL"] = "**";
   injectBlockly();
 });
@@ -15587,7 +15662,7 @@ var highlight = function highlight(editor) {
   }
 };
 
-var jar = Object(CodeJar__WEBPACK_IMPORTED_MODULE_1__["CodeJar"])(document.querySelector('#editor'), highlight);
+var jar = Object(CodeJar__WEBPACK_IMPORTED_MODULE_1__["CodeJar"])(document.querySelector('#editor'), Object(codejar_linenumbers__WEBPACK_IMPORTED_MODULE_2__["withLineNumbers"])(highlight));
 
 function changeThemeWithoutSwap() {
   document.getElementById("editor").classList.toggle('dark');
@@ -15625,7 +15700,7 @@ if (localStorage.getItem('theme') == "light") {
 
 function changeViewWithoutSwap() {
   try {
-    document.getElementById("editor").hidden = !document.getElementById("editor").hidden;
+    document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
     isDark = !isDark;
     document.getElementById('root').removeChild(blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().injectionDiv_);
