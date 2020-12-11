@@ -94,7 +94,10 @@ public class BlockTool {
                                 .append(putVals(((SyntaxTree.SetVariable) value).getVariableValue())).append("</value>");
                     }
                 }
-                blockCount++;
+                if (parentIsExecuteValue)
+                    blockCount++;
+                else
+                    tmp.append("</block>");
             }
             return tmp.toString();
         }

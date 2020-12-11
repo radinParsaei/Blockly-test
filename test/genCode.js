@@ -82,13 +82,6 @@ Blockly.genCode.init = function(workspace) {
     Blockly.genCode.functionsDB_.reset();
   }
 
-  if (!Blockly.genCode.parameterDB_) {
-    Blockly.genCode.parameterDB_ =
-        new Blockly.Names(Blockly.genCode.RESERVED_WORDS_);
-  } else {
-    Blockly.genCode.parameterDB_.reset();
-  }
-
   Blockly.genCode.variableDB_.setVariableMap(workspace.getVariableMap());
 
   var defvars = [];
@@ -126,7 +119,6 @@ Blockly.genCode.finish = function(code) {
   delete Blockly.genCode.definitions_;
   delete Blockly.genCode.functionNames_;
   Blockly.genCode.variableDB_.reset();
-  Blockly.genCode.parameterDB_.reset();
   Blockly.genCode.functionsDB_.reset();
   var vars = '';
   for (var i = 0; i < Object.keys(usedVariables).length; i++) {
@@ -358,7 +350,7 @@ Blockly.genCode['procedures_defreturn'] = function(block) {
   var args = [];
   var variables = block.getVars();
   for (var i = 0; i < variables.length; i++) {
-    args[i] = Blockly.genCode.parameterDB_.getName(variables[i],
+    args[i] = Blockly.genCode.variableDB_.getName(variables[i],
         Blockly.VARIABLE_CATEGORY_NAME);
   }
   var code = 'func ' + funcName + '(' + args.join(', ') + '){\n' +

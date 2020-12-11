@@ -1,6 +1,6 @@
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
-    blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl) {
+    blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output) {
     var element = document.createElement("block");
     element.setAttribute('type', blockName);
     document.getElementById(blockCategory + "Category").appendChild(element);
@@ -34,23 +34,32 @@ function initBlocks() {
             tmp(this);
           }
         }
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        if (output) {
+          this.setOutput(true, null);
+        } else {
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+        }
         this.setColour(document.getElementById(blockCategory + "Category").getAttribute('colour'));
       }
     };
-    Blockly.genCode[blockName] = function(block) {
-      var code = blockFunctionName + "(";
-      for (var i = 0; i < paramTypes.length; i++) {
-        if (paramTypes[i])
-          code += Blockly.genCode.valueToCode(block, 'ARG' + i, Blockly.genCode.ORDER_ATOMIC);
-        else
-          code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
-        if (i != paramTypes.length - 1) code += ', ';
-      }
-      return code + ')\n';
-    };
-    functionCodes += functionCode;
+    if (typeof blockFunctionName == "function") {
+      Blockly.genCode[blockName] = blockFunctionName;
+    } else {
+      Blockly.genCode[blockName] = function(block) {
+        var code = blockFunctionName + "(";
+        for (var i = 0; i < paramTypes.length; i++) {
+          if (paramTypes[i])
+            code += Blockly.genCode.valueToCode(block, 'ARG' + i, Blockly.genCode.ORDER_ATOMIC);
+          else
+            code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
+          if (i != paramTypes.length - 1) code += ', ';
+        }
+        if (output) return [code + ')\n', Blockly.genCode.ORDER_FUNCTION_CALL];
+        else return code + ')\n';
+      };
+      functionCodes += functionCode;
+    }
   }
 
   function createShadows(values) {
@@ -85,6 +94,23 @@ function initBlocks() {
   //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
   //   }], 'tooltip', 'helpUrl'
   // );
+
+  // addBlock("negate", "Math", createShadows([1]), function(block) {
+  //   var data = Blockly.genCode.valueToCode(block, 'ARG0',
+  //       Blockly.genCode.ORDER_NONE) || 'null';
+  //   return ['-' + data, Blockly.genCode.ORDER_UNARY_SIGN];
+  // }, [null], [true],
+  //   '', ['-', null, ''], 'tooltip', 'helpUrl', true);
+
+  // addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false],
+  //   `func test(v, f) {
+  //     print v
+  //     print "\\n"
+  //     f!()
+  //   }`, ['text 1', null, "text 2", null, function(block) { //image field
+  //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
+  //   }], 'tooltip', 'helpUrl', true);
+
 
   Blockly.defineBlocksWithJsonArray([
     {

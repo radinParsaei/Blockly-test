@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "488c5d142d4105d26f04";
+/******/ 	var hotCurrentHash = "458ffe59a8951f02d2f5";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -14665,7 +14665,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function initBlocks() {
-  function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName, blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl) {
+  function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName, blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output) {
     var element = document.createElement("block");
     element.setAttribute('type', blockName);
     document.getElementById(blockCategory + "Category").appendChild(element);
@@ -14724,24 +14724,33 @@ function initBlocks() {
           _iterator2.f();
         }
 
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        if (output) {
+          this.setOutput(true, null);
+        } else {
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+        }
+
         this.setColour(document.getElementById(blockCategory + "Category").getAttribute('colour'));
       }
     };
 
-    Blockly.genCode[blockName] = function (block) {
-      var code = blockFunctionName + "(";
+    if (typeof blockFunctionName == "function") {
+      Blockly.genCode[blockName] = blockFunctionName;
+    } else {
+      Blockly.genCode[blockName] = function (block) {
+        var code = blockFunctionName + "(";
 
-      for (var i = 0; i < paramTypes.length; i++) {
-        if (paramTypes[i]) code += Blockly.genCode.valueToCode(block, 'ARG' + i, Blockly.genCode.ORDER_ATOMIC);else code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
-        if (i != paramTypes.length - 1) code += ', ';
-      }
+        for (var i = 0; i < paramTypes.length; i++) {
+          if (paramTypes[i]) code += Blockly.genCode.valueToCode(block, 'ARG' + i, Blockly.genCode.ORDER_ATOMIC);else code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
+          if (i != paramTypes.length - 1) code += ', ';
+        }
 
-      return code + ')\n';
-    };
+        if (output) return [code + ')\n', Blockly.genCode.ORDER_FUNCTION_CALL];else return code + ')\n';
+      };
 
-    functionCodes += functionCode;
+      functionCodes += functionCode;
+    }
   }
 
   function createShadows(values) {
@@ -14787,6 +14796,20 @@ function initBlocks() {
   //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
   //   }], 'tooltip', 'helpUrl'
   // );
+  // addBlock("negate", "Math", createShadows([1]), function(block) {
+  //   var data = Blockly.genCode.valueToCode(block, 'ARG0',
+  //       Blockly.genCode.ORDER_NONE) || 'null';
+  //   return ['-' + data, Blockly.genCode.ORDER_UNARY_SIGN];
+  // }, [null], [true],
+  //   '', ['-', null, ''], 'tooltip', 'helpUrl', true);
+  // addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false],
+  //   `func test(v, f) {
+  //     print v
+  //     print "\\n"
+  //     f!()
+  //   }`, ['text 1', null, "text 2", null, function(block) { //image field
+  //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
+  //   }], 'tooltip', 'helpUrl', true);
 
 
   Blockly.defineBlocksWithJsonArray([{
@@ -15148,12 +15171,6 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].init = function (workspace) {
     blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.reset();
   }
 
-  if (!blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_) {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_ = new blockly__WEBPACK_IMPORTED_MODULE_0__["Names"](blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].RESERVED_WORDS_);
-  } else {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_.reset();
-  }
-
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.setVariableMap(workspace.getVariableMap());
   var defvars = []; // Add developer variables (not created or named by the user).
 
@@ -15193,7 +15210,6 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].finish = function (code) {
   delete blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_;
   delete blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionNames_;
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.reset();
-  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_.reset();
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.reset();
   var vars = '';
 
@@ -15431,7 +15447,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defreturn'] = functi
   var variables = block.getVars();
 
   for (var i = 0; i < variables.length; i++) {
-    args[i] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].parameterDB_.getName(variables[i], blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+    args[i] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(variables[i], blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
   }
 
   var code = 'func ' + funcName + '(' + args.join(', ') + '){\n' + xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';
