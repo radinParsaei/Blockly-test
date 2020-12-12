@@ -14,7 +14,7 @@ public class BlockTool {
     @JSBody(params = { "functionName" }, script = "return functions[functionName] || null")
     public static native String getFunctionBlock(String functionName);
 
-    private String putVals(ValueBase val) {
+    private String putVales(ValueBase val) {
         if (val instanceof SyntaxTree.Number) {
             return "<block type=\"math_number\"><field name=\"NUM\">" + val + "</field></block>";
         } else if (val instanceof SyntaxTree.Text) {
@@ -23,28 +23,28 @@ public class BlockTool {
             return "<block type=\"logic_boolean\"><field name=\"BOOL\">" + (((Boolean)val.getData())? "TRUE":"FALSE") + "</field></block>";
         } else if (val instanceof SyntaxTree.Add) {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">ADD</field><value name=\"A\">" +
-                    putVals(((SyntaxTree.Add) val).getV1()) + "</value><value name=\"B\">" +
-                    putVals(((SyntaxTree.Add) val).getV2()) + "</value></block>";
+                    putVales(((SyntaxTree.Add) val).getV1()) + "</value><value name=\"B\">" +
+                    putVales(((SyntaxTree.Add) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Sub) {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">MINUS</field><value name=\"A\">" +
-                    putVals(((SyntaxTree.Sub) val).getV1()) + "</value><value name=\"B\">" +
-                    putVals(((SyntaxTree.Sub) val).getV2()) + "</value></block>";
+                    putVales(((SyntaxTree.Sub) val).getV1()) + "</value><value name=\"B\">" +
+                    putVales(((SyntaxTree.Sub) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Mul) {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">MULTIPLY</field><value name=\"A\">" +
-                    putVals(((SyntaxTree.Mul) val).getV1()) + "</value><value name=\"B\">" +
-                    putVals(((SyntaxTree.Mul) val).getV2()) + "</value></block>";
+                    putVales(((SyntaxTree.Mul) val).getV1()) + "</value><value name=\"B\">" +
+                    putVales(((SyntaxTree.Mul) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Div) {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">DIVIDE</field><value name=\"A\">" +
-                    putVals(((SyntaxTree.Div) val).getV1()) + "</value><value name=\"B\">" +
-                    putVals(((SyntaxTree.Div) val).getV2()) + "</value></block>";
+                    putVales(((SyntaxTree.Div) val).getV1()) + "</value><value name=\"B\">" +
+                    putVales(((SyntaxTree.Div) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Mod) {
             return "<block type=\"math_modulo\"><value name=\"DIVIDEND\">" +
-                    putVals(((SyntaxTree.Mod) val).getV1()) + "</value><value name=\"DIVISOR\">" +
-                    putVals(((SyntaxTree.Mod) val).getV2()) + "</value></block>";
+                    putVales(((SyntaxTree.Mod) val).getV1()) + "</value><value name=\"DIVISOR\">" +
+                    putVales(((SyntaxTree.Mod) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Pow) {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">POWER</field><value name=\"A\">" +
-                    putVals(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
-                    putVals(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
+                    putVales(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
+                    putVales(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Variable) {
             String[] varName = ((SyntaxTree.Variable) val).getVariableName().split(":");
             return "<block type=\"variables_get\"><field name=\"VAR\">" + varName[varName.length - 1] + "</field></block>";
@@ -52,11 +52,11 @@ public class BlockTool {
             if (((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV1().toString().equals("") &&
                     !(((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Boolean)) {
                 return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
-                        putVals(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
+                        putVales(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
             } else if (((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV2().toString().equals("") &&
                     !(((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Boolean)) {
                 return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
-                        putVals(((SyntaxTree.Equals) val).getV1()) + "</value></block>";
+                        putVales(((SyntaxTree.Equals) val).getV1()) + "</value></block>";
             }
             return "";
         } else if (val instanceof SyntaxTree.CallFunction) {
@@ -73,7 +73,7 @@ public class BlockTool {
                 int counter = 0;
                 for (String i : functionParameters.get(functionName)) {
                     args.append("<value name=\"ARG").append(counter).append("\">")
-                            .append(putVals(((SyntaxTree.SetVariable)((SyntaxTree.CallFunction) val).getVariableSetters()[counter]).getVariableValue()))
+                            .append(putVales(((SyntaxTree.SetVariable)((SyntaxTree.CallFunction) val).getVariableSetters()[counter]).getVariableValue()))
                             .append("</value>");
                     tmp.append("<arg name=\"").append(i).append("\"></arg>");
                     counter++;
@@ -93,7 +93,7 @@ public class BlockTool {
                         blockCount = pBlockCount;
                     } else {
                         tmp.append("<value name=\"ARG").append(counter++).append("\">")
-                                .append(putVals(((SyntaxTree.SetVariable) value).getVariableValue())).append("</value>");
+                                .append(putVales(((SyntaxTree.SetVariable) value).getVariableValue())).append("</value>");
                     }
                 }
                 if (parentIsExecuteValue)
@@ -135,11 +135,11 @@ public class BlockTool {
         } else if (program instanceof SyntaxTree.Print) {
             ValueBase[] args = ((SyntaxTree.Print) program).getArgs();
             for (int i = 0; i < args.length; i++) {
-                result.append("<block type=\"text_print\">" + "<value name=\"TEXT\">").append(putVals(args[i]))
+                result.append("<block type=\"text_print\">" + "<value name=\"TEXT\">").append(putVales(args[i]))
                         .append("</value>");
                 blockCount++;
                 if (i < args.length - 1) {
-                    result.append("<next><block type=\"text_print\">" + "<value name=\"TEXT\">").append(putVals(((SyntaxTree.Print) program).getSeparator()))
+                    result.append("<next><block type=\"text_print\">" + "<value name=\"TEXT\">").append(putVales(((SyntaxTree.Print) program).getSeparator()))
                             .append("</value>");
                     blockCount++;
                 }
@@ -148,11 +148,11 @@ public class BlockTool {
             if (variables.contains(((SyntaxTree.SetVariable) program).getVariableName())) {
                 if (((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Add) {
                     result.append("<block type=\"math_change\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
-                            .append("</field><value name=\"DELTA\">").append(putVals(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
+                            .append("</field><value name=\"DELTA\">").append(putVales(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
                             .append("</value>");
                 } else {
                     result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
-                            .append("</field><value name=\"VALUE\">").append(putVals(((SyntaxTree.SetVariable) program).getVariableValue()))
+                            .append("</field><value name=\"VALUE\">").append(putVales(((SyntaxTree.SetVariable) program).getVariableValue()))
                             .append("</value>");
                 }
                 blockCount++;
@@ -161,11 +161,11 @@ public class BlockTool {
                 if (!(((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Null)) {
                     if (((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Add) {
                         result.append("<block type=\"math_change\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
-                                .append("</field><value name=\"DELTA\">").append(putVals(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
+                                .append("</field><value name=\"DELTA\">").append(putVales(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
                                 .append("</value>");
                     } else {
                         result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
-                                .append("</field><value name=\"VALUE\">").append(putVals(((SyntaxTree.SetVariable) program).getVariableValue()))
+                                .append("</field><value name=\"VALUE\">").append(putVales(((SyntaxTree.SetVariable) program).getVariableValue()))
                                 .append("</value>");
                     }
                     blockCount++;
@@ -173,12 +173,22 @@ public class BlockTool {
             }
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
-            result.append(putVals(((SyntaxTree.ExecuteValue) program).getValue()));
+            result.append(putVales(((SyntaxTree.ExecuteValue) program).getValue()));
             parentIsExecuteValue = false;
         } else if (program instanceof SyntaxTree.Return) {
             result.append("<block type=\"return_statement\"><value name=\"VALUE\">")
-                    .append(putVals(((SyntaxTree.Return) program).getValue())).append("</value>");
+                    .append(putVales(((SyntaxTree.Return) program).getValue())).append("</value>");
             blockCount++;
+        } else if (program instanceof SyntaxTree.If) {
+            addXml = false;
+            int pBlockCount = blockCount;
+            blockCount = 0;
+            result.append("<block type=\"logic_if\"><value name=\"ARG0\">")
+                    .append(putVales(((SyntaxTree.If) program).getCondition())).append("</value>")
+                    .append("<statement name=\"ARG1\">").append(syntaxTreeToBlocksXML(((SyntaxTree.If) program).getProgram()))
+                    .append("</statement>");
+            addXml = true;
+            blockCount = pBlockCount + 1;
         } else if (program instanceof SyntaxTree.Function) {
             if (getFunctionBlock((((SyntaxTree.Function) program).getFunctionName())) == null) {
                 boolean hasReturn = hasReturn(((SyntaxTree.Function) program).getProgram());
@@ -193,6 +203,7 @@ public class BlockTool {
                     }
                     addXml = false;
                     int pBlockCount = blockCount;
+                    blockCount = 0;
                     functions.append("</mutation>").append("<field name=\"NAME\">").append(((SyntaxTree.Function) program)
                             .getFunctionName().split(":")[0]).append("</field><statement name=\"STACK\">")
                             .append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram())).append("</statement></block>");
@@ -206,6 +217,7 @@ public class BlockTool {
                     }
                     addXml = false;
                     int pBlockCount = blockCount;
+                    blockCount = 0;
                     functions.append("</mutation><field name=\"NAME\">").append(((SyntaxTree.Function) program).getFunctionName().split(":")[0])
                             .append("</field><statement name=\"STACK\">").append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram()))
                             .append("</statement></block>");

@@ -17,21 +17,24 @@ function initBlocks() {
         this.setTooltip(tooltip);
         this.setHelpUrl(helpUrl);
         var i = 0;
+        var blockToAddField;
         for (var tmp of blockUI) {
-          if (tmp == null) {
+          if (tmp === null) {
             if (paramTypes[i]) {
-              this.appendValueInput("ARG" + i)
-                  .setCheck(null);
+              blockToAddField = this.appendValueInput("ARG" + i);
+              blockToAddField.setCheck(null);
             } else {
-              this.appendStatementInput("ARG" + i)
-                  .setCheck(null);
+              blockToAddField = this.appendStatementInput("ARG" + i);
+              blockToAddField.setCheck(null);
             }
             i++;
           } else if (typeof tmp == 'string') {
-            this.appendDummyInput()
-                  .appendField(tmp);
+            if (!blockToAddField) blockToAddField = this.appendDummyInput();
+            blockToAddField.appendField(tmp);
           } else if (typeof tmp == 'function') {
-            tmp(this);
+            tmp(this, blockToAddField);
+          } else if (tmp === undefined) {
+            blockToAddField = undefined;
           }
         }
         if (output) {
@@ -69,6 +72,8 @@ function initBlocks() {
         out += '<value name="ARG' + counter++ + '"><shadow type="math_number"><field name="NUM">' + i + '</field></shadow></value>';
       } else if (typeof i == 'string') {
         out += '<value name="ARG' + counter++ + '"><shadow type="text"><field name="TEXT">' + i + '</field></shadow></value>';
+      } else if (typeof i == 'boolean') {
+        out += '<value name="ARG' + counter++ + '"><shadow type="logic_boolean"><field name="BOOL">' + (i? "TRUE":"FALSE") + '</field></shadow></value>';
       }
     }
     return out;
@@ -90,26 +95,38 @@ function initBlocks() {
   //     print v
   //     print "\\n"
   //     f!()
-  //   }`, ['text 1', null, "text 2", null, function(block) { //image field
+  //   }`, ['text 1', null, undefined, "text 2", null, function(block) { //image field
   //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
   //   }], 'tooltip', 'helpUrl'
   // );
-
+  //
   // addBlock("negate", "Math", createShadows([1]), function(block) {
   //   var data = Blockly.genCode.valueToCode(block, 'ARG0',
   //       Blockly.genCode.ORDER_NONE) || 'null';
   //   return ['-' + data, Blockly.genCode.ORDER_UNARY_SIGN];
   // }, [null], [true],
-  //   '', ['-', null, ''], 'tooltip', 'helpUrl', true);
-
+  //   '', [null, '-'], 'tooltip', 'helpUrl', true);
+  //
   // addBlock("test", "Math", createShadows(["10"]), "test", ['v', 'f'], [true, false],
   //   `func test(v, f) {
   //     print v
   //     print "\\n"
   //     f!()
-  //   }`, ['text 1', null, "text 2", null, function(block) { //image field
+  //   }`, ['text 1', null, undefined, "text 2", null, function(block) { //image field
   //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
   //   }], 'tooltip', 'helpUrl', true);
+
+  addBlock("logic_if", "Logic", '', function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || 'true';
+    var code = Blockly.genCode.statementToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || '';
+    return 'if ' + data + ' {\n' + code + '}\n';
+  }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_IF_MSG_IF'], function(self, blockToAddField) {
+    blockToAddField.setCheck(["Number", "Boolean"]);
+  }, null,Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_IF_TOOLTIP'],
+    Blockly.Msg['CONTROLS_IF_HELPURL']
+  );
 
 
   Blockly.defineBlocksWithJsonArray([

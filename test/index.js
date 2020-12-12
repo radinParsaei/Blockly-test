@@ -5,13 +5,13 @@ import { initBlocks, functions, functionCodes } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 import './procedures.js';
-// import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas';
 
-// function genPhoto() {
-  // html2canvas(document.body, {logging: false}).then(function(canvas) {
-      // document.body.appendChild(canvas);
-  // });
-// }
+function genPhoto() {
+  html2canvas(document.body, {logging: false}).then(function(canvas) {
+      document.body.appendChild(canvas);
+  });
+}
 
 var isDark = false;
 var isFirst = true;
@@ -195,4 +195,4 @@ function changeView() {
 if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').checked = true;
 else document.getElementById('theme').checked = false;
 
-export { workspace, changeTheme, changeView, /*genPhoto,*/ injectBlockly, runCode };
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode };
