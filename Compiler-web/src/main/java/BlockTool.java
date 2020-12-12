@@ -19,6 +19,8 @@ public class BlockTool {
             return "<block type=\"math_number\"><field name=\"NUM\">" + val + "</field></block>";
         } else if (val instanceof SyntaxTree.Text) {
             return "<block type=\"text\"><field name=\"TEXT\">" + val + "</field></block>";
+        } else if (val instanceof SyntaxTree.Boolean) {
+            return "<block type=\"logic_boolean\"><field name=\"BOOL\">" + (((Boolean)val.getData())? "TRUE":"FALSE") + "</field></block>";
         } else if (val instanceof SyntaxTree.Add) {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">ADD</field><value name=\"A\">" +
                     putVals(((SyntaxTree.Add) val).getV1()) + "</value><value name=\"B\">" +

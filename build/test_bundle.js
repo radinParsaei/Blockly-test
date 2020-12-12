@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "458ffe59a8951f02d2f5";
+/******/ 	var hotCurrentHash = "2c4dde3853d6adf2a155";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -15507,6 +15507,11 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_ifreturn'] = functio
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['return_statement'] = function (block) {
   var msg = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || 'null';
   return 'return ' + msg + '\n';
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_boolean'] = function (block) {
+  var code = block.getFieldValue('BOOL') == 'TRUE' ? 'true' : 'false';
+  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC];
 };
 
 /***/ }),

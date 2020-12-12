@@ -415,3 +415,8 @@ Blockly.genCode['return_statement'] = function(block) {
       Blockly.genCode.ORDER_NONE) || 'null';
   return 'return ' + msg + '\n';
 };
+
+Blockly.genCode['logic_boolean'] = function(block) {
+  var code = (block.getFieldValue('BOOL') == 'TRUE') ? 'true' : 'false';
+  return [code, Blockly.genCode.ORDER_ATOMIC];
+};
