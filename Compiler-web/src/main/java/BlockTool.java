@@ -189,10 +189,29 @@ public class BlockTool {
                     .append("<statement name=\"ARG1\">").append(syntaxTreeToBlocksXML(((SyntaxTree.If) program).getProgram()))
                     .append("</statement>");
             if (((SyntaxTree.If) program).getElseProgram() != null) {
-                blockCount = 0;
-                result.append("<next>").append("<block type=\"logic_else\">").append("<statement name=\"ARG0\">")
-                        .append(syntaxTreeToBlocksXML(((SyntaxTree.If) program).getElseProgram())).append("</statement>");
-                blocks++;
+                if (((SyntaxTree.If) program).getElseProgram() instanceof SyntaxTree.If) {
+                    SyntaxTree.If tmp = (SyntaxTree.If) program;
+                    while (tmp.getElseProgram() instanceof SyntaxTree.If) {
+                        blockCount = 0;
+                        tmp = (SyntaxTree.If) tmp.getElseProgram();
+                        result.append("<next><block type=\"logic_elseif\"><value name=\"ARG0\">")
+                                .append(putVales(tmp.getCondition())).append("</value>")
+                                .append("<statement name=\"ARG1\">").append(syntaxTreeToBlocksXML(tmp.getProgram()))
+                                .append("</statement>");
+                        blocks++;
+                    }
+                    if (tmp.getElseProgram() != null) {
+                        blockCount = 0;
+                        result.append("<next>").append("<block type=\"logic_else\">").append("<statement name=\"ARG0\">")
+                                .append(syntaxTreeToBlocksXML(tmp.getElseProgram())).append("</statement>");
+                        blocks++;
+                    }
+                } else {
+                    blockCount = 0;
+                    result.append("<next>").append("<block type=\"logic_else\">").append("<statement name=\"ARG0\">")
+                            .append(syntaxTreeToBlocksXML(((SyntaxTree.If) program).getElseProgram())).append("</statement>");
+                    blocks++;
+                }
             }
             addXml = true;
             blockCount = pBlockCount + blocks;
