@@ -121,11 +121,42 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || 'true';
     var code = Blockly.genCode.statementToCode(block, 'ARG1',
         Blockly.genCode.ORDER_NONE) || '';
-    return 'if ' + data + ' {\n' + code + '}\n';
+    var code = 'if ' + data + ' {\n' + code + '}';
+    if (block.getNextBlock() == null || block.getNextBlock().type != "logic_else") {
+      code += '\n';
+    }
+    return code;
   }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_IF_MSG_IF'], function(self, blockToAddField) {
     blockToAddField.setCheck(["Number", "Boolean"]);
   }, null,Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_IF_TOOLTIP'],
     Blockly.Msg['CONTROLS_IF_HELPURL']
+  );
+
+  // addBlock("logic_elseif", "Logic", '', function(block) {
+  //   var data = Blockly.genCode.valueToCode(block, 'ARG0',
+  //       Blockly.genCode.ORDER_NONE) || 'true';
+  //   var code = Blockly.genCode.statementToCode(block, 'ARG1',
+  //       Blockly.genCode.ORDER_NONE) || '';
+  //   if (block.getPreviousBlock() == null || block.getPreviousBlock().type != "logic_if") {
+  //     throw 'else if just can attach to if block';
+  //   }
+  //   return ' else if ' + data + ' {\n' + code + '}\n';
+  // }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_IF_MSG_ELSEIF'], function(self, blockToAddField) {
+  //   blockToAddField.setCheck(["Number", "Boolean"]);
+  // }, null,Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_IF_TOOLTIP'],
+  //   Blockly.Msg['CONTROLS_IF_HELPURL']
+  // );
+
+  addBlock("logic_else", "Logic", '', function(block) {
+    var code = Blockly.genCode.statementToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || '';
+        if (block.getPreviousBlock() == null || block.getPreviousBlock().type != "logic_if") {
+          throw 'else if just can attach to if block';
+        }
+    return ' else {\n' + code + '}\n';
+  }, [], [false],'', [Blockly.Msg['CONTROLS_IF_MSG_ELSE'], null, Blockly.Msg['CONTROLS_IF_MSG_THEN']],
+    Blockly.Msg['CONTROLS_IF_ELSE_TOOLTIP'],
+    Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL']
   );
 
 

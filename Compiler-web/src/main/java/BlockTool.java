@@ -183,12 +183,19 @@ public class BlockTool {
             addXml = false;
             int pBlockCount = blockCount;
             blockCount = 0;
+            int blocks = 1;
             result.append("<block type=\"logic_if\"><value name=\"ARG0\">")
                     .append(putVales(((SyntaxTree.If) program).getCondition())).append("</value>")
                     .append("<statement name=\"ARG1\">").append(syntaxTreeToBlocksXML(((SyntaxTree.If) program).getProgram()))
                     .append("</statement>");
+            if (((SyntaxTree.If) program).getElseProgram() != null) {
+                blockCount = 0;
+                result.append("<next>").append("<block type=\"logic_else\">").append("<statement name=\"ARG0\">")
+                        .append(syntaxTreeToBlocksXML(((SyntaxTree.If) program).getElseProgram())).append("</statement>");
+                blocks++;
+            }
             addXml = true;
-            blockCount = pBlockCount + 1;
+            blockCount = pBlockCount + blocks;
         } else if (program instanceof SyntaxTree.Function) {
             if (getFunctionBlock((((SyntaxTree.Function) program).getFunctionName())) == null) {
                 boolean hasReturn = hasReturn(((SyntaxTree.Function) program).getProgram());
