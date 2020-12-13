@@ -117,7 +117,7 @@ public class BlockTool {
         }
         if (blockCount >= 0) tmp.append("</block>");
         tmp.append(addXml? "</xml>":"");
-        return tmp.toString();
+        return tmp.toString().replace("<next><next>", "<next>");
     }
 
     public String syntaxTreeToBlocksXML1(ProgramBase program) {
