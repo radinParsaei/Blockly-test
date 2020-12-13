@@ -1,6 +1,7 @@
 import * as Blockly from 'blockly';
 import { CodeJar } from 'CodeJar';
-import { withLineNumbers } from 'codejar/linenumbers';
+// import { withLineNumbers } from 'codejar/linenumbers';
+import { withLineNumbers } from './linenumbers.js';
 import { initBlocks, functions, functionCodes } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
@@ -135,6 +136,8 @@ const highlight = (editor) => {
 let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
 
 function changeThemeWithoutSwap() {
+  if (isDark) document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'white';
+  else document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'gray';
   document.getElementById("editor").classList.toggle('dark');
   document.getElementById("console").classList.toggle('dark');
   document.getElementById("console2").classList.toggle('dark');
