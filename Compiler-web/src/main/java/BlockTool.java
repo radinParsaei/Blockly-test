@@ -2,6 +2,8 @@ import org.teavm.jso.JSBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class BlockTool {
     int blockCount = 0;
@@ -10,6 +12,33 @@ public class BlockTool {
     private final StringBuilder functions = new StringBuilder();
     private static boolean parentIsExecuteValue = false;
     private final HashMap<String, ArrayList<String>> functionParameters = new HashMap<>();
+    private final LinkedHashMap<String, String> variables1 = new LinkedHashMap<>();
+    private String lastFunctionName = null;
+
+    private String getVariableName(String name) {
+        String[] tmp = name.split(":");
+        if ((name.startsWith("#C") || name.startsWith("#F")) && lastFunctionName != null &&
+                functionParameters.get(lastFunctionName.split(":")[0]) != null &&
+                functionParameters.get(lastFunctionName.split(":")[0]).contains(tmp[tmp.length - 1])) {
+            return tmp[tmp.length - 1];
+        }
+        if (variables1.containsKey(name)) return variables1.get(name);
+        String name1 = tmp[tmp.length - 1];
+        String name2 = name1;
+        int counter = 0;
+        for (Map.Entry<String, String> entry : variables1.entrySet()) {
+            if (entry.getValue().equals(name2)) {
+                counter++;
+                name2 = name1 + counter;
+            }
+        }
+        if (counter != 0) {
+            name1 += counter;
+        }
+        variables1.put(name, name1);
+        return name1;
+    }
+
 
     @JSBody(params = { "functionName" }, script = "return functions[functionName] || null")
     public static native String getFunctionBlock(String functionName);
@@ -46,8 +75,7 @@ public class BlockTool {
                     putVales(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
                     putVales(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Variable) {
-            String[] varName = ((SyntaxTree.Variable) val).getVariableName().split(":");
-            return "<block type=\"variables_get\"><field name=\"VAR\">" + varName[varName.length - 1] + "</field></block>";
+            return "<block type=\"variables_get\"><field name=\"VAR\">" + getVariableName(((SyntaxTree.Variable) val).getVariableName()) + "</field></block>";
         } else if (val instanceof SyntaxTree.Equals) {
             if (((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV1().toString().equals("") &&
                     !(((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Boolean)) {
@@ -147,11 +175,11 @@ public class BlockTool {
         } else if (program instanceof SyntaxTree.SetVariable) {
             if (variables.contains(((SyntaxTree.SetVariable) program).getVariableName())) {
                 if (((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Add) {
-                    result.append("<block type=\"math_change\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                    result.append("<block type=\"math_change\"><field name=\"VAR\">").append(getVariableName(((SyntaxTree.SetVariable) program).getVariableName()))
                             .append("</field><value name=\"DELTA\">").append(putVales(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
                             .append("</value>");
                 } else {
-                    result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                    result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(getVariableName(((SyntaxTree.SetVariable) program).getVariableName()))
                             .append("</field><value name=\"VALUE\">").append(putVales(((SyntaxTree.SetVariable) program).getVariableValue()))
                             .append("</value>");
                 }
@@ -160,11 +188,11 @@ public class BlockTool {
                 variables.add(((SyntaxTree.SetVariable) program).getVariableName());
                 if (!(((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Null)) {
                     if (((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Add) {
-                        result.append("<block type=\"math_change\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                        result.append("<block type=\"math_change\"><field name=\"VAR\">").append(getVariableName(((SyntaxTree.SetVariable) program).getVariableName()))
                                 .append("</field><value name=\"DELTA\">").append(putVales(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
                                 .append("</value>");
                     } else {
-                        result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(((SyntaxTree.SetVariable) program).getVariableName())
+                        result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(getVariableName(((SyntaxTree.SetVariable) program).getVariableName()))
                                 .append("</field><value name=\"VALUE\">").append(putVales(((SyntaxTree.SetVariable) program).getVariableValue()))
                                 .append("</value>");
                     }
@@ -217,6 +245,7 @@ public class BlockTool {
             blockCount = pBlockCount + blocks;
         } else if (program instanceof SyntaxTree.Function) {
             if (getFunctionBlock((((SyntaxTree.Function) program).getFunctionName())) == null) {
+                lastFunctionName = ((SyntaxTree.Function) program).getFunctionName();
                 boolean hasReturn = hasReturn(((SyntaxTree.Function) program).getProgram());
                 if (!functionParameters.containsKey(((SyntaxTree.Function) program).getFunctionName())) {
                     functionParameters.put(((SyntaxTree.Function) program).getFunctionName().split(":")[0], new ArrayList<>());
@@ -250,6 +279,7 @@ public class BlockTool {
                     addXml = true;
                     blockCount = pBlockCount;
                 }
+                lastFunctionName = null;
             }
         }
         return result.toString();
