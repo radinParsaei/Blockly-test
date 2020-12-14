@@ -11,6 +11,7 @@ public class Client extends CompilerMain {
             SyntaxTree.getVariables().clear();
             SyntaxTree.getClassesParameters().clear();
             SyntaxTree.CreateLambda.setCounter(0);
+            SyntaxTree.resetNameSpaces();
             document.getElementById("console2").setInnerHTML("");
             Compiler compiler = new Compiler(null, true, null, null, null);
             CustomCompileStep.used = false;
