@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "0d7d949f4825ad4af052";
+/******/ 	var hotCurrentHash = "22197826eff93e0e9514";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -22358,6 +22358,7 @@ var highlight = function highlight(editor) {
 }; // let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
 
 
+if (localStorage.getItem('code') == null) localStorage.setItem('code', '');
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/javascript");

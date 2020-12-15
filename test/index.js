@@ -135,6 +135,7 @@ const highlight = (editor) => {
   }
 }
 // let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
+if (localStorage.getItem('code') == null) localStorage.setItem('code', '');
 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
