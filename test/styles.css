@@ -52,7 +52,7 @@ h4 {
 }
 button {
   margin: 5px;
-  background: #0000;
+  background: rgba(0, 0, 0, 0);
   border-radius: 10px;
   border: none;
   padding: 1.5%;
@@ -70,7 +70,7 @@ button {
   padding-top: 2%;
   padding-left: 0;
   padding-right: 0;
-  background: #777a;
+  background: rgba(119, 119, 119, 0.65);
   border-radius: 100px;
   margin-left: 10px;
 }

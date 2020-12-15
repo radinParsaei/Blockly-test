@@ -57,7 +57,7 @@ function injectBlockly() {
     grid : {
       spacing : 20,
       length : 2,
-      colour : isDark? '#fff2':'#7772',
+      colour : isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.2)',
       snap : true
     },
     zoom : {
