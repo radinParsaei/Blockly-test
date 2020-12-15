@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "9c66a46f508597572936";
+/******/ 	var hotCurrentHash = "60998d9005d960b7e8e7";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1848,397 +1848,6 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
 
   return ContinuousToolbox;
 }(blockly_core__WEBPACK_IMPORTED_MODULE_0__["Toolbox"]);
-
-/***/ }),
-
-/***/ "./node_modules/CodeJar/codejar.js":
-/*!*****************************************!*\
-  !*** ./node_modules/CodeJar/codejar.js ***!
-  \*****************************************/
-/*! exports provided: CodeJar */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeJar", function() { return CodeJar; });
-function CodeJar(editor, highlight, opt = {}) {
-    const options = Object.assign({ tab: "\t", indentOn: /{$/, spellcheck: false, addClosing: true }, opt);
-    let listeners = [];
-    let history = [];
-    let at = -1;
-    let focus = false;
-    let callback;
-    let prev; // code content prior keydown event
-    let isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
-    editor.setAttribute("contentEditable", isFirefox ? "true" : "plaintext-only");
-    editor.setAttribute("spellcheck", options.spellcheck ? "true" : "false");
-    editor.style.outline = "none";
-    editor.style.overflowWrap = "break-word";
-    editor.style.overflowY = "auto";
-    editor.style.resize = "vertical";
-    editor.style.whiteSpace = "pre-wrap";
-    highlight(editor);
-    const debounceHighlight = debounce(() => {
-        const pos = save();
-        highlight(editor);
-        restore(pos);
-    }, 30);
-    let recording = false;
-    const shouldRecord = (event) => {
-        return !isUndo(event) && !isRedo(event)
-            && event.key !== "Meta"
-            && event.key !== "Control"
-            && event.key !== "Alt"
-            && !event.key.startsWith("Arrow");
-    };
-    const debounceRecordHistory = debounce((event) => {
-        if (shouldRecord(event)) {
-            recordHistory();
-            recording = false;
-        }
-    }, 300);
-    const on = (type, fn) => {
-        listeners.push([type, fn]);
-        editor.addEventListener(type, fn);
-    };
-    on("keydown", event => {
-        if (event.defaultPrevented)
-            return;
-        prev = toString();
-        handleNewLine(event);
-        handleTabCharacters(event);
-        if (options.addClosing)
-            handleSelfClosingCharacters(event);
-        handleUndoRedo(event);
-        if (shouldRecord(event) && !recording) {
-            recordHistory();
-            recording = true;
-        }
-    });
-    on("keyup", event => {
-        if (event.defaultPrevented)
-            return;
-        if (event.isComposing)
-            return;
-        if (prev !== toString())
-            debounceHighlight();
-        debounceRecordHistory(event);
-        if (callback)
-            callback(toString());
-    });
-    on("focus", _event => {
-        focus = true;
-    });
-    on("blur", _event => {
-        focus = false;
-    });
-    on("paste", event => {
-        recordHistory();
-        handlePaste(event);
-        recordHistory();
-        if (callback)
-            callback(toString());
-    });
-    function save() {
-        const s = window.getSelection();
-        const pos = { start: 0, end: 0, dir: undefined };
-        visit(editor, el => {
-            if (el === s.anchorNode && el === s.focusNode) {
-                pos.start += s.anchorOffset;
-                pos.end += s.focusOffset;
-                pos.dir = s.anchorOffset <= s.focusOffset ? "->" : "<-";
-                return "stop";
-            }
-            if (el === s.anchorNode) {
-                pos.start += s.anchorOffset;
-                if (!pos.dir) {
-                    pos.dir = "->";
-                }
-                else {
-                    return "stop";
-                }
-            }
-            else if (el === s.focusNode) {
-                pos.end += s.focusOffset;
-                if (!pos.dir) {
-                    pos.dir = "<-";
-                }
-                else {
-                    return "stop";
-                }
-            }
-            if (el.nodeType === Node.TEXT_NODE) {
-                if (pos.dir != "->")
-                    pos.start += el.nodeValue.length;
-                if (pos.dir != "<-")
-                    pos.end += el.nodeValue.length;
-            }
-        });
-        return pos;
-    }
-    function restore(pos) {
-        const s = window.getSelection();
-        let startNode, startOffset = 0;
-        let endNode, endOffset = 0;
-        if (!pos.dir)
-            pos.dir = "->";
-        if (pos.start < 0)
-            pos.start = 0;
-        if (pos.end < 0)
-            pos.end = 0;
-        // Flip start and end if the direction reversed
-        if (pos.dir == "<-") {
-            const { start, end } = pos;
-            pos.start = end;
-            pos.end = start;
-        }
-        let current = 0;
-        visit(editor, el => {
-            if (el.nodeType !== Node.TEXT_NODE)
-                return;
-            const len = (el.nodeValue || "").length;
-            if (current + len >= pos.start) {
-                if (!startNode) {
-                    startNode = el;
-                    startOffset = pos.start - current;
-                }
-                if (current + len >= pos.end) {
-                    endNode = el;
-                    endOffset = pos.end - current;
-                    return "stop";
-                }
-            }
-            current += len;
-        });
-        // If everything deleted place cursor at editor
-        if (!startNode)
-            startNode = editor;
-        if (!endNode)
-            endNode = editor;
-        // Flip back the selection
-        if (pos.dir == "<-") {
-            [startNode, startOffset, endNode, endOffset] = [endNode, endOffset, startNode, startOffset];
-        }
-        s.setBaseAndExtent(startNode, startOffset, endNode, endOffset);
-    }
-    function beforeCursor() {
-        const s = window.getSelection();
-        const r0 = s.getRangeAt(0);
-        const r = document.createRange();
-        r.selectNodeContents(editor);
-        r.setEnd(r0.startContainer, r0.startOffset);
-        return r.toString();
-    }
-    function afterCursor() {
-        const s = window.getSelection();
-        const r0 = s.getRangeAt(0);
-        const r = document.createRange();
-        r.selectNodeContents(editor);
-        r.setStart(r0.endContainer, r0.endOffset);
-        return r.toString();
-    }
-    function handleNewLine(event) {
-        if (event.key === "Enter") {
-            const before = beforeCursor();
-            const after = afterCursor();
-            let [padding] = findPadding(before);
-            let newLinePadding = padding;
-            // If last symbol is "{" ident new line
-            // Allow user defines indent rule
-            if (options.indentOn.test(before)) {
-                newLinePadding += options.tab;
-            }
-            if (isFirefox) {
-                preventDefault(event);
-                insert("\n" + newLinePadding);
-            }
-            else {
-                // Normal browsers
-                if (newLinePadding.length > 0) {
-                    preventDefault(event);
-                    insert("\n" + newLinePadding);
-                }
-            }
-            // Place adjacent "}" on next line
-            if (newLinePadding !== padding && after[0] === "}") {
-                const pos = save();
-                insert("\n" + padding);
-                restore(pos);
-            }
-        }
-    }
-    function handleSelfClosingCharacters(event) {
-        const open = `([{'"`;
-        const close = `)]}'"`;
-        const codeAfter = afterCursor();
-        if (close.includes(event.key) && codeAfter.substr(0, 1) === event.key) {
-            const pos = save();
-            preventDefault(event);
-            pos.start = ++pos.end;
-            restore(pos);
-        }
-        else if (open.includes(event.key)) {
-            const pos = save();
-            preventDefault(event);
-            const text = event.key + close[open.indexOf(event.key)];
-            insert(text);
-            pos.start = ++pos.end;
-            restore(pos);
-        }
-    }
-    function handleTabCharacters(event) {
-        if (event.key === "Tab") {
-            preventDefault(event);
-            if (event.shiftKey) {
-                const before = beforeCursor();
-                let [padding, start,] = findPadding(before);
-                if (padding.length > 0) {
-                    const pos = save();
-                    // Remove full length tab or just remaining padding
-                    const len = Math.min(options.tab.length, padding.length);
-                    restore({ start, end: start + len });
-                    document.execCommand("delete");
-                    pos.start -= len;
-                    pos.end -= len;
-                    restore(pos);
-                }
-            }
-            else {
-                insert(options.tab);
-            }
-        }
-    }
-    function handleUndoRedo(event) {
-        if (isUndo(event)) {
-            preventDefault(event);
-            at--;
-            const record = history[at];
-            if (record) {
-                editor.innerHTML = record.html;
-                restore(record.pos);
-            }
-            if (at < 0)
-                at = 0;
-        }
-        if (isRedo(event)) {
-            preventDefault(event);
-            at++;
-            const record = history[at];
-            if (record) {
-                editor.innerHTML = record.html;
-                restore(record.pos);
-            }
-            if (at >= history.length)
-                at--;
-        }
-    }
-    function recordHistory() {
-        if (!focus)
-            return;
-        const html = editor.innerHTML;
-        const pos = save();
-        const lastRecord = history[at];
-        if (lastRecord) {
-            if (lastRecord.html === html
-                && lastRecord.pos.start === pos.start
-                && lastRecord.pos.end === pos.end)
-                return;
-        }
-        at++;
-        history[at] = { html, pos };
-        history.splice(at + 1);
-        const maxHistory = 300;
-        if (at > maxHistory) {
-            at = maxHistory;
-            history.splice(0, 1);
-        }
-    }
-    function handlePaste(event) {
-        preventDefault(event);
-        const text = (event.originalEvent || event).clipboardData.getData("text/plain");
-        const pos = save();
-        insert(text);
-        highlight(editor);
-        restore({ start: pos.start + text.length, end: pos.start + text.length });
-    }
-    function visit(editor, visitor) {
-        const queue = [];
-        if (editor.firstChild)
-            queue.push(editor.firstChild);
-        let el = queue.pop();
-        while (el) {
-            if (visitor(el) === "stop")
-                break;
-            if (el.nextSibling)
-                queue.push(el.nextSibling);
-            if (el.firstChild)
-                queue.push(el.firstChild);
-            el = queue.pop();
-        }
-    }
-    function isCtrl(event) {
-        return event.metaKey || event.ctrlKey;
-    }
-    function isUndo(event) {
-        return isCtrl(event) && !event.shiftKey && event.key === "z";
-    }
-    function isRedo(event) {
-        return isCtrl(event) && event.shiftKey && event.key === "z";
-    }
-    function insert(text) {
-        text = text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-        document.execCommand("insertHTML", false, text);
-    }
-    function debounce(cb, wait) {
-        let timeout = 0;
-        return (...args) => {
-            clearTimeout(timeout);
-            timeout = window.setTimeout(() => cb(...args), wait);
-        };
-    }
-    function findPadding(text) {
-        // Find beginning of previous line.
-        let i = text.length - 1;
-        while (i >= 0 && text[i] !== "\n")
-            i--;
-        i++;
-        // Find padding of the line.
-        let j = i;
-        while (j < text.length && /[ \t]/.test(text[j]))
-            j++;
-        return [text.substring(i, j) || "", i, j];
-    }
-    function toString() {
-        return editor.textContent || "";
-    }
-    function preventDefault(event) {
-        event.preventDefault();
-    }
-    return {
-        updateOptions(options) {
-            options = Object.assign(Object.assign({}, options), options);
-        },
-        updateCode(code) {
-            editor.textContent = code;
-            highlight(editor);
-        },
-        onUpdate(cb) {
-            callback = cb;
-        },
-        toString,
-        destroy() {
-            for (let [type, fn] of listeners) {
-                editor.removeEventListener(type, fn);
-            }
-        },
-    };
-}
-
 
 /***/ }),
 
@@ -22576,7 +22185,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_boolean'] = function (blo
 /*!***********************!*\
   !*** ./test/index.js ***!
   \***********************/
-/*! exports provided: Blockly, workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode */
+/*! exports provided: Blockly, workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22587,24 +22196,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "genPhoto", function() { return genPhoto; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "injectBlockly", function() { return injectBlockly; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "runCode", function() { return runCode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "editor", function() { return editor; });
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Blockly", function() { return blockly__WEBPACK_IMPORTED_MODULE_0__; });
-/* harmony import */ var CodeJar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! CodeJar */ "./node_modules/CodeJar/codejar.js");
-/* harmony import */ var _linenumbers_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./linenumbers.js */ "./test/linenumbers.js");
-/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
-/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
-/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
-/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
+/* harmony import */ var _linenumbers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./linenumbers.js */ "./test/linenumbers.js");
+/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
+/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
+/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
+/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
+/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-
- // import { withLineNumbers } from 'codejar/linenumbers';
+ // import { CodeJar } from 'CodeJar';
+// import { withLineNumbers } from 'codejar/linenumbers';
 
 
 
@@ -22614,7 +22223,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 function genPhoto() {
-  html2canvas__WEBPACK_IMPORTED_MODULE_7___default()(document.body, {
+  html2canvas__WEBPACK_IMPORTED_MODULE_6___default()(document.body, {
     logging: false
   }).then(function (canvas) {
     document.body.appendChild(canvas);
@@ -22623,6 +22232,7 @@ function genPhoto() {
 
 var isDark = false;
 var isFirst = true;
+var code = null;
 var workspace;
 
 function createWorkspace(blocklyDiv, options) {
@@ -22651,7 +22261,7 @@ function injectBlockly() {
 
   var options = (_options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_9__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_9__["LightTheme"],
+    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_8__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_8__["LightTheme"],
     renderer: 'zelos',
     collapse: true,
     comments: false,
@@ -22693,8 +22303,8 @@ function injectBlockly() {
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
   } else {
     options['plugins'] = {
-      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_4__["ContinuousToolbox"],
-      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_5__["ContinuousFlyout"]
+      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__["ContinuousToolbox"],
+      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__["ContinuousFlyout"]
     };
     sheet.innerHTML = "";
   }
@@ -22721,18 +22331,17 @@ window.onresize = function (event) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_3__["initBlocks"])();
+  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_2__["initBlocks"])();
   blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["MATH_POWER_SYMBOL"] = "**";
   injectBlockly();
 });
 
 function runCode() {
-  var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].workspaceToCode(workspace);
-  jar.updateCode(code);
+  code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].workspaceToCode(workspace); // jar.updateCode(code);
+
   localStorage.setItem('code', code);
 
-  if (localStorage.getItem("mode") == "code") {
-    document.getElementById("callColor").click();
+  if (localStorage.getItem("mode") == "code") {// document.getElementById("callColor").click();
   }
 }
 
@@ -22742,15 +22351,97 @@ window.onbeforeunload = function (e) {
 };
 
 var highlight = function highlight(editor) {
-  if (localStorage.getItem("mode") == "code") {
-    document.getElementById("callColor").click();
+  if (localStorage.getItem("mode") == "code") {// document.getElementById("callColor").click(); TODO
   }
-};
+}; // let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
 
-var jar = Object(CodeJar__WEBPACK_IMPORTED_MODULE_1__["CodeJar"])(document.querySelector('#editor'), Object(_linenumbers_js__WEBPACK_IMPORTED_MODULE_2__["withLineNumbers"])(highlight));
+
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/monokai");
+editor.session.setMode("ace/mode/javascript");
+editor.setHighlightActiveLine(false);
+editor.renderer.setShowGutter(true);
+editor.getSession().setUseWorker(false);
+editor.session.setTabSize(4);
+editor.renderer.setAnimatedScroll(true);
+editor.setFontSize(18);
+editor.setOption('cursorStyle', 'smooth');
+editor.setOption('fadeFoldWidgets', true);
+
+var config = ace.require("ace/config");
+
+var event = ace.require("ace/lib/event");
+
+event.addListener(editor.container, "dragover", function (e) {
+  var types = e.dataTransfer.types;
+  if (types && Array.prototype.indexOf.call(types, 'Files') !== -1) return event.preventDefault(e);
+});
+event.addListener(editor.container, "drop", function (e) {
+  var file;
+
+  try {
+    file = e.dataTransfer.files[0];
+
+    if (window.FileReader) {
+      var reader = new FileReader();
+
+      reader.onload = function () {
+        // var mode = modelist.getModeForPath(file.name);
+        editor.session.doc.setValue(reader.result); // editor.session.setMode(mode.mode);
+        // editor.session.modeName = mode.name;
+      };
+
+      reader.readAsText(file);
+    }
+
+    return event.preventDefault(e);
+  } catch (err) {
+    return event.stopEvent(e);
+  }
+});
+editor.setKeyboardHandler('ace/keyboard/sublime');
+editor.commands.addCommands([{
+  //     name: "showKeyboardShortcuts",
+  //     bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
+  //     exec: function(editor) {
+  //         config.loadModule("ace/ext/keybinding_menu", function(module) {
+  //             module.init(editor);
+  //             editor.showKeyboardShortcuts();
+  //         });
+  //     }
+  // }, {
+  name: "increaseFontSize",
+  bindKey: "Ctrl-=|Ctrl-+",
+  exec: function exec(editor) {
+    var size = parseInt(editor.getFontSize(), 10) || 18;
+    editor.setFontSize(size + 1);
+  }
+}, {
+  name: "decreaseFontSize",
+  bindKey: "Ctrl+-|Ctrl-_",
+  exec: function exec(editor) {
+    var size = parseInt(editor.getFontSize(), 10) || 18;
+    editor.setFontSize(Math.max(size - 1 || 1));
+  }
+}, {
+  name: "resetFontSize",
+  bindKey: "Ctrl+0|Ctrl-Numpad0",
+  exec: function exec(editor) {
+    editor.setFontSize(18);
+  }
+}]);
+editor.setShowPrintMargin(false);
+editor.commands.removeCommands(['showSettingsMenu', 'goToNextError', 'goToPreviousError', 'centerselection', 'fold', 'unfold', 'toggleFoldWidget', 'toggleParentFoldWidget', 'foldall', 'foldAllComments', 'foldOther', 'unfoldall', 'overwrite']);
+editor.session.setValue(localStorage.getItem('code'));
+editor.session.on('change', function (delta) {
+  localStorage.setItem('code', editor.getValue());
+  document.getElementById("genBlocks").click();
+});
 
 function changeThemeWithoutSwap() {
-  if (isDark) document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'white';else document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'gray';
+  // if (isDark) document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'white';
+  // else document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'gray';
+  if (isDark) editor.setTheme("ace/theme/monokai");else editor.setTheme("ace/theme/xcode");
   document.getElementById("editor").classList.toggle('dark');
   document.getElementById("console").classList.toggle('dark');
   document.getElementById("console2").classList.toggle('dark');
@@ -22761,12 +22452,11 @@ function changeTheme() {
   changeThemeWithoutSwap();
   var tmp = localStorage.getItem('theme');
   if (tmp == "light") localStorage.setItem('theme', 'dark');else localStorage.setItem('theme', 'light');
-}
+} // jar.updateCode(localStorage.getItem('code'))
+// jar.onUpdate(code => {
+// localStorage.setItem('code', code)
+// });
 
-jar.updateCode(localStorage.getItem('code'));
-jar.onUpdate(function (code) {
-  localStorage.setItem('code', code);
-});
 
 if (!(localStorage.getItem('mode') == "block" || localStorage.getItem('mode') == "code")) {
   localStorage.setItem('mode', "code");
@@ -22788,14 +22478,22 @@ function changeViewWithoutSwap() {
   try {
     document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
+    if (isDark) editor.setTheme("ace/theme/monokai");else editor.setTheme("ace/theme/xcode");
     isDark = !isDark;
     document.getElementById('root').removeChild(blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().injectionDiv_);
-    injectBlockly();
-    document.getElementById("callColor").click();
+    injectBlockly(); // document.getElementById("callColor").click();
+
+    document.getElementById("genBlocks").click();
   } catch (e) {}
 
   document.getElementById("gotocode").classList.toggle('selected');
   document.getElementById("gotoblock").classList.toggle('selected');
+
+  if (!document.getElementById("editor2").hidden && code != null) {
+    editor.setValue(code);
+    code = null;
+    editor.session.selection.moveTo(0, 0);
+  }
 }
 
 function changeView() {

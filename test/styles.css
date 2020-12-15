@@ -5,7 +5,7 @@ html, body {
 * {
   box-sizing: border-box;
 }
-#editor.dark {
+/* #editor.dark {
   background: #343434;
   color: white;
 }
@@ -21,7 +21,7 @@ html, body {
 }
 .codejar-wrap {
   height: 100%;
-}
+} */
 .editor {
   height: 100%;
 }
