@@ -178,3 +178,7 @@ input:checked + .slider:before {
 .blocklyFlyoutButtonBackground {
   fill: rgba(128, 128, 128, 0.5);
 }
+
+.ace_editor {
+  font-family: "Source Code Pro", monospace !important;
+}
