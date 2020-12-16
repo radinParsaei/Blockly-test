@@ -182,3 +182,14 @@ input:checked + .slider:before {
 .ace_editor {
   font-family: "Source Code Pro", monospace !important;
 }
+
+.ace_tooltip {
+  font-family: "Source Code Pro", monospace !important;
+  /* background-color: rgba(128, 128, 128, 0.5); */
+  border: none;
+}
+
+.ace_tooltip b {
+  color: gray;
+  font-size: 22pt;
+}

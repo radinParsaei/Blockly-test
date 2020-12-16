@@ -5,4 +5,3 @@ define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/event
                         }
                     });
                 })();
-            

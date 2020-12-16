@@ -16,7 +16,7 @@ define("ace/mode/doc_comment_highlight_rules", ["require", "exports", "module", 
     r.inherits(s, i), s.getTagRule = function(e) {
         return {
             token: "comment.doc.tag.storage.type",
-            regex: "\\b(?:TODO|FIXME|XXX|HACK)\\b"
+            regex: "\\b(?:TODO|FIXME)\\b"
         }
     }, s.getStartRule = function(e) {
         return {
@@ -149,8 +149,8 @@ define("ace/mode/doc_comment_highlight_rules", ["require", "exports", "module", 
         u = function(e) {
             var t = this.createKeywordMapper({
                     "variable.language": "",
-                    keyword: "else|func|if|return|var|while|var|func",
-                    // "storage.type": "var|func",
+                    keyword: "else|func|if|return|var|while",
+                    "storage.type": "var|func",
                     "constant.language": "null",
                     "support.function": "print",
                     "constant.language.boolean": "true|false"
@@ -178,27 +178,27 @@ define("ace/mode/doc_comment_highlight_rules", ["require", "exports", "module", 
                     next: "function_arguments"
                 }, {
                     token: ["storage.type", "punctuation.operator", "entity.name.function", "text", "keyword.operator", "text", "storage.type", "text", "paren.lparen"],
-                    regex: "(" + o + ")(\\.)(" + o + ")(\\s*)(=)(\\s*)(function)(\\s*)(\\()",
+                    regex: "(" + o + ")(\\.)(" + o + ")(\\s*)(=)(\\s*)(func)(\\s*)(\\()",
                     next: "function_arguments"
                 }, {
                     token: ["entity.name.function", "text", "keyword.operator", "text", "storage.type", "text", "paren.lparen"],
-                    regex: "(" + o + ")(\\s*)(=)(\\s*)(function)(\\s*)(\\()",
+                    regex: "(" + o + ")(\\s*)(=)(\\s*)(func)(\\s*)(\\()",
                     next: "function_arguments"
                 }, {
                     token: ["storage.type", "punctuation.operator", "entity.name.function", "text", "keyword.operator", "text", "storage.type", "text", "entity.name.function", "text", "paren.lparen"],
-                    regex: "(" + o + ")(\\.)(" + o + ")(\\s*)(=)(\\s*)(function)(\\s+)(\\w+)(\\s*)(\\()",
+                    regex: "(" + o + ")(\\.)(" + o + ")(\\s*)(=)(\\s*)(func)(\\s+)(\\w+)(\\s*)(\\()",
                     next: "function_arguments"
                 }, {
                     token: ["storage.type", "text", "entity.name.function", "text", "paren.lparen"],
-                    regex: "(function)(\\s+)(" + o + ")(\\s*)(\\()",
+                    regex: "(func)(\\s+)(" + o + ")(\\s*)(\\()",
                     next: "function_arguments"
                 }, {
                     token: ["entity.name.function", "text", "punctuation.operator", "text", "storage.type", "text", "paren.lparen"],
-                    regex: "(" + o + ")(\\s*)(:)(\\s*)(function)(\\s*)(\\()",
+                    regex: "(" + o + ")(\\s*)(:)(\\s*)(func)(\\s*)(\\()",
                     next: "function_arguments"
                 }, {
                     token: ["text", "text", "storage.type", "text", "paren.lparen"],
-                    regex: "(:)(\\s*)(function)(\\s*)(\\()",
+                    regex: "(:)(\\s*)(func)(\\s*)(\\()",
                     next: "function_arguments"
                 }, {
                     token: "keyword",
@@ -248,7 +248,7 @@ define("ace/mode/doc_comment_highlight_rules", ["require", "exports", "module", 
                     regex: "\\s+"
                 }, {
                     token: ["storage.type", "punctuation.operator", "entity.name.function", "text", "keyword.operator", "text", "storage.type", "text", "entity.name.function", "text", "paren.lparen"],
-                    regex: "(" + o + ")(\\.)(" + o + ")(\\s*)(=)(\\s*)(function)(?:(\\s+)(\\w+))?(\\s*)(\\()",
+                    regex: "(" + o + ")(\\.)(" + o + ")(\\s*)(=)(\\s*)(func)(?:(\\s+)(\\w+))?(\\s*)(\\()",
                     next: "function_arguments"
                 }, {
                     token: "punctuation.operator",

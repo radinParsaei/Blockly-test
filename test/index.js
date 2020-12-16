@@ -137,8 +137,9 @@ const highlight = (editor) => {
 // let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
 if (localStorage.getItem('code') == null) localStorage.setItem('code', '');
 
+var langTools = ace.require("ace/ext/language_tools");
 var editor = ace.edit("editor");
-editor.setTheme("ace/theme/monokai");
+editor.setTheme("ace/theme/monokai0");
 editor.session.setMode("ace/mode/javascript");
 editor.setHighlightActiveLine(false);
 editor.renderer.setShowGutter(true);
@@ -148,6 +149,15 @@ editor.renderer.setAnimatedScroll(true);
 editor.setFontSize(18);
 editor.setOption('cursorStyle', 'smooth');
 editor.setOption('fadeFoldWidgets', true);
+editor.setShowPrintMargin(false);
+editor.setOptions({
+    enableSnippets: true,
+    enableLiveAutocompletion: true,
+    enableBasicAutocompletion: true
+});
+
+langTools.setCompleters([langTools.snippetCompleter])
+
 var config = ace.require("ace/config");
 var event = ace.require("ace/lib/event");
 event.addListener(editor.container, "dragover", function(e) {
@@ -207,7 +217,6 @@ editor.commands.addCommands([{
         editor.setFontSize(18);
     }
 }]);
-editor.setShowPrintMargin(false);
 editor.commands.removeCommands(['showSettingsMenu', 'goToNextError', 'goToPreviousError',
                                 'centerselection', 'fold', 'unfold', 'toggleFoldWidget',
                                 'toggleParentFoldWidget', 'foldall', 'foldAllComments',
@@ -222,8 +231,8 @@ editor.session.on('change', function(delta) {
 function changeThemeWithoutSwap() {
   // if (isDark) document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'white';
   // else document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'gray';
-  if (isDark) editor.setTheme("ace/theme/monokai");
-  else editor.setTheme("ace/theme/xcode");
+  if (isDark) editor.setTheme("ace/theme/monokai0");
+  else editor.setTheme("ace/theme/xcode0");
   document.getElementById("editor").classList.toggle('dark');
   document.getElementById("console").classList.toggle('dark');
   document.getElementById("console2").classList.toggle('dark');
@@ -261,8 +270,8 @@ function changeViewWithoutSwap() {
   try {
     document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
-    if (isDark) editor.setTheme("ace/theme/monokai");
-    else editor.setTheme("ace/theme/xcode");
+    if (isDark) editor.setTheme("ace/theme/monokai0");
+    else editor.setTheme("ace/theme/xcode0");
     isDark = !isDark;
     document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
     injectBlockly();
