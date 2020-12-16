@@ -147,13 +147,14 @@ editor.getSession().setUseWorker(false);
 editor.session.setTabSize(4);
 editor.renderer.setAnimatedScroll(true);
 editor.setFontSize(18);
-editor.setOption('cursorStyle', 'smooth');
-editor.setOption('fadeFoldWidgets', true);
 editor.setShowPrintMargin(false);
 editor.setOptions({
     enableSnippets: true,
     enableLiveAutocompletion: true,
-    enableBasicAutocompletion: true
+    enableBasicAutocompletion: true,
+    copyWithEmptySelection: true,
+    cursorStyle: 'smooth',
+    fadeFoldWidgets: true
 });
 
 langTools.setCompleters([langTools.snippetCompleter])

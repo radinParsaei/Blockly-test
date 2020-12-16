@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "bc8693ce1dd0ca3ca601";
+/******/ 	var hotCurrentHash = "3585bf07e6ea5fd3eb10";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -22392,13 +22392,14 @@ editor.getSession().setUseWorker(false);
 editor.session.setTabSize(4);
 editor.renderer.setAnimatedScroll(true);
 editor.setFontSize(18);
-editor.setOption('cursorStyle', 'smooth');
-editor.setOption('fadeFoldWidgets', true);
 editor.setShowPrintMargin(false);
 editor.setOptions({
   enableSnippets: true,
   enableLiveAutocompletion: true,
-  enableBasicAutocompletion: true
+  enableBasicAutocompletion: true,
+  copyWithEmptySelection: true,
+  cursorStyle: 'smooth',
+  fadeFoldWidgets: true
 });
 langTools.setCompleters([langTools.snippetCompleter]);
 

@@ -106,7 +106,9 @@ public class BlockTool {
                     tmp.append("<arg name=\"").append(i).append("\"></arg>");
                     counter++;
                 }
-                tmp.append("</mutation>").append(args).append("</block>");
+                tmp.append("</mutation>").append(args);
+                if (parentIsExecuteValue) blockCount++;
+                else tmp.append("</block>");
             } else {
                 tmp.append(getFunctionBlock(((SyntaxTree.CallFunction) val).getFunctionName())).append("\">");
                 int counter = 0;
