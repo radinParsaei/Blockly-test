@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "8b74c81f0e3f190a2a37";
+/******/ 	var hotCurrentHash = "bc8693ce1dd0ca3ca601";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21504,6 +21504,27 @@ function initBlocks() {
     "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
     "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
     "extensions": ["parent_tooltip_when_inline"]
+  }, {
+    "type": "math_arithmetic",
+    "message0": "%1 %2 %3",
+    "args0": [{
+      "type": "input_value",
+      "name": "A" // "check": "Number"
+
+    }, {
+      "type": "field_dropdown",
+      "name": "OP",
+      "options": [["%{BKY_MATH_ADDITION_SYMBOL}", "ADD"], ["%{BKY_MATH_SUBTRACTION_SYMBOL}", "MINUS"], ["%{BKY_MATH_MULTIPLICATION_SYMBOL}", "MULTIPLY"], ["%{BKY_MATH_DIVISION_SYMBOL}", "DIVIDE"], ["%{BKY_MATH_POWER_SYMBOL}", "POWER"]]
+    }, {
+      "type": "input_value",
+      "name": "B" // "check": "Number"
+
+    }],
+    "inputsInline": true,
+    "output": "Number",
+    "style": "math_blocks",
+    "helpUrl": "%{BKY_MATH_ARITHMETIC_HELPURL}",
+    "extensions": ["math_op_tooltip"]
   }]);
 
   Blockly.Procedures.flyoutCategory = function (workspace) {
