@@ -125,13 +125,26 @@ function runCode() {
 }
 
 window.onbeforeunload = function (e) {
+  localStorage.setItem('allVariables', allVariables);
   const xml = Blockly.Xml.workspaceToDom(workspace);
   sessionStorage.setItem("blocks", Blockly.Xml.domToPrettyText(xml));
 };
 
+allVariables = localStorage.getItem('allVariables');
+var tmp = []
+let data = allVariables.split(',')
+allVariables = []
+for (var i of data) {
+  tmp.push(i);
+  if (tmp.length == 2) {
+    allVariables.push(tmp)
+    tmp = []
+  }
+}
+
 const highlight = (editor) => {
   if (localStorage.getItem("mode") == "code") {
-    // document.getElementById("callColor").click(); TODO
+    // document.getElementById("callColor").click();
   }
 }
 // let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));

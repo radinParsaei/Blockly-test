@@ -65,6 +65,7 @@ Blockly.genCode.ORDER_OVERRIDES = [
 ];
 
 Blockly.genCode.init = function(workspace) {
+  allVariables = [];
   Blockly.genCode.definitions_ = Object.create(null);
   Blockly.genCode.functionNames_ = Object.create(null);
 
@@ -440,5 +441,6 @@ Blockly.genCode['variable_declare'] = function(block) {
       Blockly.genCode.ORDER_NONE) || '0';
   var varName = Blockly.genCode.variableDB_.getName(
       block.getFieldValue('NAME'), Blockly.VARIABLE_CATEGORY_NAME);
+  allVariables.push([varName, varName]);
   return 'var ' + varName + ' = ' + argument0 + '\n';
 };

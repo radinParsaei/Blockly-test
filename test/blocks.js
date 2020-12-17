@@ -1,6 +1,14 @@
 import './field_dropdown.js'
 import './variables_mutator.js';
 
+function listVariables() {
+  var res = [[Blockly.Msg['SELECT_VARIABLE'], '']];
+  for (var i of allVariables) {
+    res.push(i);
+  }
+  return res;
+}
+
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
     blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output) {
@@ -252,7 +260,7 @@ function initBlocks() {
 
   Blockly.Blocks['variable_set'] = {
     init: function() {
-      let field = new Blockly.FieldDropdown([[Blockly.Msg['SELECT_VARIABLE'], '']])
+      let field = new Blockly.FieldDropdown(listVariables);
       let self = this;
       field.onOpenMenu = function() {
         this.menuGenerator_ = [[Blockly.Msg['SELECT_VARIABLE'], '']]
@@ -276,7 +284,7 @@ function initBlocks() {
 
   Blockly.Blocks['variable_get'] = {
     init: function() {
-      let field = new Blockly.FieldDropdown([[Blockly.Msg['SELECT_VARIABLE'], '']])
+      let field = new Blockly.FieldDropdown(listVariables);
       let self = this;
       field.onOpenMenu = function() {
         this.menuGenerator_ = [[Blockly.Msg['SELECT_VARIABLE'], '']]

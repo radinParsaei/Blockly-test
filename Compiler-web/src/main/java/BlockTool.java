@@ -39,9 +39,11 @@ public class BlockTool {
         return name1;
     }
 
-
     @JSBody(params = { "functionName" }, script = "return functions[functionName] || null")
     public static native String getFunctionBlock(String functionName);
+
+    @JSBody(params = { "variableName" }, script = "allVariables.push([variableName, variableName])")
+    public static native String addVariableName(String variableName);
 
     private String putVales(ValueBase val) {
         if (val instanceof SyntaxTree.Number) {
@@ -75,7 +77,8 @@ public class BlockTool {
                     putVales(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
                     putVales(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Variable) {
-            return "<block type=\"variables_get\"><field name=\"VAR\">" + getVariableName(((SyntaxTree.Variable) val).getVariableName()) + "</field></block>";
+            String[] variableName = ((SyntaxTree.Variable) val).getVariableName().split(":");
+            return "<block type=\"variable_get\"><field name=\"NAME\">" + variableName[variableName.length - 1] + "</field></block>";
         } else if (val instanceof SyntaxTree.Equals) {
             if (((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV1().toString().equals("") &&
                     !(((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Boolean)) {
@@ -175,32 +178,21 @@ public class BlockTool {
                 }
             }
         } else if (program instanceof SyntaxTree.SetVariable) {
-            if (variables.contains(((SyntaxTree.SetVariable) program).getVariableName())) {
-                if (((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Add) {
-                    result.append("<block type=\"math_change\"><field name=\"VAR\">").append(getVariableName(((SyntaxTree.SetVariable) program).getVariableName()))
-                            .append("</field><value name=\"DELTA\">").append(putVales(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
-                            .append("</value>");
-                } else {
-                    result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(getVariableName(((SyntaxTree.SetVariable) program).getVariableName()))
-                            .append("</field><value name=\"VALUE\">").append(putVales(((SyntaxTree.SetVariable) program).getVariableValue()))
-                            .append("</value>");
-                }
-                blockCount++;
-            } else {
-                variables.add(((SyntaxTree.SetVariable) program).getVariableName());
+            String[] variableName = ((SyntaxTree.SetVariable) program).getVariableName().split(":");
+            if (((SyntaxTree.SetVariable) program).getIsDeclaration()) {
+                addVariableName(variableName[variableName.length - 1]);
+                result.append("<block type=\"variable_declare\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
+                        .append("</field>");
                 if (!(((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Null)) {
-                    if (((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Add) {
-                        result.append("<block type=\"math_change\"><field name=\"VAR\">").append(getVariableName(((SyntaxTree.SetVariable) program).getVariableName()))
-                                .append("</field><value name=\"DELTA\">").append(putVales(((SyntaxTree.Add) ((SyntaxTree.SetVariable) program).getVariableValue()).getV2()))
-                                .append("</value>");
-                    } else {
-                        result.append("<block type=\"variables_set\"><field name=\"VAR\">").append(getVariableName(((SyntaxTree.SetVariable) program).getVariableName()))
-                                .append("</field><value name=\"VALUE\">").append(putVales(((SyntaxTree.SetVariable) program).getVariableValue()))
-                                .append("</value>");
-                    }
-                    blockCount++;
+                    result.append("<mutation hasValue=\"1\"></mutation>").append("<value name=\"VALUE\">")
+                            .append(putVales(((SyntaxTree.SetVariable) program).getVariableValue())).append("</value>");
                 }
+            } else {
+                result.append("<block type=\"variable_set\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
+                        .append("</field><value name=\"DATA\">").append(putVales(((SyntaxTree.SetVariable) program).getVariableValue()))
+                        .append("</value>");
             }
+            blockCount++;
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
             result.append(putVales(((SyntaxTree.ExecuteValue) program).getValue()));

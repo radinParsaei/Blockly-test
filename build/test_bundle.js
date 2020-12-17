@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "4fb914bb1e0f9d2d8293";
+/******/ 	var hotCurrentHash = "876094f81cab5db079a8";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21286,6 +21286,26 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+function listVariables() {
+  var res = [[Blockly.Msg['SELECT_VARIABLE'], '']];
+
+  var _iterator = _createForOfIteratorHelper(allVariables),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var i = _step.value;
+      res.push(i);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+
+  return res;
+}
+
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName, blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output) {
     var element = document.createElement("block");
@@ -21296,18 +21316,18 @@ function initBlocks() {
     if (blockFunctionName != undefined) {
       var functionNameInBackend = blockFunctionName + ":";
 
-      var _iterator = _createForOfIteratorHelper(blockFunctionParameters),
-          _step;
+      var _iterator2 = _createForOfIteratorHelper(blockFunctionParameters),
+          _step2;
 
       try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var tmp = _step.value;
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var tmp = _step2.value;
           functionNameInBackend += "," + tmp;
         }
       } catch (err) {
-        _iterator.e(err);
+        _iterator2.e(err);
       } finally {
-        _iterator.f();
+        _iterator2.f();
       }
 
       functions[functionNameInBackend] = blockName;
@@ -21320,12 +21340,12 @@ function initBlocks() {
         var i = 0;
         var blockToAddField;
 
-        var _iterator2 = _createForOfIteratorHelper(blockUI),
-            _step2;
+        var _iterator3 = _createForOfIteratorHelper(blockUI),
+            _step3;
 
         try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var tmp = _step2.value;
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var tmp = _step3.value;
 
             if (tmp === null) {
               if (paramTypes[i]) {
@@ -21347,9 +21367,9 @@ function initBlocks() {
             }
           }
         } catch (err) {
-          _iterator2.e(err);
+          _iterator3.e(err);
         } finally {
-          _iterator2.f();
+          _iterator3.f();
         }
 
         if (output) {
@@ -21384,12 +21404,12 @@ function initBlocks() {
   function createShadows(values) {
     var counter = 0;
 
-    var _iterator3 = _createForOfIteratorHelper(values),
-        _step3;
+    var _iterator4 = _createForOfIteratorHelper(values),
+        _step4;
 
     try {
-      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-        var i = _step3.value;
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var i = _step4.value;
 
         if (typeof i == 'number') {
           out += '<value name="ARG' + counter++ + '"><shadow type="math_number"><field name="NUM">' + i + '</field></shadow></value>';
@@ -21400,9 +21420,9 @@ function initBlocks() {
         }
       }
     } catch (err) {
-      _iterator3.e(err);
+      _iterator4.e(err);
     } finally {
-      _iterator3.f();
+      _iterator4.f();
     }
 
     return out;
@@ -21548,7 +21568,7 @@ function initBlocks() {
   }]);
   Blockly.Blocks['variable_set'] = {
     init: function init() {
-      var field = new Blockly.FieldDropdown([[Blockly.Msg['SELECT_VARIABLE'], '']]);
+      var field = new Blockly.FieldDropdown(listVariables);
       var self = this;
 
       field.onOpenMenu = function () {
@@ -21574,7 +21594,7 @@ function initBlocks() {
   };
   Blockly.Blocks['variable_get'] = {
     init: function init() {
-      var field = new Blockly.FieldDropdown([[Blockly.Msg['SELECT_VARIABLE'], '']]);
+      var field = new Blockly.FieldDropdown(listVariables);
       var self = this;
 
       field.onOpenMenu = function () {
@@ -22723,6 +22743,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_OVERRIDES = [// (foo()).ba
 [blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR]];
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].init = function (workspace) {
+  allVariables = [];
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_ = Object.create(null);
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionNames_ = Object.create(null);
 
@@ -23095,6 +23116,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_set'] = function (bloc
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_declare'] = function (block) {
   var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '0';
   var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+  allVariables.push([varName, varName]);
   return 'var ' + varName + ' = ' + argument0 + '\n';
 };
 
@@ -23129,6 +23151,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
 /* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
 /* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
  // import { CodeJar } from 'CodeJar';
@@ -23265,12 +23293,37 @@ function runCode() {
 }
 
 window.onbeforeunload = function (e) {
+  localStorage.setItem('allVariables', allVariables);
   var xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].workspaceToDom(workspace);
   sessionStorage.setItem("blocks", blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToPrettyText(xml));
 };
 
+allVariables = localStorage.getItem('allVariables');
+var tmp = [];
+var data = allVariables.split(',');
+allVariables = [];
+
+var _iterator = _createForOfIteratorHelper(data),
+    _step;
+
+try {
+  for (_iterator.s(); !(_step = _iterator.n()).done;) {
+    var i = _step.value;
+    tmp.push(i);
+
+    if (tmp.length == 2) {
+      allVariables.push(tmp);
+      tmp = [];
+    }
+  }
+} catch (err) {
+  _iterator.e(err);
+} finally {
+  _iterator.f();
+}
+
 var highlight = function highlight(editor) {
-  if (localStorage.getItem("mode") == "code") {// document.getElementById("callColor").click(); TODO
+  if (localStorage.getItem("mode") == "code") {// document.getElementById("callColor").click();
   }
 }; // let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
 
