@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "876094f81cab5db079a8";
+/******/ 	var hotCurrentHash = "26a11699ea922c4aa984";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23181,6 +23181,7 @@ var isDark = false;
 var isFirst = true;
 var code = null;
 var workspace;
+var genBlocks = false;
 
 function createWorkspace(blocklyDiv, options) {
   workspace = blockly__WEBPACK_IMPORTED_MODULE_0__["inject"](blocklyDiv, options);
@@ -23286,6 +23287,9 @@ document.addEventListener('DOMContentLoaded', function () {
 function runCode() {
   code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].workspaceToCode(workspace); // jar.updateCode(code);
 
+  genBlocks = false;
+  editor.setValue(code);
+  genBlocks = true;
   localStorage.setItem('code', code);
 
   if (localStorage.getItem("mode") == "code") {// document.getElementById("callColor").click();
@@ -23418,7 +23422,7 @@ editor.commands.removeCommands(['showSettingsMenu', 'goToNextError', 'goToPrevio
 editor.session.setValue(localStorage.getItem('code'));
 editor.session.on('change', function (delta) {
   localStorage.setItem('code', editor.getValue());
-  document.getElementById("genBlocks").click();
+  if (genBlocks) document.getElementById("genBlocks").click();
 });
 
 function changeThemeWithoutSwap() {

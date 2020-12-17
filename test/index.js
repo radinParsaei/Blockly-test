@@ -18,6 +18,7 @@ var isDark = false;
 var isFirst = true;
 var code = null;
 let workspace;
+var genBlocks = false;
 
 function createWorkspace(blocklyDiv, options) {
   workspace = Blockly.inject(blocklyDiv, options);
@@ -118,6 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function runCode() {
   code = Blockly.genCode.workspaceToCode(workspace);
   // jar.updateCode(code);
+  genBlocks = false;
+  editor.setValue(code);
+  genBlocks = true;
   localStorage.setItem('code', code);
   if (localStorage.getItem("mode") == "code") {
     // document.getElementById("callColor").click();
@@ -131,14 +135,14 @@ window.onbeforeunload = function (e) {
 };
 
 allVariables = localStorage.getItem('allVariables');
-var tmp = []
-let data = allVariables.split(',')
-allVariables = []
+var tmp = [];
+let data = allVariables.split(',');
+allVariables = [];
 for (var i of data) {
   tmp.push(i);
   if (tmp.length == 2) {
-    allVariables.push(tmp)
-    tmp = []
+    allVariables.push(tmp);
+    tmp = [];
   }
 }
 
@@ -239,7 +243,7 @@ editor.commands.removeCommands(['showSettingsMenu', 'goToNextError', 'goToPrevio
 editor.session.setValue(localStorage.getItem('code'));
 editor.session.on('change', function(delta) {
   localStorage.setItem('code', editor.getValue());
-  document.getElementById("genBlocks").click();
+  if (genBlocks) document.getElementById("genBlocks").click();
 });
 
 function changeThemeWithoutSwap() {
