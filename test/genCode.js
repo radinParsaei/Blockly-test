@@ -420,3 +420,25 @@ Blockly.genCode['logic_boolean'] = function(block) {
   var code = (block.getFieldValue('BOOL') == 'TRUE') ? 'true' : 'false';
   return [code, Blockly.genCode.ORDER_ATOMIC];
 };
+
+Blockly.genCode['variable_get'] = function(block) {
+  var code = Blockly.genCode.variableDB_.getName(block.getFieldValue('NAME'),
+      Blockly.VARIABLE_CATEGORY_NAME);
+  return [code, Blockly.genCode.ORDER_ATOMIC];
+};
+
+Blockly.genCode['variable_set'] = function(block) {
+  var argument0 = Blockly.genCode.valueToCode(block, 'DATA',
+      Blockly.genCode.ORDER_NONE) || '0';
+  var varName = Blockly.genCode.variableDB_.getName(
+      block.getFieldValue('NAME'), Blockly.VARIABLE_CATEGORY_NAME);
+  return varName + ' = ' + argument0 + '\n';
+};
+
+Blockly.genCode['variable_declare'] = function(block) {
+  var argument0 = Blockly.genCode.valueToCode(block, 'VALUE',
+      Blockly.genCode.ORDER_NONE) || '0';
+  var varName = Blockly.genCode.variableDB_.getName(
+      block.getFieldValue('NAME'), Blockly.VARIABLE_CATEGORY_NAME);
+  return 'var ' + varName + ' = ' + argument0 + '\n';
+};

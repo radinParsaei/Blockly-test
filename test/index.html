@@ -19,6 +19,7 @@
         <block type="logic_boolean">
           <field name="BOOL">TRUE</field>
         </block>
+        <!-- <block type="controls_if"></block> -->
       </category>
       <category id="MathCategory" name="Math" colour="#5b67a5">
         <block type="math_number">
@@ -122,7 +123,11 @@
         </block>
       </category>
       <sep></sep>
-      <category name="Variables" colour="#a55b80" custom="VARIABLE"></category>
+      <category name="Variables" colour="#a55b80" id="VariablesCategory">
+        <block type="variable_set"></block>
+        <block type="variable_declare"></block>
+        <block type="variable_get"></block>
+      </category>
       <category name="Functions" colour="#995ba5" custom="PROCEDURE"></category>
     </xml>
     <div style="height: 50px; width: 100%; background: #555;">

@@ -1,3 +1,6 @@
+import './field_dropdown.js'
+import './variables_mutator.js';
+
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
     blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output) {
@@ -197,38 +200,103 @@ function initBlocks() {
         "parent_tooltip_when_inline"
       ]
     }, {
-    "type": "math_arithmetic",
-    "message0": "%1 %2 %3",
-    "args0": [
-      {
-        "type": "input_value",
-        "name": "A",
-        // "check": "Number"
-      },
-      {
-        "type": "field_dropdown",
-        "name": "OP",
-        "options": [
-          ["%{BKY_MATH_ADDITION_SYMBOL}", "ADD"],
-          ["%{BKY_MATH_SUBTRACTION_SYMBOL}", "MINUS"],
-          ["%{BKY_MATH_MULTIPLICATION_SYMBOL}", "MULTIPLY"],
-          ["%{BKY_MATH_DIVISION_SYMBOL}", "DIVIDE"],
-          ["%{BKY_MATH_POWER_SYMBOL}", "POWER"]
-        ]
-      },
-      {
-        "type": "input_value",
-        "name": "B",
-        // "check": "Number"
-      }
-    ],
-    "inputsInline": true,
-    "output": "Number",
-    "style": "math_blocks",
-    "helpUrl": "%{BKY_MATH_ARITHMETIC_HELPURL}",
-    "extensions": ["math_op_tooltip"]
-  }]
+      "type": "math_arithmetic",
+      "message0": "%1 %2 %3",
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "A",
+          // "check": "Number"
+        },
+        {
+          "type": "field_dropdown",
+          "name": "OP",
+          "options": [
+            ["%{BKY_MATH_ADDITION_SYMBOL}", "ADD"],
+            ["%{BKY_MATH_SUBTRACTION_SYMBOL}", "MINUS"],
+            ["%{BKY_MATH_MULTIPLICATION_SYMBOL}", "MULTIPLY"],
+            ["%{BKY_MATH_DIVISION_SYMBOL}", "DIVIDE"],
+            ["%{BKY_MATH_POWER_SYMBOL}", "POWER"]
+          ]
+        },
+        {
+          "type": "input_value",
+          "name": "B",
+          // "check": "Number"
+        }
+      ],
+      "inputsInline": true,
+      "output": "Number",
+      "style": "math_blocks",
+      "helpUrl": "%{BKY_MATH_ARITHMETIC_HELPURL}",
+      "extensions": ["math_op_tooltip"]
+    }, {
+      "type": "variable_declare",
+      "message0": "declare %1",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME",
+          "text": ""
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": 'variable_blocks',
+      "tooltip": "",
+      "helpUrl": "",
+      "mutator": "variable_set_mutator",
+      "inputsInline": true
+    }]
   );
+
+  Blockly.Blocks['variable_set'] = {
+    init: function() {
+      let field = new Blockly.FieldDropdown([[Blockly.Msg['SELECT_VARIABLE'], '']])
+      let self = this;
+      field.onOpenMenu = function() {
+        this.menuGenerator_ = [[Blockly.Msg['SELECT_VARIABLE'], '']]
+        var prev = self.getPreviousBlock();
+        var prevType = prev && prev.type;
+        while (prev != null) {
+          if (prevType == 'variable_declare') {
+            this.menuGenerator_.push([prev.getField('NAME').getValue(), prev.getField('NAME').getValue()]);
+          }
+          prev = prev.getPreviousBlock();
+          prevType = prev && prev.type;
+        }
+      }
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+
+      this.appendValueInput("DATA").appendField(Blockly.Msg['VARIABLES_SET'].split('%1')[0]).appendField(field, 'NAME').appendField(Blockly.Msg['VARIABLES_SET'].split('%1')[1].split('%2')[0]);
+      this.setColour(document.getElementById("VariablesCategory").getAttribute('colour'));
+    }
+  };
+
+  Blockly.Blocks['variable_get'] = {
+    init: function() {
+      let field = new Blockly.FieldDropdown([[Blockly.Msg['SELECT_VARIABLE'], '']])
+      let self = this;
+      field.onOpenMenu = function() {
+        this.menuGenerator_ = [[Blockly.Msg['SELECT_VARIABLE'], '']]
+        var prev = self.getParent();
+        var prevType = prev && prev.type;
+        while (prev != null) {
+          if (prevType == 'variable_declare') {
+            this.menuGenerator_.push([prev.getField('NAME').getValue(), prev.getField('NAME').getValue()]);
+          }
+          prev = prev.getPreviousBlock();
+          prevType = prev && prev.type;
+        }
+      }
+      this.setOutput(true, null);
+
+      this.appendDummyInput().appendField(Blockly.Msg['VARIABLES_GET']).appendField(field, 'NAME');
+      this.setColour(document.getElementById("VariablesCategory").getAttribute('colour'));
+    }
+  };
+
   Blockly.Procedures.flyoutCategory = function(workspace) {
     var xmlList = [];
     if (Blockly.Blocks['procedures_defnoreturn']) {
@@ -305,6 +373,7 @@ function initBlocks() {
     return xmlList;
   };
   Blockly.Msg['RETURN_STATEMENT_TEXT'] = 'return';
+  Blockly.Msg['SELECT_VARIABLE'] = 'select a variable';
 }
 
 export { initBlocks };

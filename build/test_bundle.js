@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "66faa9f4b8a7d3314c60";
+/******/ 	var hotCurrentHash = "4fb914bb1e0f9d2d8293";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21275,11 +21275,16 @@ module.exports.formatError = function(err) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initBlocks", function() { return initBlocks; });
+/* harmony import */ var _field_dropdown_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./field_dropdown.js */ "./test/field_dropdown.js");
+/* harmony import */ var _variables_mutator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./variables_mutator.js */ "./test/variables_mutator.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName, blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output) {
@@ -21525,7 +21530,73 @@ function initBlocks() {
     "style": "math_blocks",
     "helpUrl": "%{BKY_MATH_ARITHMETIC_HELPURL}",
     "extensions": ["math_op_tooltip"]
+  }, {
+    "type": "variable_declare",
+    "message0": "declare %1",
+    "args0": [{
+      "type": "field_input",
+      "name": "NAME",
+      "text": ""
+    }],
+    "previousStatement": null,
+    "nextStatement": null,
+    "style": 'variable_blocks',
+    "tooltip": "",
+    "helpUrl": "",
+    "mutator": "variable_set_mutator",
+    "inputsInline": true
   }]);
+  Blockly.Blocks['variable_set'] = {
+    init: function init() {
+      var field = new Blockly.FieldDropdown([[Blockly.Msg['SELECT_VARIABLE'], '']]);
+      var self = this;
+
+      field.onOpenMenu = function () {
+        this.menuGenerator_ = [[Blockly.Msg['SELECT_VARIABLE'], '']];
+        var prev = self.getPreviousBlock();
+        var prevType = prev && prev.type;
+
+        while (prev != null) {
+          if (prevType == 'variable_declare') {
+            this.menuGenerator_.push([prev.getField('NAME').getValue(), prev.getField('NAME').getValue()]);
+          }
+
+          prev = prev.getPreviousBlock();
+          prevType = prev && prev.type;
+        }
+      };
+
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.appendValueInput("DATA").appendField(Blockly.Msg['VARIABLES_SET'].split('%1')[0]).appendField(field, 'NAME').appendField(Blockly.Msg['VARIABLES_SET'].split('%1')[1].split('%2')[0]);
+      this.setColour(document.getElementById("VariablesCategory").getAttribute('colour'));
+    }
+  };
+  Blockly.Blocks['variable_get'] = {
+    init: function init() {
+      var field = new Blockly.FieldDropdown([[Blockly.Msg['SELECT_VARIABLE'], '']]);
+      var self = this;
+
+      field.onOpenMenu = function () {
+        this.menuGenerator_ = [[Blockly.Msg['SELECT_VARIABLE'], '']];
+        var prev = self.getParent();
+        var prevType = prev && prev.type;
+
+        while (prev != null) {
+          if (prevType == 'variable_declare') {
+            this.menuGenerator_.push([prev.getField('NAME').getValue(), prev.getField('NAME').getValue()]);
+          }
+
+          prev = prev.getPreviousBlock();
+          prevType = prev && prev.type;
+        }
+      };
+
+      this.setOutput(true, null);
+      this.appendDummyInput().appendField(Blockly.Msg['VARIABLES_GET']).appendField(field, 'NAME');
+      this.setColour(document.getElementById("VariablesCategory").getAttribute('colour'));
+    }
+  };
 
   Blockly.Procedures.flyoutCategory = function (workspace) {
     var xmlList = [];
@@ -21608,9 +21679,817 @@ function initBlocks() {
   };
 
   Blockly.Msg['RETURN_STATEMENT_TEXT'] = 'return';
+  Blockly.Msg['SELECT_VARIABLE'] = 'select a variable';
 }
 
 
+
+/***/ }),
+
+/***/ "./test/field_dropdown.js":
+/*!********************************!*\
+  !*** ./test/field_dropdown.js ***!
+  \********************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
+/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * @license
+ * Copyright 2012 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview Dropdown input field.  Used for editable titles and variables.
+ * In the interests of a consistent UI, the toolbox shares some functions and
+ * properties with the context menu.
+ * @author fraser@google.com (Neil Fraser)
+ */
+
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+ // goog.provide('Blockly.FieldDropdown');
+// goog.require('Blockly.Events');
+// goog.require('Blockly.Events.BlockChange');
+// goog.require('Blockly.Field');
+// goog.require('Blockly.fieldRegistry');
+// goog.require('Blockly.Menu');
+// goog.require('Blockly.MenuItem');
+// goog.require('Blockly.navigation');
+// goog.require('Blockly.utils');
+// goog.require('Blockly.utils.aria');
+// goog.require('Blockly.utils.Coordinate');
+// goog.require('Blockly.utils.dom');
+// goog.require('Blockly.utils.object');
+// goog.require('Blockly.utils.Size');
+// goog.require('Blockly.utils.string');
+// goog.require('Blockly.utils.userAgent');
+
+/**
+ * Class for an editable dropdown field.
+ * @param {(!Array.<!Array>|!Function)} menuGenerator A non-empty array of
+ *     options for a dropdown list, or a function which generates these options.
+ * @param {Function=} opt_validator A function that is called to validate
+ *    changes to the field's value. Takes in a language-neutral dropdown
+ *    option & returns a validated language-neutral dropdown option, or null to
+ *    abort the change.
+ * @param {Object=} opt_config A map of options used to configure the field.
+ *    See the [field creation documentation]{@link https://developers.google.com/blockly/guides/create-custom-blocks/fields/built-in-fields/dropdown#creation}
+ *    for a list of properties this parameter supports.
+ * @extends {Blockly.Field}
+ * @constructor
+ * @throws {TypeError} If `menuGenerator` options are incorrectly structured.
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"] = function (menuGenerator, opt_validator, opt_config) {
+  if (typeof menuGenerator != 'function') {
+    blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].validateOptions_(menuGenerator);
+  }
+  /**
+   * An array of options for a dropdown list,
+   * or a function which generates these options.
+   * @type {(!Array.<!Array>|
+   *    !function(this:Blockly.FieldDropdown): !Array.<!Array>)}
+   * @protected
+   */
+
+
+  this.menuGenerator_ = menuGenerator;
+  /**
+   * A cache of the most recently generated options.
+   * @type {Array.<!Array.<string>>}
+   * @private
+   */
+
+  this.generatedOptions_ = null;
+  /**
+   * The prefix field label, of common words set after options are trimmed.
+   * @type {?string}
+   * @package
+   */
+
+  this.prefixField = null;
+  /**
+   * The suffix field label, of common words set after options are trimmed.
+   * @type {?string}
+   * @package
+   */
+
+  this.suffixField = null;
+  this.trimOptions_();
+  /**
+   * The currently selected option. The field is initialized with the
+   * first option selected.
+   * @type {!Object}
+   * @private
+   */
+
+  this.selectedOption_ = this.getOptions(false)[0]; // Call parent's constructor.
+
+  blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].superClass_.constructor.call(this, this.selectedOption_[1], opt_validator, opt_config);
+  /**
+   * A reference to the currently selected menu item.
+   * @type {Blockly.MenuItem}
+   * @private
+   */
+
+  this.selectedMenuItem_ = null;
+  /**
+   * The dropdown menu.
+   * @type {Blockly.Menu}
+   * @private
+   */
+
+  this.menu_ = null;
+  /**
+   * SVG image element if currently selected option is an image, or null.
+   * @type {SVGImageElement}
+   * @private
+   */
+
+  this.imageElement_ = null;
+  /**
+   * Tspan based arrow element.
+   * @type {SVGTSpanElement}
+   * @private
+   */
+
+  this.arrow_ = null;
+  /**
+   * SVG based arrow element.
+   * @type {SVGElement}
+   * @private
+   */
+
+  this.svgArrow_ = null;
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].object.inherits(blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"], blockly__WEBPACK_IMPORTED_MODULE_0__["Field"]);
+/**
+ * Dropdown image properties.
+ * @typedef {{
+  *            src:string,
+  *            alt:string,
+  *            width:number,
+  *            height:number
+  *          }}
+  */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].ImageProperties;
+/**
+ * Construct a FieldDropdown from a JSON arg object.
+ * @param {!Object} options A JSON object with options (options).
+ * @return {!Blockly.FieldDropdown} The new field instance.
+ * @package
+ * @nocollapse
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].fromJson = function (options) {
+  return new blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"](options['options'], undefined, options);
+};
+/**
+ * Serializable fields are saved by the XML renderer, non-serializable fields
+ * are not. Editable fields should also be serializable.
+ * @type {boolean}
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.SERIALIZABLE = true;
+/**
+ * Horizontal distance that a checkmark overhangs the dropdown.
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].CHECKMARK_OVERHANG = 25;
+/**
+ * Maximum height of the dropdown menu, as a percentage of the viewport height.
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].MAX_MENU_HEIGHT_VH = 0.45;
+/**
+ * The y offset from the top of the field to the top of the image, if an image
+ * is selected.
+ * @type {number}
+ * @const
+ * @private
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].IMAGE_Y_OFFSET = 5;
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].onOpenMenu = null;
+/**
+ * The total vertical padding above and below an image.
+ * @type {number}
+ * @const
+ * @private
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].IMAGE_Y_PADDING = blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].IMAGE_Y_OFFSET * 2;
+/**
+ * Android can't (in 2014) display "▾", so use "▼" instead.
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].ARROW_CHAR = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].userAgent.ANDROID ? "\u25BC" : "\u25BE";
+/**
+ * Mouse cursor style when over the hotspot that initiates the editor.
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.CURSOR = 'default';
+/**
+ * Create the block UI for this dropdown.
+ * @package
+ */
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.initView = function () {
+  if (this.shouldAddBorderRect_()) {
+    this.createBorderRect_();
+  } else {
+    this.clickTarget_ = this.sourceBlock_.getSvgRoot();
+  }
+
+  this.createTextElement_();
+  this.imageElement_ =
+  /** @type {!SVGImageElement} */
+  blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.createSvgElement('image', {}, this.fieldGroup_);
+
+  if (this.getConstants().FIELD_DROPDOWN_SVG_ARROW) {
+    this.createSVGArrow_();
+  } else {
+    this.createTextArrow_();
+  }
+
+  if (this.borderRect_) {
+    blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.addClass(this.borderRect_, 'blocklyDropdownRect');
+  }
+};
+/**
+ * Whether or not the dropdown should add a border rect.
+ * @return {boolean} True if the dropdown field should add a border rect.
+ * @protected
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.shouldAddBorderRect_ = function () {
+  return !this.getConstants().FIELD_DROPDOWN_NO_BORDER_RECT_SHADOW || this.getConstants().FIELD_DROPDOWN_NO_BORDER_RECT_SHADOW && !this.sourceBlock_.isShadow();
+};
+/**
+ * Create a tspan based arrow.
+ * @protected
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.createTextArrow_ = function () {
+  this.arrow_ =
+  /** @type {!SVGTSpanElement} */
+  blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.createSvgElement('tspan', {}, this.textElement_);
+  this.arrow_.appendChild(document.createTextNode(this.sourceBlock_.RTL ? blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].ARROW_CHAR + ' ' : ' ' + blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].ARROW_CHAR));
+
+  if (this.sourceBlock_.RTL) {
+    this.textElement_.insertBefore(this.arrow_, this.textContent_);
+  } else {
+    this.textElement_.appendChild(this.arrow_);
+  }
+};
+/**
+ * Create an SVG based arrow.
+ * @protected
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.createSVGArrow_ = function () {
+  this.svgArrow_ = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.createSvgElement('image', {
+    'height': this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE + 'px',
+    'width': this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE + 'px'
+  }, this.fieldGroup_);
+  this.svgArrow_.setAttributeNS(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.XLINK_NS, 'xlink:href', this.getConstants().FIELD_DROPDOWN_SVG_ARROW_DATAURI);
+};
+/**
+ * Create a dropdown menu under the text.
+ * @param {Event=} opt_e Optional mouse event that triggered the field to open,
+ *     or undefined if triggered programmatically.
+ * @protected
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.showEditor_ = function (opt_e) {
+  if (this.onOpenMenu != null) this.onOpenMenu();
+  this.menu_ = this.dropdownCreate_();
+
+  if (opt_e && typeof opt_e.clientX === 'number') {
+    this.menu_.openingCoords = new blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].Coordinate(opt_e.clientX, opt_e.clientY);
+  } else {
+    this.menu_.openingCoords = null;
+  } // Element gets created in render.
+
+
+  this.menu_.render(blockly__WEBPACK_IMPORTED_MODULE_0__["DropDownDiv"].getContentDiv());
+  var menuElement =
+  /** @type {!Element} */
+  this.menu_.getElement();
+  blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.addClass(menuElement, 'blocklyDropdownMenu');
+
+  if (this.getConstants().FIELD_DROPDOWN_COLOURED_DIV) {
+    var primaryColour = this.sourceBlock_.isShadow() ? this.sourceBlock_.getParent().getColour() : this.sourceBlock_.getColour();
+    var borderColour = this.sourceBlock_.isShadow() ? this.sourceBlock_.getParent().style.colourTertiary : this.sourceBlock_.style.colourTertiary;
+    blockly__WEBPACK_IMPORTED_MODULE_0__["DropDownDiv"].setColour(primaryColour, borderColour);
+  }
+
+  blockly__WEBPACK_IMPORTED_MODULE_0__["DropDownDiv"].showPositionedByField(this, this.dropdownDispose_.bind(this)); // Focusing needs to be handled after the menu is rendered and positioned.
+  // Otherwise it will cause a page scroll to get the misplaced menu in
+  // view. See issue #1329.
+
+  this.menu_.focus();
+
+  if (this.selectedMenuItem_) {
+    this.menu_.setHighlighted(this.selectedMenuItem_);
+  }
+
+  this.applyColour();
+};
+/**
+ * Create the dropdown editor.
+ * @return {!Blockly.Menu} The newly created dropdown menu.
+ * @private
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.dropdownCreate_ = function () {
+  var menu = new blockly__WEBPACK_IMPORTED_MODULE_0__["Menu"]();
+  menu.setRole(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].aria.Role.LISTBOX);
+  var options = this.getOptions(false);
+  this.selectedMenuItem_ = null;
+
+  for (var i = 0; i < options.length; i++) {
+    var content = options[i][0]; // Human-readable text or image.
+
+    var value = options[i][1]; // Language-neutral value.
+
+    if (_typeof(content) == 'object') {
+      // An image, not text.
+      var image = new Image(content['width'], content['height']);
+      image.src = content['src'];
+      image.alt = content['alt'] || '';
+      content = image;
+    }
+
+    var menuItem = new blockly__WEBPACK_IMPORTED_MODULE_0__["MenuItem"](content, value);
+    menuItem.setRole(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].aria.Role.OPTION);
+    menuItem.setRightToLeft(this.sourceBlock_.RTL);
+    menuItem.setCheckable(true);
+    menu.addChild(menuItem);
+    menuItem.setChecked(value == this.value_);
+
+    if (value == this.value_) {
+      this.selectedMenuItem_ = menuItem;
+    }
+
+    menuItem.onAction(this.handleMenuActionEvent_, this);
+  }
+
+  return menu;
+};
+/**
+ * Disposes of events and dom-references belonging to the dropdown editor.
+ * @private
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.dropdownDispose_ = function () {
+  if (this.menu_) {
+    this.menu_.dispose();
+  }
+
+  this.menu_ = null;
+  this.selectedMenuItem_ = null;
+  this.applyColour();
+};
+/**
+ * Handle an action in the dropdown menu.
+ * @param {!Blockly.MenuItem} menuItem The MenuItem selected within menu.
+ * @private
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.handleMenuActionEvent_ = function (menuItem) {
+  blockly__WEBPACK_IMPORTED_MODULE_0__["DropDownDiv"].hideIfOwner(this, true);
+  this.onItemSelected_(
+  /** @type {!Blockly.Menu} */
+  this.menu_, menuItem);
+};
+/**
+ * Handle the selection of an item in the dropdown menu.
+ * @param {!Blockly.Menu} menu The Menu component clicked.
+ * @param {!Blockly.MenuItem} menuItem The MenuItem selected within menu.
+ * @protected
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.onItemSelected_ = function (menu, menuItem) {
+  this.setValue(menuItem.getValue());
+};
+/**
+ * Factor out common words in statically defined options.
+ * Create prefix and/or suffix labels.
+ * @private
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.trimOptions_ = function () {
+  var options = this.menuGenerator_;
+
+  if (!Array.isArray(options)) {
+    return;
+  }
+
+  var hasImages = false; // Localize label text and image alt text.
+
+  for (var i = 0; i < options.length; i++) {
+    var label = options[i][0];
+
+    if (typeof label == 'string') {
+      options[i][0] = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].replaceMessageReferences(label);
+    } else {
+      if (label.alt != null) {
+        options[i][0].alt = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].replaceMessageReferences(label.alt);
+      }
+
+      hasImages = true;
+    }
+  }
+
+  if (hasImages || options.length < 2) {
+    return; // Do nothing if too few items or at least one label is an image.
+  }
+
+  var strings = [];
+
+  for (var i = 0; i < options.length; i++) {
+    strings.push(options[i][0]);
+  }
+
+  var shortest = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].string.shortestStringLength(strings);
+  var prefixLength = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].string.commonWordPrefix(strings, shortest);
+  var suffixLength = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].string.commonWordSuffix(strings, shortest);
+
+  if (!prefixLength && !suffixLength) {
+    return;
+  }
+
+  if (shortest <= prefixLength + suffixLength) {
+    // One or more strings will entirely vanish if we proceed.  Abort.
+    return;
+  }
+
+  if (prefixLength) {
+    this.prefixField = strings[0].substring(0, prefixLength - 1);
+  }
+
+  if (suffixLength) {
+    this.suffixField = strings[0].substr(1 - suffixLength);
+  }
+
+  this.menuGenerator_ = blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].applyTrim_(options, prefixLength, suffixLength);
+};
+/**
+ * Use the calculated prefix and suffix lengths to trim all of the options in
+ * the given array.
+ * @param {!Array.<!Array>} options Array of option tuples:
+ *     (human-readable text or image, language-neutral name).
+ * @param {number} prefixLength The length of the common prefix.
+ * @param {number} suffixLength The length of the common suffix
+ * @return {!Array.<!Array>} A new array with all of the option text trimmed.
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].applyTrim_ = function (options, prefixLength, suffixLength) {
+  var newOptions = []; // Remove the prefix and suffix from the options.
+
+  for (var i = 0; i < options.length; i++) {
+    var text = options[i][0];
+    var value = options[i][1];
+    text = text.substring(prefixLength, text.length - suffixLength);
+    newOptions[i] = [text, value];
+  }
+
+  return newOptions;
+};
+/**
+ * @return {boolean} True if the option list is generated by a function.
+ *     Otherwise false.
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.isOptionListDynamic = function () {
+  return typeof this.menuGenerator_ == 'function';
+};
+/**
+ * Return a list of the options for this dropdown.
+ * @param {boolean=} opt_useCache For dynamic options, whether or not to use the
+ *     cached options or to re-generate them.
+ * @return {!Array.<!Array>} A non-empty array of option tuples:
+ *     (human-readable text or image, language-neutral name).
+ * @throws {TypeError} If generated options are incorrectly structured.
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.getOptions = function (opt_useCache) {
+  if (this.isOptionListDynamic()) {
+    if (!this.generatedOptions_ || !opt_useCache) {
+      this.generatedOptions_ = this.menuGenerator_.call(this);
+      blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].validateOptions_(this.generatedOptions_);
+    }
+
+    return this.generatedOptions_;
+  }
+
+  return (
+    /** @type {!Array.<!Array.<string>>} */
+    this.menuGenerator_
+  );
+};
+/**
+ * Ensure that the input value is a valid language-neutral option.
+ * @param {*=} opt_newValue The input value.
+ * @return {?string} A valid language-neutral option, or null if invalid.
+ * @protected
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.doClassValidation_ = function (opt_newValue) {
+  var isValueValid = false;
+  var options = this.getOptions(true);
+
+  for (var i = 0, option; option = options[i]; i++) {
+    // Options are tuples of human-readable text and language-neutral values.
+    if (option[1] == opt_newValue) {
+      isValueValid = true;
+      break;
+    }
+  }
+
+  if (!isValueValid) {
+    if (this.sourceBlock_) {
+      console.warn('Cannot set the dropdown\'s value to an unavailable option.' + ' Block type: ' + this.sourceBlock_.type + ', Field name: ' + this.name + ', Value: ' + opt_newValue);
+    }
+
+    return null;
+  }
+
+  return (
+    /** @type {string} */
+    opt_newValue
+  );
+};
+/**
+ * Update the value of this dropdown field.
+ * @param {*} newValue The value to be saved. The default validator guarantees
+ * that this is one of the valid dropdown options.
+ * @protected
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.doValueUpdate_ = function (newValue) {
+  blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].superClass_.doValueUpdate_.call(this, newValue);
+  var options = this.getOptions(true);
+
+  for (var i = 0, option; option = options[i]; i++) {
+    if (option[1] == this.value_) {
+      this.selectedOption_ = option;
+    }
+  }
+};
+/**
+ * Updates the dropdown arrow to match the colour/style of the block.
+ * @package
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.applyColour = function () {
+  if (this.borderRect_) {
+    this.borderRect_.setAttribute('stroke', this.sourceBlock_.style.colourTertiary);
+
+    if (this.menu_) {
+      this.borderRect_.setAttribute('fill', this.sourceBlock_.style.colourTertiary);
+    } else {
+      this.borderRect_.setAttribute('fill', 'transparent');
+    }
+  } // Update arrow's colour.
+
+
+  if (this.sourceBlock_ && this.arrow_) {
+    if (this.sourceBlock_.isShadow()) {
+      this.arrow_.style.fill = this.sourceBlock_.style.colourSecondary;
+    } else {
+      this.arrow_.style.fill = this.sourceBlock_.style.colourPrimary;
+    }
+  }
+};
+/**
+ * Draws the border with the correct width.
+ * @protected
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.render_ = function () {
+  // Hide both elements.
+  this.textContent_.nodeValue = '';
+  this.imageElement_.style.display = 'none'; // Show correct element.
+
+  var option = this.selectedOption_ && this.selectedOption_[0];
+
+  if (option && _typeof(option) == 'object') {
+    this.renderSelectedImage_(
+    /** @type {!Blockly.FieldDropdown.ImageProperties} */
+    option);
+  } else {
+    this.renderSelectedText_();
+  }
+
+  this.positionBorderRect_();
+};
+/**
+ * Renders the selected option, which must be an image.
+ * @param {!Blockly.FieldDropdown.ImageProperties} imageJson Selected
+ *   option that must be an image.
+ * @private
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.renderSelectedImage_ = function (imageJson) {
+  this.imageElement_.style.display = '';
+  this.imageElement_.setAttributeNS(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.XLINK_NS, 'xlink:href', imageJson.src);
+  this.imageElement_.setAttribute('height', imageJson.height);
+  this.imageElement_.setAttribute('width', imageJson.width);
+  var imageHeight = Number(imageJson.height);
+  var imageWidth = Number(imageJson.width); // Height and width include the border rect.
+
+  var hasBorder = !!this.borderRect_;
+  var height = Math.max(hasBorder ? this.getConstants().FIELD_DROPDOWN_BORDER_RECT_HEIGHT : 0, imageHeight + blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].IMAGE_Y_PADDING);
+  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
+  var arrowWidth = 0;
+
+  if (this.svgArrow_) {
+    arrowWidth = this.positionSVGArrow_(imageWidth + xPadding, height / 2 - this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE / 2);
+  } else {
+    arrowWidth = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.getFastTextWidth(
+    /** @type {!SVGTSpanElement} */
+    this.arrow_, this.getConstants().FIELD_TEXT_FONTSIZE, this.getConstants().FIELD_TEXT_FONTWEIGHT, this.getConstants().FIELD_TEXT_FONTFAMILY);
+  }
+
+  this.size_.width = imageWidth + arrowWidth + xPadding * 2;
+  this.size_.height = height;
+  var arrowX = 0;
+
+  if (this.sourceBlock_.RTL) {
+    var imageX = xPadding + arrowWidth;
+    this.imageElement_.setAttribute('x', imageX);
+  } else {
+    arrowX = imageWidth + arrowWidth;
+    this.textElement_.setAttribute('text-anchor', 'end');
+    this.imageElement_.setAttribute('x', xPadding);
+  }
+
+  this.imageElement_.setAttribute('y', height / 2 - imageHeight / 2);
+  this.positionTextElement_(arrowX + xPadding, imageWidth + arrowWidth);
+};
+/**
+ * Renders the selected option, which must be text.
+ * @private
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.renderSelectedText_ = function () {
+  // Retrieves the selected option to display through getText_.
+  this.textContent_.nodeValue = this.getDisplayText_();
+  blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.addClass(
+  /** @type {!Element} */
+  this.textElement_, 'blocklyDropdownText');
+  this.textElement_.setAttribute('text-anchor', 'start'); // Height and width include the border rect.
+
+  var hasBorder = !!this.borderRect_;
+  var height = Math.max(hasBorder ? this.getConstants().FIELD_DROPDOWN_BORDER_RECT_HEIGHT : 0, this.getConstants().FIELD_TEXT_HEIGHT);
+  var textWidth = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.getFastTextWidth(this.textElement_, this.getConstants().FIELD_TEXT_FONTSIZE, this.getConstants().FIELD_TEXT_FONTWEIGHT, this.getConstants().FIELD_TEXT_FONTFAMILY);
+  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
+  var arrowWidth = 0;
+
+  if (this.svgArrow_) {
+    arrowWidth = this.positionSVGArrow_(textWidth + xPadding, height / 2 - this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE / 2);
+  }
+
+  this.size_.width = textWidth + arrowWidth + xPadding * 2;
+  this.size_.height = height;
+  this.positionTextElement_(xPadding, textWidth);
+};
+/**
+ * Position a drop-down arrow at the appropriate location at render-time.
+ * @param {number} x X position the arrow is being rendered at, in px.
+ * @param {number} y Y position the arrow is being rendered at, in px.
+ * @return {number} Amount of space the arrow is taking up, in px.
+ * @private
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.positionSVGArrow_ = function (x, y) {
+  if (!this.svgArrow_) {
+    return 0;
+  }
+
+  var hasBorder = !!this.borderRect_;
+  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
+  var textPadding = this.getConstants().FIELD_DROPDOWN_SVG_ARROW_PADDING;
+  var svgArrowSize = this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE;
+  var arrowX = this.sourceBlock_.RTL ? xPadding : x + textPadding;
+  this.svgArrow_.setAttribute('transform', 'translate(' + arrowX + ',' + y + ')');
+  return svgArrowSize + textPadding;
+};
+/**
+ * Use the `getText_` developer hook to override the field's text
+ * representation.  Get the selected option text. If the selected option is an
+ * image we return the image alt text.
+ * @return {?string} Selected option text.
+ * @protected
+ * @override
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.getText_ = function () {
+  if (!this.selectedOption_) {
+    return null;
+  }
+
+  var option = this.selectedOption_[0];
+
+  if (_typeof(option) == 'object') {
+    return option['alt'];
+  }
+
+  return option;
+};
+/**
+ * Validates the data structure to be processed as an options list.
+ * @param {?} options The proposed dropdown options.
+ * @throws {TypeError} If proposed options are incorrectly structured.
+ * @private
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].validateOptions_ = function (options) {
+  if (!Array.isArray(options)) {
+    throw TypeError('FieldDropdown options must be an array.');
+  }
+
+  if (!options.length) {
+    throw TypeError('FieldDropdown options must not be an empty array.');
+  }
+
+  var foundError = false;
+
+  for (var i = 0; i < options.length; ++i) {
+    var tuple = options[i];
+
+    if (!Array.isArray(tuple)) {
+      foundError = true;
+      console.error('Invalid option[' + i + ']: Each FieldDropdown option must be an ' + 'array. Found: ', tuple);
+    } else if (typeof tuple[1] != 'string') {
+      foundError = true;
+      console.error('Invalid option[' + i + ']: Each FieldDropdown option id must be ' + 'a string. Found ' + tuple[1] + ' in: ', tuple);
+    } else if (tuple[0] && typeof tuple[0] != 'string' && typeof tuple[0].src != 'string') {
+      foundError = true;
+      console.error('Invalid option[' + i + ']: Each FieldDropdown option must have a ' + 'string label or image description. Found' + tuple[0] + ' in: ', tuple);
+    }
+  }
+
+  if (foundError) {
+    throw TypeError('Found invalid FieldDropdown options.');
+  }
+};
+/**
+ * Handles the given action.
+ * This is only triggered when keyboard accessibility mode is enabled.
+ * @param {!Blockly.Action} action The action to be handled.
+ * @return {boolean} True if the field handled the action, false otherwise.
+ * @package
+ */
+
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.onBlocklyAction = function (action) {
+  if (this.menu_) {
+    if (action === blockly__WEBPACK_IMPORTED_MODULE_0__["navigation"].ACTION_PREVIOUS) {
+      this.menu_.highlightPrevious();
+      return true;
+    } else if (action === blockly__WEBPACK_IMPORTED_MODULE_0__["navigation"].ACTION_NEXT) {
+      this.menu_.highlightNext();
+      return true;
+    }
+  }
+
+  return blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].superClass_.onBlocklyAction.call(this, action);
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["fieldRegistry"].register('field_dropdown2', blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"]);
 
 /***/ }),
 
@@ -22200,6 +23079,23 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['return_statement'] = function (
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_boolean'] = function (block) {
   var code = block.getFieldValue('BOOL') == 'TRUE' ? 'true' : 'false';
   return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC];
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_get'] = function (block) {
+  var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC];
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_set'] = function (block) {
+  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DATA', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '0';
+  var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+  return varName + ' = ' + argument0 + '\n';
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_declare'] = function (block) {
+  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '0';
+  var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+  return 'var ' + varName + ' = ' + argument0 + '\n';
 };
 
 /***/ }),
@@ -23409,6 +24305,74 @@ var CustomCategory = /*#__PURE__*/function (_Blockly$ToolboxCateg) {
 }(blockly__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"]);
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].register(blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].Type.TOOLBOX_ITEM, blockly__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"].registrationName, CustomCategory, true);
+
+/***/ }),
+
+/***/ "./test/variables_mutator.js":
+/*!***********************************!*\
+  !*** ./test/variables_mutator.js ***!
+  \***********************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _field_minus__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./field_minus */ "./test/field_minus.js");
+/* harmony import */ var _field_plus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./field_plus */ "./test/field_plus.js");
+
+
+
+var controlsIfMutator = {
+  suppressPrefixSuffix: true,
+  hasValue: false,
+  mutationToDom: function mutationToDom() {
+    if (!this.hasValue) {
+      return null;
+    }
+
+    var container = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('mutation');
+
+    if (this.hasValue) {
+      container.setAttribute('hasValue', 1);
+    }
+
+    return container;
+  },
+  domToMutation: function domToMutation(xmlElement) {
+    this.hasValue = !!parseInt(xmlElement.getAttribute('hasValue')) || 0;
+    this.updateShape_();
+  },
+  updateShape_: function updateShape_() {
+    if (this.hasValue) this.appendValue();
+  },
+  plus: function plus() {
+    if (this.hasValue) return;
+    this.appendValue();
+  },
+  minus: function minus(index) {
+    this.removeValue(index);
+  },
+  appendValue: function appendValue() {
+    this.hasValue = true;
+    this.removeInput('DUM1');
+    this.appendValueInput('VALUE').setCheck(null).appendField('=');
+    this.appendDummyInput('DUM').appendField(Object(_field_minus__WEBPACK_IMPORTED_MODULE_1__["createMinusField"])(), 'MINUS');
+  },
+  removeValue: function removeValue(opt_index) {
+    this.hasValue = false;
+    this.removeInput('VALUE');
+    this.removeInput('DUM');
+    this.appendDummyInput('DUM1').appendField(Object(_field_plus__WEBPACK_IMPORTED_MODULE_2__["createPlusField"])(), 'PLUS');
+  }
+};
+
+var controlsIfHelper = function controlsIfHelper() {
+  this.appendDummyInput('DUM1').appendField(Object(_field_plus__WEBPACK_IMPORTED_MODULE_2__["createPlusField"])(), 'PLUS');
+};
+
+blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMutator('variable_set_mutator', controlsIfMutator, controlsIfHelper);
 
 /***/ }),
 
