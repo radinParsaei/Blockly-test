@@ -144,7 +144,7 @@ editor.session.setMode("ace/mode/javascript");
 editor.setHighlightActiveLine(false);
 editor.renderer.setShowGutter(true);
 editor.getSession().setUseWorker(false);
-editor.session.setTabSize(4);
+editor.session.setTabSize(2);
 editor.renderer.setAnimatedScroll(true);
 editor.setFontSize(18);
 editor.setShowPrintMargin(false);

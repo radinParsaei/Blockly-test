@@ -20,7 +20,7 @@ snippet function
 	}
 # if
 snippet if
-	if (\${1:true}) {
+	if \${1:true} {
 		\${0}
 	}
 # if ... else

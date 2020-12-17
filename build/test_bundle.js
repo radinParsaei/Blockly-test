@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "3585bf07e6ea5fd3eb10";
+/******/ 	var hotCurrentHash = "66faa9f4b8a7d3314c60";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -22389,7 +22389,7 @@ editor.session.setMode("ace/mode/javascript");
 editor.setHighlightActiveLine(false);
 editor.renderer.setShowGutter(true);
 editor.getSession().setUseWorker(false);
-editor.session.setTabSize(4);
+editor.session.setTabSize(2);
 editor.renderer.setAnimatedScroll(true);
 editor.setFontSize(18);
 editor.setShowPrintMargin(false);
