@@ -23,6 +23,9 @@ var genBlocks = false;
 function createWorkspace(blocklyDiv, options) {
   workspace = Blockly.inject(blocklyDiv, options);
   workspace.addChangeListener(function(event) {
+    if (event.element == 'category' && event.newValue == null) {
+      Blockly.hideFlyOut();
+    }
     if (localStorage.getItem('mode') == 'block') {
       runCode();
     }

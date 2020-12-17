@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "26a11699ea922c4aa984";
+/******/ 	var hotCurrentHash = "13b814b5149bd854869f";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1583,6 +1583,11 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
       // options struct when possible.
 
       this.workspace_.getMetrics = this.workspaceGetMetrics_.bind(this.workspace_);
+      var self = this;
+
+      blockly_core__WEBPACK_IMPORTED_MODULE_0__["hideFlyOut"] = function () {
+        self.getFlyout().hide(self.getInitialFlyoutContents_());
+      };
     }
     /** @override */
 
@@ -23186,6 +23191,10 @@ var genBlocks = false;
 function createWorkspace(blocklyDiv, options) {
   workspace = blockly__WEBPACK_IMPORTED_MODULE_0__["inject"](blocklyDiv, options);
   workspace.addChangeListener(function (event) {
+    if (event.element == 'category' && event.newValue == null) {
+      blockly__WEBPACK_IMPORTED_MODULE_0__["hideFlyOut"]();
+    }
+
     if (localStorage.getItem('mode') == 'block') {
       runCode();
     }

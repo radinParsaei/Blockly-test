@@ -39,6 +39,10 @@ export class ContinuousToolbox extends Blockly.Toolbox {
     // options struct when possible.
     this.workspace_.getMetrics =
         this.workspaceGetMetrics_.bind(this.workspace_);
+    let self = this;
+    Blockly.hideFlyOut = function() {
+      self.getFlyout().hide(self.getInitialFlyoutContents_());
+    }
   }
 
   /** @override */
