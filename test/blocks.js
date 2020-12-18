@@ -176,6 +176,17 @@ function initBlocks() {
     Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL']
   );
 
+  addBlock("loops_while", "Loops", '', function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || 'false';
+    var code = Blockly.genCode.statementToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || '';
+    return 'while ' + data + ' {\n' + code + '}\n';
+  }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_WHILEUNTIL_OPERATOR_WHILE'], function(self, blockToAddField) {
+    blockToAddField.setCheck(["Number", "Boolean"]);
+  }, null, Blockly.Msg['CONTROLS_WHILEUNTIL_INPUT_DO']], Blockly.Msg['CONTROLS_WHILEUNTIL_TOOLTIP_WHILE'],
+    Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL']
+  );
 
   Blockly.defineBlocksWithJsonArray([
     {

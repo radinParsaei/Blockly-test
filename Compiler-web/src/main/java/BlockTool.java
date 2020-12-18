@@ -237,6 +237,15 @@ public class BlockTool {
             }
             addXml = true;
             blockCount = pBlockCount + blocks;
+        } else if (program instanceof SyntaxTree.While) {
+            addXml = false;
+            int pBlockCount = blockCount;
+            blockCount = 0;
+            result.append("<block type=\"loops_while\"><value name=\"ARG0\">").append(putVales(((SyntaxTree.While) program).getCondition()))
+                    .append("</value><statement name=\"ARG1\">").append(syntaxTreeToBlocksXML(((SyntaxTree.While) program).getProgram()))
+                    .append("</statement>");
+            addXml = true;
+            blockCount = pBlockCount + 1;
         } else if (program instanceof SyntaxTree.Function) {
             if (getFunctionBlock((((SyntaxTree.Function) program).getFunctionName())) == null) {
                 lastFunctionName = ((SyntaxTree.Function) program).getFunctionName();

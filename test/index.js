@@ -161,6 +161,7 @@ var langTools = ace.require("ace/ext/language_tools");
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai0");
 editor.session.setMode("ace/mode/javascript");
+//Javascript moved to javascript0. javascript highlighting rules changed for github.com/radinParsaei/Compiler
 editor.setHighlightActiveLine(false);
 editor.renderer.setShowGutter(true);
 editor.getSession().setUseWorker(false);

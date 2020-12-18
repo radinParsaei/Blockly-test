@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "13b814b5149bd854869f";
+/******/ 	var hotCurrentHash = "525dd84d362c5b1b1de1";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21509,6 +21509,13 @@ function initBlocks() {
 
     return ' else {\n' + code + '}\n';
   }, [], [false], '', [Blockly.Msg['CONTROLS_IF_MSG_ELSE'], null, Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_IF_ELSE_TOOLTIP'], Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL']);
+  addBlock("loops_while", "Loops", '', function (block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0', Blockly.genCode.ORDER_NONE) || 'false';
+    var code = Blockly.genCode.statementToCode(block, 'ARG1', Blockly.genCode.ORDER_NONE) || '';
+    return 'while ' + data + ' {\n' + code + '}\n';
+  }, [], [true, false], '', [null, Blockly.Msg['CONTROLS_WHILEUNTIL_OPERATOR_WHILE'], function (self, blockToAddField) {
+    blockToAddField.setCheck(["Number", "Boolean"]);
+  }, null, Blockly.Msg['CONTROLS_WHILEUNTIL_INPUT_DO']], Blockly.Msg['CONTROLS_WHILEUNTIL_TOOLTIP_WHILE'], Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL']);
   Blockly.defineBlocksWithJsonArray([{
     "type": "text",
     "message0": "\"%1\"",
@@ -23347,7 +23354,8 @@ var langTools = ace.require("ace/ext/language_tools");
 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai0");
-editor.session.setMode("ace/mode/javascript");
+editor.session.setMode("ace/mode/javascript"); //Javascript moved to javascript0. javascript highlighting rules changed for github.com/radinParsaei/Compiler
+
 editor.setHighlightActiveLine(false);
 editor.renderer.setShowGutter(true);
 editor.getSession().setUseWorker(false);
