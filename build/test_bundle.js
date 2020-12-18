@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "525dd84d362c5b1b1de1";
+/******/ 	var hotCurrentHash = "e72fd854bc3acf210323";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23241,7 +23241,7 @@ function injectBlockly() {
     grid: {
       spacing: 20,
       length: 2,
-      colour: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(150, 150, 150, 0.2)',
+      colour: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(150, 150, 150, 0.3)',
       snap: true
     },
     zoom: _defineProperty({
@@ -23318,28 +23318,30 @@ window.onbeforeunload = function (e) {
   sessionStorage.setItem("blocks", blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToPrettyText(xml));
 };
 
-allVariables = localStorage.getItem('allVariables');
-var tmp = [];
-var data = allVariables.split(',');
-allVariables = [];
+if (localStorage.getItem('allVariables') != null) {
+  allVariables = localStorage.getItem('allVariables');
+  var tmp = [];
+  var data = allVariables.split(',');
+  allVariables = [];
 
-var _iterator = _createForOfIteratorHelper(data),
-    _step;
+  var _iterator = _createForOfIteratorHelper(data),
+      _step;
 
-try {
-  for (_iterator.s(); !(_step = _iterator.n()).done;) {
-    var i = _step.value;
-    tmp.push(i);
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var i = _step.value;
+      tmp.push(i);
 
-    if (tmp.length == 2) {
-      allVariables.push(tmp);
-      tmp = [];
+      if (tmp.length == 2) {
+        allVariables.push(tmp);
+        tmp = [];
+      }
     }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
   }
-} catch (err) {
-  _iterator.e(err);
-} finally {
-  _iterator.f();
 }
 
 var highlight = function highlight(editor) {

@@ -62,7 +62,7 @@ function injectBlockly() {
     grid : {
       spacing : 20,
       length : 2,
-      colour : isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.2)',
+      colour : isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
       snap : true
     },
     zoom : {
@@ -137,15 +137,17 @@ window.onbeforeunload = function (e) {
   sessionStorage.setItem("blocks", Blockly.Xml.domToPrettyText(xml));
 };
 
-allVariables = localStorage.getItem('allVariables');
-var tmp = [];
-let data = allVariables.split(',');
-allVariables = [];
-for (var i of data) {
-  tmp.push(i);
-  if (tmp.length == 2) {
-    allVariables.push(tmp);
-    tmp = [];
+if (localStorage.getItem('allVariables') != null) {
+  allVariables = localStorage.getItem('allVariables');
+  var tmp = [];
+  let data = allVariables.split(',');
+  allVariables = [];
+  for (var i of data) {
+    tmp.push(i);
+    if (tmp.length == 2) {
+      allVariables.push(tmp);
+      tmp = [];
+    }
   }
 }
 
