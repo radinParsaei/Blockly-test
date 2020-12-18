@@ -1,3 +1,4 @@
+import org.teavm.jso.browser.Window;
 import org.teavm.jso.dom.html.HTMLDocument;
 import org.teavm.jso.dom.html.HTMLElement;
 
@@ -12,6 +13,9 @@ public class Client extends CompilerMain {
             SyntaxTree.getClassesParameters().clear();
             SyntaxTree.CreateLambda.setCounter(0);
             SyntaxTree.resetNameSpaces();
+            for (int i : Targets.getIntervalCodes()) {
+                Window.clearInterval(i);
+            }
             document.getElementById("console2").setInnerHTML("");
             Compiler compiler = new Compiler(null, true, null, null, null);
             CustomCompileStep.used = false;

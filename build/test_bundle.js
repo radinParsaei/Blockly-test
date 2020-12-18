@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "e72fd854bc3acf210323";
+/******/ 	var hotCurrentHash = "5b30fc8f5f86812d1fca";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -22827,7 +22827,6 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrubNakedValue = function (line
 };
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].quote_ = function (string) {
-  string = string.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'');
   return '"' + string + '"';
 };
 
