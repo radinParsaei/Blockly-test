@@ -89,6 +89,7 @@ function initBlocks() {
     }
     return out;
   }
+
   // addBlock("math_arithmetic", "Math", `<field name="OP">ADD</field>
   // <value name="A">
     // <shadow type="math_number">
@@ -187,6 +188,8 @@ function initBlocks() {
   }, null, Blockly.Msg['CONTROLS_WHILEUNTIL_INPUT_DO']], Blockly.Msg['CONTROLS_WHILEUNTIL_TOOLTIP_WHILE'],
     Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL']
   );
+
+  addBlock("control_break", "Loops");
 
   Blockly.defineBlocksWithJsonArray([
     {

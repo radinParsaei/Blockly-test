@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "4ce506e8a1b6b9b78ffa";
+/******/ 	var hotCurrentHash = "e9d0077d1949ec48275e";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21516,6 +21516,7 @@ function initBlocks() {
   }, [], [true, false], '', [null, Blockly.Msg['CONTROLS_WHILEUNTIL_OPERATOR_WHILE'], function (self, blockToAddField) {
     blockToAddField.setCheck(["Number", "Boolean"]);
   }, null, Blockly.Msg['CONTROLS_WHILEUNTIL_INPUT_DO']], Blockly.Msg['CONTROLS_WHILEUNTIL_TOOLTIP_WHILE'], Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL']);
+  addBlock("control_break", "Loops");
   Blockly.defineBlocksWithJsonArray([{
     "type": "text",
     "message0": "\"%1\"",
