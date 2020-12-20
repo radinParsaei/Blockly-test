@@ -441,3 +441,7 @@ Blockly.genCode['variable_declare'] = function(block) {
   allVariables.push([varName, varName]);
   return 'var ' + varName + ' = ' + argument0 + '\n';
 };
+
+Blockly.genCode['control_break'] = function(block) {
+  return 'break\n';
+};

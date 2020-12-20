@@ -203,6 +203,9 @@ public class BlockTool {
             result.append("<block type=\"return_statement\"><value name=\"VALUE\">")
                     .append(putVales(((SyntaxTree.Return) program).getValue())).append("</value>");
             blockCount++;
+        } else if (program instanceof SyntaxTree.Break) {
+            result.append("<block type=\"control_break\">");
+            blockCount++;
         } else if (program instanceof SyntaxTree.If) {
             addXml = false;
             int pBlockCount = blockCount;

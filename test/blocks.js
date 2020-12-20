@@ -262,10 +262,18 @@ function initBlocks() {
       "previousStatement": null,
       "nextStatement": null,
       "style": 'variable_blocks',
-      "tooltip": "",
-      "helpUrl": "",
+      "tooltip": "%{BKY_VARIABLE_DECLARE_TOOLTIP}",
+      "helpUrl": "%{BKY_VARIABLE_DECLARE_HELPURL}",
       "mutator": "variable_set_mutator",
       "inputsInline": true
+    }, {
+      "type": "control_break",
+      "message0": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}",
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": 'loop_blocks',
+      "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}",
+      "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_HELPURL}",
     }]
   );
 

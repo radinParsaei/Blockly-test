@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "5b30fc8f5f86812d1fca";
+/******/ 	var hotCurrentHash = "4ce506e8a1b6b9b78ffa";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21573,10 +21573,18 @@ function initBlocks() {
     "previousStatement": null,
     "nextStatement": null,
     "style": 'variable_blocks',
-    "tooltip": "",
-    "helpUrl": "",
+    "tooltip": "%{BKY_VARIABLE_DECLARE_TOOLTIP}",
+    "helpUrl": "%{BKY_VARIABLE_DECLARE_HELPURL}",
     "mutator": "variable_set_mutator",
     "inputsInline": true
+  }, {
+    "type": "control_break",
+    "message0": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}",
+    "previousStatement": null,
+    "nextStatement": null,
+    "style": 'loop_blocks',
+    "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}",
+    "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_HELPURL}"
   }]);
   Blockly.Blocks['variable_set'] = {
     init: function init() {
@@ -23129,6 +23137,10 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_declare'] = function (
   var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
   allVariables.push([varName, varName]);
   return 'var ' + varName + ' = ' + argument0 + '\n';
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['control_break'] = function (block) {
+  return 'break\n';
 };
 
 /***/ }),
