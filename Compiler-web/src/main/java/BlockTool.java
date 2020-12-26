@@ -165,7 +165,7 @@ public class BlockTool {
         if (program instanceof SyntaxTree.Programs) {
             for (ProgramBase program1 : ((SyntaxTree.Programs) program).getPrograms()) {
                 result.append(syntaxTreeToBlocksXML1(program1));
-                if (program1 instanceof SyntaxTree.Return) break;
+                if (program1 instanceof SyntaxTree.Return || program1 instanceof SyntaxTree.Break) break;
             }
         } else if (program instanceof SyntaxTree.Print) {
             ValueBase[] args = ((SyntaxTree.Print) program).getArgs();

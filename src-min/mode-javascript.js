@@ -149,7 +149,7 @@ define("ace/mode/doc_comment_highlight_rules", ["require", "exports", "module", 
         u = function(e) {
             var t = this.createKeywordMapper({
                     "variable.language": "",
-                    keyword: "else|func|if|return|for|var|while",
+                    keyword: "else|func|if|return|for|var|while|break",
                     "storage.type": "var|func",
                     "constant.language": "null",
                     "support.function": "print",

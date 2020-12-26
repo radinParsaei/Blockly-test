@@ -3,10 +3,10 @@ define("ace/snippets/javascript",["require","exports","module"],function(e,t,n){
 snippet variable
 	var \${1:variable_name} = \${2:value}
 
-snippet setVariable
+snippet set variable
 	\${1?:variable_name} = \${2:value}
 
-snippet declareVariable
+snippet declare variable
 	var \${1?:variable_name}
 
 # Print
@@ -52,6 +52,9 @@ snippet while
 	while (\${1:/* condition */}) {
 		\${0:/* code */}
 	}
+
+snippet break out of loop
+	break
 `,t.scope="javascript"});                (function() {
                     window.require(["ace/snippets/javascript"], function(m) {
                         if (typeof module == "object" && typeof exports == "object" && module) {

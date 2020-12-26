@@ -254,7 +254,7 @@ function initBlocks() {
       "extensions": ["math_op_tooltip"]
     }, {
       "type": "variable_declare",
-      "message0": "declare %1",
+      "message0": "%{BKY_VARIABLE_DECLARE} %1",
       "args0": [
         {
           "type": "field_input",
@@ -273,9 +273,8 @@ function initBlocks() {
       "type": "control_break",
       "message0": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}",
       "previousStatement": null,
-      "nextStatement": null,
       "style": 'loop_blocks',
-      "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}",
+      "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP}",
       "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_HELPURL}",
     }]
   );
@@ -404,6 +403,8 @@ function initBlocks() {
   };
   Blockly.Msg['RETURN_STATEMENT_TEXT'] = 'return';
   Blockly.Msg['SELECT_VARIABLE'] = 'select a variable';
+  Blockly.Msg['VARIABLE_DECLARE'] = 'declare';
+  Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK'];
 }
 
 export { initBlocks };
