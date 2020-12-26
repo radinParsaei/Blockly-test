@@ -246,6 +246,8 @@ editor.commands.removeCommands(['showSettingsMenu', 'goToNextError', 'goToPrevio
                                 'toggleParentFoldWidget', 'foldall', 'foldAllComments',
                                 'foldOther', 'unfoldall', 'overwrite'])
 
+editor.commands.removeCommand('openCommandPallete');
+
 editor.session.setValue(localStorage.getItem('code'));
 editor.session.on('change', function(delta) {
   localStorage.setItem('code', editor.getValue());

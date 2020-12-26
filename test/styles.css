@@ -193,3 +193,11 @@ input:checked + .slider:before {
   color: gray;
   font-size: 22pt;
 }
+
+span[action=openCommandPallete] {
+  display: none;
+}
+
+.ace_autocomplete .ace_mobile-menu {
+  display: none;
+}

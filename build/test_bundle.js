@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "348eda6723127e83cb1e";
+/******/ 	var hotCurrentHash = "07e7141ab3115d1a3821";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23451,6 +23451,7 @@ editor.commands.addCommands([{
   }
 }]);
 editor.commands.removeCommands(['showSettingsMenu', 'goToNextError', 'goToPreviousError', 'centerselection', 'fold', 'unfold', 'toggleFoldWidget', 'toggleParentFoldWidget', 'foldall', 'foldAllComments', 'foldOther', 'unfoldall', 'overwrite']);
+editor.commands.removeCommand('openCommandPallete');
 editor.session.setValue(localStorage.getItem('code'));
 editor.session.on('change', function (delta) {
   localStorage.setItem('code', editor.getValue());
