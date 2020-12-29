@@ -15,3 +15,6 @@ Compiler-web/.idea
 VM-web/VM.html
 VM-web/*.o
 Compiler-web/web.iml
+start.js.save
+webpackDevServer.config.js.save
+dist

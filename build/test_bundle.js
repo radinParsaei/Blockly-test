@@ -9,773 +9,6 @@
 	}
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
-/******/ 	function hotDisposeChunk(chunkId) {
-/******/ 		delete installedChunks[chunkId];
-/******/ 	}
-/******/ 	var parentHotUpdateCallback = this["webpackHotUpdate"];
-/******/ 	this["webpackHotUpdate"] = // eslint-disable-next-line no-unused-vars
-/******/ 	function webpackHotUpdateCallback(chunkId, moreModules) {
-/******/ 		hotAddUpdateChunk(chunkId, moreModules);
-/******/ 		if (parentHotUpdateCallback) parentHotUpdateCallback(chunkId, moreModules);
-/******/ 	} ;
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotDownloadUpdateChunk(chunkId) {
-/******/ 		var script = document.createElement("script");
-/******/ 		script.charset = "utf-8";
-/******/ 		script.src = __webpack_require__.p + "" + chunkId + "." + hotCurrentHash + ".hot-update.js";
-/******/ 		if (null) script.crossOrigin = null;
-/******/ 		document.head.appendChild(script);
-/******/ 	}
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotDownloadManifest(requestTimeout) {
-/******/ 		requestTimeout = requestTimeout || 10000;
-/******/ 		return new Promise(function(resolve, reject) {
-/******/ 			if (typeof XMLHttpRequest === "undefined") {
-/******/ 				return reject(new Error("No browser support"));
-/******/ 			}
-/******/ 			try {
-/******/ 				var request = new XMLHttpRequest();
-/******/ 				var requestPath = __webpack_require__.p + "" + hotCurrentHash + ".hot-update.json";
-/******/ 				request.open("GET", requestPath, true);
-/******/ 				request.timeout = requestTimeout;
-/******/ 				request.send(null);
-/******/ 			} catch (err) {
-/******/ 				return reject(err);
-/******/ 			}
-/******/ 			request.onreadystatechange = function() {
-/******/ 				if (request.readyState !== 4) return;
-/******/ 				if (request.status === 0) {
-/******/ 					// timeout
-/******/ 					reject(
-/******/ 						new Error("Manifest request to " + requestPath + " timed out.")
-/******/ 					);
-/******/ 				} else if (request.status === 404) {
-/******/ 					// no update available
-/******/ 					resolve();
-/******/ 				} else if (request.status !== 200 && request.status !== 304) {
-/******/ 					// other failure
-/******/ 					reject(new Error("Manifest request to " + requestPath + " failed."));
-/******/ 				} else {
-/******/ 					// success
-/******/ 					try {
-/******/ 						var update = JSON.parse(request.responseText);
-/******/ 					} catch (e) {
-/******/ 						reject(e);
-/******/ 						return;
-/******/ 					}
-/******/ 					resolve(update);
-/******/ 				}
-/******/ 			};
-/******/ 		});
-/******/ 	}
-/******/
-/******/ 	var hotApplyOnUpdate = true;
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "07e7141ab3115d1a3821";
-/******/ 	var hotRequestTimeout = 10000;
-/******/ 	var hotCurrentModuleData = {};
-/******/ 	var hotCurrentChildModule;
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentParents = [];
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentParentsTemp = [];
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotCreateRequire(moduleId) {
-/******/ 		var me = installedModules[moduleId];
-/******/ 		if (!me) return __webpack_require__;
-/******/ 		var fn = function(request) {
-/******/ 			if (me.hot.active) {
-/******/ 				if (installedModules[request]) {
-/******/ 					if (installedModules[request].parents.indexOf(moduleId) === -1) {
-/******/ 						installedModules[request].parents.push(moduleId);
-/******/ 					}
-/******/ 				} else {
-/******/ 					hotCurrentParents = [moduleId];
-/******/ 					hotCurrentChildModule = request;
-/******/ 				}
-/******/ 				if (me.children.indexOf(request) === -1) {
-/******/ 					me.children.push(request);
-/******/ 				}
-/******/ 			} else {
-/******/ 				console.warn(
-/******/ 					"[HMR] unexpected require(" +
-/******/ 						request +
-/******/ 						") from disposed module " +
-/******/ 						moduleId
-/******/ 				);
-/******/ 				hotCurrentParents = [];
-/******/ 			}
-/******/ 			return __webpack_require__(request);
-/******/ 		};
-/******/ 		var ObjectFactory = function ObjectFactory(name) {
-/******/ 			return {
-/******/ 				configurable: true,
-/******/ 				enumerable: true,
-/******/ 				get: function() {
-/******/ 					return __webpack_require__[name];
-/******/ 				},
-/******/ 				set: function(value) {
-/******/ 					__webpack_require__[name] = value;
-/******/ 				}
-/******/ 			};
-/******/ 		};
-/******/ 		for (var name in __webpack_require__) {
-/******/ 			if (
-/******/ 				Object.prototype.hasOwnProperty.call(__webpack_require__, name) &&
-/******/ 				name !== "e" &&
-/******/ 				name !== "t"
-/******/ 			) {
-/******/ 				Object.defineProperty(fn, name, ObjectFactory(name));
-/******/ 			}
-/******/ 		}
-/******/ 		fn.e = function(chunkId) {
-/******/ 			if (hotStatus === "ready") hotSetStatus("prepare");
-/******/ 			hotChunksLoading++;
-/******/ 			return __webpack_require__.e(chunkId).then(finishChunkLoading, function(err) {
-/******/ 				finishChunkLoading();
-/******/ 				throw err;
-/******/ 			});
-/******/
-/******/ 			function finishChunkLoading() {
-/******/ 				hotChunksLoading--;
-/******/ 				if (hotStatus === "prepare") {
-/******/ 					if (!hotWaitingFilesMap[chunkId]) {
-/******/ 						hotEnsureUpdateChunk(chunkId);
-/******/ 					}
-/******/ 					if (hotChunksLoading === 0 && hotWaitingFiles === 0) {
-/******/ 						hotUpdateDownloaded();
-/******/ 					}
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 		fn.t = function(value, mode) {
-/******/ 			if (mode & 1) value = fn(value);
-/******/ 			return __webpack_require__.t(value, mode & ~1);
-/******/ 		};
-/******/ 		return fn;
-/******/ 	}
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotCreateModule(moduleId) {
-/******/ 		var hot = {
-/******/ 			// private stuff
-/******/ 			_acceptedDependencies: {},
-/******/ 			_declinedDependencies: {},
-/******/ 			_selfAccepted: false,
-/******/ 			_selfDeclined: false,
-/******/ 			_selfInvalidated: false,
-/******/ 			_disposeHandlers: [],
-/******/ 			_main: hotCurrentChildModule !== moduleId,
-/******/
-/******/ 			// Module API
-/******/ 			active: true,
-/******/ 			accept: function(dep, callback) {
-/******/ 				if (dep === undefined) hot._selfAccepted = true;
-/******/ 				else if (typeof dep === "function") hot._selfAccepted = dep;
-/******/ 				else if (typeof dep === "object")
-/******/ 					for (var i = 0; i < dep.length; i++)
-/******/ 						hot._acceptedDependencies[dep[i]] = callback || function() {};
-/******/ 				else hot._acceptedDependencies[dep] = callback || function() {};
-/******/ 			},
-/******/ 			decline: function(dep) {
-/******/ 				if (dep === undefined) hot._selfDeclined = true;
-/******/ 				else if (typeof dep === "object")
-/******/ 					for (var i = 0; i < dep.length; i++)
-/******/ 						hot._declinedDependencies[dep[i]] = true;
-/******/ 				else hot._declinedDependencies[dep] = true;
-/******/ 			},
-/******/ 			dispose: function(callback) {
-/******/ 				hot._disposeHandlers.push(callback);
-/******/ 			},
-/******/ 			addDisposeHandler: function(callback) {
-/******/ 				hot._disposeHandlers.push(callback);
-/******/ 			},
-/******/ 			removeDisposeHandler: function(callback) {
-/******/ 				var idx = hot._disposeHandlers.indexOf(callback);
-/******/ 				if (idx >= 0) hot._disposeHandlers.splice(idx, 1);
-/******/ 			},
-/******/ 			invalidate: function() {
-/******/ 				this._selfInvalidated = true;
-/******/ 				switch (hotStatus) {
-/******/ 					case "idle":
-/******/ 						hotUpdate = {};
-/******/ 						hotUpdate[moduleId] = modules[moduleId];
-/******/ 						hotSetStatus("ready");
-/******/ 						break;
-/******/ 					case "ready":
-/******/ 						hotApplyInvalidatedModule(moduleId);
-/******/ 						break;
-/******/ 					case "prepare":
-/******/ 					case "check":
-/******/ 					case "dispose":
-/******/ 					case "apply":
-/******/ 						(hotQueuedInvalidatedModules =
-/******/ 							hotQueuedInvalidatedModules || []).push(moduleId);
-/******/ 						break;
-/******/ 					default:
-/******/ 						// ignore requests in error states
-/******/ 						break;
-/******/ 				}
-/******/ 			},
-/******/
-/******/ 			// Management API
-/******/ 			check: hotCheck,
-/******/ 			apply: hotApply,
-/******/ 			status: function(l) {
-/******/ 				if (!l) return hotStatus;
-/******/ 				hotStatusHandlers.push(l);
-/******/ 			},
-/******/ 			addStatusHandler: function(l) {
-/******/ 				hotStatusHandlers.push(l);
-/******/ 			},
-/******/ 			removeStatusHandler: function(l) {
-/******/ 				var idx = hotStatusHandlers.indexOf(l);
-/******/ 				if (idx >= 0) hotStatusHandlers.splice(idx, 1);
-/******/ 			},
-/******/
-/******/ 			//inherit from previous dispose call
-/******/ 			data: hotCurrentModuleData[moduleId]
-/******/ 		};
-/******/ 		hotCurrentChildModule = undefined;
-/******/ 		return hot;
-/******/ 	}
-/******/
-/******/ 	var hotStatusHandlers = [];
-/******/ 	var hotStatus = "idle";
-/******/
-/******/ 	function hotSetStatus(newStatus) {
-/******/ 		hotStatus = newStatus;
-/******/ 		for (var i = 0; i < hotStatusHandlers.length; i++)
-/******/ 			hotStatusHandlers[i].call(null, newStatus);
-/******/ 	}
-/******/
-/******/ 	// while downloading
-/******/ 	var hotWaitingFiles = 0;
-/******/ 	var hotChunksLoading = 0;
-/******/ 	var hotWaitingFilesMap = {};
-/******/ 	var hotRequestedFilesMap = {};
-/******/ 	var hotAvailableFilesMap = {};
-/******/ 	var hotDeferred;
-/******/
-/******/ 	// The update info
-/******/ 	var hotUpdate, hotUpdateNewHash, hotQueuedInvalidatedModules;
-/******/
-/******/ 	function toModuleId(id) {
-/******/ 		var isNumber = +id + "" === id;
-/******/ 		return isNumber ? +id : id;
-/******/ 	}
-/******/
-/******/ 	function hotCheck(apply) {
-/******/ 		if (hotStatus !== "idle") {
-/******/ 			throw new Error("check() is only allowed in idle status");
-/******/ 		}
-/******/ 		hotApplyOnUpdate = apply;
-/******/ 		hotSetStatus("check");
-/******/ 		return hotDownloadManifest(hotRequestTimeout).then(function(update) {
-/******/ 			if (!update) {
-/******/ 				hotSetStatus(hotApplyInvalidatedModules() ? "ready" : "idle");
-/******/ 				return null;
-/******/ 			}
-/******/ 			hotRequestedFilesMap = {};
-/******/ 			hotWaitingFilesMap = {};
-/******/ 			hotAvailableFilesMap = update.c;
-/******/ 			hotUpdateNewHash = update.h;
-/******/
-/******/ 			hotSetStatus("prepare");
-/******/ 			var promise = new Promise(function(resolve, reject) {
-/******/ 				hotDeferred = {
-/******/ 					resolve: resolve,
-/******/ 					reject: reject
-/******/ 				};
-/******/ 			});
-/******/ 			hotUpdate = {};
-/******/ 			var chunkId = "main";
-/******/ 			// eslint-disable-next-line no-lone-blocks
-/******/ 			{
-/******/ 				hotEnsureUpdateChunk(chunkId);
-/******/ 			}
-/******/ 			if (
-/******/ 				hotStatus === "prepare" &&
-/******/ 				hotChunksLoading === 0 &&
-/******/ 				hotWaitingFiles === 0
-/******/ 			) {
-/******/ 				hotUpdateDownloaded();
-/******/ 			}
-/******/ 			return promise;
-/******/ 		});
-/******/ 	}
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotAddUpdateChunk(chunkId, moreModules) {
-/******/ 		if (!hotAvailableFilesMap[chunkId] || !hotRequestedFilesMap[chunkId])
-/******/ 			return;
-/******/ 		hotRequestedFilesMap[chunkId] = false;
-/******/ 		for (var moduleId in moreModules) {
-/******/ 			if (Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
-/******/ 				hotUpdate[moduleId] = moreModules[moduleId];
-/******/ 			}
-/******/ 		}
-/******/ 		if (--hotWaitingFiles === 0 && hotChunksLoading === 0) {
-/******/ 			hotUpdateDownloaded();
-/******/ 		}
-/******/ 	}
-/******/
-/******/ 	function hotEnsureUpdateChunk(chunkId) {
-/******/ 		if (!hotAvailableFilesMap[chunkId]) {
-/******/ 			hotWaitingFilesMap[chunkId] = true;
-/******/ 		} else {
-/******/ 			hotRequestedFilesMap[chunkId] = true;
-/******/ 			hotWaitingFiles++;
-/******/ 			hotDownloadUpdateChunk(chunkId);
-/******/ 		}
-/******/ 	}
-/******/
-/******/ 	function hotUpdateDownloaded() {
-/******/ 		hotSetStatus("ready");
-/******/ 		var deferred = hotDeferred;
-/******/ 		hotDeferred = null;
-/******/ 		if (!deferred) return;
-/******/ 		if (hotApplyOnUpdate) {
-/******/ 			// Wrap deferred object in Promise to mark it as a well-handled Promise to
-/******/ 			// avoid triggering uncaught exception warning in Chrome.
-/******/ 			// See https://bugs.chromium.org/p/chromium/issues/detail?id=465666
-/******/ 			Promise.resolve()
-/******/ 				.then(function() {
-/******/ 					return hotApply(hotApplyOnUpdate);
-/******/ 				})
-/******/ 				.then(
-/******/ 					function(result) {
-/******/ 						deferred.resolve(result);
-/******/ 					},
-/******/ 					function(err) {
-/******/ 						deferred.reject(err);
-/******/ 					}
-/******/ 				);
-/******/ 		} else {
-/******/ 			var outdatedModules = [];
-/******/ 			for (var id in hotUpdate) {
-/******/ 				if (Object.prototype.hasOwnProperty.call(hotUpdate, id)) {
-/******/ 					outdatedModules.push(toModuleId(id));
-/******/ 				}
-/******/ 			}
-/******/ 			deferred.resolve(outdatedModules);
-/******/ 		}
-/******/ 	}
-/******/
-/******/ 	function hotApply(options) {
-/******/ 		if (hotStatus !== "ready")
-/******/ 			throw new Error("apply() is only allowed in ready status");
-/******/ 		options = options || {};
-/******/ 		return hotApplyInternal(options);
-/******/ 	}
-/******/
-/******/ 	function hotApplyInternal(options) {
-/******/ 		hotApplyInvalidatedModules();
-/******/
-/******/ 		var cb;
-/******/ 		var i;
-/******/ 		var j;
-/******/ 		var module;
-/******/ 		var moduleId;
-/******/
-/******/ 		function getAffectedStuff(updateModuleId) {
-/******/ 			var outdatedModules = [updateModuleId];
-/******/ 			var outdatedDependencies = {};
-/******/
-/******/ 			var queue = outdatedModules.map(function(id) {
-/******/ 				return {
-/******/ 					chain: [id],
-/******/ 					id: id
-/******/ 				};
-/******/ 			});
-/******/ 			while (queue.length > 0) {
-/******/ 				var queueItem = queue.pop();
-/******/ 				var moduleId = queueItem.id;
-/******/ 				var chain = queueItem.chain;
-/******/ 				module = installedModules[moduleId];
-/******/ 				if (
-/******/ 					!module ||
-/******/ 					(module.hot._selfAccepted && !module.hot._selfInvalidated)
-/******/ 				)
-/******/ 					continue;
-/******/ 				if (module.hot._selfDeclined) {
-/******/ 					return {
-/******/ 						type: "self-declined",
-/******/ 						chain: chain,
-/******/ 						moduleId: moduleId
-/******/ 					};
-/******/ 				}
-/******/ 				if (module.hot._main) {
-/******/ 					return {
-/******/ 						type: "unaccepted",
-/******/ 						chain: chain,
-/******/ 						moduleId: moduleId
-/******/ 					};
-/******/ 				}
-/******/ 				for (var i = 0; i < module.parents.length; i++) {
-/******/ 					var parentId = module.parents[i];
-/******/ 					var parent = installedModules[parentId];
-/******/ 					if (!parent) continue;
-/******/ 					if (parent.hot._declinedDependencies[moduleId]) {
-/******/ 						return {
-/******/ 							type: "declined",
-/******/ 							chain: chain.concat([parentId]),
-/******/ 							moduleId: moduleId,
-/******/ 							parentId: parentId
-/******/ 						};
-/******/ 					}
-/******/ 					if (outdatedModules.indexOf(parentId) !== -1) continue;
-/******/ 					if (parent.hot._acceptedDependencies[moduleId]) {
-/******/ 						if (!outdatedDependencies[parentId])
-/******/ 							outdatedDependencies[parentId] = [];
-/******/ 						addAllToSet(outdatedDependencies[parentId], [moduleId]);
-/******/ 						continue;
-/******/ 					}
-/******/ 					delete outdatedDependencies[parentId];
-/******/ 					outdatedModules.push(parentId);
-/******/ 					queue.push({
-/******/ 						chain: chain.concat([parentId]),
-/******/ 						id: parentId
-/******/ 					});
-/******/ 				}
-/******/ 			}
-/******/
-/******/ 			return {
-/******/ 				type: "accepted",
-/******/ 				moduleId: updateModuleId,
-/******/ 				outdatedModules: outdatedModules,
-/******/ 				outdatedDependencies: outdatedDependencies
-/******/ 			};
-/******/ 		}
-/******/
-/******/ 		function addAllToSet(a, b) {
-/******/ 			for (var i = 0; i < b.length; i++) {
-/******/ 				var item = b[i];
-/******/ 				if (a.indexOf(item) === -1) a.push(item);
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// at begin all updates modules are outdated
-/******/ 		// the "outdated" status can propagate to parents if they don't accept the children
-/******/ 		var outdatedDependencies = {};
-/******/ 		var outdatedModules = [];
-/******/ 		var appliedUpdate = {};
-/******/
-/******/ 		var warnUnexpectedRequire = function warnUnexpectedRequire() {
-/******/ 			console.warn(
-/******/ 				"[HMR] unexpected require(" + result.moduleId + ") to disposed module"
-/******/ 			);
-/******/ 		};
-/******/
-/******/ 		for (var id in hotUpdate) {
-/******/ 			if (Object.prototype.hasOwnProperty.call(hotUpdate, id)) {
-/******/ 				moduleId = toModuleId(id);
-/******/ 				/** @type {TODO} */
-/******/ 				var result;
-/******/ 				if (hotUpdate[id]) {
-/******/ 					result = getAffectedStuff(moduleId);
-/******/ 				} else {
-/******/ 					result = {
-/******/ 						type: "disposed",
-/******/ 						moduleId: id
-/******/ 					};
-/******/ 				}
-/******/ 				/** @type {Error|false} */
-/******/ 				var abortError = false;
-/******/ 				var doApply = false;
-/******/ 				var doDispose = false;
-/******/ 				var chainInfo = "";
-/******/ 				if (result.chain) {
-/******/ 					chainInfo = "\nUpdate propagation: " + result.chain.join(" -> ");
-/******/ 				}
-/******/ 				switch (result.type) {
-/******/ 					case "self-declined":
-/******/ 						if (options.onDeclined) options.onDeclined(result);
-/******/ 						if (!options.ignoreDeclined)
-/******/ 							abortError = new Error(
-/******/ 								"Aborted because of self decline: " +
-/******/ 									result.moduleId +
-/******/ 									chainInfo
-/******/ 							);
-/******/ 						break;
-/******/ 					case "declined":
-/******/ 						if (options.onDeclined) options.onDeclined(result);
-/******/ 						if (!options.ignoreDeclined)
-/******/ 							abortError = new Error(
-/******/ 								"Aborted because of declined dependency: " +
-/******/ 									result.moduleId +
-/******/ 									" in " +
-/******/ 									result.parentId +
-/******/ 									chainInfo
-/******/ 							);
-/******/ 						break;
-/******/ 					case "unaccepted":
-/******/ 						if (options.onUnaccepted) options.onUnaccepted(result);
-/******/ 						if (!options.ignoreUnaccepted)
-/******/ 							abortError = new Error(
-/******/ 								"Aborted because " + moduleId + " is not accepted" + chainInfo
-/******/ 							);
-/******/ 						break;
-/******/ 					case "accepted":
-/******/ 						if (options.onAccepted) options.onAccepted(result);
-/******/ 						doApply = true;
-/******/ 						break;
-/******/ 					case "disposed":
-/******/ 						if (options.onDisposed) options.onDisposed(result);
-/******/ 						doDispose = true;
-/******/ 						break;
-/******/ 					default:
-/******/ 						throw new Error("Unexception type " + result.type);
-/******/ 				}
-/******/ 				if (abortError) {
-/******/ 					hotSetStatus("abort");
-/******/ 					return Promise.reject(abortError);
-/******/ 				}
-/******/ 				if (doApply) {
-/******/ 					appliedUpdate[moduleId] = hotUpdate[moduleId];
-/******/ 					addAllToSet(outdatedModules, result.outdatedModules);
-/******/ 					for (moduleId in result.outdatedDependencies) {
-/******/ 						if (
-/******/ 							Object.prototype.hasOwnProperty.call(
-/******/ 								result.outdatedDependencies,
-/******/ 								moduleId
-/******/ 							)
-/******/ 						) {
-/******/ 							if (!outdatedDependencies[moduleId])
-/******/ 								outdatedDependencies[moduleId] = [];
-/******/ 							addAllToSet(
-/******/ 								outdatedDependencies[moduleId],
-/******/ 								result.outdatedDependencies[moduleId]
-/******/ 							);
-/******/ 						}
-/******/ 					}
-/******/ 				}
-/******/ 				if (doDispose) {
-/******/ 					addAllToSet(outdatedModules, [result.moduleId]);
-/******/ 					appliedUpdate[moduleId] = warnUnexpectedRequire;
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// Store self accepted outdated modules to require them later by the module system
-/******/ 		var outdatedSelfAcceptedModules = [];
-/******/ 		for (i = 0; i < outdatedModules.length; i++) {
-/******/ 			moduleId = outdatedModules[i];
-/******/ 			if (
-/******/ 				installedModules[moduleId] &&
-/******/ 				installedModules[moduleId].hot._selfAccepted &&
-/******/ 				// removed self-accepted modules should not be required
-/******/ 				appliedUpdate[moduleId] !== warnUnexpectedRequire &&
-/******/ 				// when called invalidate self-accepting is not possible
-/******/ 				!installedModules[moduleId].hot._selfInvalidated
-/******/ 			) {
-/******/ 				outdatedSelfAcceptedModules.push({
-/******/ 					module: moduleId,
-/******/ 					parents: installedModules[moduleId].parents.slice(),
-/******/ 					errorHandler: installedModules[moduleId].hot._selfAccepted
-/******/ 				});
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// Now in "dispose" phase
-/******/ 		hotSetStatus("dispose");
-/******/ 		Object.keys(hotAvailableFilesMap).forEach(function(chunkId) {
-/******/ 			if (hotAvailableFilesMap[chunkId] === false) {
-/******/ 				hotDisposeChunk(chunkId);
-/******/ 			}
-/******/ 		});
-/******/
-/******/ 		var idx;
-/******/ 		var queue = outdatedModules.slice();
-/******/ 		while (queue.length > 0) {
-/******/ 			moduleId = queue.pop();
-/******/ 			module = installedModules[moduleId];
-/******/ 			if (!module) continue;
-/******/
-/******/ 			var data = {};
-/******/
-/******/ 			// Call dispose handlers
-/******/ 			var disposeHandlers = module.hot._disposeHandlers;
-/******/ 			for (j = 0; j < disposeHandlers.length; j++) {
-/******/ 				cb = disposeHandlers[j];
-/******/ 				cb(data);
-/******/ 			}
-/******/ 			hotCurrentModuleData[moduleId] = data;
-/******/
-/******/ 			// disable module (this disables requires from this module)
-/******/ 			module.hot.active = false;
-/******/
-/******/ 			// remove module from cache
-/******/ 			delete installedModules[moduleId];
-/******/
-/******/ 			// when disposing there is no need to call dispose handler
-/******/ 			delete outdatedDependencies[moduleId];
-/******/
-/******/ 			// remove "parents" references from all children
-/******/ 			for (j = 0; j < module.children.length; j++) {
-/******/ 				var child = installedModules[module.children[j]];
-/******/ 				if (!child) continue;
-/******/ 				idx = child.parents.indexOf(moduleId);
-/******/ 				if (idx >= 0) {
-/******/ 					child.parents.splice(idx, 1);
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// remove outdated dependency from module children
-/******/ 		var dependency;
-/******/ 		var moduleOutdatedDependencies;
-/******/ 		for (moduleId in outdatedDependencies) {
-/******/ 			if (
-/******/ 				Object.prototype.hasOwnProperty.call(outdatedDependencies, moduleId)
-/******/ 			) {
-/******/ 				module = installedModules[moduleId];
-/******/ 				if (module) {
-/******/ 					moduleOutdatedDependencies = outdatedDependencies[moduleId];
-/******/ 					for (j = 0; j < moduleOutdatedDependencies.length; j++) {
-/******/ 						dependency = moduleOutdatedDependencies[j];
-/******/ 						idx = module.children.indexOf(dependency);
-/******/ 						if (idx >= 0) module.children.splice(idx, 1);
-/******/ 					}
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// Now in "apply" phase
-/******/ 		hotSetStatus("apply");
-/******/
-/******/ 		if (hotUpdateNewHash !== undefined) {
-/******/ 			hotCurrentHash = hotUpdateNewHash;
-/******/ 			hotUpdateNewHash = undefined;
-/******/ 		}
-/******/ 		hotUpdate = undefined;
-/******/
-/******/ 		// insert new code
-/******/ 		for (moduleId in appliedUpdate) {
-/******/ 			if (Object.prototype.hasOwnProperty.call(appliedUpdate, moduleId)) {
-/******/ 				modules[moduleId] = appliedUpdate[moduleId];
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// call accept handlers
-/******/ 		var error = null;
-/******/ 		for (moduleId in outdatedDependencies) {
-/******/ 			if (
-/******/ 				Object.prototype.hasOwnProperty.call(outdatedDependencies, moduleId)
-/******/ 			) {
-/******/ 				module = installedModules[moduleId];
-/******/ 				if (module) {
-/******/ 					moduleOutdatedDependencies = outdatedDependencies[moduleId];
-/******/ 					var callbacks = [];
-/******/ 					for (i = 0; i < moduleOutdatedDependencies.length; i++) {
-/******/ 						dependency = moduleOutdatedDependencies[i];
-/******/ 						cb = module.hot._acceptedDependencies[dependency];
-/******/ 						if (cb) {
-/******/ 							if (callbacks.indexOf(cb) !== -1) continue;
-/******/ 							callbacks.push(cb);
-/******/ 						}
-/******/ 					}
-/******/ 					for (i = 0; i < callbacks.length; i++) {
-/******/ 						cb = callbacks[i];
-/******/ 						try {
-/******/ 							cb(moduleOutdatedDependencies);
-/******/ 						} catch (err) {
-/******/ 							if (options.onErrored) {
-/******/ 								options.onErrored({
-/******/ 									type: "accept-errored",
-/******/ 									moduleId: moduleId,
-/******/ 									dependencyId: moduleOutdatedDependencies[i],
-/******/ 									error: err
-/******/ 								});
-/******/ 							}
-/******/ 							if (!options.ignoreErrored) {
-/******/ 								if (!error) error = err;
-/******/ 							}
-/******/ 						}
-/******/ 					}
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// Load self accepted modules
-/******/ 		for (i = 0; i < outdatedSelfAcceptedModules.length; i++) {
-/******/ 			var item = outdatedSelfAcceptedModules[i];
-/******/ 			moduleId = item.module;
-/******/ 			hotCurrentParents = item.parents;
-/******/ 			hotCurrentChildModule = moduleId;
-/******/ 			try {
-/******/ 				__webpack_require__(moduleId);
-/******/ 			} catch (err) {
-/******/ 				if (typeof item.errorHandler === "function") {
-/******/ 					try {
-/******/ 						item.errorHandler(err);
-/******/ 					} catch (err2) {
-/******/ 						if (options.onErrored) {
-/******/ 							options.onErrored({
-/******/ 								type: "self-accept-error-handler-errored",
-/******/ 								moduleId: moduleId,
-/******/ 								error: err2,
-/******/ 								originalError: err
-/******/ 							});
-/******/ 						}
-/******/ 						if (!options.ignoreErrored) {
-/******/ 							if (!error) error = err2;
-/******/ 						}
-/******/ 						if (!error) error = err;
-/******/ 					}
-/******/ 				} else {
-/******/ 					if (options.onErrored) {
-/******/ 						options.onErrored({
-/******/ 							type: "self-accept-errored",
-/******/ 							moduleId: moduleId,
-/******/ 							error: err
-/******/ 						});
-/******/ 					}
-/******/ 					if (!options.ignoreErrored) {
-/******/ 						if (!error) error = err;
-/******/ 					}
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// handle errors in accept handlers and self accepted module load
-/******/ 		if (error) {
-/******/ 			hotSetStatus("fail");
-/******/ 			return Promise.reject(error);
-/******/ 		}
-/******/
-/******/ 		if (hotQueuedInvalidatedModules) {
-/******/ 			return hotApplyInternal(options).then(function(list) {
-/******/ 				outdatedModules.forEach(function(moduleId) {
-/******/ 					if (list.indexOf(moduleId) < 0) list.push(moduleId);
-/******/ 				});
-/******/ 				return list;
-/******/ 			});
-/******/ 		}
-/******/
-/******/ 		hotSetStatus("idle");
-/******/ 		return new Promise(function(resolve) {
-/******/ 			resolve(outdatedModules);
-/******/ 		});
-/******/ 	}
-/******/
-/******/ 	function hotApplyInvalidatedModules() {
-/******/ 		if (hotQueuedInvalidatedModules) {
-/******/ 			if (!hotUpdate) hotUpdate = {};
-/******/ 			hotQueuedInvalidatedModules.forEach(hotApplyInvalidatedModule);
-/******/ 			hotQueuedInvalidatedModules = undefined;
-/******/ 			return true;
-/******/ 		}
-/******/ 	}
-/******/
-/******/ 	function hotApplyInvalidatedModule(moduleId) {
-/******/ 		if (!Object.prototype.hasOwnProperty.call(hotUpdate, moduleId))
-/******/ 			hotUpdate[moduleId] = modules[moduleId];
-/******/ 	}
-/******/
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -790,14 +23,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
-/******/ 			exports: {},
-/******/ 			hot: hotCreateModule(moduleId),
-/******/ 			parents: (hotCurrentParentsTemp = hotCurrentParents, hotCurrentParents = [], hotCurrentParentsTemp),
-/******/ 			children: []
+/******/ 			exports: {}
 /******/ 		};
 /******/
 /******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, hotCreateRequire(moduleId));
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
@@ -859,1008 +89,19 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "/build/";
 /******/
-/******/ 	// __webpack_hash__
-/******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
-/******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return hotCreateRequire(0)(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ({
-
-/***/ "./continuous-toolbox/src/ContinuousFlyout.js":
-/*!****************************************************!*\
-  !*** ./continuous-toolbox/src/ContinuousFlyout.js ***!
-  \****************************************************/
-/*! exports provided: ContinuousFlyout */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ContinuousFlyout", function() { return ContinuousFlyout; });
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _ContinuousToolbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
-/**
- * @fileoverview Flyout that supports always-open continuous scrolling.
- */
-
-
-/**
- * Class for continuous flyout.
- */
-
-var ContinuousFlyout = /*#__PURE__*/function (_Blockly$VerticalFlyo) {
-  _inherits(ContinuousFlyout, _Blockly$VerticalFlyo);
-
-  var _super = _createSuper(ContinuousFlyout);
-
-  /** @override */
-  function ContinuousFlyout(workspaceOptions) {
-    var _this;
-
-    _classCallCheck(this, ContinuousFlyout);
-
-    _this = _super.call(this, workspaceOptions);
-    /**
-     * List of scroll positions for each category.
-     * @type {!Array<{name: string, position: !Object}>}
-     */
-
-    _this.scrollPositions = [];
-    /**
-     * Target scroll position, used to smoothly scroll to a given category
-     * location when selected.
-     * @type {?number}
-     */
-
-    _this.scrollTarget = null;
-    /**
-     * The percentage of the distance to the scrollTarget that should be
-     * scrolled at a time. Lower values will produce a smoother, slower scroll.
-     * @type {number}
-     */
-
-    _this.scrollAnimationFraction = 0.3;
-    /**
-     * A list of blocks that can be recycled.
-     * @type {!Array.<!Blockly.BlockSvg>}
-     * @private
-     */
-
-    _this.recycleBlocks_ = [];
-    /**
-     * Whether to recycle blocks when refreshing the flyout. When false, do not
-     * allow anything to be recycled. The default is to recycle.
-     * @type {boolean}
-     * @private
-     */
-
-    _this.recyclingEnabled_ = true;
-    _this.autoClose = true;
-    return _this;
-  }
-  /**
-   * Gets parent toolbox.
-   * Since we registered the ContinuousToolbox, we know that's its type.
-   * @return {!ContinuousToolbox} Toolbox that owns this flyout.
-   * @private
-   */
-
-
-  _createClass(ContinuousFlyout, [{
-    key: "getParentToolbox_",
-    value: function getParentToolbox_() {
-      var toolbox = this.targetWorkspace.getToolbox();
-      return (
-        /** @type {!ContinuousToolbox} */
-        toolbox
-      );
-    }
-    /**
-     * Records scroll position for each category in the toolbox.
-     * The scroll position is determined by the coordinates of each category's
-     * label after the entire flyout has been rendered.
-     * @package
-     */
-
-  }, {
-    key: "recordScrollPositions",
-    value: function recordScrollPositions() {
-      var _this2 = this;
-
-      var categoryLabels = this.buttons_.filter(function (button) {
-        return button.isLabel() && _this2.getParentToolbox_().getCategoryByName(button.getButtonText());
-      });
-
-      var _iterator = _createForOfIteratorHelper(categoryLabels),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var button = _step.value;
-
-          if (button.isLabel()) {
-            this.scrollPositions.push({
-              name: button.getButtonText(),
-              position: button.getPosition()
-            });
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    }
-    /**
-     * Returns the scroll position for the given category name.
-     * @param {string} name Category name.
-     * @return {?Object} Scroll position for given category, or null if not found.
-     * @package
-     */
-
-  }, {
-    key: "getCategoryScrollPosition",
-    value: function getCategoryScrollPosition(name) {
-      var _iterator2 = _createForOfIteratorHelper(this.scrollPositions),
-          _step2;
-
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var scrollInfo = _step2.value;
-
-          if (scrollInfo.name === name) {
-            return scrollInfo.position;
-          }
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
-
-      console.warn("Scroll position not recorded for category ".concat(name));
-      return null;
-    }
-    /**
-     * Selects an item in the toolbox based on the scroll position of the flyout.
-     * @param {number} position Current scroll position of the workspace.
-     * @private
-     */
-
-  }, {
-    key: "selectCategoryByScrollPosition_",
-    value: function selectCategoryByScrollPosition_(position) {
-      // If we are currently auto-scrolling, due to selecting a category by
-      // clicking on it, do not update the category selection.
-      if (this.scrollTarget) {
-        return;
-      }
-
-      var scaledPosition = Math.round(position / this.workspace_.scale); // Traverse the array of scroll positions in reverse, so we can select the
-      // furthest category that the scroll position is beyond.
-
-      for (var i = this.scrollPositions.length - 1; i >= 0; i--) {
-        var category = this.scrollPositions[i];
-
-        if (scaledPosition >= category.position.y) {
-          this.getParentToolbox_().selectCategoryByName(category.name);
-          return;
-        }
-      }
-    }
-    /**
-     * Scrolls flyout to given position.
-     * @param {number} position The x coordinate to scroll to.
-     */
-
-  }, {
-    key: "scrollTo",
-    value: function scrollTo(position) {
-      // Set the scroll target to either the scaled position or the lowest
-      // possible scroll point, whichever is smaller.
-      var metrics = this.workspace_.getMetrics();
-      this.scrollTarget = Math.min(position * this.workspace_.scale, metrics.contentHeight - metrics.viewHeight);
-      this.stepScrollAnimation_();
-    }
-    /**
-     * Step the scrolling animation by scrolling a fraction of the way to
-     * a scroll target, and request the next frame if necessary.
-     * @private
-     */
-
-  }, {
-    key: "stepScrollAnimation_",
-    value: function stepScrollAnimation_() {
-      if (!this.scrollTarget) {
-        return;
-      }
-
-      var currentScrollPos = -this.workspace_.scrollY;
-      var diff = this.scrollTarget - currentScrollPos;
-
-      if (Math.abs(diff) < 1) {
-        this.scrollbar.set(this.scrollTarget);
-        this.scrollTarget = null;
-        return;
-      }
-
-      this.scrollbar.set(currentScrollPos + diff * this.scrollAnimationFraction);
-      requestAnimationFrame(this.stepScrollAnimation_.bind(this));
-    }
-    /**
-     * Add additional padding to the bottom of the flyout if needed,
-     * in order to make it possible to scroll to the top of the last category.
-     * @param {!Blockly.utils.Metrics} metrics Default metrics for the flyout.
-     * @return {number} Additional bottom padding.
-     * @private
-     */
-
-  }, {
-    key: "calculateBottomPadding_",
-    value: function calculateBottomPadding_(metrics) {
-      if (this.scrollPositions.length > 0) {
-        var lastCategory = this.scrollPositions[this.scrollPositions.length - 1];
-        var lastPosition = lastCategory.position.y * this.workspace_.scale;
-        var lastCategoryHeight = metrics.contentHeight - lastPosition;
-
-        if (lastCategoryHeight < metrics.viewHeight) {
-          return metrics.viewHeight - lastCategoryHeight;
-        }
-      }
-
-      return 0;
-    }
-    /**
-     * @override
-     */
-
-  }, {
-    key: "getMetrics_",
-    value: function getMetrics_() {
-      var metrics = _get(_getPrototypeOf(ContinuousFlyout.prototype), "getMetrics_", this).call(this);
-
-      if (metrics) {
-        metrics.contentHeight += this.calculateBottomPadding_(metrics);
-      }
-
-      return metrics;
-    }
-    /** @override */
-
-  }, {
-    key: "setMetrics_",
-    value: function setMetrics_(xyRatio) {
-      _get(_getPrototypeOf(ContinuousFlyout.prototype), "setMetrics_", this).call(this, xyRatio);
-
-      if (this.scrollPositions) {
-        this.selectCategoryByScrollPosition_(-this.workspace_.scrollY);
-      }
-    }
-    /**
-     * Overrides the position function solely to change the x coord in RTL mode.
-     * The base function allows the workspace to go "under" the flyout, so
-     * to calculate the left edge of the flyout in RTL you would just subtract
-     * the flyout width from the total viewWidth to get x. However, in our
-     * flyout, the workspace already starts at the left edge of the flyout, so
-     * we don't need to subtract the flyout width again.
-     * Ideally there would be a smaller method for us to override instead,
-     * but for now we copy/paste this method and make our fixes.
-     * @override
-     */
-
-  }, {
-    key: "position",
-    value: function position() {
-      if (!this.isVisible()) {
-        return;
-      }
-
-      var targetWorkspaceMetrics = this.targetWorkspace.getMetrics();
-
-      if (!targetWorkspaceMetrics) {
-        // Hidden components will return null.
-        return;
-      } // Record the height for Blockly.Flyout.getMetrics_
-
-
-      this.height_ = targetWorkspaceMetrics.viewHeight;
-      var edgeWidth = this.width_ - this.CORNER_RADIUS;
-      var edgeHeight = targetWorkspaceMetrics.viewHeight - 2 * this.CORNER_RADIUS;
-      this.setBackgroundPath_(edgeWidth, edgeHeight); // Y is always 0 since this is a vertical flyout.
-
-      var y = 0;
-      var x = 0; // If this flyout is the toolbox flyout.
-
-      if (this.targetWorkspace.toolboxPosition == this.toolboxPosition_) {
-        // If there is a category toolbox.
-        if (targetWorkspaceMetrics.toolboxWidth) {
-          if (this.toolboxPosition_ == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"]) {
-            x = targetWorkspaceMetrics.toolboxWidth;
-          } else {
-            // TODO(https://github.com/google/blockly/issues/4396): Use a better
-            // API to adjust this value.
-            // This is the only line that changed from the original.
-            x = targetWorkspaceMetrics.viewWidth;
-          }
-        } else {
-          if (this.toolboxPosition_ == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"]) {
-            x = 0;
-          } else {
-            x = targetWorkspaceMetrics.viewWidth;
-          }
-        }
-      } else {
-        if (this.toolboxPosition_ == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"]) {
-          x = 0;
-        } else {
-          // Because the anchor point of the flyout is on the left, but we want
-          // to align the right edge of the flyout with the right edge of the
-          // blocklyDiv, we calculate the full width of the div minus the width
-          // of the flyout.
-          x = targetWorkspaceMetrics.viewWidth + targetWorkspaceMetrics.absoluteLeft - this.width_;
-        }
-      }
-
-      this.positionAt_(this.width_, this.height_, x, y);
-    }
-    /**
-     * @override
-     */
-
-  }, {
-    key: "show",
-    value: function show(flyoutDef) {
-      _get(_getPrototypeOf(ContinuousFlyout.prototype), "show", this).call(this, flyoutDef);
-
-      this.emptyRecycleBlocks_();
-    }
-    /**
-     * Empty out the recycled blocks, properly destroying everything.
-     * @protected
-     */
-
-  }, {
-    key: "emptyRecycleBlocks_",
-    value: function emptyRecycleBlocks_() {
-      // Clean out the old recycle bin.
-      var oldBlocks = this.recycleBlocks_;
-      this.recycleBlocks_ = [];
-
-      var _iterator3 = _createForOfIteratorHelper(oldBlocks),
-          _step3;
-
-      try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var oldBlock = _step3.value;
-          oldBlock.dispose(false, false);
-        }
-      } catch (err) {
-        _iterator3.e(err);
-      } finally {
-        _iterator3.f();
-      }
-    }
-    /**
-     * @override
-     */
-
-  }, {
-    key: "createBlock_",
-    value: function createBlock_(blockXml) {
-      var blockType = blockXml.getAttribute('type');
-      var blockIdx = this.recycleBlocks_.findIndex(function (block) {
-        return block.type === blockType;
-      });
-      var curBlock;
-
-      if (blockIdx > -1) {
-        curBlock = this.recycleBlocks_.splice(blockIdx, 1)[0];
-      } else {
-        curBlock = blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToBlock(blockXml, this.workspace_);
-      }
-
-      if (!curBlock.isEnabled()) {
-        // Record blocks that were initially disabled.
-        // Do not enable these blocks as a result of capacity filtering.
-        this.permanentlyDisabled_.push(curBlock);
-      }
-
-      return curBlock;
-    }
-    /**
-     * @override
-     */
-
-  }, {
-    key: "clearOldBlocks_",
-    value: function clearOldBlocks_() {
-      // Delete any blocks from a previous showing.
-      var oldBlocks =
-      /** @type {!Array<!Blockly.BlockSvg>} */
-      this.workspace_.getTopBlocks(false);
-
-      var _iterator4 = _createForOfIteratorHelper(oldBlocks),
-          _step4;
-
-      try {
-        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-          var block = _step4.value;
-
-          if (block.workspace == this.workspace_) {
-            if (this.recyclingEnabled_ && this.blockIsRecyclable_(block)) {
-              this.recycleBlock_(block);
-            } else {
-              block.dispose(false, false);
-            }
-          }
-        } // Delete any mats from a previous showing.
-
-      } catch (err) {
-        _iterator4.e(err);
-      } finally {
-        _iterator4.f();
-      }
-
-      var _iterator5 = _createForOfIteratorHelper(this.mats_),
-          _step5;
-
-      try {
-        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-          var rect = _step5.value;
-
-          if (rect) {
-            blockly_core__WEBPACK_IMPORTED_MODULE_0__["Tooltip"].unbindMouseEvents(rect);
-            blockly_core__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.removeNode(rect);
-          }
-        }
-      } catch (err) {
-        _iterator5.e(err);
-      } finally {
-        _iterator5.f();
-      }
-
-      this.mats_.length = 0; // Delete any buttons from a previous showing.
-
-      var _iterator6 = _createForOfIteratorHelper(this.buttons_),
-          _step6;
-
-      try {
-        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
-          var button = _step6.value;
-          button.dispose();
-        }
-      } catch (err) {
-        _iterator6.e(err);
-      } finally {
-        _iterator6.f();
-      }
-
-      this.buttons_.length = 0; // Clear potential variables from the previous showing.
-
-      this.workspace_.getPotentialVariableMap().clear();
-    }
-    /**
-     * Determine if this block can be recycled in the flyout.  Blocks that have no
-     * variables and are not dynamic shadows can be recycled.
-     * @param {!Blockly.BlockSvg} block The block to attempt to recycle.
-     * @return {boolean} True if the block can be recycled.
-     * @protected
-     */
-
-  }, {
-    key: "blockIsRecyclable_",
-    value: function blockIsRecyclable_(block) {
-      // If the block needs to parse mutations, never recycle.
-      if (block.mutationToDom && block.domToMutation) {
-        return false;
-      }
-
-      var _iterator7 = _createForOfIteratorHelper(block.inputList),
-          _step7;
-
-      try {
-        for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
-          var input = _step7.value;
-
-          var _iterator8 = _createForOfIteratorHelper(input.fieldRow),
-              _step8;
-
-          try {
-            for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
-              var field = _step8.value;
-
-              // No variables.
-              if (field instanceof blockly_core__WEBPACK_IMPORTED_MODULE_0__["FieldVariable"]) {
-                return false;
-              }
-
-              if (field instanceof blockly_core__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"]) {
-                if (field.isOptionListDynamic()) {
-                  return false;
-                }
-              }
-            } // Check children.
-
-          } catch (err) {
-            _iterator8.e(err);
-          } finally {
-            _iterator8.f();
-          }
-
-          if (input.connection) {
-            var targetBlock =
-            /** @type {Blockly.BlockSvg} */
-            input.connection.targetBlock();
-
-            if (targetBlock && !this.blockIsRecyclable_(targetBlock)) {
-              return false;
-            }
-          }
-        }
-      } catch (err) {
-        _iterator7.e(err);
-      } finally {
-        _iterator7.f();
-      }
-
-      return true;
-    }
-    /**
-     * Sets the function used to determine whether a block is recyclable.
-     * @param {function(!Blockly.BlockSvg):boolean} func The function used to
-     *     determine if a block is recyclable.
-     * @public
-     */
-
-  }, {
-    key: "setBlockIsRecyclable",
-    value: function setBlockIsRecyclable(func) {
-      this.blockIsRecyclable_ = func;
-    }
-    /**
-     * Set whether the flyout can recycle blocks.
-     * @param {boolean} isEnabled True to allow blocks to be recycled, false
-     *     otherwise.
-     * @public
-     */
-
-  }, {
-    key: "setRecyclingEnabled",
-    value: function setRecyclingEnabled(isEnabled) {
-      this.recyclingEnabled_ = isEnabled;
-    }
-    /**
-     * Puts a previously created block into the recycle bin and moves it to the
-     * top of the workspace. Used during large workspace swaps to limit the number
-     * of new DOM elements we need to create.
-     * @param {!Blockly.BlockSvg} block The block to recycle.
-     * @protected
-     */
-
-  }, {
-    key: "recycleBlock_",
-    value: function recycleBlock_(block) {
-      var xy = block.getRelativeToSurfaceXY();
-      block.moveBy(-xy.x, -xy.y);
-      this.recycleBlocks_.push(block);
-    }
-  }]);
-
-  return ContinuousFlyout;
-}(blockly_core__WEBPACK_IMPORTED_MODULE_0__["VerticalFlyout"]);
-
-/***/ }),
-
-/***/ "./continuous-toolbox/src/ContinuousToolbox.js":
-/*!*****************************************************!*\
-  !*** ./continuous-toolbox/src/ContinuousToolbox.js ***!
-  \*****************************************************/
-/*! exports provided: ContinuousToolbox */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ContinuousToolbox", function() { return ContinuousToolbox; });
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _ContinuousFlyout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
-/**
- * @fileoverview Toolbox that uses a continuous scrolling flyout.
- */
-
-
-var swap = false;
-/**
- * Class for continuous toolbox.
- */
-
-var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
-  _inherits(ContinuousToolbox, _Blockly$Toolbox);
-
-  var _super = _createSuper(ContinuousToolbox);
-
-  /** @override */
-  function ContinuousToolbox(workspace) {
-    _classCallCheck(this, ContinuousToolbox);
-
-    return _super.call(this, workspace);
-  }
-  /** @override */
-
-
-  _createClass(ContinuousToolbox, [{
-    key: "init",
-    value: function init() {
-      _get(_getPrototypeOf(ContinuousToolbox.prototype), "init", this).call(this); // Populate the flyout with all blocks and show it immediately.
-
-
-      var flyout = this.getFlyout();
-      flyout.show(this.getInitialFlyoutContents_());
-      flyout.recordScrollPositions();
-      flyout.hide(this.getInitialFlyoutContents_()); // Replace workspace.getMetrics with a version that measures the flyout.
-      // Ideally this would be set using the workspace options struct but that
-      // is not currently possible.
-      // TODO(https://github.com/google/blockly/issues/4377): Replace via
-      // options struct when possible.
-
-      this.workspace_.getMetrics = this.workspaceGetMetrics_.bind(this.workspace_);
-      var self = this;
-
-      blockly_core__WEBPACK_IMPORTED_MODULE_0__["hideFlyOut"] = function () {
-        self.getFlyout().hide(self.getInitialFlyoutContents_());
-      };
-    }
-    /** @override */
-
-  }, {
-    key: "getFlyout",
-    value: function getFlyout() {
-      return (
-        /** @type {ContinuousFlyout} */
-        _get(_getPrototypeOf(ContinuousToolbox.prototype), "getFlyout", this).call(this)
-      );
-    }
-    /**
-     * Gets the contents that should be shown in the flyout immediately.
-     * This includes all blocks and labels for each category of block.
-     * @return {!Blockly.utils.toolbox.FlyoutItemInfoArray} Flyout contents.
-     * @private
-     */
-
-  }, {
-    key: "getInitialFlyoutContents_",
-    value: function getInitialFlyoutContents_() {
-      /** @type {!Blockly.utils.toolbox.FlyoutItemInfoArray} */
-      var contents = [];
-
-      var _iterator = _createForOfIteratorHelper(this.contents_),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var toolboxItem = _step.value;
-
-          if (toolboxItem instanceof blockly_core__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"]) {
-            // Create a label node to go at the top of the category
-            contents.push({
-              kind: 'LABEL',
-              text: toolboxItem.getName()
-            });
-            /**
-             * @type {string|Blockly.utils.toolbox.FlyoutItemInfoArray|
-             *    Blockly.utils.toolbox.FlyoutItemInfo}
-             */
-
-            var itemContents = toolboxItem.getContents(); // Handle custom categories (e.g. variables and functions)
-
-            if (typeof itemContents === 'string') {
-              itemContents =
-              /** @type {!Blockly.utils.toolbox.DynamicCategoryInfo} */
-              {
-                custom: itemContents,
-                kind: 'CATEGORY'
-              };
-            }
-
-            contents = contents.concat(itemContents);
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-
-      return contents;
-    }
-    /** @override */
-
-  }, {
-    key: "refreshSelection",
-    value: function refreshSelection() {
-      if (localStorage.getItem('mode') == 'block' && this.getFlyout().isVisible()) this.getFlyout().show(this.getInitialFlyoutContents_());
-    }
-    /** @override */
-
-  }, {
-    key: "updateFlyout_",
-    value: function updateFlyout_(_oldItem, newItem) {
-      if (_oldItem == newItem) {
-        this.getFlyout().hide(this.getInitialFlyoutContents_());
-        this.deselectItem_(_oldItem);
-        return;
-      }
-
-      if (_oldItem == null) {
-        swap = true;
-      }
-
-      if (newItem) {
-        if (!this.getFlyout().isVisible()) this.getFlyout().show(this.getInitialFlyoutContents_());
-
-        try {
-          var target = this.getFlyout().getCategoryScrollPosition(newItem.name_).y;
-          this.getFlyout().scrollTo(target);
-        } catch (e) {}
-      }
-    }
-    /** @override */
-
-  }, {
-    key: "shouldDeselectItem_",
-    value: function shouldDeselectItem_(oldItem, newItem) {
-      // Should not deselect if the same category is clicked again.
-      return oldItem && oldItem !== newItem;
-    }
-    /**
-     * Gets a category by name.
-     * @param {string} name Name of category to get.
-     * @return {?Blockly.ToolboxCategory} Category, or null if not
-     *    found.
-     * @package
-     */
-
-  }, {
-    key: "getCategoryByName",
-    value: function getCategoryByName(name) {
-      var category = this.contents_.find(function (item) {
-        return item instanceof blockly_core__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"] && item.isSelectable() && name === item.getName();
-      });
-
-      if (category) {
-        return (
-          /** @type {!Blockly.ToolboxCategory} */
-          category
-        );
-      }
-
-      return null;
-    }
-    /**
-     * Selects the category with the given name.
-     * Similar to setSelectedItem, but importantly, does not call updateFlyout
-     * because this is called while the flyout is being scrolled.
-     * @param {string} name Name of category to select.
-     * @package
-     */
-    // selectCategoryByName(name) {
-    //   const newItem = this.getCategoryByName(name);
-    //   // if (!newItem) {
-    //   //   return;
-    //   // }
-    //   const oldItem = this.selectedItem_;
-    //
-    //   // if (this.shouldDeselectItem_(oldItem, newItem)) {
-    //     this.deselectItem_(oldItem);
-    //   // }
-    //
-    //   // if (this.shouldSelectItem_(oldItem, newItem)) {
-    //   this.selectItem_(newItem, oldItem);
-    //   // }
-    // }
-
-  }, {
-    key: "selectCategoryByName",
-    value: function selectCategoryByName(name) {
-      var newItem = this.getCategoryByName(name);
-
-      if (!newItem) {
-        return;
-      }
-
-      var oldItem = this.selectedItem_;
-
-      if (swap) {
-        swap = false;
-        var tmp = oldItem;
-        oldItem = newItem;
-        newItem = tmp;
-      }
-
-      if (this.shouldDeselectItem_(oldItem, newItem)) {
-        this.deselectItem_(oldItem);
-      }
-
-      if (this.shouldSelectItem_(oldItem, newItem)) {
-        this.selectItem_(oldItem, newItem);
-      }
-    }
-    /** @override */
-
-  }, {
-    key: "getClientRect",
-    value: function getClientRect() {
-      // If the flyout never closes, it should be the deletable area.
-      var flyout = this.getFlyout();
-
-      if (flyout && !flyout.autoClose) {
-        return flyout.getClientRect();
-      }
-
-      return _get(_getPrototypeOf(ContinuousToolbox.prototype), "getClientRect", this).call(this);
-    }
-    /**
-     * Gets adjusted metrics for the workspace, accounting for the flyout width.
-     * This will be set as the WorkspaceSvg's getMetrics function, as there
-     * is currently no way to set this using the options struct.
-     * TODO(https://github.com/google/blockly/issues/4377): Replace via options.
-     * @return {!Blockly.utils.Metrics} Contains size and position metrics of a
-     *     top level workspace.
-     * @private
-     * @this {Blockly.WorkspaceSvg}
-     */
-
-  }, {
-    key: "workspaceGetMetrics_",
-    value: function workspaceGetMetrics_() {
-      var toolboxDimensions = blockly_core__WEBPACK_IMPORTED_MODULE_0__["WorkspaceSvg"].getDimensionsPx_(this.toolbox_);
-      var flyoutDimensions = blockly_core__WEBPACK_IMPORTED_MODULE_0__["WorkspaceSvg"].getDimensionsPx_(this.toolbox_.getFlyout()); // Contains height and width in CSS pixels.
-      // svgSize is equivalent to the size of the injectionDiv at this point.
-
-      var svgSize = blockly_core__WEBPACK_IMPORTED_MODULE_0__["svgSize"](this.getParentSvg());
-      var viewSize = {
-        height: svgSize.height,
-        width: svgSize.width
-      };
-
-      if (this.toolbox_) {
-        // Note: Not actually supported at this time due to ContinunousToolbox
-        // only supporting a vertical flyout. But included for completeness.
-        if (this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_TOP"] || this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_BOTTOM"]) {
-          viewSize.height -= toolboxDimensions.height + flyoutDimensions.height;
-        } else if (this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"] || this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_RIGHT"]) {
-          viewSize.width -= toolboxDimensions.width + flyoutDimensions.width;
-        }
-      } // svgSize is now the space taken up by the Blockly workspace, not including
-      // the toolbox.
-
-
-      var contentDimensions = blockly_core__WEBPACK_IMPORTED_MODULE_0__["WorkspaceSvg"].getContentDimensions_(this, viewSize);
-      var absoluteLeft = 0;
-
-      if (this.toolbox_ && this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_LEFT"]) {
-        absoluteLeft = toolboxDimensions.width + flyoutDimensions.width;
-      }
-
-      var absoluteTop = 0;
-
-      if (this.toolbox_ && this.toolboxPosition == blockly_core__WEBPACK_IMPORTED_MODULE_0__["TOOLBOX_AT_TOP"]) {
-        absoluteTop = toolboxDimensions.height + flyoutDimensions.height;
-      }
-
-      var metrics = {
-        contentHeight: contentDimensions.height,
-        contentWidth: contentDimensions.width + flyoutDimensions.width + flyoutDimensions.width,
-        contentTop: contentDimensions.top,
-        contentLeft: contentDimensions.left - flyoutDimensions.width,
-        viewHeight: viewSize.height,
-        viewWidth: viewSize.width + flyoutDimensions.width,
-        viewTop: -this.scrollY,
-        viewLeft: -this.scrollX,
-        //+ (flyoutDimensions.width * 10),
-        absoluteTop: absoluteTop,
-        absoluteLeft: absoluteLeft - flyoutDimensions.width,
-        // svgHeight: svgSize.height,
-        // svgWidth: svgSize.width,
-        toolboxWidth: toolboxDimensions.width,
-        toolboxHeight: toolboxDimensions.height,
-        toolboxPosition: this.toolboxPosition,
-        flyoutWidth: flyoutDimensions.width,
-        flyoutHeight: flyoutDimensions.height
-      };
-      return metrics;
-    }
-  }]);
-
-  return ContinuousToolbox;
-}(blockly_core__WEBPACK_IMPORTED_MODULE_0__["Toolbox"]);
-
-/***/ }),
 
 /***/ "./node_modules/ansi-html/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/ansi-html/index.js ***!
   \*****************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2044,11 +285,29 @@ ansiHTML.reset()
 
 /***/ }),
 
+/***/ "./node_modules/ansi-regex/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/ansi-regex/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = function () {
+	return /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]/g;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/blockly/blockly.js":
 /*!*****************************************!*\
   !*** ./node_modules/blockly/blockly.js ***!
   \*****************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* eslint-disable */
@@ -2084,6 +343,7 @@ return Blockly;
   !*** ./node_modules/blockly/blockly_compressed.js ***!
   \****************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Do not edit this file; automatically generated by gulp.
@@ -3551,6 +1811,7 @@ return Blockly;
   !*** ./node_modules/blockly/blocks.js ***!
   \****************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* eslint-disable */
@@ -3588,6 +1849,7 @@ return Blockly.Blocks;
   !*** ./node_modules/blockly/blocks_compressed.js ***!
   \***************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Do not edit this file; automatically generated by gulp.
@@ -3780,6 +2042,7 @@ return Blockly.Blocks;
   !*** ./node_modules/blockly/browser.js ***!
   \*****************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* eslint-disable */
@@ -3826,6 +2089,7 @@ return Blockly;
   !*** ./node_modules/blockly/core-browser.js ***!
   \**********************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* eslint-disable */
@@ -3870,6 +2134,7 @@ return Blockly;
   !*** ./node_modules/blockly/index.js ***!
   \***************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* eslint-disable */
@@ -3904,6 +2169,7 @@ return Blockly;
   !*** ./node_modules/blockly/javascript.js ***!
   \********************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* eslint-disable */
@@ -3941,6 +2207,7 @@ return BlocklyJavaScript;
   !*** ./node_modules/blockly/javascript_compressed.js ***!
   \*******************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Do not edit this file; automatically generated by gulp.
@@ -4066,6 +2333,7 @@ return Blockly.JavaScript;
   !*** ./node_modules/blockly/msg/en.js ***!
   \****************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* eslint-disable */
@@ -4523,6 +2791,7 @@ return Blockly.Msg;
   !*** ./node_modules/events/events.js ***!
   \***************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5011,11 +3280,13 @@ function once(emitter, name) {
   !*** ./node_modules/html-entities/lib/html4-entities.js ***!
   \**********************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var surrogate_pairs_1 = __webpack_require__(/*! ./surrogate-pairs */ "./node_modules/html-entities/lib/surrogate-pairs.js");
 var HTML_ALPHA = ['apos', 'nbsp', 'iexcl', 'cent', 'pound', 'curren', 'yen', 'brvbar', 'sect', 'uml', 'copy', 'ordf', 'laquo', 'not', 'shy', 'reg', 'macr', 'deg', 'plusmn', 'sup2', 'sup3', 'acute', 'micro', 'para', 'middot', 'cedil', 'sup1', 'ordm', 'raquo', 'frac14', 'frac12', 'frac34', 'iquest', 'Agrave', 'Aacute', 'Acirc', 'Atilde', 'Auml', 'Aring', 'AElig', 'Ccedil', 'Egrave', 'Eacute', 'Ecirc', 'Euml', 'Igrave', 'Iacute', 'Icirc', 'Iuml', 'ETH', 'Ntilde', 'Ograve', 'Oacute', 'Ocirc', 'Otilde', 'Ouml', 'times', 'Oslash', 'Ugrave', 'Uacute', 'Ucirc', 'Uuml', 'Yacute', 'THORN', 'szlig', 'agrave', 'aacute', 'acirc', 'atilde', 'auml', 'aring', 'aelig', 'ccedil', 'egrave', 'eacute', 'ecirc', 'euml', 'igrave', 'iacute', 'icirc', 'iuml', 'eth', 'ntilde', 'ograve', 'oacute', 'ocirc', 'otilde', 'ouml', 'divide', 'oslash', 'ugrave', 'uacute', 'ucirc', 'uuml', 'yacute', 'thorn', 'yuml', 'quot', 'amp', 'lt', 'gt', 'OElig', 'oelig', 'Scaron', 'scaron', 'Yuml', 'circ', 'tilde', 'ensp', 'emsp', 'thinsp', 'zwnj', 'zwj', 'lrm', 'rlm', 'ndash', 'mdash', 'lsquo', 'rsquo', 'sbquo', 'ldquo', 'rdquo', 'bdquo', 'dagger', 'Dagger', 'permil', 'lsaquo', 'rsaquo', 'euro', 'fnof', 'Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi', 'Psi', 'Omega', 'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi', 'rho', 'sigmaf', 'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega', 'thetasym', 'upsih', 'piv', 'bull', 'hellip', 'prime', 'Prime', 'oline', 'frasl', 'weierp', 'image', 'real', 'trade', 'alefsym', 'larr', 'uarr', 'rarr', 'darr', 'harr', 'crarr', 'lArr', 'uArr', 'rArr', 'dArr', 'hArr', 'forall', 'part', 'exist', 'empty', 'nabla', 'isin', 'notin', 'ni', 'prod', 'sum', 'minus', 'lowast', 'radic', 'prop', 'infin', 'ang', 'and', 'or', 'cap', 'cup', 'int', 'there4', 'sim', 'cong', 'asymp', 'ne', 'equiv', 'le', 'ge', 'sub', 'sup', 'nsub', 'sube', 'supe', 'oplus', 'otimes', 'perp', 'sdot', 'lceil', 'rceil', 'lfloor', 'rfloor', 'lang', 'rang', 'loz', 'spades', 'clubs', 'hearts', 'diams'];
 var HTML_CODES = [39, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 34, 38, 60, 62, 338, 339, 352, 353, 376, 710, 732, 8194, 8195, 8201, 8204, 8205, 8206, 8207, 8211, 8212, 8216, 8217, 8218, 8220, 8221, 8222, 8224, 8225, 8240, 8249, 8250, 8364, 402, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 931, 932, 933, 934, 935, 936, 937, 945, 946, 947, 948, 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 977, 978, 982, 8226, 8230, 8242, 8243, 8254, 8260, 8472, 8465, 8476, 8482, 8501, 8592, 8593, 8594, 8595, 8596, 8629, 8656, 8657, 8658, 8659, 8660, 8704, 8706, 8707, 8709, 8711, 8712, 8713, 8715, 8719, 8721, 8722, 8727, 8730, 8733, 8734, 8736, 8743, 8744, 8745, 8746, 8747, 8756, 8764, 8773, 8776, 8800, 8801, 8804, 8805, 8834, 8835, 8836, 8838, 8839, 8853, 8855, 8869, 8901, 8968, 8969, 8970, 8971, 9001, 9002, 9674, 9824, 9827, 9829, 9830];
 var alphaIndex = {};
@@ -5044,8 +3315,13 @@ var Html4Entities = /** @class */ (function () {
                 var code = entity.charAt(1).toLowerCase() === 'x' ?
                     parseInt(entity.substr(2), 16) :
                     parseInt(entity.substr(1));
-                if (!(isNaN(code) || code < -32768 || code > 65535)) {
-                    chr = String.fromCharCode(code);
+                if (!isNaN(code) || code >= -32768) {
+                    if (code <= 65535) {
+                        chr = String.fromCharCode(code);
+                    }
+                    else {
+                        chr = surrogate_pairs_1.fromCodePoint(code);
+                    }
                 }
             }
             else {
@@ -5088,7 +3364,13 @@ var Html4Entities = /** @class */ (function () {
                 result += "&" + alpha + ";";
             }
             else if (cc < 32 || cc > 126) {
-                result += "&#" + cc + ";";
+                if (cc >= surrogate_pairs_1.highSurrogateFrom && cc <= surrogate_pairs_1.highSurrogateTo) {
+                    result += '&#' + surrogate_pairs_1.getCodePoint(str, i) + ';';
+                    i++;
+                }
+                else {
+                    result += '&#' + cc + ';';
+                }
             }
             else {
                 result += str.charAt(i);
@@ -5113,7 +3395,13 @@ var Html4Entities = /** @class */ (function () {
                 result += str[i++];
                 continue;
             }
-            result += '&#' + c + ';';
+            if (c >= surrogate_pairs_1.highSurrogateFrom && c <= surrogate_pairs_1.highSurrogateTo) {
+                result += '&#' + surrogate_pairs_1.getCodePoint(str, i) + ';';
+                i++;
+            }
+            else {
+                result += '&#' + c + ';';
+            }
             i++;
         }
         return result;
@@ -5133,11 +3421,13 @@ exports.Html4Entities = Html4Entities;
   !*** ./node_modules/html-entities/lib/html5-entities.js ***!
   \**********************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var surrogate_pairs_1 = __webpack_require__(/*! ./surrogate-pairs */ "./node_modules/html-entities/lib/surrogate-pairs.js");
 var ENTITIES = [['Aacute', [193]], ['aacute', [225]], ['Abreve', [258]], ['abreve', [259]], ['ac', [8766]], ['acd', [8767]], ['acE', [8766, 819]], ['Acirc', [194]], ['acirc', [226]], ['acute', [180]], ['Acy', [1040]], ['acy', [1072]], ['AElig', [198]], ['aelig', [230]], ['af', [8289]], ['Afr', [120068]], ['afr', [120094]], ['Agrave', [192]], ['agrave', [224]], ['alefsym', [8501]], ['aleph', [8501]], ['Alpha', [913]], ['alpha', [945]], ['Amacr', [256]], ['amacr', [257]], ['amalg', [10815]], ['amp', [38]], ['AMP', [38]], ['andand', [10837]], ['And', [10835]], ['and', [8743]], ['andd', [10844]], ['andslope', [10840]], ['andv', [10842]], ['ang', [8736]], ['ange', [10660]], ['angle', [8736]], ['angmsdaa', [10664]], ['angmsdab', [10665]], ['angmsdac', [10666]], ['angmsdad', [10667]], ['angmsdae', [10668]], ['angmsdaf', [10669]], ['angmsdag', [10670]], ['angmsdah', [10671]], ['angmsd', [8737]], ['angrt', [8735]], ['angrtvb', [8894]], ['angrtvbd', [10653]], ['angsph', [8738]], ['angst', [197]], ['angzarr', [9084]], ['Aogon', [260]], ['aogon', [261]], ['Aopf', [120120]], ['aopf', [120146]], ['apacir', [10863]], ['ap', [8776]], ['apE', [10864]], ['ape', [8778]], ['apid', [8779]], ['apos', [39]], ['ApplyFunction', [8289]], ['approx', [8776]], ['approxeq', [8778]], ['Aring', [197]], ['aring', [229]], ['Ascr', [119964]], ['ascr', [119990]], ['Assign', [8788]], ['ast', [42]], ['asymp', [8776]], ['asympeq', [8781]], ['Atilde', [195]], ['atilde', [227]], ['Auml', [196]], ['auml', [228]], ['awconint', [8755]], ['awint', [10769]], ['backcong', [8780]], ['backepsilon', [1014]], ['backprime', [8245]], ['backsim', [8765]], ['backsimeq', [8909]], ['Backslash', [8726]], ['Barv', [10983]], ['barvee', [8893]], ['barwed', [8965]], ['Barwed', [8966]], ['barwedge', [8965]], ['bbrk', [9141]], ['bbrktbrk', [9142]], ['bcong', [8780]], ['Bcy', [1041]], ['bcy', [1073]], ['bdquo', [8222]], ['becaus', [8757]], ['because', [8757]], ['Because', [8757]], ['bemptyv', [10672]], ['bepsi', [1014]], ['bernou', [8492]], ['Bernoullis', [8492]], ['Beta', [914]], ['beta', [946]], ['beth', [8502]], ['between', [8812]], ['Bfr', [120069]], ['bfr', [120095]], ['bigcap', [8898]], ['bigcirc', [9711]], ['bigcup', [8899]], ['bigodot', [10752]], ['bigoplus', [10753]], ['bigotimes', [10754]], ['bigsqcup', [10758]], ['bigstar', [9733]], ['bigtriangledown', [9661]], ['bigtriangleup', [9651]], ['biguplus', [10756]], ['bigvee', [8897]], ['bigwedge', [8896]], ['bkarow', [10509]], ['blacklozenge', [10731]], ['blacksquare', [9642]], ['blacktriangle', [9652]], ['blacktriangledown', [9662]], ['blacktriangleleft', [9666]], ['blacktriangleright', [9656]], ['blank', [9251]], ['blk12', [9618]], ['blk14', [9617]], ['blk34', [9619]], ['block', [9608]], ['bne', [61, 8421]], ['bnequiv', [8801, 8421]], ['bNot', [10989]], ['bnot', [8976]], ['Bopf', [120121]], ['bopf', [120147]], ['bot', [8869]], ['bottom', [8869]], ['bowtie', [8904]], ['boxbox', [10697]], ['boxdl', [9488]], ['boxdL', [9557]], ['boxDl', [9558]], ['boxDL', [9559]], ['boxdr', [9484]], ['boxdR', [9554]], ['boxDr', [9555]], ['boxDR', [9556]], ['boxh', [9472]], ['boxH', [9552]], ['boxhd', [9516]], ['boxHd', [9572]], ['boxhD', [9573]], ['boxHD', [9574]], ['boxhu', [9524]], ['boxHu', [9575]], ['boxhU', [9576]], ['boxHU', [9577]], ['boxminus', [8863]], ['boxplus', [8862]], ['boxtimes', [8864]], ['boxul', [9496]], ['boxuL', [9563]], ['boxUl', [9564]], ['boxUL', [9565]], ['boxur', [9492]], ['boxuR', [9560]], ['boxUr', [9561]], ['boxUR', [9562]], ['boxv', [9474]], ['boxV', [9553]], ['boxvh', [9532]], ['boxvH', [9578]], ['boxVh', [9579]], ['boxVH', [9580]], ['boxvl', [9508]], ['boxvL', [9569]], ['boxVl', [9570]], ['boxVL', [9571]], ['boxvr', [9500]], ['boxvR', [9566]], ['boxVr', [9567]], ['boxVR', [9568]], ['bprime', [8245]], ['breve', [728]], ['Breve', [728]], ['brvbar', [166]], ['bscr', [119991]], ['Bscr', [8492]], ['bsemi', [8271]], ['bsim', [8765]], ['bsime', [8909]], ['bsolb', [10693]], ['bsol', [92]], ['bsolhsub', [10184]], ['bull', [8226]], ['bullet', [8226]], ['bump', [8782]], ['bumpE', [10926]], ['bumpe', [8783]], ['Bumpeq', [8782]], ['bumpeq', [8783]], ['Cacute', [262]], ['cacute', [263]], ['capand', [10820]], ['capbrcup', [10825]], ['capcap', [10827]], ['cap', [8745]], ['Cap', [8914]], ['capcup', [10823]], ['capdot', [10816]], ['CapitalDifferentialD', [8517]], ['caps', [8745, 65024]], ['caret', [8257]], ['caron', [711]], ['Cayleys', [8493]], ['ccaps', [10829]], ['Ccaron', [268]], ['ccaron', [269]], ['Ccedil', [199]], ['ccedil', [231]], ['Ccirc', [264]], ['ccirc', [265]], ['Cconint', [8752]], ['ccups', [10828]], ['ccupssm', [10832]], ['Cdot', [266]], ['cdot', [267]], ['cedil', [184]], ['Cedilla', [184]], ['cemptyv', [10674]], ['cent', [162]], ['centerdot', [183]], ['CenterDot', [183]], ['cfr', [120096]], ['Cfr', [8493]], ['CHcy', [1063]], ['chcy', [1095]], ['check', [10003]], ['checkmark', [10003]], ['Chi', [935]], ['chi', [967]], ['circ', [710]], ['circeq', [8791]], ['circlearrowleft', [8634]], ['circlearrowright', [8635]], ['circledast', [8859]], ['circledcirc', [8858]], ['circleddash', [8861]], ['CircleDot', [8857]], ['circledR', [174]], ['circledS', [9416]], ['CircleMinus', [8854]], ['CirclePlus', [8853]], ['CircleTimes', [8855]], ['cir', [9675]], ['cirE', [10691]], ['cire', [8791]], ['cirfnint', [10768]], ['cirmid', [10991]], ['cirscir', [10690]], ['ClockwiseContourIntegral', [8754]], ['clubs', [9827]], ['clubsuit', [9827]], ['colon', [58]], ['Colon', [8759]], ['Colone', [10868]], ['colone', [8788]], ['coloneq', [8788]], ['comma', [44]], ['commat', [64]], ['comp', [8705]], ['compfn', [8728]], ['complement', [8705]], ['complexes', [8450]], ['cong', [8773]], ['congdot', [10861]], ['Congruent', [8801]], ['conint', [8750]], ['Conint', [8751]], ['ContourIntegral', [8750]], ['copf', [120148]], ['Copf', [8450]], ['coprod', [8720]], ['Coproduct', [8720]], ['copy', [169]], ['COPY', [169]], ['copysr', [8471]], ['CounterClockwiseContourIntegral', [8755]], ['crarr', [8629]], ['cross', [10007]], ['Cross', [10799]], ['Cscr', [119966]], ['cscr', [119992]], ['csub', [10959]], ['csube', [10961]], ['csup', [10960]], ['csupe', [10962]], ['ctdot', [8943]], ['cudarrl', [10552]], ['cudarrr', [10549]], ['cuepr', [8926]], ['cuesc', [8927]], ['cularr', [8630]], ['cularrp', [10557]], ['cupbrcap', [10824]], ['cupcap', [10822]], ['CupCap', [8781]], ['cup', [8746]], ['Cup', [8915]], ['cupcup', [10826]], ['cupdot', [8845]], ['cupor', [10821]], ['cups', [8746, 65024]], ['curarr', [8631]], ['curarrm', [10556]], ['curlyeqprec', [8926]], ['curlyeqsucc', [8927]], ['curlyvee', [8910]], ['curlywedge', [8911]], ['curren', [164]], ['curvearrowleft', [8630]], ['curvearrowright', [8631]], ['cuvee', [8910]], ['cuwed', [8911]], ['cwconint', [8754]], ['cwint', [8753]], ['cylcty', [9005]], ['dagger', [8224]], ['Dagger', [8225]], ['daleth', [8504]], ['darr', [8595]], ['Darr', [8609]], ['dArr', [8659]], ['dash', [8208]], ['Dashv', [10980]], ['dashv', [8867]], ['dbkarow', [10511]], ['dblac', [733]], ['Dcaron', [270]], ['dcaron', [271]], ['Dcy', [1044]], ['dcy', [1076]], ['ddagger', [8225]], ['ddarr', [8650]], ['DD', [8517]], ['dd', [8518]], ['DDotrahd', [10513]], ['ddotseq', [10871]], ['deg', [176]], ['Del', [8711]], ['Delta', [916]], ['delta', [948]], ['demptyv', [10673]], ['dfisht', [10623]], ['Dfr', [120071]], ['dfr', [120097]], ['dHar', [10597]], ['dharl', [8643]], ['dharr', [8642]], ['DiacriticalAcute', [180]], ['DiacriticalDot', [729]], ['DiacriticalDoubleAcute', [733]], ['DiacriticalGrave', [96]], ['DiacriticalTilde', [732]], ['diam', [8900]], ['diamond', [8900]], ['Diamond', [8900]], ['diamondsuit', [9830]], ['diams', [9830]], ['die', [168]], ['DifferentialD', [8518]], ['digamma', [989]], ['disin', [8946]], ['div', [247]], ['divide', [247]], ['divideontimes', [8903]], ['divonx', [8903]], ['DJcy', [1026]], ['djcy', [1106]], ['dlcorn', [8990]], ['dlcrop', [8973]], ['dollar', [36]], ['Dopf', [120123]], ['dopf', [120149]], ['Dot', [168]], ['dot', [729]], ['DotDot', [8412]], ['doteq', [8784]], ['doteqdot', [8785]], ['DotEqual', [8784]], ['dotminus', [8760]], ['dotplus', [8724]], ['dotsquare', [8865]], ['doublebarwedge', [8966]], ['DoubleContourIntegral', [8751]], ['DoubleDot', [168]], ['DoubleDownArrow', [8659]], ['DoubleLeftArrow', [8656]], ['DoubleLeftRightArrow', [8660]], ['DoubleLeftTee', [10980]], ['DoubleLongLeftArrow', [10232]], ['DoubleLongLeftRightArrow', [10234]], ['DoubleLongRightArrow', [10233]], ['DoubleRightArrow', [8658]], ['DoubleRightTee', [8872]], ['DoubleUpArrow', [8657]], ['DoubleUpDownArrow', [8661]], ['DoubleVerticalBar', [8741]], ['DownArrowBar', [10515]], ['downarrow', [8595]], ['DownArrow', [8595]], ['Downarrow', [8659]], ['DownArrowUpArrow', [8693]], ['DownBreve', [785]], ['downdownarrows', [8650]], ['downharpoonleft', [8643]], ['downharpoonright', [8642]], ['DownLeftRightVector', [10576]], ['DownLeftTeeVector', [10590]], ['DownLeftVectorBar', [10582]], ['DownLeftVector', [8637]], ['DownRightTeeVector', [10591]], ['DownRightVectorBar', [10583]], ['DownRightVector', [8641]], ['DownTeeArrow', [8615]], ['DownTee', [8868]], ['drbkarow', [10512]], ['drcorn', [8991]], ['drcrop', [8972]], ['Dscr', [119967]], ['dscr', [119993]], ['DScy', [1029]], ['dscy', [1109]], ['dsol', [10742]], ['Dstrok', [272]], ['dstrok', [273]], ['dtdot', [8945]], ['dtri', [9663]], ['dtrif', [9662]], ['duarr', [8693]], ['duhar', [10607]], ['dwangle', [10662]], ['DZcy', [1039]], ['dzcy', [1119]], ['dzigrarr', [10239]], ['Eacute', [201]], ['eacute', [233]], ['easter', [10862]], ['Ecaron', [282]], ['ecaron', [283]], ['Ecirc', [202]], ['ecirc', [234]], ['ecir', [8790]], ['ecolon', [8789]], ['Ecy', [1069]], ['ecy', [1101]], ['eDDot', [10871]], ['Edot', [278]], ['edot', [279]], ['eDot', [8785]], ['ee', [8519]], ['efDot', [8786]], ['Efr', [120072]], ['efr', [120098]], ['eg', [10906]], ['Egrave', [200]], ['egrave', [232]], ['egs', [10902]], ['egsdot', [10904]], ['el', [10905]], ['Element', [8712]], ['elinters', [9191]], ['ell', [8467]], ['els', [10901]], ['elsdot', [10903]], ['Emacr', [274]], ['emacr', [275]], ['empty', [8709]], ['emptyset', [8709]], ['EmptySmallSquare', [9723]], ['emptyv', [8709]], ['EmptyVerySmallSquare', [9643]], ['emsp13', [8196]], ['emsp14', [8197]], ['emsp', [8195]], ['ENG', [330]], ['eng', [331]], ['ensp', [8194]], ['Eogon', [280]], ['eogon', [281]], ['Eopf', [120124]], ['eopf', [120150]], ['epar', [8917]], ['eparsl', [10723]], ['eplus', [10865]], ['epsi', [949]], ['Epsilon', [917]], ['epsilon', [949]], ['epsiv', [1013]], ['eqcirc', [8790]], ['eqcolon', [8789]], ['eqsim', [8770]], ['eqslantgtr', [10902]], ['eqslantless', [10901]], ['Equal', [10869]], ['equals', [61]], ['EqualTilde', [8770]], ['equest', [8799]], ['Equilibrium', [8652]], ['equiv', [8801]], ['equivDD', [10872]], ['eqvparsl', [10725]], ['erarr', [10609]], ['erDot', [8787]], ['escr', [8495]], ['Escr', [8496]], ['esdot', [8784]], ['Esim', [10867]], ['esim', [8770]], ['Eta', [919]], ['eta', [951]], ['ETH', [208]], ['eth', [240]], ['Euml', [203]], ['euml', [235]], ['euro', [8364]], ['excl', [33]], ['exist', [8707]], ['Exists', [8707]], ['expectation', [8496]], ['exponentiale', [8519]], ['ExponentialE', [8519]], ['fallingdotseq', [8786]], ['Fcy', [1060]], ['fcy', [1092]], ['female', [9792]], ['ffilig', [64259]], ['fflig', [64256]], ['ffllig', [64260]], ['Ffr', [120073]], ['ffr', [120099]], ['filig', [64257]], ['FilledSmallSquare', [9724]], ['FilledVerySmallSquare', [9642]], ['fjlig', [102, 106]], ['flat', [9837]], ['fllig', [64258]], ['fltns', [9649]], ['fnof', [402]], ['Fopf', [120125]], ['fopf', [120151]], ['forall', [8704]], ['ForAll', [8704]], ['fork', [8916]], ['forkv', [10969]], ['Fouriertrf', [8497]], ['fpartint', [10765]], ['frac12', [189]], ['frac13', [8531]], ['frac14', [188]], ['frac15', [8533]], ['frac16', [8537]], ['frac18', [8539]], ['frac23', [8532]], ['frac25', [8534]], ['frac34', [190]], ['frac35', [8535]], ['frac38', [8540]], ['frac45', [8536]], ['frac56', [8538]], ['frac58', [8541]], ['frac78', [8542]], ['frasl', [8260]], ['frown', [8994]], ['fscr', [119995]], ['Fscr', [8497]], ['gacute', [501]], ['Gamma', [915]], ['gamma', [947]], ['Gammad', [988]], ['gammad', [989]], ['gap', [10886]], ['Gbreve', [286]], ['gbreve', [287]], ['Gcedil', [290]], ['Gcirc', [284]], ['gcirc', [285]], ['Gcy', [1043]], ['gcy', [1075]], ['Gdot', [288]], ['gdot', [289]], ['ge', [8805]], ['gE', [8807]], ['gEl', [10892]], ['gel', [8923]], ['geq', [8805]], ['geqq', [8807]], ['geqslant', [10878]], ['gescc', [10921]], ['ges', [10878]], ['gesdot', [10880]], ['gesdoto', [10882]], ['gesdotol', [10884]], ['gesl', [8923, 65024]], ['gesles', [10900]], ['Gfr', [120074]], ['gfr', [120100]], ['gg', [8811]], ['Gg', [8921]], ['ggg', [8921]], ['gimel', [8503]], ['GJcy', [1027]], ['gjcy', [1107]], ['gla', [10917]], ['gl', [8823]], ['glE', [10898]], ['glj', [10916]], ['gnap', [10890]], ['gnapprox', [10890]], ['gne', [10888]], ['gnE', [8809]], ['gneq', [10888]], ['gneqq', [8809]], ['gnsim', [8935]], ['Gopf', [120126]], ['gopf', [120152]], ['grave', [96]], ['GreaterEqual', [8805]], ['GreaterEqualLess', [8923]], ['GreaterFullEqual', [8807]], ['GreaterGreater', [10914]], ['GreaterLess', [8823]], ['GreaterSlantEqual', [10878]], ['GreaterTilde', [8819]], ['Gscr', [119970]], ['gscr', [8458]], ['gsim', [8819]], ['gsime', [10894]], ['gsiml', [10896]], ['gtcc', [10919]], ['gtcir', [10874]], ['gt', [62]], ['GT', [62]], ['Gt', [8811]], ['gtdot', [8919]], ['gtlPar', [10645]], ['gtquest', [10876]], ['gtrapprox', [10886]], ['gtrarr', [10616]], ['gtrdot', [8919]], ['gtreqless', [8923]], ['gtreqqless', [10892]], ['gtrless', [8823]], ['gtrsim', [8819]], ['gvertneqq', [8809, 65024]], ['gvnE', [8809, 65024]], ['Hacek', [711]], ['hairsp', [8202]], ['half', [189]], ['hamilt', [8459]], ['HARDcy', [1066]], ['hardcy', [1098]], ['harrcir', [10568]], ['harr', [8596]], ['hArr', [8660]], ['harrw', [8621]], ['Hat', [94]], ['hbar', [8463]], ['Hcirc', [292]], ['hcirc', [293]], ['hearts', [9829]], ['heartsuit', [9829]], ['hellip', [8230]], ['hercon', [8889]], ['hfr', [120101]], ['Hfr', [8460]], ['HilbertSpace', [8459]], ['hksearow', [10533]], ['hkswarow', [10534]], ['hoarr', [8703]], ['homtht', [8763]], ['hookleftarrow', [8617]], ['hookrightarrow', [8618]], ['hopf', [120153]], ['Hopf', [8461]], ['horbar', [8213]], ['HorizontalLine', [9472]], ['hscr', [119997]], ['Hscr', [8459]], ['hslash', [8463]], ['Hstrok', [294]], ['hstrok', [295]], ['HumpDownHump', [8782]], ['HumpEqual', [8783]], ['hybull', [8259]], ['hyphen', [8208]], ['Iacute', [205]], ['iacute', [237]], ['ic', [8291]], ['Icirc', [206]], ['icirc', [238]], ['Icy', [1048]], ['icy', [1080]], ['Idot', [304]], ['IEcy', [1045]], ['iecy', [1077]], ['iexcl', [161]], ['iff', [8660]], ['ifr', [120102]], ['Ifr', [8465]], ['Igrave', [204]], ['igrave', [236]], ['ii', [8520]], ['iiiint', [10764]], ['iiint', [8749]], ['iinfin', [10716]], ['iiota', [8489]], ['IJlig', [306]], ['ijlig', [307]], ['Imacr', [298]], ['imacr', [299]], ['image', [8465]], ['ImaginaryI', [8520]], ['imagline', [8464]], ['imagpart', [8465]], ['imath', [305]], ['Im', [8465]], ['imof', [8887]], ['imped', [437]], ['Implies', [8658]], ['incare', [8453]], ['in', [8712]], ['infin', [8734]], ['infintie', [10717]], ['inodot', [305]], ['intcal', [8890]], ['int', [8747]], ['Int', [8748]], ['integers', [8484]], ['Integral', [8747]], ['intercal', [8890]], ['Intersection', [8898]], ['intlarhk', [10775]], ['intprod', [10812]], ['InvisibleComma', [8291]], ['InvisibleTimes', [8290]], ['IOcy', [1025]], ['iocy', [1105]], ['Iogon', [302]], ['iogon', [303]], ['Iopf', [120128]], ['iopf', [120154]], ['Iota', [921]], ['iota', [953]], ['iprod', [10812]], ['iquest', [191]], ['iscr', [119998]], ['Iscr', [8464]], ['isin', [8712]], ['isindot', [8949]], ['isinE', [8953]], ['isins', [8948]], ['isinsv', [8947]], ['isinv', [8712]], ['it', [8290]], ['Itilde', [296]], ['itilde', [297]], ['Iukcy', [1030]], ['iukcy', [1110]], ['Iuml', [207]], ['iuml', [239]], ['Jcirc', [308]], ['jcirc', [309]], ['Jcy', [1049]], ['jcy', [1081]], ['Jfr', [120077]], ['jfr', [120103]], ['jmath', [567]], ['Jopf', [120129]], ['jopf', [120155]], ['Jscr', [119973]], ['jscr', [119999]], ['Jsercy', [1032]], ['jsercy', [1112]], ['Jukcy', [1028]], ['jukcy', [1108]], ['Kappa', [922]], ['kappa', [954]], ['kappav', [1008]], ['Kcedil', [310]], ['kcedil', [311]], ['Kcy', [1050]], ['kcy', [1082]], ['Kfr', [120078]], ['kfr', [120104]], ['kgreen', [312]], ['KHcy', [1061]], ['khcy', [1093]], ['KJcy', [1036]], ['kjcy', [1116]], ['Kopf', [120130]], ['kopf', [120156]], ['Kscr', [119974]], ['kscr', [120000]], ['lAarr', [8666]], ['Lacute', [313]], ['lacute', [314]], ['laemptyv', [10676]], ['lagran', [8466]], ['Lambda', [923]], ['lambda', [955]], ['lang', [10216]], ['Lang', [10218]], ['langd', [10641]], ['langle', [10216]], ['lap', [10885]], ['Laplacetrf', [8466]], ['laquo', [171]], ['larrb', [8676]], ['larrbfs', [10527]], ['larr', [8592]], ['Larr', [8606]], ['lArr', [8656]], ['larrfs', [10525]], ['larrhk', [8617]], ['larrlp', [8619]], ['larrpl', [10553]], ['larrsim', [10611]], ['larrtl', [8610]], ['latail', [10521]], ['lAtail', [10523]], ['lat', [10923]], ['late', [10925]], ['lates', [10925, 65024]], ['lbarr', [10508]], ['lBarr', [10510]], ['lbbrk', [10098]], ['lbrace', [123]], ['lbrack', [91]], ['lbrke', [10635]], ['lbrksld', [10639]], ['lbrkslu', [10637]], ['Lcaron', [317]], ['lcaron', [318]], ['Lcedil', [315]], ['lcedil', [316]], ['lceil', [8968]], ['lcub', [123]], ['Lcy', [1051]], ['lcy', [1083]], ['ldca', [10550]], ['ldquo', [8220]], ['ldquor', [8222]], ['ldrdhar', [10599]], ['ldrushar', [10571]], ['ldsh', [8626]], ['le', [8804]], ['lE', [8806]], ['LeftAngleBracket', [10216]], ['LeftArrowBar', [8676]], ['leftarrow', [8592]], ['LeftArrow', [8592]], ['Leftarrow', [8656]], ['LeftArrowRightArrow', [8646]], ['leftarrowtail', [8610]], ['LeftCeiling', [8968]], ['LeftDoubleBracket', [10214]], ['LeftDownTeeVector', [10593]], ['LeftDownVectorBar', [10585]], ['LeftDownVector', [8643]], ['LeftFloor', [8970]], ['leftharpoondown', [8637]], ['leftharpoonup', [8636]], ['leftleftarrows', [8647]], ['leftrightarrow', [8596]], ['LeftRightArrow', [8596]], ['Leftrightarrow', [8660]], ['leftrightarrows', [8646]], ['leftrightharpoons', [8651]], ['leftrightsquigarrow', [8621]], ['LeftRightVector', [10574]], ['LeftTeeArrow', [8612]], ['LeftTee', [8867]], ['LeftTeeVector', [10586]], ['leftthreetimes', [8907]], ['LeftTriangleBar', [10703]], ['LeftTriangle', [8882]], ['LeftTriangleEqual', [8884]], ['LeftUpDownVector', [10577]], ['LeftUpTeeVector', [10592]], ['LeftUpVectorBar', [10584]], ['LeftUpVector', [8639]], ['LeftVectorBar', [10578]], ['LeftVector', [8636]], ['lEg', [10891]], ['leg', [8922]], ['leq', [8804]], ['leqq', [8806]], ['leqslant', [10877]], ['lescc', [10920]], ['les', [10877]], ['lesdot', [10879]], ['lesdoto', [10881]], ['lesdotor', [10883]], ['lesg', [8922, 65024]], ['lesges', [10899]], ['lessapprox', [10885]], ['lessdot', [8918]], ['lesseqgtr', [8922]], ['lesseqqgtr', [10891]], ['LessEqualGreater', [8922]], ['LessFullEqual', [8806]], ['LessGreater', [8822]], ['lessgtr', [8822]], ['LessLess', [10913]], ['lesssim', [8818]], ['LessSlantEqual', [10877]], ['LessTilde', [8818]], ['lfisht', [10620]], ['lfloor', [8970]], ['Lfr', [120079]], ['lfr', [120105]], ['lg', [8822]], ['lgE', [10897]], ['lHar', [10594]], ['lhard', [8637]], ['lharu', [8636]], ['lharul', [10602]], ['lhblk', [9604]], ['LJcy', [1033]], ['ljcy', [1113]], ['llarr', [8647]], ['ll', [8810]], ['Ll', [8920]], ['llcorner', [8990]], ['Lleftarrow', [8666]], ['llhard', [10603]], ['lltri', [9722]], ['Lmidot', [319]], ['lmidot', [320]], ['lmoustache', [9136]], ['lmoust', [9136]], ['lnap', [10889]], ['lnapprox', [10889]], ['lne', [10887]], ['lnE', [8808]], ['lneq', [10887]], ['lneqq', [8808]], ['lnsim', [8934]], ['loang', [10220]], ['loarr', [8701]], ['lobrk', [10214]], ['longleftarrow', [10229]], ['LongLeftArrow', [10229]], ['Longleftarrow', [10232]], ['longleftrightarrow', [10231]], ['LongLeftRightArrow', [10231]], ['Longleftrightarrow', [10234]], ['longmapsto', [10236]], ['longrightarrow', [10230]], ['LongRightArrow', [10230]], ['Longrightarrow', [10233]], ['looparrowleft', [8619]], ['looparrowright', [8620]], ['lopar', [10629]], ['Lopf', [120131]], ['lopf', [120157]], ['loplus', [10797]], ['lotimes', [10804]], ['lowast', [8727]], ['lowbar', [95]], ['LowerLeftArrow', [8601]], ['LowerRightArrow', [8600]], ['loz', [9674]], ['lozenge', [9674]], ['lozf', [10731]], ['lpar', [40]], ['lparlt', [10643]], ['lrarr', [8646]], ['lrcorner', [8991]], ['lrhar', [8651]], ['lrhard', [10605]], ['lrm', [8206]], ['lrtri', [8895]], ['lsaquo', [8249]], ['lscr', [120001]], ['Lscr', [8466]], ['lsh', [8624]], ['Lsh', [8624]], ['lsim', [8818]], ['lsime', [10893]], ['lsimg', [10895]], ['lsqb', [91]], ['lsquo', [8216]], ['lsquor', [8218]], ['Lstrok', [321]], ['lstrok', [322]], ['ltcc', [10918]], ['ltcir', [10873]], ['lt', [60]], ['LT', [60]], ['Lt', [8810]], ['ltdot', [8918]], ['lthree', [8907]], ['ltimes', [8905]], ['ltlarr', [10614]], ['ltquest', [10875]], ['ltri', [9667]], ['ltrie', [8884]], ['ltrif', [9666]], ['ltrPar', [10646]], ['lurdshar', [10570]], ['luruhar', [10598]], ['lvertneqq', [8808, 65024]], ['lvnE', [8808, 65024]], ['macr', [175]], ['male', [9794]], ['malt', [10016]], ['maltese', [10016]], ['Map', [10501]], ['map', [8614]], ['mapsto', [8614]], ['mapstodown', [8615]], ['mapstoleft', [8612]], ['mapstoup', [8613]], ['marker', [9646]], ['mcomma', [10793]], ['Mcy', [1052]], ['mcy', [1084]], ['mdash', [8212]], ['mDDot', [8762]], ['measuredangle', [8737]], ['MediumSpace', [8287]], ['Mellintrf', [8499]], ['Mfr', [120080]], ['mfr', [120106]], ['mho', [8487]], ['micro', [181]], ['midast', [42]], ['midcir', [10992]], ['mid', [8739]], ['middot', [183]], ['minusb', [8863]], ['minus', [8722]], ['minusd', [8760]], ['minusdu', [10794]], ['MinusPlus', [8723]], ['mlcp', [10971]], ['mldr', [8230]], ['mnplus', [8723]], ['models', [8871]], ['Mopf', [120132]], ['mopf', [120158]], ['mp', [8723]], ['mscr', [120002]], ['Mscr', [8499]], ['mstpos', [8766]], ['Mu', [924]], ['mu', [956]], ['multimap', [8888]], ['mumap', [8888]], ['nabla', [8711]], ['Nacute', [323]], ['nacute', [324]], ['nang', [8736, 8402]], ['nap', [8777]], ['napE', [10864, 824]], ['napid', [8779, 824]], ['napos', [329]], ['napprox', [8777]], ['natural', [9838]], ['naturals', [8469]], ['natur', [9838]], ['nbsp', [160]], ['nbump', [8782, 824]], ['nbumpe', [8783, 824]], ['ncap', [10819]], ['Ncaron', [327]], ['ncaron', [328]], ['Ncedil', [325]], ['ncedil', [326]], ['ncong', [8775]], ['ncongdot', [10861, 824]], ['ncup', [10818]], ['Ncy', [1053]], ['ncy', [1085]], ['ndash', [8211]], ['nearhk', [10532]], ['nearr', [8599]], ['neArr', [8663]], ['nearrow', [8599]], ['ne', [8800]], ['nedot', [8784, 824]], ['NegativeMediumSpace', [8203]], ['NegativeThickSpace', [8203]], ['NegativeThinSpace', [8203]], ['NegativeVeryThinSpace', [8203]], ['nequiv', [8802]], ['nesear', [10536]], ['nesim', [8770, 824]], ['NestedGreaterGreater', [8811]], ['NestedLessLess', [8810]], ['nexist', [8708]], ['nexists', [8708]], ['Nfr', [120081]], ['nfr', [120107]], ['ngE', [8807, 824]], ['nge', [8817]], ['ngeq', [8817]], ['ngeqq', [8807, 824]], ['ngeqslant', [10878, 824]], ['nges', [10878, 824]], ['nGg', [8921, 824]], ['ngsim', [8821]], ['nGt', [8811, 8402]], ['ngt', [8815]], ['ngtr', [8815]], ['nGtv', [8811, 824]], ['nharr', [8622]], ['nhArr', [8654]], ['nhpar', [10994]], ['ni', [8715]], ['nis', [8956]], ['nisd', [8954]], ['niv', [8715]], ['NJcy', [1034]], ['njcy', [1114]], ['nlarr', [8602]], ['nlArr', [8653]], ['nldr', [8229]], ['nlE', [8806, 824]], ['nle', [8816]], ['nleftarrow', [8602]], ['nLeftarrow', [8653]], ['nleftrightarrow', [8622]], ['nLeftrightarrow', [8654]], ['nleq', [8816]], ['nleqq', [8806, 824]], ['nleqslant', [10877, 824]], ['nles', [10877, 824]], ['nless', [8814]], ['nLl', [8920, 824]], ['nlsim', [8820]], ['nLt', [8810, 8402]], ['nlt', [8814]], ['nltri', [8938]], ['nltrie', [8940]], ['nLtv', [8810, 824]], ['nmid', [8740]], ['NoBreak', [8288]], ['NonBreakingSpace', [160]], ['nopf', [120159]], ['Nopf', [8469]], ['Not', [10988]], ['not', [172]], ['NotCongruent', [8802]], ['NotCupCap', [8813]], ['NotDoubleVerticalBar', [8742]], ['NotElement', [8713]], ['NotEqual', [8800]], ['NotEqualTilde', [8770, 824]], ['NotExists', [8708]], ['NotGreater', [8815]], ['NotGreaterEqual', [8817]], ['NotGreaterFullEqual', [8807, 824]], ['NotGreaterGreater', [8811, 824]], ['NotGreaterLess', [8825]], ['NotGreaterSlantEqual', [10878, 824]], ['NotGreaterTilde', [8821]], ['NotHumpDownHump', [8782, 824]], ['NotHumpEqual', [8783, 824]], ['notin', [8713]], ['notindot', [8949, 824]], ['notinE', [8953, 824]], ['notinva', [8713]], ['notinvb', [8951]], ['notinvc', [8950]], ['NotLeftTriangleBar', [10703, 824]], ['NotLeftTriangle', [8938]], ['NotLeftTriangleEqual', [8940]], ['NotLess', [8814]], ['NotLessEqual', [8816]], ['NotLessGreater', [8824]], ['NotLessLess', [8810, 824]], ['NotLessSlantEqual', [10877, 824]], ['NotLessTilde', [8820]], ['NotNestedGreaterGreater', [10914, 824]], ['NotNestedLessLess', [10913, 824]], ['notni', [8716]], ['notniva', [8716]], ['notnivb', [8958]], ['notnivc', [8957]], ['NotPrecedes', [8832]], ['NotPrecedesEqual', [10927, 824]], ['NotPrecedesSlantEqual', [8928]], ['NotReverseElement', [8716]], ['NotRightTriangleBar', [10704, 824]], ['NotRightTriangle', [8939]], ['NotRightTriangleEqual', [8941]], ['NotSquareSubset', [8847, 824]], ['NotSquareSubsetEqual', [8930]], ['NotSquareSuperset', [8848, 824]], ['NotSquareSupersetEqual', [8931]], ['NotSubset', [8834, 8402]], ['NotSubsetEqual', [8840]], ['NotSucceeds', [8833]], ['NotSucceedsEqual', [10928, 824]], ['NotSucceedsSlantEqual', [8929]], ['NotSucceedsTilde', [8831, 824]], ['NotSuperset', [8835, 8402]], ['NotSupersetEqual', [8841]], ['NotTilde', [8769]], ['NotTildeEqual', [8772]], ['NotTildeFullEqual', [8775]], ['NotTildeTilde', [8777]], ['NotVerticalBar', [8740]], ['nparallel', [8742]], ['npar', [8742]], ['nparsl', [11005, 8421]], ['npart', [8706, 824]], ['npolint', [10772]], ['npr', [8832]], ['nprcue', [8928]], ['nprec', [8832]], ['npreceq', [10927, 824]], ['npre', [10927, 824]], ['nrarrc', [10547, 824]], ['nrarr', [8603]], ['nrArr', [8655]], ['nrarrw', [8605, 824]], ['nrightarrow', [8603]], ['nRightarrow', [8655]], ['nrtri', [8939]], ['nrtrie', [8941]], ['nsc', [8833]], ['nsccue', [8929]], ['nsce', [10928, 824]], ['Nscr', [119977]], ['nscr', [120003]], ['nshortmid', [8740]], ['nshortparallel', [8742]], ['nsim', [8769]], ['nsime', [8772]], ['nsimeq', [8772]], ['nsmid', [8740]], ['nspar', [8742]], ['nsqsube', [8930]], ['nsqsupe', [8931]], ['nsub', [8836]], ['nsubE', [10949, 824]], ['nsube', [8840]], ['nsubset', [8834, 8402]], ['nsubseteq', [8840]], ['nsubseteqq', [10949, 824]], ['nsucc', [8833]], ['nsucceq', [10928, 824]], ['nsup', [8837]], ['nsupE', [10950, 824]], ['nsupe', [8841]], ['nsupset', [8835, 8402]], ['nsupseteq', [8841]], ['nsupseteqq', [10950, 824]], ['ntgl', [8825]], ['Ntilde', [209]], ['ntilde', [241]], ['ntlg', [8824]], ['ntriangleleft', [8938]], ['ntrianglelefteq', [8940]], ['ntriangleright', [8939]], ['ntrianglerighteq', [8941]], ['Nu', [925]], ['nu', [957]], ['num', [35]], ['numero', [8470]], ['numsp', [8199]], ['nvap', [8781, 8402]], ['nvdash', [8876]], ['nvDash', [8877]], ['nVdash', [8878]], ['nVDash', [8879]], ['nvge', [8805, 8402]], ['nvgt', [62, 8402]], ['nvHarr', [10500]], ['nvinfin', [10718]], ['nvlArr', [10498]], ['nvle', [8804, 8402]], ['nvlt', [60, 8402]], ['nvltrie', [8884, 8402]], ['nvrArr', [10499]], ['nvrtrie', [8885, 8402]], ['nvsim', [8764, 8402]], ['nwarhk', [10531]], ['nwarr', [8598]], ['nwArr', [8662]], ['nwarrow', [8598]], ['nwnear', [10535]], ['Oacute', [211]], ['oacute', [243]], ['oast', [8859]], ['Ocirc', [212]], ['ocirc', [244]], ['ocir', [8858]], ['Ocy', [1054]], ['ocy', [1086]], ['odash', [8861]], ['Odblac', [336]], ['odblac', [337]], ['odiv', [10808]], ['odot', [8857]], ['odsold', [10684]], ['OElig', [338]], ['oelig', [339]], ['ofcir', [10687]], ['Ofr', [120082]], ['ofr', [120108]], ['ogon', [731]], ['Ograve', [210]], ['ograve', [242]], ['ogt', [10689]], ['ohbar', [10677]], ['ohm', [937]], ['oint', [8750]], ['olarr', [8634]], ['olcir', [10686]], ['olcross', [10683]], ['oline', [8254]], ['olt', [10688]], ['Omacr', [332]], ['omacr', [333]], ['Omega', [937]], ['omega', [969]], ['Omicron', [927]], ['omicron', [959]], ['omid', [10678]], ['ominus', [8854]], ['Oopf', [120134]], ['oopf', [120160]], ['opar', [10679]], ['OpenCurlyDoubleQuote', [8220]], ['OpenCurlyQuote', [8216]], ['operp', [10681]], ['oplus', [8853]], ['orarr', [8635]], ['Or', [10836]], ['or', [8744]], ['ord', [10845]], ['order', [8500]], ['orderof', [8500]], ['ordf', [170]], ['ordm', [186]], ['origof', [8886]], ['oror', [10838]], ['orslope', [10839]], ['orv', [10843]], ['oS', [9416]], ['Oscr', [119978]], ['oscr', [8500]], ['Oslash', [216]], ['oslash', [248]], ['osol', [8856]], ['Otilde', [213]], ['otilde', [245]], ['otimesas', [10806]], ['Otimes', [10807]], ['otimes', [8855]], ['Ouml', [214]], ['ouml', [246]], ['ovbar', [9021]], ['OverBar', [8254]], ['OverBrace', [9182]], ['OverBracket', [9140]], ['OverParenthesis', [9180]], ['para', [182]], ['parallel', [8741]], ['par', [8741]], ['parsim', [10995]], ['parsl', [11005]], ['part', [8706]], ['PartialD', [8706]], ['Pcy', [1055]], ['pcy', [1087]], ['percnt', [37]], ['period', [46]], ['permil', [8240]], ['perp', [8869]], ['pertenk', [8241]], ['Pfr', [120083]], ['pfr', [120109]], ['Phi', [934]], ['phi', [966]], ['phiv', [981]], ['phmmat', [8499]], ['phone', [9742]], ['Pi', [928]], ['pi', [960]], ['pitchfork', [8916]], ['piv', [982]], ['planck', [8463]], ['planckh', [8462]], ['plankv', [8463]], ['plusacir', [10787]], ['plusb', [8862]], ['pluscir', [10786]], ['plus', [43]], ['plusdo', [8724]], ['plusdu', [10789]], ['pluse', [10866]], ['PlusMinus', [177]], ['plusmn', [177]], ['plussim', [10790]], ['plustwo', [10791]], ['pm', [177]], ['Poincareplane', [8460]], ['pointint', [10773]], ['popf', [120161]], ['Popf', [8473]], ['pound', [163]], ['prap', [10935]], ['Pr', [10939]], ['pr', [8826]], ['prcue', [8828]], ['precapprox', [10935]], ['prec', [8826]], ['preccurlyeq', [8828]], ['Precedes', [8826]], ['PrecedesEqual', [10927]], ['PrecedesSlantEqual', [8828]], ['PrecedesTilde', [8830]], ['preceq', [10927]], ['precnapprox', [10937]], ['precneqq', [10933]], ['precnsim', [8936]], ['pre', [10927]], ['prE', [10931]], ['precsim', [8830]], ['prime', [8242]], ['Prime', [8243]], ['primes', [8473]], ['prnap', [10937]], ['prnE', [10933]], ['prnsim', [8936]], ['prod', [8719]], ['Product', [8719]], ['profalar', [9006]], ['profline', [8978]], ['profsurf', [8979]], ['prop', [8733]], ['Proportional', [8733]], ['Proportion', [8759]], ['propto', [8733]], ['prsim', [8830]], ['prurel', [8880]], ['Pscr', [119979]], ['pscr', [120005]], ['Psi', [936]], ['psi', [968]], ['puncsp', [8200]], ['Qfr', [120084]], ['qfr', [120110]], ['qint', [10764]], ['qopf', [120162]], ['Qopf', [8474]], ['qprime', [8279]], ['Qscr', [119980]], ['qscr', [120006]], ['quaternions', [8461]], ['quatint', [10774]], ['quest', [63]], ['questeq', [8799]], ['quot', [34]], ['QUOT', [34]], ['rAarr', [8667]], ['race', [8765, 817]], ['Racute', [340]], ['racute', [341]], ['radic', [8730]], ['raemptyv', [10675]], ['rang', [10217]], ['Rang', [10219]], ['rangd', [10642]], ['range', [10661]], ['rangle', [10217]], ['raquo', [187]], ['rarrap', [10613]], ['rarrb', [8677]], ['rarrbfs', [10528]], ['rarrc', [10547]], ['rarr', [8594]], ['Rarr', [8608]], ['rArr', [8658]], ['rarrfs', [10526]], ['rarrhk', [8618]], ['rarrlp', [8620]], ['rarrpl', [10565]], ['rarrsim', [10612]], ['Rarrtl', [10518]], ['rarrtl', [8611]], ['rarrw', [8605]], ['ratail', [10522]], ['rAtail', [10524]], ['ratio', [8758]], ['rationals', [8474]], ['rbarr', [10509]], ['rBarr', [10511]], ['RBarr', [10512]], ['rbbrk', [10099]], ['rbrace', [125]], ['rbrack', [93]], ['rbrke', [10636]], ['rbrksld', [10638]], ['rbrkslu', [10640]], ['Rcaron', [344]], ['rcaron', [345]], ['Rcedil', [342]], ['rcedil', [343]], ['rceil', [8969]], ['rcub', [125]], ['Rcy', [1056]], ['rcy', [1088]], ['rdca', [10551]], ['rdldhar', [10601]], ['rdquo', [8221]], ['rdquor', [8221]], ['CloseCurlyDoubleQuote', [8221]], ['rdsh', [8627]], ['real', [8476]], ['realine', [8475]], ['realpart', [8476]], ['reals', [8477]], ['Re', [8476]], ['rect', [9645]], ['reg', [174]], ['REG', [174]], ['ReverseElement', [8715]], ['ReverseEquilibrium', [8651]], ['ReverseUpEquilibrium', [10607]], ['rfisht', [10621]], ['rfloor', [8971]], ['rfr', [120111]], ['Rfr', [8476]], ['rHar', [10596]], ['rhard', [8641]], ['rharu', [8640]], ['rharul', [10604]], ['Rho', [929]], ['rho', [961]], ['rhov', [1009]], ['RightAngleBracket', [10217]], ['RightArrowBar', [8677]], ['rightarrow', [8594]], ['RightArrow', [8594]], ['Rightarrow', [8658]], ['RightArrowLeftArrow', [8644]], ['rightarrowtail', [8611]], ['RightCeiling', [8969]], ['RightDoubleBracket', [10215]], ['RightDownTeeVector', [10589]], ['RightDownVectorBar', [10581]], ['RightDownVector', [8642]], ['RightFloor', [8971]], ['rightharpoondown', [8641]], ['rightharpoonup', [8640]], ['rightleftarrows', [8644]], ['rightleftharpoons', [8652]], ['rightrightarrows', [8649]], ['rightsquigarrow', [8605]], ['RightTeeArrow', [8614]], ['RightTee', [8866]], ['RightTeeVector', [10587]], ['rightthreetimes', [8908]], ['RightTriangleBar', [10704]], ['RightTriangle', [8883]], ['RightTriangleEqual', [8885]], ['RightUpDownVector', [10575]], ['RightUpTeeVector', [10588]], ['RightUpVectorBar', [10580]], ['RightUpVector', [8638]], ['RightVectorBar', [10579]], ['RightVector', [8640]], ['ring', [730]], ['risingdotseq', [8787]], ['rlarr', [8644]], ['rlhar', [8652]], ['rlm', [8207]], ['rmoustache', [9137]], ['rmoust', [9137]], ['rnmid', [10990]], ['roang', [10221]], ['roarr', [8702]], ['robrk', [10215]], ['ropar', [10630]], ['ropf', [120163]], ['Ropf', [8477]], ['roplus', [10798]], ['rotimes', [10805]], ['RoundImplies', [10608]], ['rpar', [41]], ['rpargt', [10644]], ['rppolint', [10770]], ['rrarr', [8649]], ['Rrightarrow', [8667]], ['rsaquo', [8250]], ['rscr', [120007]], ['Rscr', [8475]], ['rsh', [8625]], ['Rsh', [8625]], ['rsqb', [93]], ['rsquo', [8217]], ['rsquor', [8217]], ['CloseCurlyQuote', [8217]], ['rthree', [8908]], ['rtimes', [8906]], ['rtri', [9657]], ['rtrie', [8885]], ['rtrif', [9656]], ['rtriltri', [10702]], ['RuleDelayed', [10740]], ['ruluhar', [10600]], ['rx', [8478]], ['Sacute', [346]], ['sacute', [347]], ['sbquo', [8218]], ['scap', [10936]], ['Scaron', [352]], ['scaron', [353]], ['Sc', [10940]], ['sc', [8827]], ['sccue', [8829]], ['sce', [10928]], ['scE', [10932]], ['Scedil', [350]], ['scedil', [351]], ['Scirc', [348]], ['scirc', [349]], ['scnap', [10938]], ['scnE', [10934]], ['scnsim', [8937]], ['scpolint', [10771]], ['scsim', [8831]], ['Scy', [1057]], ['scy', [1089]], ['sdotb', [8865]], ['sdot', [8901]], ['sdote', [10854]], ['searhk', [10533]], ['searr', [8600]], ['seArr', [8664]], ['searrow', [8600]], ['sect', [167]], ['semi', [59]], ['seswar', [10537]], ['setminus', [8726]], ['setmn', [8726]], ['sext', [10038]], ['Sfr', [120086]], ['sfr', [120112]], ['sfrown', [8994]], ['sharp', [9839]], ['SHCHcy', [1065]], ['shchcy', [1097]], ['SHcy', [1064]], ['shcy', [1096]], ['ShortDownArrow', [8595]], ['ShortLeftArrow', [8592]], ['shortmid', [8739]], ['shortparallel', [8741]], ['ShortRightArrow', [8594]], ['ShortUpArrow', [8593]], ['shy', [173]], ['Sigma', [931]], ['sigma', [963]], ['sigmaf', [962]], ['sigmav', [962]], ['sim', [8764]], ['simdot', [10858]], ['sime', [8771]], ['simeq', [8771]], ['simg', [10910]], ['simgE', [10912]], ['siml', [10909]], ['simlE', [10911]], ['simne', [8774]], ['simplus', [10788]], ['simrarr', [10610]], ['slarr', [8592]], ['SmallCircle', [8728]], ['smallsetminus', [8726]], ['smashp', [10803]], ['smeparsl', [10724]], ['smid', [8739]], ['smile', [8995]], ['smt', [10922]], ['smte', [10924]], ['smtes', [10924, 65024]], ['SOFTcy', [1068]], ['softcy', [1100]], ['solbar', [9023]], ['solb', [10692]], ['sol', [47]], ['Sopf', [120138]], ['sopf', [120164]], ['spades', [9824]], ['spadesuit', [9824]], ['spar', [8741]], ['sqcap', [8851]], ['sqcaps', [8851, 65024]], ['sqcup', [8852]], ['sqcups', [8852, 65024]], ['Sqrt', [8730]], ['sqsub', [8847]], ['sqsube', [8849]], ['sqsubset', [8847]], ['sqsubseteq', [8849]], ['sqsup', [8848]], ['sqsupe', [8850]], ['sqsupset', [8848]], ['sqsupseteq', [8850]], ['square', [9633]], ['Square', [9633]], ['SquareIntersection', [8851]], ['SquareSubset', [8847]], ['SquareSubsetEqual', [8849]], ['SquareSuperset', [8848]], ['SquareSupersetEqual', [8850]], ['SquareUnion', [8852]], ['squarf', [9642]], ['squ', [9633]], ['squf', [9642]], ['srarr', [8594]], ['Sscr', [119982]], ['sscr', [120008]], ['ssetmn', [8726]], ['ssmile', [8995]], ['sstarf', [8902]], ['Star', [8902]], ['star', [9734]], ['starf', [9733]], ['straightepsilon', [1013]], ['straightphi', [981]], ['strns', [175]], ['sub', [8834]], ['Sub', [8912]], ['subdot', [10941]], ['subE', [10949]], ['sube', [8838]], ['subedot', [10947]], ['submult', [10945]], ['subnE', [10955]], ['subne', [8842]], ['subplus', [10943]], ['subrarr', [10617]], ['subset', [8834]], ['Subset', [8912]], ['subseteq', [8838]], ['subseteqq', [10949]], ['SubsetEqual', [8838]], ['subsetneq', [8842]], ['subsetneqq', [10955]], ['subsim', [10951]], ['subsub', [10965]], ['subsup', [10963]], ['succapprox', [10936]], ['succ', [8827]], ['succcurlyeq', [8829]], ['Succeeds', [8827]], ['SucceedsEqual', [10928]], ['SucceedsSlantEqual', [8829]], ['SucceedsTilde', [8831]], ['succeq', [10928]], ['succnapprox', [10938]], ['succneqq', [10934]], ['succnsim', [8937]], ['succsim', [8831]], ['SuchThat', [8715]], ['sum', [8721]], ['Sum', [8721]], ['sung', [9834]], ['sup1', [185]], ['sup2', [178]], ['sup3', [179]], ['sup', [8835]], ['Sup', [8913]], ['supdot', [10942]], ['supdsub', [10968]], ['supE', [10950]], ['supe', [8839]], ['supedot', [10948]], ['Superset', [8835]], ['SupersetEqual', [8839]], ['suphsol', [10185]], ['suphsub', [10967]], ['suplarr', [10619]], ['supmult', [10946]], ['supnE', [10956]], ['supne', [8843]], ['supplus', [10944]], ['supset', [8835]], ['Supset', [8913]], ['supseteq', [8839]], ['supseteqq', [10950]], ['supsetneq', [8843]], ['supsetneqq', [10956]], ['supsim', [10952]], ['supsub', [10964]], ['supsup', [10966]], ['swarhk', [10534]], ['swarr', [8601]], ['swArr', [8665]], ['swarrow', [8601]], ['swnwar', [10538]], ['szlig', [223]], ['Tab', [9]], ['target', [8982]], ['Tau', [932]], ['tau', [964]], ['tbrk', [9140]], ['Tcaron', [356]], ['tcaron', [357]], ['Tcedil', [354]], ['tcedil', [355]], ['Tcy', [1058]], ['tcy', [1090]], ['tdot', [8411]], ['telrec', [8981]], ['Tfr', [120087]], ['tfr', [120113]], ['there4', [8756]], ['therefore', [8756]], ['Therefore', [8756]], ['Theta', [920]], ['theta', [952]], ['thetasym', [977]], ['thetav', [977]], ['thickapprox', [8776]], ['thicksim', [8764]], ['ThickSpace', [8287, 8202]], ['ThinSpace', [8201]], ['thinsp', [8201]], ['thkap', [8776]], ['thksim', [8764]], ['THORN', [222]], ['thorn', [254]], ['tilde', [732]], ['Tilde', [8764]], ['TildeEqual', [8771]], ['TildeFullEqual', [8773]], ['TildeTilde', [8776]], ['timesbar', [10801]], ['timesb', [8864]], ['times', [215]], ['timesd', [10800]], ['tint', [8749]], ['toea', [10536]], ['topbot', [9014]], ['topcir', [10993]], ['top', [8868]], ['Topf', [120139]], ['topf', [120165]], ['topfork', [10970]], ['tosa', [10537]], ['tprime', [8244]], ['trade', [8482]], ['TRADE', [8482]], ['triangle', [9653]], ['triangledown', [9663]], ['triangleleft', [9667]], ['trianglelefteq', [8884]], ['triangleq', [8796]], ['triangleright', [9657]], ['trianglerighteq', [8885]], ['tridot', [9708]], ['trie', [8796]], ['triminus', [10810]], ['TripleDot', [8411]], ['triplus', [10809]], ['trisb', [10701]], ['tritime', [10811]], ['trpezium', [9186]], ['Tscr', [119983]], ['tscr', [120009]], ['TScy', [1062]], ['tscy', [1094]], ['TSHcy', [1035]], ['tshcy', [1115]], ['Tstrok', [358]], ['tstrok', [359]], ['twixt', [8812]], ['twoheadleftarrow', [8606]], ['twoheadrightarrow', [8608]], ['Uacute', [218]], ['uacute', [250]], ['uarr', [8593]], ['Uarr', [8607]], ['uArr', [8657]], ['Uarrocir', [10569]], ['Ubrcy', [1038]], ['ubrcy', [1118]], ['Ubreve', [364]], ['ubreve', [365]], ['Ucirc', [219]], ['ucirc', [251]], ['Ucy', [1059]], ['ucy', [1091]], ['udarr', [8645]], ['Udblac', [368]], ['udblac', [369]], ['udhar', [10606]], ['ufisht', [10622]], ['Ufr', [120088]], ['ufr', [120114]], ['Ugrave', [217]], ['ugrave', [249]], ['uHar', [10595]], ['uharl', [8639]], ['uharr', [8638]], ['uhblk', [9600]], ['ulcorn', [8988]], ['ulcorner', [8988]], ['ulcrop', [8975]], ['ultri', [9720]], ['Umacr', [362]], ['umacr', [363]], ['uml', [168]], ['UnderBar', [95]], ['UnderBrace', [9183]], ['UnderBracket', [9141]], ['UnderParenthesis', [9181]], ['Union', [8899]], ['UnionPlus', [8846]], ['Uogon', [370]], ['uogon', [371]], ['Uopf', [120140]], ['uopf', [120166]], ['UpArrowBar', [10514]], ['uparrow', [8593]], ['UpArrow', [8593]], ['Uparrow', [8657]], ['UpArrowDownArrow', [8645]], ['updownarrow', [8597]], ['UpDownArrow', [8597]], ['Updownarrow', [8661]], ['UpEquilibrium', [10606]], ['upharpoonleft', [8639]], ['upharpoonright', [8638]], ['uplus', [8846]], ['UpperLeftArrow', [8598]], ['UpperRightArrow', [8599]], ['upsi', [965]], ['Upsi', [978]], ['upsih', [978]], ['Upsilon', [933]], ['upsilon', [965]], ['UpTeeArrow', [8613]], ['UpTee', [8869]], ['upuparrows', [8648]], ['urcorn', [8989]], ['urcorner', [8989]], ['urcrop', [8974]], ['Uring', [366]], ['uring', [367]], ['urtri', [9721]], ['Uscr', [119984]], ['uscr', [120010]], ['utdot', [8944]], ['Utilde', [360]], ['utilde', [361]], ['utri', [9653]], ['utrif', [9652]], ['uuarr', [8648]], ['Uuml', [220]], ['uuml', [252]], ['uwangle', [10663]], ['vangrt', [10652]], ['varepsilon', [1013]], ['varkappa', [1008]], ['varnothing', [8709]], ['varphi', [981]], ['varpi', [982]], ['varpropto', [8733]], ['varr', [8597]], ['vArr', [8661]], ['varrho', [1009]], ['varsigma', [962]], ['varsubsetneq', [8842, 65024]], ['varsubsetneqq', [10955, 65024]], ['varsupsetneq', [8843, 65024]], ['varsupsetneqq', [10956, 65024]], ['vartheta', [977]], ['vartriangleleft', [8882]], ['vartriangleright', [8883]], ['vBar', [10984]], ['Vbar', [10987]], ['vBarv', [10985]], ['Vcy', [1042]], ['vcy', [1074]], ['vdash', [8866]], ['vDash', [8872]], ['Vdash', [8873]], ['VDash', [8875]], ['Vdashl', [10982]], ['veebar', [8891]], ['vee', [8744]], ['Vee', [8897]], ['veeeq', [8794]], ['vellip', [8942]], ['verbar', [124]], ['Verbar', [8214]], ['vert', [124]], ['Vert', [8214]], ['VerticalBar', [8739]], ['VerticalLine', [124]], ['VerticalSeparator', [10072]], ['VerticalTilde', [8768]], ['VeryThinSpace', [8202]], ['Vfr', [120089]], ['vfr', [120115]], ['vltri', [8882]], ['vnsub', [8834, 8402]], ['vnsup', [8835, 8402]], ['Vopf', [120141]], ['vopf', [120167]], ['vprop', [8733]], ['vrtri', [8883]], ['Vscr', [119985]], ['vscr', [120011]], ['vsubnE', [10955, 65024]], ['vsubne', [8842, 65024]], ['vsupnE', [10956, 65024]], ['vsupne', [8843, 65024]], ['Vvdash', [8874]], ['vzigzag', [10650]], ['Wcirc', [372]], ['wcirc', [373]], ['wedbar', [10847]], ['wedge', [8743]], ['Wedge', [8896]], ['wedgeq', [8793]], ['weierp', [8472]], ['Wfr', [120090]], ['wfr', [120116]], ['Wopf', [120142]], ['wopf', [120168]], ['wp', [8472]], ['wr', [8768]], ['wreath', [8768]], ['Wscr', [119986]], ['wscr', [120012]], ['xcap', [8898]], ['xcirc', [9711]], ['xcup', [8899]], ['xdtri', [9661]], ['Xfr', [120091]], ['xfr', [120117]], ['xharr', [10231]], ['xhArr', [10234]], ['Xi', [926]], ['xi', [958]], ['xlarr', [10229]], ['xlArr', [10232]], ['xmap', [10236]], ['xnis', [8955]], ['xodot', [10752]], ['Xopf', [120143]], ['xopf', [120169]], ['xoplus', [10753]], ['xotime', [10754]], ['xrarr', [10230]], ['xrArr', [10233]], ['Xscr', [119987]], ['xscr', [120013]], ['xsqcup', [10758]], ['xuplus', [10756]], ['xutri', [9651]], ['xvee', [8897]], ['xwedge', [8896]], ['Yacute', [221]], ['yacute', [253]], ['YAcy', [1071]], ['yacy', [1103]], ['Ycirc', [374]], ['ycirc', [375]], ['Ycy', [1067]], ['ycy', [1099]], ['yen', [165]], ['Yfr', [120092]], ['yfr', [120118]], ['YIcy', [1031]], ['yicy', [1111]], ['Yopf', [120144]], ['yopf', [120170]], ['Yscr', [119988]], ['yscr', [120014]], ['YUcy', [1070]], ['yucy', [1102]], ['yuml', [255]], ['Yuml', [376]], ['Zacute', [377]], ['zacute', [378]], ['Zcaron', [381]], ['zcaron', [382]], ['Zcy', [1047]], ['zcy', [1079]], ['Zdot', [379]], ['zdot', [380]], ['zeetrf', [8488]], ['ZeroWidthSpace', [8203]], ['Zeta', [918]], ['zeta', [950]], ['zfr', [120119]], ['Zfr', [8488]], ['ZHcy', [1046]], ['zhcy', [1078]], ['zigrarr', [8669]], ['zopf', [120171]], ['Zopf', [8484]], ['Zscr', [119989]], ['zscr', [120015]], ['zwj', [8205]], ['zwnj', [8204]]];
 var DECODE_ONLY_ENTITIES = [['NewLine', [10]]];
 var alphaIndex = {};
@@ -5156,8 +3446,13 @@ var Html5Entities = /** @class */ (function () {
                 var code = entity.charAt(1) === 'x' ?
                     parseInt(entity.substr(2).toLowerCase(), 16) :
                     parseInt(entity.substr(1));
-                if (!(isNaN(code) || code < -32768 || code > 65535)) {
-                    chr = String.fromCharCode(code);
+                if (!isNaN(code) || code >= -32768) {
+                    if (code <= 65535) {
+                        chr = String.fromCharCode(code);
+                    }
+                    else {
+                        chr = surrogate_pairs_1.fromCodePoint(code);
+                    }
                 }
             }
             else {
@@ -5225,7 +3520,13 @@ var Html5Entities = /** @class */ (function () {
                 }
             }
             if (c < 32 || c > 126) {
-                result += '&#' + c + ';';
+                if (c >= surrogate_pairs_1.highSurrogateFrom && c <= surrogate_pairs_1.highSurrogateTo) {
+                    result += '&#' + surrogate_pairs_1.getCodePoint(str, i) + ';';
+                    i++;
+                }
+                else {
+                    result += '&#' + c + ';';
+                }
             }
             else {
                 result += str.charAt(i);
@@ -5250,8 +3551,14 @@ var Html5Entities = /** @class */ (function () {
                 result += str[i++];
                 continue;
             }
-            result += '&#' + c + ';';
-            i++;
+            if (c >= surrogate_pairs_1.highSurrogateFrom && c <= surrogate_pairs_1.highSurrogateTo) {
+                result += '&#' + surrogate_pairs_1.getCodePoint(str, i) + ';';
+                i += 2;
+            }
+            else {
+                result += '&#' + c + ';';
+                i++;
+            }
         }
         return result;
     };
@@ -5294,6 +3601,7 @@ function createIndexes(alphaIndex, charIndex) {
   !*** ./node_modules/html-entities/lib/index.js ***!
   \*************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5310,16 +3618,46 @@ exports.AllHtmlEntities = html5_entities_1.Html5Entities;
 
 /***/ }),
 
-/***/ "./node_modules/html-entities/lib/xml-entities.js":
-/*!********************************************************!*\
-  !*** ./node_modules/html-entities/lib/xml-entities.js ***!
-  \********************************************************/
+/***/ "./node_modules/html-entities/lib/surrogate-pairs.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/html-entities/lib/surrogate-pairs.js ***!
+  \***********************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.fromCodePoint = String.fromCodePoint || function (astralCodePoint) {
+    return String.fromCharCode(Math.floor((astralCodePoint - 0x10000) / 0x400) + 0xD800, (astralCodePoint - 0x10000) % 0x400 + 0xDC00);
+};
+exports.getCodePoint = String.prototype.codePointAt ?
+    function (input, position) {
+        return input.codePointAt(position);
+    } :
+    function (input, position) {
+        return (input.charCodeAt(position) - 0xD800) * 0x400
+            + input.charCodeAt(position + 1) - 0xDC00 + 0x10000;
+    };
+exports.highSurrogateFrom = 0xD800;
+exports.highSurrogateTo = 0xDBFF;
+
+
+/***/ }),
+
+/***/ "./node_modules/html-entities/lib/xml-entities.js":
+/*!********************************************************!*\
+  !*** ./node_modules/html-entities/lib/xml-entities.js ***!
+  \********************************************************/
+/*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var surrogate_pairs_1 = __webpack_require__(/*! ./surrogate-pairs */ "./node_modules/html-entities/lib/surrogate-pairs.js");
 var ALPHA_INDEX = {
     '&lt': '<',
     '&gt': '>',
@@ -5369,10 +3707,15 @@ var XmlEntities = /** @class */ (function () {
                 var code = s.charAt(2).toLowerCase() === 'x' ?
                     parseInt(s.substr(3), 16) :
                     parseInt(s.substr(2));
-                if (isNaN(code) || code < -32768 || code > 65535) {
-                    return '';
+                if (!isNaN(code) || code >= -32768) {
+                    if (code <= 65535) {
+                        return String.fromCharCode(code);
+                    }
+                    else {
+                        return surrogate_pairs_1.fromCodePoint(code);
+                    }
                 }
-                return String.fromCharCode(code);
+                return '';
             }
             return ALPHA_INDEX[s] || s;
         });
@@ -5396,7 +3739,13 @@ var XmlEntities = /** @class */ (function () {
                 continue;
             }
             if (c < 32 || c > 126) {
-                result += '&#' + c + ';';
+                if (c >= surrogate_pairs_1.highSurrogateFrom && c <= surrogate_pairs_1.highSurrogateTo) {
+                    result += '&#' + surrogate_pairs_1.getCodePoint(str, i) + ';';
+                    i++;
+                }
+                else {
+                    result += '&#' + c + ';';
+                }
             }
             else {
                 result += str.charAt(i);
@@ -5421,7 +3770,13 @@ var XmlEntities = /** @class */ (function () {
                 result += str[i++];
                 continue;
             }
-            result += '&#' + c + ';';
+            if (c >= surrogate_pairs_1.highSurrogateFrom && c <= surrogate_pairs_1.highSurrogateTo) {
+                result += '&#' + surrogate_pairs_1.getCodePoint(str, i) + ';';
+                i++;
+            }
+            else {
+                result += '&#' + c + ';';
+            }
             i++;
         }
         return result;
@@ -5441,6 +3796,7 @@ exports.XmlEntities = XmlEntities;
   !*** ./node_modules/html2canvas/dist/html2canvas.js ***!
   \******************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -12518,6 +10874,7 @@ exports.XmlEntities = XmlEntities;
   !*** ./node_modules/loglevel/lib/loglevel.js ***!
   \***********************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -12803,6 +11160,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
   !*** ./node_modules/node-libs-browser/node_modules/punycode/punycode.js ***!
   \**************************************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
@@ -13334,6 +11692,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
   !*** ./node_modules/querystring-es3/decode.js ***!
   \************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13430,6 +11789,7 @@ var isArray = Array.isArray || function (xs) {
   !*** ./node_modules/querystring-es3/encode.js ***!
   \************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13527,6 +11887,7 @@ var objectKeys = Object.keys || function (obj) {
   !*** ./node_modules/querystring-es3/index.js ***!
   \***********************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13543,6 +11904,7 @@ exports.encode = exports.stringify = __webpack_require__(/*! ./encode */ "./node
   !*** ./node_modules/sockjs-client/dist/sockjs.js ***!
   \***************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var require;var require;/* sockjs-client v1.4.0 | http://sockjs.org | MIT license */
@@ -19373,6 +17735,7 @@ module.exports = Url;
   !*** ./node_modules/url/url.js ***!
   \*********************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20117,6 +18480,7 @@ Url.prototype.parseHost = function() {
   !*** ./node_modules/url/util.js ***!
   \**********************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20145,6 +18509,7 @@ module.exports = {
   !*** (webpack)-dev-server/client/clients/BaseClient.js ***!
   \*********************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20181,6 +18546,7 @@ module.exports = /*#__PURE__*/function () {
   !*** (webpack)-dev-server/client/clients/SockJSClient.js ***!
   \***********************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20270,6 +18636,7 @@ module.exports = /*#__PURE__*/function (_BaseClient) {
   !*** (webpack)-dev-server/client?http://0.0.0.0:3000 ***!
   \*******************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20458,6 +18825,7 @@ socket(socketUrl, onSocketMessage);
   !*** (webpack)-dev-server/client/overlay.js ***!
   \**********************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20589,6 +18957,7 @@ module.exports = {
   !*** (webpack)-dev-server/client/socket.js ***!
   \*********************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20653,6 +19022,7 @@ module.exports = socket;
   !*** (webpack)-dev-server/client/utils/createSocketUrl.js ***!
   \************************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20752,6 +19122,7 @@ module.exports = createSocketUrl;
   !*** (webpack)-dev-server/client/utils/getCurrentScriptSource.js ***!
   \*******************************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20785,6 +19156,7 @@ module.exports = getCurrentScriptSource;
   !*** (webpack)-dev-server/client/utils/log.js ***!
   \************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20845,6 +19217,7 @@ module.exports = {
   !*** (webpack)-dev-server/client/utils/reloadApp.js ***!
   \******************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20911,6 +19284,7 @@ module.exports = reloadApp;
   !*** (webpack)-dev-server/client/utils/sendMessage.js ***!
   \********************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20931,32 +19305,17 @@ module.exports = sendMsg;
 
 /***/ }),
 
-/***/ "./node_modules/webpack-dev-server/node_modules/ansi-regex/index.js":
-/*!*************************************************************!*\
-  !*** (webpack)-dev-server/node_modules/ansi-regex/index.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-module.exports = function () {
-	return /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]/g;
-};
-
-
-/***/ }),
-
 /***/ "./node_modules/webpack-dev-server/node_modules/strip-ansi/index.js":
 /*!*************************************************************!*\
   !*** (webpack)-dev-server/node_modules/strip-ansi/index.js ***!
   \*************************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var ansiRegex = __webpack_require__(/*! ansi-regex */ "./node_modules/webpack-dev-server/node_modules/ansi-regex/index.js")();
+var ansiRegex = __webpack_require__(/*! ansi-regex */ "./node_modules/ansi-regex/index.js")();
 
 module.exports = function (str) {
 	return typeof str === 'string' ? str.replace(ansiRegex, '') : str;
@@ -20970,6 +19329,7 @@ module.exports = function (str) {
   !*** (webpack)/buildin/global.js ***!
   \***********************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports) {
 
 var g;
@@ -21001,6 +19361,7 @@ module.exports = g;
   !*** (webpack)/buildin/module.js ***!
   \***********************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -21034,6 +19395,7 @@ module.exports = function(module) {
   !*** (webpack)/hot sync nonrecursive ^\.\/log$ ***!
   \*************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -21062,140 +19424,16 @@ webpackContext.id = "./node_modules/webpack/hot sync ^\\.\\/log$";
 
 /***/ }),
 
-/***/ "./node_modules/webpack/hot/dev-server.js":
-/*!***********************************!*\
-  !*** (webpack)/hot/dev-server.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-/*globals window __webpack_hash__ */
-if (true) {
-	var lastHash;
-	var upToDate = function upToDate() {
-		return lastHash.indexOf(__webpack_require__.h()) >= 0;
-	};
-	var log = __webpack_require__(/*! ./log */ "./node_modules/webpack/hot/log.js");
-	var check = function check() {
-		module.hot
-			.check(true)
-			.then(function(updatedModules) {
-				if (!updatedModules) {
-					log("warning", "[HMR] Cannot find update. Need to do a full reload!");
-					log(
-						"warning",
-						"[HMR] (Probably because of restarting the webpack-dev-server)"
-					);
-					window.location.reload();
-					return;
-				}
-
-				if (!upToDate()) {
-					check();
-				}
-
-				__webpack_require__(/*! ./log-apply-result */ "./node_modules/webpack/hot/log-apply-result.js")(updatedModules, updatedModules);
-
-				if (upToDate()) {
-					log("info", "[HMR] App is up to date.");
-				}
-			})
-			.catch(function(err) {
-				var status = module.hot.status();
-				if (["abort", "fail"].indexOf(status) >= 0) {
-					log(
-						"warning",
-						"[HMR] Cannot apply update. Need to do a full reload!"
-					);
-					log("warning", "[HMR] " + log.formatError(err));
-					window.location.reload();
-				} else {
-					log("warning", "[HMR] Update failed: " + log.formatError(err));
-				}
-			});
-	};
-	var hotEmitter = __webpack_require__(/*! ./emitter */ "./node_modules/webpack/hot/emitter.js");
-	hotEmitter.on("webpackHotUpdate", function(currentHash) {
-		lastHash = currentHash;
-		if (!upToDate() && module.hot.status() === "idle") {
-			log("info", "[HMR] Checking for updates on the server...");
-			check();
-		}
-	});
-	log("info", "[HMR] Waiting for update signal from WDS...");
-} else {}
-
-
-/***/ }),
-
 /***/ "./node_modules/webpack/hot/emitter.js":
 /*!********************************!*\
   !*** (webpack)/hot/emitter.js ***!
   \********************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 var EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 module.exports = new EventEmitter();
-
-
-/***/ }),
-
-/***/ "./node_modules/webpack/hot/log-apply-result.js":
-/*!*****************************************!*\
-  !*** (webpack)/hot/log-apply-result.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-module.exports = function(updatedModules, renewedModules) {
-	var unacceptedModules = updatedModules.filter(function(moduleId) {
-		return renewedModules && renewedModules.indexOf(moduleId) < 0;
-	});
-	var log = __webpack_require__(/*! ./log */ "./node_modules/webpack/hot/log.js");
-
-	if (unacceptedModules.length > 0) {
-		log(
-			"warning",
-			"[HMR] The following modules couldn't be hot updated: (They would need a full reload!)"
-		);
-		unacceptedModules.forEach(function(moduleId) {
-			log("warning", "[HMR]  - " + moduleId);
-		});
-	}
-
-	if (!renewedModules || renewedModules.length === 0) {
-		log("info", "[HMR] Nothing hot updated.");
-	} else {
-		log("info", "[HMR] Updated modules:");
-		renewedModules.forEach(function(moduleId) {
-			if (typeof moduleId === "string" && moduleId.indexOf("!") !== -1) {
-				var parts = moduleId.split("!");
-				log.groupCollapsed("info", "[HMR]  - " + parts.pop());
-				log("info", "[HMR]  - " + moduleId);
-				log.groupEnd("info");
-			} else {
-				log("info", "[HMR]  - " + moduleId);
-			}
-		});
-		var numberIds = renewedModules.every(function(moduleId) {
-			return typeof moduleId === "number";
-		});
-		if (numberIds)
-			log(
-				"info",
-				"[HMR] Consider using the NamedModulesPlugin for module names."
-			);
-	}
-};
 
 
 /***/ }),
@@ -21205,6 +19443,7 @@ module.exports = function(updatedModules, renewedModules) {
   !*** (webpack)/hot/log.js ***!
   \****************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports) {
 
 var logLevel = "info";
@@ -21270,18 +19509,1080 @@ module.exports.formatError = function(err) {
 
 /***/ }),
 
-/***/ "./test/blocks.js":
-/*!************************!*\
-  !*** ./test/blocks.js ***!
-  \************************/
-/*! exports provided: initBlocks */
+/***/ "./test/index.js":
+/*!************************************!*\
+  !*** ./test/index.js + 12 modules ***!
+  \************************************/
+/*! exports provided: Blockly, workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor */
+/*! ModuleConcatenation bailout: Cannot concat with ./node_modules/blockly/core-browser.js (<- Module is not an ECMAScript module) */
+/*! ModuleConcatenation bailout: Cannot concat with ./node_modules/blockly/index.js (<- Module is not an ECMAScript module) */
+/*! ModuleConcatenation bailout: Cannot concat with ./node_modules/html2canvas/dist/html2canvas.js (<- Module is not an ECMAScript module) */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initBlocks", function() { return initBlocks; });
-/* harmony import */ var _field_dropdown_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./field_dropdown.js */ "./test/field_dropdown.js");
-/* harmony import */ var _variables_mutator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./variables_mutator.js */ "./test/variables_mutator.js");
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "Blockly", function() { return /* reexport */ blockly; });
+__webpack_require__.d(__webpack_exports__, "workspace", function() { return /* binding */ test_workspace; });
+__webpack_require__.d(__webpack_exports__, "changeTheme", function() { return /* binding */ changeTheme; });
+__webpack_require__.d(__webpack_exports__, "changeView", function() { return /* binding */ changeView; });
+__webpack_require__.d(__webpack_exports__, "genPhoto", function() { return /* binding */ genPhoto; });
+__webpack_require__.d(__webpack_exports__, "injectBlockly", function() { return /* binding */ injectBlockly; });
+__webpack_require__.d(__webpack_exports__, "runCode", function() { return /* binding */ runCode; });
+__webpack_require__.d(__webpack_exports__, "editor", function() { return /* binding */ editor; });
+
+// EXTERNAL MODULE: ./node_modules/blockly/index.js
+var blockly = __webpack_require__("./node_modules/blockly/index.js");
+
+// CONCATENATED MODULE: ./test/linenumbers.js
+function withLineNumbers(highlight) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var opts = Object.assign({
+    "class": "codejar-linenumbers",
+    wrapClass: "codejar-wrap",
+    width: "35px",
+    backgroundColor: "rgba(128, 128, 128, 0.15)",
+    color: ""
+  }, options);
+  var lineNumbers;
+  return function (editor) {
+    highlight(editor);
+
+    if (!lineNumbers) {
+      lineNumbers = linenumbers_init(editor, opts);
+      editor.addEventListener("scroll", function () {
+        return lineNumbers.style.top = "-".concat(editor.scrollTop, "px");
+      });
+    }
+
+    var code = editor.textContent || "";
+    var linesCount = code.
+    /*replace(/\n+$/, "\n").*/
+    split("\n").length;
+    if (!code.endsWith("\n")) linesCount++;
+    var text = "";
+
+    for (var i = 1; i < linesCount; i++) {
+      text += "".concat(i, "\n");
+    }
+
+    lineNumbers.innerText = text;
+  };
+}
+
+function linenumbers_init(editor, opts) {
+  var css = getComputedStyle(editor);
+  var wrap = document.createElement("div");
+  wrap.className = opts.wrapClass;
+  wrap.style.position = "relative";
+  var gutter = document.createElement("div");
+  gutter.className = opts["class"];
+  wrap.appendChild(gutter); // Add own styles
+
+  gutter.style.position = "absolute";
+  gutter.style.top = "0px";
+  gutter.style.left = "0px";
+  gutter.style.bottom = "0px";
+  gutter.style.width = opts.width;
+  gutter.style.overflow = "hidden";
+  gutter.style.backgroundColor = opts.backgroundColor;
+  gutter.style.color = opts.color || css.color;
+  gutter.style.setProperty("mix-blend-mode", "difference"); // Copy editor styles
+
+  gutter.style.fontFamily = css.fontFamily;
+  gutter.style.fontSize = css.fontSize;
+  gutter.style.lineHeight = css.lineHeight;
+  gutter.style.paddingTop = css.paddingTop;
+  gutter.style.paddingLeft = css.paddingLeft;
+  gutter.style.borderTopLeftRadius = css.borderTopLeftRadius;
+  gutter.style.borderBottomLeftRadius = css.borderBottomLeftRadius; // Add line numbers
+
+  var lineNumbers = document.createElement("div");
+  lineNumbers.style.position = "relative";
+  lineNumbers.style.top = "0px";
+  gutter.appendChild(lineNumbers); // Tweak editor styles
+
+  editor.style.paddingLeft = "calc(".concat(opts.width, " + ").concat(gutter.style.paddingLeft, ")");
+  editor.style.whiteSpace = "pre"; // Swap editor with a wrap
+
+  editor.parentNode.insertBefore(wrap, editor);
+  wrap.appendChild(editor);
+  return lineNumbers;
+}
+// CONCATENATED MODULE: ./test/field_dropdown.js
+/**
+ * @license
+ * Copyright 2012 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview Dropdown input field.  Used for editable titles and variables.
+ * In the interests of a consistent UI, the toolbox shares some functions and
+ * properties with the context menu.
+ * @author fraser@google.com (Neil Fraser)
+ */
+
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+ // goog.provide('Blockly.FieldDropdown');
+// goog.require('Blockly.Events');
+// goog.require('Blockly.Events.BlockChange');
+// goog.require('Blockly.Field');
+// goog.require('Blockly.fieldRegistry');
+// goog.require('Blockly.Menu');
+// goog.require('Blockly.MenuItem');
+// goog.require('Blockly.navigation');
+// goog.require('Blockly.utils');
+// goog.require('Blockly.utils.aria');
+// goog.require('Blockly.utils.Coordinate');
+// goog.require('Blockly.utils.dom');
+// goog.require('Blockly.utils.object');
+// goog.require('Blockly.utils.Size');
+// goog.require('Blockly.utils.string');
+// goog.require('Blockly.utils.userAgent');
+
+/**
+ * Class for an editable dropdown field.
+ * @param {(!Array.<!Array>|!Function)} menuGenerator A non-empty array of
+ *     options for a dropdown list, or a function which generates these options.
+ * @param {Function=} opt_validator A function that is called to validate
+ *    changes to the field's value. Takes in a language-neutral dropdown
+ *    option & returns a validated language-neutral dropdown option, or null to
+ *    abort the change.
+ * @param {Object=} opt_config A map of options used to configure the field.
+ *    See the [field creation documentation]{@link https://developers.google.com/blockly/guides/create-custom-blocks/fields/built-in-fields/dropdown#creation}
+ *    for a list of properties this parameter supports.
+ * @extends {Blockly.Field}
+ * @constructor
+ * @throws {TypeError} If `menuGenerator` options are incorrectly structured.
+ */
+
+blockly["FieldDropdown"] = function (menuGenerator, opt_validator, opt_config) {
+  if (typeof menuGenerator != 'function') {
+    blockly["FieldDropdown"].validateOptions_(menuGenerator);
+  }
+  /**
+   * An array of options for a dropdown list,
+   * or a function which generates these options.
+   * @type {(!Array.<!Array>|
+   *    !function(this:Blockly.FieldDropdown): !Array.<!Array>)}
+   * @protected
+   */
+
+
+  this.menuGenerator_ = menuGenerator;
+  /**
+   * A cache of the most recently generated options.
+   * @type {Array.<!Array.<string>>}
+   * @private
+   */
+
+  this.generatedOptions_ = null;
+  /**
+   * The prefix field label, of common words set after options are trimmed.
+   * @type {?string}
+   * @package
+   */
+
+  this.prefixField = null;
+  /**
+   * The suffix field label, of common words set after options are trimmed.
+   * @type {?string}
+   * @package
+   */
+
+  this.suffixField = null;
+  this.trimOptions_();
+  /**
+   * The currently selected option. The field is initialized with the
+   * first option selected.
+   * @type {!Object}
+   * @private
+   */
+
+  this.selectedOption_ = this.getOptions(false)[0]; // Call parent's constructor.
+
+  blockly["FieldDropdown"].superClass_.constructor.call(this, this.selectedOption_[1], opt_validator, opt_config);
+  /**
+   * A reference to the currently selected menu item.
+   * @type {Blockly.MenuItem}
+   * @private
+   */
+
+  this.selectedMenuItem_ = null;
+  /**
+   * The dropdown menu.
+   * @type {Blockly.Menu}
+   * @private
+   */
+
+  this.menu_ = null;
+  /**
+   * SVG image element if currently selected option is an image, or null.
+   * @type {SVGImageElement}
+   * @private
+   */
+
+  this.imageElement_ = null;
+  /**
+   * Tspan based arrow element.
+   * @type {SVGTSpanElement}
+   * @private
+   */
+
+  this.arrow_ = null;
+  /**
+   * SVG based arrow element.
+   * @type {SVGElement}
+   * @private
+   */
+
+  this.svgArrow_ = null;
+};
+
+blockly["utils"].object.inherits(blockly["FieldDropdown"], blockly["Field"]);
+/**
+ * Dropdown image properties.
+ * @typedef {{
+  *            src:string,
+  *            alt:string,
+  *            width:number,
+  *            height:number
+  *          }}
+  */
+
+blockly["FieldDropdown"].ImageProperties;
+/**
+ * Construct a FieldDropdown from a JSON arg object.
+ * @param {!Object} options A JSON object with options (options).
+ * @return {!Blockly.FieldDropdown} The new field instance.
+ * @package
+ * @nocollapse
+ */
+
+blockly["FieldDropdown"].fromJson = function (options) {
+  return new blockly["FieldDropdown"](options['options'], undefined, options);
+};
+/**
+ * Serializable fields are saved by the XML renderer, non-serializable fields
+ * are not. Editable fields should also be serializable.
+ * @type {boolean}
+ */
+
+
+blockly["FieldDropdown"].prototype.SERIALIZABLE = true;
+/**
+ * Horizontal distance that a checkmark overhangs the dropdown.
+ */
+
+blockly["FieldDropdown"].CHECKMARK_OVERHANG = 25;
+/**
+ * Maximum height of the dropdown menu, as a percentage of the viewport height.
+ */
+
+blockly["FieldDropdown"].MAX_MENU_HEIGHT_VH = 0.45;
+/**
+ * The y offset from the top of the field to the top of the image, if an image
+ * is selected.
+ * @type {number}
+ * @const
+ * @private
+ */
+
+blockly["FieldDropdown"].IMAGE_Y_OFFSET = 5;
+blockly["FieldDropdown"].onOpenMenu = null;
+/**
+ * The total vertical padding above and below an image.
+ * @type {number}
+ * @const
+ * @private
+ */
+
+blockly["FieldDropdown"].IMAGE_Y_PADDING = blockly["FieldDropdown"].IMAGE_Y_OFFSET * 2;
+/**
+ * Android can't (in 2014) display "▾", so use "▼" instead.
+ */
+
+blockly["FieldDropdown"].ARROW_CHAR = blockly["utils"].userAgent.ANDROID ? "\u25BC" : "\u25BE";
+/**
+ * Mouse cursor style when over the hotspot that initiates the editor.
+ */
+
+blockly["FieldDropdown"].prototype.CURSOR = 'default';
+/**
+ * Create the block UI for this dropdown.
+ * @package
+ */
+
+blockly["FieldDropdown"].prototype.initView = function () {
+  if (this.shouldAddBorderRect_()) {
+    this.createBorderRect_();
+  } else {
+    this.clickTarget_ = this.sourceBlock_.getSvgRoot();
+  }
+
+  this.createTextElement_();
+  this.imageElement_ =
+  /** @type {!SVGImageElement} */
+  blockly["utils"].dom.createSvgElement('image', {}, this.fieldGroup_);
+
+  if (this.getConstants().FIELD_DROPDOWN_SVG_ARROW) {
+    this.createSVGArrow_();
+  } else {
+    this.createTextArrow_();
+  }
+
+  if (this.borderRect_) {
+    blockly["utils"].dom.addClass(this.borderRect_, 'blocklyDropdownRect');
+  }
+};
+/**
+ * Whether or not the dropdown should add a border rect.
+ * @return {boolean} True if the dropdown field should add a border rect.
+ * @protected
+ */
+
+
+blockly["FieldDropdown"].prototype.shouldAddBorderRect_ = function () {
+  return !this.getConstants().FIELD_DROPDOWN_NO_BORDER_RECT_SHADOW || this.getConstants().FIELD_DROPDOWN_NO_BORDER_RECT_SHADOW && !this.sourceBlock_.isShadow();
+};
+/**
+ * Create a tspan based arrow.
+ * @protected
+ */
+
+
+blockly["FieldDropdown"].prototype.createTextArrow_ = function () {
+  this.arrow_ =
+  /** @type {!SVGTSpanElement} */
+  blockly["utils"].dom.createSvgElement('tspan', {}, this.textElement_);
+  this.arrow_.appendChild(document.createTextNode(this.sourceBlock_.RTL ? blockly["FieldDropdown"].ARROW_CHAR + ' ' : ' ' + blockly["FieldDropdown"].ARROW_CHAR));
+
+  if (this.sourceBlock_.RTL) {
+    this.textElement_.insertBefore(this.arrow_, this.textContent_);
+  } else {
+    this.textElement_.appendChild(this.arrow_);
+  }
+};
+/**
+ * Create an SVG based arrow.
+ * @protected
+ */
+
+
+blockly["FieldDropdown"].prototype.createSVGArrow_ = function () {
+  this.svgArrow_ = blockly["utils"].dom.createSvgElement('image', {
+    'height': this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE + 'px',
+    'width': this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE + 'px'
+  }, this.fieldGroup_);
+  this.svgArrow_.setAttributeNS(blockly["utils"].dom.XLINK_NS, 'xlink:href', this.getConstants().FIELD_DROPDOWN_SVG_ARROW_DATAURI);
+};
+/**
+ * Create a dropdown menu under the text.
+ * @param {Event=} opt_e Optional mouse event that triggered the field to open,
+ *     or undefined if triggered programmatically.
+ * @protected
+ */
+
+
+blockly["FieldDropdown"].prototype.showEditor_ = function (opt_e) {
+  if (this.onOpenMenu != null) this.onOpenMenu();
+  this.menu_ = this.dropdownCreate_();
+
+  if (opt_e && typeof opt_e.clientX === 'number') {
+    this.menu_.openingCoords = new blockly["utils"].Coordinate(opt_e.clientX, opt_e.clientY);
+  } else {
+    this.menu_.openingCoords = null;
+  } // Element gets created in render.
+
+
+  this.menu_.render(blockly["DropDownDiv"].getContentDiv());
+  var menuElement =
+  /** @type {!Element} */
+  this.menu_.getElement();
+  blockly["utils"].dom.addClass(menuElement, 'blocklyDropdownMenu');
+
+  if (this.getConstants().FIELD_DROPDOWN_COLOURED_DIV) {
+    var primaryColour = this.sourceBlock_.isShadow() ? this.sourceBlock_.getParent().getColour() : this.sourceBlock_.getColour();
+    var borderColour = this.sourceBlock_.isShadow() ? this.sourceBlock_.getParent().style.colourTertiary : this.sourceBlock_.style.colourTertiary;
+    blockly["DropDownDiv"].setColour(primaryColour, borderColour);
+  }
+
+  blockly["DropDownDiv"].showPositionedByField(this, this.dropdownDispose_.bind(this)); // Focusing needs to be handled after the menu is rendered and positioned.
+  // Otherwise it will cause a page scroll to get the misplaced menu in
+  // view. See issue #1329.
+
+  this.menu_.focus();
+
+  if (this.selectedMenuItem_) {
+    this.menu_.setHighlighted(this.selectedMenuItem_);
+  }
+
+  this.applyColour();
+};
+/**
+ * Create the dropdown editor.
+ * @return {!Blockly.Menu} The newly created dropdown menu.
+ * @private
+ */
+
+
+blockly["FieldDropdown"].prototype.dropdownCreate_ = function () {
+  var menu = new blockly["Menu"]();
+  menu.setRole(blockly["utils"].aria.Role.LISTBOX);
+  var options = this.getOptions(false);
+  this.selectedMenuItem_ = null;
+
+  for (var i = 0; i < options.length; i++) {
+    var content = options[i][0]; // Human-readable text or image.
+
+    var value = options[i][1]; // Language-neutral value.
+
+    if (_typeof(content) == 'object') {
+      // An image, not text.
+      var image = new Image(content['width'], content['height']);
+      image.src = content['src'];
+      image.alt = content['alt'] || '';
+      content = image;
+    }
+
+    var menuItem = new blockly["MenuItem"](content, value);
+    menuItem.setRole(blockly["utils"].aria.Role.OPTION);
+    menuItem.setRightToLeft(this.sourceBlock_.RTL);
+    menuItem.setCheckable(true);
+    menu.addChild(menuItem);
+    menuItem.setChecked(value == this.value_);
+
+    if (value == this.value_) {
+      this.selectedMenuItem_ = menuItem;
+    }
+
+    menuItem.onAction(this.handleMenuActionEvent_, this);
+  }
+
+  return menu;
+};
+/**
+ * Disposes of events and dom-references belonging to the dropdown editor.
+ * @private
+ */
+
+
+blockly["FieldDropdown"].prototype.dropdownDispose_ = function () {
+  if (this.menu_) {
+    this.menu_.dispose();
+  }
+
+  this.menu_ = null;
+  this.selectedMenuItem_ = null;
+  this.applyColour();
+};
+/**
+ * Handle an action in the dropdown menu.
+ * @param {!Blockly.MenuItem} menuItem The MenuItem selected within menu.
+ * @private
+ */
+
+
+blockly["FieldDropdown"].prototype.handleMenuActionEvent_ = function (menuItem) {
+  blockly["DropDownDiv"].hideIfOwner(this, true);
+  this.onItemSelected_(
+  /** @type {!Blockly.Menu} */
+  this.menu_, menuItem);
+};
+/**
+ * Handle the selection of an item in the dropdown menu.
+ * @param {!Blockly.Menu} menu The Menu component clicked.
+ * @param {!Blockly.MenuItem} menuItem The MenuItem selected within menu.
+ * @protected
+ */
+
+
+blockly["FieldDropdown"].prototype.onItemSelected_ = function (menu, menuItem) {
+  this.setValue(menuItem.getValue());
+};
+/**
+ * Factor out common words in statically defined options.
+ * Create prefix and/or suffix labels.
+ * @private
+ */
+
+
+blockly["FieldDropdown"].prototype.trimOptions_ = function () {
+  var options = this.menuGenerator_;
+
+  if (!Array.isArray(options)) {
+    return;
+  }
+
+  var hasImages = false; // Localize label text and image alt text.
+
+  for (var i = 0; i < options.length; i++) {
+    var label = options[i][0];
+
+    if (typeof label == 'string') {
+      options[i][0] = blockly["utils"].replaceMessageReferences(label);
+    } else {
+      if (label.alt != null) {
+        options[i][0].alt = blockly["utils"].replaceMessageReferences(label.alt);
+      }
+
+      hasImages = true;
+    }
+  }
+
+  if (hasImages || options.length < 2) {
+    return; // Do nothing if too few items or at least one label is an image.
+  }
+
+  var strings = [];
+
+  for (var i = 0; i < options.length; i++) {
+    strings.push(options[i][0]);
+  }
+
+  var shortest = blockly["utils"].string.shortestStringLength(strings);
+  var prefixLength = blockly["utils"].string.commonWordPrefix(strings, shortest);
+  var suffixLength = blockly["utils"].string.commonWordSuffix(strings, shortest);
+
+  if (!prefixLength && !suffixLength) {
+    return;
+  }
+
+  if (shortest <= prefixLength + suffixLength) {
+    // One or more strings will entirely vanish if we proceed.  Abort.
+    return;
+  }
+
+  if (prefixLength) {
+    this.prefixField = strings[0].substring(0, prefixLength - 1);
+  }
+
+  if (suffixLength) {
+    this.suffixField = strings[0].substr(1 - suffixLength);
+  }
+
+  this.menuGenerator_ = blockly["FieldDropdown"].applyTrim_(options, prefixLength, suffixLength);
+};
+/**
+ * Use the calculated prefix and suffix lengths to trim all of the options in
+ * the given array.
+ * @param {!Array.<!Array>} options Array of option tuples:
+ *     (human-readable text or image, language-neutral name).
+ * @param {number} prefixLength The length of the common prefix.
+ * @param {number} suffixLength The length of the common suffix
+ * @return {!Array.<!Array>} A new array with all of the option text trimmed.
+ */
+
+
+blockly["FieldDropdown"].applyTrim_ = function (options, prefixLength, suffixLength) {
+  var newOptions = []; // Remove the prefix and suffix from the options.
+
+  for (var i = 0; i < options.length; i++) {
+    var text = options[i][0];
+    var value = options[i][1];
+    text = text.substring(prefixLength, text.length - suffixLength);
+    newOptions[i] = [text, value];
+  }
+
+  return newOptions;
+};
+/**
+ * @return {boolean} True if the option list is generated by a function.
+ *     Otherwise false.
+ */
+
+
+blockly["FieldDropdown"].prototype.isOptionListDynamic = function () {
+  return typeof this.menuGenerator_ == 'function';
+};
+/**
+ * Return a list of the options for this dropdown.
+ * @param {boolean=} opt_useCache For dynamic options, whether or not to use the
+ *     cached options or to re-generate them.
+ * @return {!Array.<!Array>} A non-empty array of option tuples:
+ *     (human-readable text or image, language-neutral name).
+ * @throws {TypeError} If generated options are incorrectly structured.
+ */
+
+
+blockly["FieldDropdown"].prototype.getOptions = function (opt_useCache) {
+  if (this.isOptionListDynamic()) {
+    if (!this.generatedOptions_ || !opt_useCache) {
+      this.generatedOptions_ = this.menuGenerator_.call(this);
+      blockly["FieldDropdown"].validateOptions_(this.generatedOptions_);
+    }
+
+    return this.generatedOptions_;
+  }
+
+  return (
+    /** @type {!Array.<!Array.<string>>} */
+    this.menuGenerator_
+  );
+};
+/**
+ * Ensure that the input value is a valid language-neutral option.
+ * @param {*=} opt_newValue The input value.
+ * @return {?string} A valid language-neutral option, or null if invalid.
+ * @protected
+ */
+
+
+blockly["FieldDropdown"].prototype.doClassValidation_ = function (opt_newValue) {
+  var isValueValid = false;
+  var options = this.getOptions(true);
+
+  for (var i = 0, option; option = options[i]; i++) {
+    // Options are tuples of human-readable text and language-neutral values.
+    if (option[1] == opt_newValue) {
+      isValueValid = true;
+      break;
+    }
+  }
+
+  if (!isValueValid) {
+    if (this.sourceBlock_) {
+      console.warn('Cannot set the dropdown\'s value to an unavailable option.' + ' Block type: ' + this.sourceBlock_.type + ', Field name: ' + this.name + ', Value: ' + opt_newValue);
+    }
+
+    return null;
+  }
+
+  return (
+    /** @type {string} */
+    opt_newValue
+  );
+};
+/**
+ * Update the value of this dropdown field.
+ * @param {*} newValue The value to be saved. The default validator guarantees
+ * that this is one of the valid dropdown options.
+ * @protected
+ */
+
+
+blockly["FieldDropdown"].prototype.doValueUpdate_ = function (newValue) {
+  blockly["FieldDropdown"].superClass_.doValueUpdate_.call(this, newValue);
+  var options = this.getOptions(true);
+
+  for (var i = 0, option; option = options[i]; i++) {
+    if (option[1] == this.value_) {
+      this.selectedOption_ = option;
+    }
+  }
+};
+/**
+ * Updates the dropdown arrow to match the colour/style of the block.
+ * @package
+ */
+
+
+blockly["FieldDropdown"].prototype.applyColour = function () {
+  if (this.borderRect_) {
+    this.borderRect_.setAttribute('stroke', this.sourceBlock_.style.colourTertiary);
+
+    if (this.menu_) {
+      this.borderRect_.setAttribute('fill', this.sourceBlock_.style.colourTertiary);
+    } else {
+      this.borderRect_.setAttribute('fill', 'transparent');
+    }
+  } // Update arrow's colour.
+
+
+  if (this.sourceBlock_ && this.arrow_) {
+    if (this.sourceBlock_.isShadow()) {
+      this.arrow_.style.fill = this.sourceBlock_.style.colourSecondary;
+    } else {
+      this.arrow_.style.fill = this.sourceBlock_.style.colourPrimary;
+    }
+  }
+};
+/**
+ * Draws the border with the correct width.
+ * @protected
+ */
+
+
+blockly["FieldDropdown"].prototype.render_ = function () {
+  // Hide both elements.
+  this.textContent_.nodeValue = '';
+  this.imageElement_.style.display = 'none'; // Show correct element.
+
+  var option = this.selectedOption_ && this.selectedOption_[0];
+
+  if (option && _typeof(option) == 'object') {
+    this.renderSelectedImage_(
+    /** @type {!Blockly.FieldDropdown.ImageProperties} */
+    option);
+  } else {
+    this.renderSelectedText_();
+  }
+
+  this.positionBorderRect_();
+};
+/**
+ * Renders the selected option, which must be an image.
+ * @param {!Blockly.FieldDropdown.ImageProperties} imageJson Selected
+ *   option that must be an image.
+ * @private
+ */
+
+
+blockly["FieldDropdown"].prototype.renderSelectedImage_ = function (imageJson) {
+  this.imageElement_.style.display = '';
+  this.imageElement_.setAttributeNS(blockly["utils"].dom.XLINK_NS, 'xlink:href', imageJson.src);
+  this.imageElement_.setAttribute('height', imageJson.height);
+  this.imageElement_.setAttribute('width', imageJson.width);
+  var imageHeight = Number(imageJson.height);
+  var imageWidth = Number(imageJson.width); // Height and width include the border rect.
+
+  var hasBorder = !!this.borderRect_;
+  var height = Math.max(hasBorder ? this.getConstants().FIELD_DROPDOWN_BORDER_RECT_HEIGHT : 0, imageHeight + blockly["FieldDropdown"].IMAGE_Y_PADDING);
+  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
+  var arrowWidth = 0;
+
+  if (this.svgArrow_) {
+    arrowWidth = this.positionSVGArrow_(imageWidth + xPadding, height / 2 - this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE / 2);
+  } else {
+    arrowWidth = blockly["utils"].dom.getFastTextWidth(
+    /** @type {!SVGTSpanElement} */
+    this.arrow_, this.getConstants().FIELD_TEXT_FONTSIZE, this.getConstants().FIELD_TEXT_FONTWEIGHT, this.getConstants().FIELD_TEXT_FONTFAMILY);
+  }
+
+  this.size_.width = imageWidth + arrowWidth + xPadding * 2;
+  this.size_.height = height;
+  var arrowX = 0;
+
+  if (this.sourceBlock_.RTL) {
+    var imageX = xPadding + arrowWidth;
+    this.imageElement_.setAttribute('x', imageX);
+  } else {
+    arrowX = imageWidth + arrowWidth;
+    this.textElement_.setAttribute('text-anchor', 'end');
+    this.imageElement_.setAttribute('x', xPadding);
+  }
+
+  this.imageElement_.setAttribute('y', height / 2 - imageHeight / 2);
+  this.positionTextElement_(arrowX + xPadding, imageWidth + arrowWidth);
+};
+/**
+ * Renders the selected option, which must be text.
+ * @private
+ */
+
+
+blockly["FieldDropdown"].prototype.renderSelectedText_ = function () {
+  // Retrieves the selected option to display through getText_.
+  this.textContent_.nodeValue = this.getDisplayText_();
+  blockly["utils"].dom.addClass(
+  /** @type {!Element} */
+  this.textElement_, 'blocklyDropdownText');
+  this.textElement_.setAttribute('text-anchor', 'start'); // Height and width include the border rect.
+
+  var hasBorder = !!this.borderRect_;
+  var height = Math.max(hasBorder ? this.getConstants().FIELD_DROPDOWN_BORDER_RECT_HEIGHT : 0, this.getConstants().FIELD_TEXT_HEIGHT);
+  var textWidth = blockly["utils"].dom.getFastTextWidth(this.textElement_, this.getConstants().FIELD_TEXT_FONTSIZE, this.getConstants().FIELD_TEXT_FONTWEIGHT, this.getConstants().FIELD_TEXT_FONTFAMILY);
+  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
+  var arrowWidth = 0;
+
+  if (this.svgArrow_) {
+    arrowWidth = this.positionSVGArrow_(textWidth + xPadding, height / 2 - this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE / 2);
+  }
+
+  this.size_.width = textWidth + arrowWidth + xPadding * 2;
+  this.size_.height = height;
+  this.positionTextElement_(xPadding, textWidth);
+};
+/**
+ * Position a drop-down arrow at the appropriate location at render-time.
+ * @param {number} x X position the arrow is being rendered at, in px.
+ * @param {number} y Y position the arrow is being rendered at, in px.
+ * @return {number} Amount of space the arrow is taking up, in px.
+ * @private
+ */
+
+
+blockly["FieldDropdown"].prototype.positionSVGArrow_ = function (x, y) {
+  if (!this.svgArrow_) {
+    return 0;
+  }
+
+  var hasBorder = !!this.borderRect_;
+  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
+  var textPadding = this.getConstants().FIELD_DROPDOWN_SVG_ARROW_PADDING;
+  var svgArrowSize = this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE;
+  var arrowX = this.sourceBlock_.RTL ? xPadding : x + textPadding;
+  this.svgArrow_.setAttribute('transform', 'translate(' + arrowX + ',' + y + ')');
+  return svgArrowSize + textPadding;
+};
+/**
+ * Use the `getText_` developer hook to override the field's text
+ * representation.  Get the selected option text. If the selected option is an
+ * image we return the image alt text.
+ * @return {?string} Selected option text.
+ * @protected
+ * @override
+ */
+
+
+blockly["FieldDropdown"].prototype.getText_ = function () {
+  if (!this.selectedOption_) {
+    return null;
+  }
+
+  var option = this.selectedOption_[0];
+
+  if (_typeof(option) == 'object') {
+    return option['alt'];
+  }
+
+  return option;
+};
+/**
+ * Validates the data structure to be processed as an options list.
+ * @param {?} options The proposed dropdown options.
+ * @throws {TypeError} If proposed options are incorrectly structured.
+ * @private
+ */
+
+
+blockly["FieldDropdown"].validateOptions_ = function (options) {
+  if (!Array.isArray(options)) {
+    throw TypeError('FieldDropdown options must be an array.');
+  }
+
+  if (!options.length) {
+    throw TypeError('FieldDropdown options must not be an empty array.');
+  }
+
+  var foundError = false;
+
+  for (var i = 0; i < options.length; ++i) {
+    var tuple = options[i];
+
+    if (!Array.isArray(tuple)) {
+      foundError = true;
+      console.error('Invalid option[' + i + ']: Each FieldDropdown option must be an ' + 'array. Found: ', tuple);
+    } else if (typeof tuple[1] != 'string') {
+      foundError = true;
+      console.error('Invalid option[' + i + ']: Each FieldDropdown option id must be ' + 'a string. Found ' + tuple[1] + ' in: ', tuple);
+    } else if (tuple[0] && typeof tuple[0] != 'string' && typeof tuple[0].src != 'string') {
+      foundError = true;
+      console.error('Invalid option[' + i + ']: Each FieldDropdown option must have a ' + 'string label or image description. Found' + tuple[0] + ' in: ', tuple);
+    }
+  }
+
+  if (foundError) {
+    throw TypeError('Found invalid FieldDropdown options.');
+  }
+};
+/**
+ * Handles the given action.
+ * This is only triggered when keyboard accessibility mode is enabled.
+ * @param {!Blockly.Action} action The action to be handled.
+ * @return {boolean} True if the field handled the action, false otherwise.
+ * @package
+ */
+
+
+blockly["FieldDropdown"].prototype.onBlocklyAction = function (action) {
+  if (this.menu_) {
+    if (action === blockly["navigation"].ACTION_PREVIOUS) {
+      this.menu_.highlightPrevious();
+      return true;
+    } else if (action === blockly["navigation"].ACTION_NEXT) {
+      this.menu_.highlightNext();
+      return true;
+    }
+  }
+
+  return blockly["FieldDropdown"].superClass_.onBlocklyAction.call(this, action);
+};
+
+blockly["fieldRegistry"].register('field_dropdown2', blockly["FieldDropdown"]);
+// EXTERNAL MODULE: ./node_modules/blockly/core-browser.js
+var core_browser = __webpack_require__("./node_modules/blockly/core-browser.js");
+var core_browser_default = /*#__PURE__*/__webpack_require__.n(core_browser);
+
+// CONCATENATED MODULE: ./test/field_minus.js
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview A function that creates a minus button used for mutation.
+ */
+
+
+
+/**
+ * Creates a minus image field used for mutation.
+ * @param {Object=} opt_args Untyped args passed to block.minus when the field
+ *     is clicked.
+ * @return {Blockly.FieldImage} The minus field.
+ */
+
+function createMinusField(opt_args) {
+  var minus = new core_browser["FieldImage"](minusImage, 40, 40, undefined, onClick_);
+  /**
+   * Untyped args passed to block.minus when the field is clicked.
+   * @type {Object}
+   * @private
+   */
+
+  minus.args_ = opt_args;
+  return minus;
+}
+/**
+ * Calls block.minus(args) when the minus field is clicked.
+ * @param {Blockly.FieldImage} minusField The field being clicked.
+ * @private
+ */
+
+function onClick_(minusField) {
+  // TODO: This is a dupe of the mutator code, anyway to unify?
+  var block = minusField.getSourceBlock();
+
+  if (block.isInFlyout) {
+    return;
+  }
+
+  core_browser["Events"].setGroup(true);
+  var oldMutationDom = block.mutationToDom();
+  var oldMutation = oldMutationDom && core_browser["Xml"].domToText(oldMutationDom);
+  block.minus(minusField.args_);
+  var newMutationDom = block.mutationToDom();
+  var newMutation = newMutationDom && core_browser["Xml"].domToText(newMutationDom);
+
+  if (oldMutation != newMutation) {
+    core_browser["Events"].fire(new core_browser["Events"].BlockChange(block, 'mutation', null, oldMutation, newMutation));
+  }
+
+  core_browser["Events"].setGroup(false);
+}
+
+var minusImage = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAw' + 'MC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPS' + 'JNMTggMTFoLTEyYy0xLjEwNCAwLTIgLjg5Ni0yIDJzLjg5NiAyIDIgMmgxMmMxLjEwNCAw' + 'IDItLjg5NiAyLTJzLS44OTYtMi0yLTJ6IiBmaWxsPSJ3aGl0ZSIgLz48L3N2Zz4K';
+// CONCATENATED MODULE: ./test/field_plus.js
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @fileoverview A field for a plus button used for mutation.
+ */
+
+
+
+/**
+ * Creates a plus image field used for mutation.
+ * @param {Object=} opt_args Untyped args passed to block.minus when the field
+ *     is clicked.
+ * @return {Blockly.FieldImage} The Plus field.
+ */
+
+function createPlusField(opt_args) {
+  var plus = new core_browser["FieldImage"](plusImage, 40, 40, undefined, field_plus_onClick_);
+  /**
+   * Untyped args passed to block.plus when the field is clicked.
+   * @type {Object}
+   * @private
+   */
+
+  plus.args_ = opt_args;
+  return plus;
+}
+/**
+ * Calls block.plus(args) when the plus field is clicked.
+ * @param {!Blockly.FieldImage} plusField The field being clicked.
+ * @private
+ */
+
+function field_plus_onClick_(plusField) {
+  // TODO: This is a dupe of the mutator code, anyway to unify?
+  var block = plusField.getSourceBlock();
+
+  if (block.isInFlyout) {
+    return;
+  }
+
+  core_browser["Events"].setGroup(true);
+  var oldMutationDom = block.mutationToDom();
+  var oldMutation = oldMutationDom && core_browser["Xml"].domToText(oldMutationDom);
+  block.plus(plusField.args_);
+  var newMutationDom = block.mutationToDom();
+  var newMutation = newMutationDom && core_browser["Xml"].domToText(newMutationDom);
+
+  if (oldMutation != newMutation) {
+    core_browser["Events"].fire(new core_browser["Events"].BlockChange(block, 'mutation', null, oldMutation, newMutation));
+  }
+
+  core_browser["Events"].setGroup(false);
+}
+
+var plusImage = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC' + '9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPSJNMT' + 'ggMTBoLTR2LTRjMC0xLjEwNC0uODk2LTItMi0ycy0yIC44OTYtMiAybC4wNzEgNGgtNC4wNz' + 'FjLTEuMTA0IDAtMiAuODk2LTIgMnMuODk2IDIgMiAybDQuMDcxLS4wNzEtLjA3MSA0LjA3MW' + 'MwIDEuMTA0Ljg5NiAyIDIgMnMyLS44OTYgMi0ydi00LjA3MWw0IC4wNzFjMS4xMDQgMCAyLS' + '44OTYgMi0ycy0uODk2LTItMi0yeiIgZmlsbD0id2hpdGUiIC8+PC9zdmc+Cg==';
+// CONCATENATED MODULE: ./test/variables_mutator.js
+
+
+
+var controlsIfMutator = {
+  suppressPrefixSuffix: true,
+  hasValue: false,
+  mutationToDom: function mutationToDom() {
+    if (!this.hasValue) {
+      return null;
+    }
+
+    var container = core_browser_default.a.utils.xml.createElement('mutation');
+
+    if (this.hasValue) {
+      container.setAttribute('hasValue', 1);
+    }
+
+    return container;
+  },
+  domToMutation: function domToMutation(xmlElement) {
+    this.hasValue = !!parseInt(xmlElement.getAttribute('hasValue')) || 0;
+    this.updateShape_();
+  },
+  updateShape_: function updateShape_() {
+    if (this.hasValue) this.appendValue();
+  },
+  plus: function plus() {
+    if (this.hasValue) return;
+    this.appendValue();
+  },
+  minus: function minus(index) {
+    this.removeValue(index);
+  },
+  appendValue: function appendValue() {
+    this.hasValue = true;
+    this.removeInput('DUM1');
+    this.appendValueInput('VALUE').setCheck(null).appendField('=');
+    this.appendDummyInput('DUM').appendField(createMinusField(), 'MINUS');
+  },
+  removeValue: function removeValue(opt_index) {
+    this.hasValue = false;
+    this.removeInput('VALUE');
+    this.removeInput('DUM');
+    this.appendDummyInput('DUM1').appendField(createPlusField(), 'PLUS');
+  }
+};
+
+var variables_mutator_controlsIfHelper = function controlsIfHelper() {
+  this.appendDummyInput('DUM1').appendField(createPlusField(), 'PLUS');
+};
+
+core_browser_default.a.Extensions.registerMutator('variable_set_mutator', controlsIfMutator, variables_mutator_controlsIfHelper);
+// CONCATENATED MODULE: ./test/blocks.js
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -21725,828 +21026,647 @@ function initBlocks() {
 }
 
 
+// CONCATENATED MODULE: ./continuous-toolbox/src/ContinuousFlyout.js
+function ContinuousFlyout_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { ContinuousFlyout_typeof = function _typeof(obj) { return typeof obj; }; } else { ContinuousFlyout_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return ContinuousFlyout_typeof(obj); }
 
-/***/ }),
+function ContinuousFlyout_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = ContinuousFlyout_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
-/***/ "./test/field_dropdown.js":
-/*!********************************!*\
-  !*** ./test/field_dropdown.js ***!
-  \********************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+function ContinuousFlyout_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return ContinuousFlyout_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return ContinuousFlyout_arrayLikeToArray(o, minLen); }
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
+function ContinuousFlyout_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (ContinuousFlyout_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 /**
  * @license
- * Copyright 2012 Google LLC
+ * Copyright 2020 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
- * @fileoverview Dropdown input field.  Used for editable titles and variables.
- * In the interests of a consistent UI, the toolbox shares some functions and
- * properties with the context menu.
- * @author fraser@google.com (Neil Fraser)
+ * @fileoverview Flyout that supports always-open continuous scrolling.
  */
 
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
- // goog.provide('Blockly.FieldDropdown');
-// goog.require('Blockly.Events');
-// goog.require('Blockly.Events.BlockChange');
-// goog.require('Blockly.Field');
-// goog.require('Blockly.fieldRegistry');
-// goog.require('Blockly.Menu');
-// goog.require('Blockly.MenuItem');
-// goog.require('Blockly.navigation');
-// goog.require('Blockly.utils');
-// goog.require('Blockly.utils.aria');
-// goog.require('Blockly.utils.Coordinate');
-// goog.require('Blockly.utils.dom');
-// goog.require('Blockly.utils.object');
-// goog.require('Blockly.utils.Size');
-// goog.require('Blockly.utils.string');
-// goog.require('Blockly.utils.userAgent');
 
 /**
- * Class for an editable dropdown field.
- * @param {(!Array.<!Array>|!Function)} menuGenerator A non-empty array of
- *     options for a dropdown list, or a function which generates these options.
- * @param {Function=} opt_validator A function that is called to validate
- *    changes to the field's value. Takes in a language-neutral dropdown
- *    option & returns a validated language-neutral dropdown option, or null to
- *    abort the change.
- * @param {Object=} opt_config A map of options used to configure the field.
- *    See the [field creation documentation]{@link https://developers.google.com/blockly/guides/create-custom-blocks/fields/built-in-fields/dropdown#creation}
- *    for a list of properties this parameter supports.
- * @extends {Blockly.Field}
- * @constructor
- * @throws {TypeError} If `menuGenerator` options are incorrectly structured.
+ * Class for continuous flyout.
  */
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"] = function (menuGenerator, opt_validator, opt_config) {
-  if (typeof menuGenerator != 'function') {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].validateOptions_(menuGenerator);
+var ContinuousFlyout_ContinuousFlyout = /*#__PURE__*/function (_Blockly$VerticalFlyo) {
+  _inherits(ContinuousFlyout, _Blockly$VerticalFlyo);
+
+  var _super = _createSuper(ContinuousFlyout);
+
+  /** @override */
+  function ContinuousFlyout(workspaceOptions) {
+    var _this;
+
+    _classCallCheck(this, ContinuousFlyout);
+
+    _this = _super.call(this, workspaceOptions);
+    /**
+     * List of scroll positions for each category.
+     * @type {!Array<{name: string, position: !Object}>}
+     */
+
+    _this.scrollPositions = [];
+    /**
+     * Target scroll position, used to smoothly scroll to a given category
+     * location when selected.
+     * @type {?number}
+     */
+
+    _this.scrollTarget = null;
+    /**
+     * The percentage of the distance to the scrollTarget that should be
+     * scrolled at a time. Lower values will produce a smoother, slower scroll.
+     * @type {number}
+     */
+
+    _this.scrollAnimationFraction = 0.3;
+    /**
+     * A list of blocks that can be recycled.
+     * @type {!Array.<!Blockly.BlockSvg>}
+     * @private
+     */
+
+    _this.recycleBlocks_ = [];
+    /**
+     * Whether to recycle blocks when refreshing the flyout. When false, do not
+     * allow anything to be recycled. The default is to recycle.
+     * @type {boolean}
+     * @private
+     */
+
+    _this.recyclingEnabled_ = true;
+    _this.autoClose = true;
+    return _this;
   }
   /**
-   * An array of options for a dropdown list,
-   * or a function which generates these options.
-   * @type {(!Array.<!Array>|
-   *    !function(this:Blockly.FieldDropdown): !Array.<!Array>)}
-   * @protected
-   */
-
-
-  this.menuGenerator_ = menuGenerator;
-  /**
-   * A cache of the most recently generated options.
-   * @type {Array.<!Array.<string>>}
+   * Gets parent toolbox.
+   * Since we registered the ContinuousToolbox, we know that's its type.
+   * @return {!ContinuousToolbox} Toolbox that owns this flyout.
    * @private
    */
 
-  this.generatedOptions_ = null;
-  /**
-   * The prefix field label, of common words set after options are trimmed.
-   * @type {?string}
-   * @package
-   */
 
-  this.prefixField = null;
-  /**
-   * The suffix field label, of common words set after options are trimmed.
-   * @type {?string}
-   * @package
-   */
-
-  this.suffixField = null;
-  this.trimOptions_();
-  /**
-   * The currently selected option. The field is initialized with the
-   * first option selected.
-   * @type {!Object}
-   * @private
-   */
-
-  this.selectedOption_ = this.getOptions(false)[0]; // Call parent's constructor.
-
-  blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].superClass_.constructor.call(this, this.selectedOption_[1], opt_validator, opt_config);
-  /**
-   * A reference to the currently selected menu item.
-   * @type {Blockly.MenuItem}
-   * @private
-   */
-
-  this.selectedMenuItem_ = null;
-  /**
-   * The dropdown menu.
-   * @type {Blockly.Menu}
-   * @private
-   */
-
-  this.menu_ = null;
-  /**
-   * SVG image element if currently selected option is an image, or null.
-   * @type {SVGImageElement}
-   * @private
-   */
-
-  this.imageElement_ = null;
-  /**
-   * Tspan based arrow element.
-   * @type {SVGTSpanElement}
-   * @private
-   */
-
-  this.arrow_ = null;
-  /**
-   * SVG based arrow element.
-   * @type {SVGElement}
-   * @private
-   */
-
-  this.svgArrow_ = null;
-};
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].object.inherits(blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"], blockly__WEBPACK_IMPORTED_MODULE_0__["Field"]);
-/**
- * Dropdown image properties.
- * @typedef {{
-  *            src:string,
-  *            alt:string,
-  *            width:number,
-  *            height:number
-  *          }}
-  */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].ImageProperties;
-/**
- * Construct a FieldDropdown from a JSON arg object.
- * @param {!Object} options A JSON object with options (options).
- * @return {!Blockly.FieldDropdown} The new field instance.
- * @package
- * @nocollapse
- */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].fromJson = function (options) {
-  return new blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"](options['options'], undefined, options);
-};
-/**
- * Serializable fields are saved by the XML renderer, non-serializable fields
- * are not. Editable fields should also be serializable.
- * @type {boolean}
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.SERIALIZABLE = true;
-/**
- * Horizontal distance that a checkmark overhangs the dropdown.
- */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].CHECKMARK_OVERHANG = 25;
-/**
- * Maximum height of the dropdown menu, as a percentage of the viewport height.
- */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].MAX_MENU_HEIGHT_VH = 0.45;
-/**
- * The y offset from the top of the field to the top of the image, if an image
- * is selected.
- * @type {number}
- * @const
- * @private
- */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].IMAGE_Y_OFFSET = 5;
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].onOpenMenu = null;
-/**
- * The total vertical padding above and below an image.
- * @type {number}
- * @const
- * @private
- */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].IMAGE_Y_PADDING = blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].IMAGE_Y_OFFSET * 2;
-/**
- * Android can't (in 2014) display "▾", so use "▼" instead.
- */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].ARROW_CHAR = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].userAgent.ANDROID ? "\u25BC" : "\u25BE";
-/**
- * Mouse cursor style when over the hotspot that initiates the editor.
- */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.CURSOR = 'default';
-/**
- * Create the block UI for this dropdown.
- * @package
- */
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.initView = function () {
-  if (this.shouldAddBorderRect_()) {
-    this.createBorderRect_();
-  } else {
-    this.clickTarget_ = this.sourceBlock_.getSvgRoot();
-  }
-
-  this.createTextElement_();
-  this.imageElement_ =
-  /** @type {!SVGImageElement} */
-  blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.createSvgElement('image', {}, this.fieldGroup_);
-
-  if (this.getConstants().FIELD_DROPDOWN_SVG_ARROW) {
-    this.createSVGArrow_();
-  } else {
-    this.createTextArrow_();
-  }
-
-  if (this.borderRect_) {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.addClass(this.borderRect_, 'blocklyDropdownRect');
-  }
-};
-/**
- * Whether or not the dropdown should add a border rect.
- * @return {boolean} True if the dropdown field should add a border rect.
- * @protected
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.shouldAddBorderRect_ = function () {
-  return !this.getConstants().FIELD_DROPDOWN_NO_BORDER_RECT_SHADOW || this.getConstants().FIELD_DROPDOWN_NO_BORDER_RECT_SHADOW && !this.sourceBlock_.isShadow();
-};
-/**
- * Create a tspan based arrow.
- * @protected
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.createTextArrow_ = function () {
-  this.arrow_ =
-  /** @type {!SVGTSpanElement} */
-  blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.createSvgElement('tspan', {}, this.textElement_);
-  this.arrow_.appendChild(document.createTextNode(this.sourceBlock_.RTL ? blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].ARROW_CHAR + ' ' : ' ' + blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].ARROW_CHAR));
-
-  if (this.sourceBlock_.RTL) {
-    this.textElement_.insertBefore(this.arrow_, this.textContent_);
-  } else {
-    this.textElement_.appendChild(this.arrow_);
-  }
-};
-/**
- * Create an SVG based arrow.
- * @protected
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.createSVGArrow_ = function () {
-  this.svgArrow_ = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.createSvgElement('image', {
-    'height': this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE + 'px',
-    'width': this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE + 'px'
-  }, this.fieldGroup_);
-  this.svgArrow_.setAttributeNS(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.XLINK_NS, 'xlink:href', this.getConstants().FIELD_DROPDOWN_SVG_ARROW_DATAURI);
-};
-/**
- * Create a dropdown menu under the text.
- * @param {Event=} opt_e Optional mouse event that triggered the field to open,
- *     or undefined if triggered programmatically.
- * @protected
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.showEditor_ = function (opt_e) {
-  if (this.onOpenMenu != null) this.onOpenMenu();
-  this.menu_ = this.dropdownCreate_();
-
-  if (opt_e && typeof opt_e.clientX === 'number') {
-    this.menu_.openingCoords = new blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].Coordinate(opt_e.clientX, opt_e.clientY);
-  } else {
-    this.menu_.openingCoords = null;
-  } // Element gets created in render.
-
-
-  this.menu_.render(blockly__WEBPACK_IMPORTED_MODULE_0__["DropDownDiv"].getContentDiv());
-  var menuElement =
-  /** @type {!Element} */
-  this.menu_.getElement();
-  blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.addClass(menuElement, 'blocklyDropdownMenu');
-
-  if (this.getConstants().FIELD_DROPDOWN_COLOURED_DIV) {
-    var primaryColour = this.sourceBlock_.isShadow() ? this.sourceBlock_.getParent().getColour() : this.sourceBlock_.getColour();
-    var borderColour = this.sourceBlock_.isShadow() ? this.sourceBlock_.getParent().style.colourTertiary : this.sourceBlock_.style.colourTertiary;
-    blockly__WEBPACK_IMPORTED_MODULE_0__["DropDownDiv"].setColour(primaryColour, borderColour);
-  }
-
-  blockly__WEBPACK_IMPORTED_MODULE_0__["DropDownDiv"].showPositionedByField(this, this.dropdownDispose_.bind(this)); // Focusing needs to be handled after the menu is rendered and positioned.
-  // Otherwise it will cause a page scroll to get the misplaced menu in
-  // view. See issue #1329.
-
-  this.menu_.focus();
-
-  if (this.selectedMenuItem_) {
-    this.menu_.setHighlighted(this.selectedMenuItem_);
-  }
-
-  this.applyColour();
-};
-/**
- * Create the dropdown editor.
- * @return {!Blockly.Menu} The newly created dropdown menu.
- * @private
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.dropdownCreate_ = function () {
-  var menu = new blockly__WEBPACK_IMPORTED_MODULE_0__["Menu"]();
-  menu.setRole(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].aria.Role.LISTBOX);
-  var options = this.getOptions(false);
-  this.selectedMenuItem_ = null;
-
-  for (var i = 0; i < options.length; i++) {
-    var content = options[i][0]; // Human-readable text or image.
-
-    var value = options[i][1]; // Language-neutral value.
-
-    if (_typeof(content) == 'object') {
-      // An image, not text.
-      var image = new Image(content['width'], content['height']);
-      image.src = content['src'];
-      image.alt = content['alt'] || '';
-      content = image;
+  _createClass(ContinuousFlyout, [{
+    key: "getParentToolbox_",
+    value: function getParentToolbox_() {
+      var toolbox = this.targetWorkspace.getToolbox();
+      return (
+        /** @type {!ContinuousToolbox} */
+        toolbox
+      );
     }
+    /**
+     * Records scroll position for each category in the toolbox.
+     * The scroll position is determined by the coordinates of each category's
+     * label after the entire flyout has been rendered.
+     * @package
+     */
 
-    var menuItem = new blockly__WEBPACK_IMPORTED_MODULE_0__["MenuItem"](content, value);
-    menuItem.setRole(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].aria.Role.OPTION);
-    menuItem.setRightToLeft(this.sourceBlock_.RTL);
-    menuItem.setCheckable(true);
-    menu.addChild(menuItem);
-    menuItem.setChecked(value == this.value_);
+  }, {
+    key: "recordScrollPositions",
+    value: function recordScrollPositions() {
+      var _this2 = this;
 
-    if (value == this.value_) {
-      this.selectedMenuItem_ = menuItem;
+      var categoryLabels = this.buttons_.filter(function (button) {
+        return button.isLabel() && _this2.getParentToolbox_().getCategoryByName(button.getButtonText());
+      });
+
+      var _iterator = ContinuousFlyout_createForOfIteratorHelper(categoryLabels),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var button = _step.value;
+
+          if (button.isLabel()) {
+            this.scrollPositions.push({
+              name: button.getButtonText(),
+              position: button.getPosition()
+            });
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
     }
+    /**
+     * Returns the scroll position for the given category name.
+     * @param {string} name Category name.
+     * @return {?Object} Scroll position for given category, or null if not found.
+     * @package
+     */
 
-    menuItem.onAction(this.handleMenuActionEvent_, this);
-  }
+  }, {
+    key: "getCategoryScrollPosition",
+    value: function getCategoryScrollPosition(name) {
+      var _iterator2 = ContinuousFlyout_createForOfIteratorHelper(this.scrollPositions),
+          _step2;
 
-  return menu;
-};
-/**
- * Disposes of events and dom-references belonging to the dropdown editor.
- * @private
- */
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var scrollInfo = _step2.value;
 
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.dropdownDispose_ = function () {
-  if (this.menu_) {
-    this.menu_.dispose();
-  }
-
-  this.menu_ = null;
-  this.selectedMenuItem_ = null;
-  this.applyColour();
-};
-/**
- * Handle an action in the dropdown menu.
- * @param {!Blockly.MenuItem} menuItem The MenuItem selected within menu.
- * @private
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.handleMenuActionEvent_ = function (menuItem) {
-  blockly__WEBPACK_IMPORTED_MODULE_0__["DropDownDiv"].hideIfOwner(this, true);
-  this.onItemSelected_(
-  /** @type {!Blockly.Menu} */
-  this.menu_, menuItem);
-};
-/**
- * Handle the selection of an item in the dropdown menu.
- * @param {!Blockly.Menu} menu The Menu component clicked.
- * @param {!Blockly.MenuItem} menuItem The MenuItem selected within menu.
- * @protected
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.onItemSelected_ = function (menu, menuItem) {
-  this.setValue(menuItem.getValue());
-};
-/**
- * Factor out common words in statically defined options.
- * Create prefix and/or suffix labels.
- * @private
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.trimOptions_ = function () {
-  var options = this.menuGenerator_;
-
-  if (!Array.isArray(options)) {
-    return;
-  }
-
-  var hasImages = false; // Localize label text and image alt text.
-
-  for (var i = 0; i < options.length; i++) {
-    var label = options[i][0];
-
-    if (typeof label == 'string') {
-      options[i][0] = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].replaceMessageReferences(label);
-    } else {
-      if (label.alt != null) {
-        options[i][0].alt = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].replaceMessageReferences(label.alt);
+          if (scrollInfo.name === name) {
+            return scrollInfo.position;
+          }
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
       }
 
-      hasImages = true;
+      console.warn("Scroll position not recorded for category ".concat(name));
+      return null;
     }
-  }
+    /**
+     * Selects an item in the toolbox based on the scroll position of the flyout.
+     * @param {number} position Current scroll position of the workspace.
+     * @private
+     */
 
-  if (hasImages || options.length < 2) {
-    return; // Do nothing if too few items or at least one label is an image.
-  }
+  }, {
+    key: "selectCategoryByScrollPosition_",
+    value: function selectCategoryByScrollPosition_(position) {
+      // If we are currently auto-scrolling, due to selecting a category by
+      // clicking on it, do not update the category selection.
+      if (this.scrollTarget) {
+        return;
+      }
 
-  var strings = [];
+      var scaledPosition = Math.round(position / this.workspace_.scale); // Traverse the array of scroll positions in reverse, so we can select the
+      // furthest category that the scroll position is beyond.
 
-  for (var i = 0; i < options.length; i++) {
-    strings.push(options[i][0]);
-  }
+      for (var i = this.scrollPositions.length - 1; i >= 0; i--) {
+        var category = this.scrollPositions[i];
 
-  var shortest = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].string.shortestStringLength(strings);
-  var prefixLength = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].string.commonWordPrefix(strings, shortest);
-  var suffixLength = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].string.commonWordSuffix(strings, shortest);
-
-  if (!prefixLength && !suffixLength) {
-    return;
-  }
-
-  if (shortest <= prefixLength + suffixLength) {
-    // One or more strings will entirely vanish if we proceed.  Abort.
-    return;
-  }
-
-  if (prefixLength) {
-    this.prefixField = strings[0].substring(0, prefixLength - 1);
-  }
-
-  if (suffixLength) {
-    this.suffixField = strings[0].substr(1 - suffixLength);
-  }
-
-  this.menuGenerator_ = blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].applyTrim_(options, prefixLength, suffixLength);
-};
-/**
- * Use the calculated prefix and suffix lengths to trim all of the options in
- * the given array.
- * @param {!Array.<!Array>} options Array of option tuples:
- *     (human-readable text or image, language-neutral name).
- * @param {number} prefixLength The length of the common prefix.
- * @param {number} suffixLength The length of the common suffix
- * @return {!Array.<!Array>} A new array with all of the option text trimmed.
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].applyTrim_ = function (options, prefixLength, suffixLength) {
-  var newOptions = []; // Remove the prefix and suffix from the options.
-
-  for (var i = 0; i < options.length; i++) {
-    var text = options[i][0];
-    var value = options[i][1];
-    text = text.substring(prefixLength, text.length - suffixLength);
-    newOptions[i] = [text, value];
-  }
-
-  return newOptions;
-};
-/**
- * @return {boolean} True if the option list is generated by a function.
- *     Otherwise false.
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.isOptionListDynamic = function () {
-  return typeof this.menuGenerator_ == 'function';
-};
-/**
- * Return a list of the options for this dropdown.
- * @param {boolean=} opt_useCache For dynamic options, whether or not to use the
- *     cached options or to re-generate them.
- * @return {!Array.<!Array>} A non-empty array of option tuples:
- *     (human-readable text or image, language-neutral name).
- * @throws {TypeError} If generated options are incorrectly structured.
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.getOptions = function (opt_useCache) {
-  if (this.isOptionListDynamic()) {
-    if (!this.generatedOptions_ || !opt_useCache) {
-      this.generatedOptions_ = this.menuGenerator_.call(this);
-      blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].validateOptions_(this.generatedOptions_);
+        if (scaledPosition >= category.position.y) {
+          this.getParentToolbox_().selectCategoryByName(category.name);
+          return;
+        }
+      }
     }
+    /**
+     * Scrolls flyout to given position.
+     * @param {number} position The x coordinate to scroll to.
+     */
 
-    return this.generatedOptions_;
-  }
-
-  return (
-    /** @type {!Array.<!Array.<string>>} */
-    this.menuGenerator_
-  );
-};
-/**
- * Ensure that the input value is a valid language-neutral option.
- * @param {*=} opt_newValue The input value.
- * @return {?string} A valid language-neutral option, or null if invalid.
- * @protected
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.doClassValidation_ = function (opt_newValue) {
-  var isValueValid = false;
-  var options = this.getOptions(true);
-
-  for (var i = 0, option; option = options[i]; i++) {
-    // Options are tuples of human-readable text and language-neutral values.
-    if (option[1] == opt_newValue) {
-      isValueValid = true;
-      break;
+  }, {
+    key: "scrollTo",
+    value: function scrollTo(position) {
+      // Set the scroll target to either the scaled position or the lowest
+      // possible scroll point, whichever is smaller.
+      var metrics = this.workspace_.getMetrics();
+      this.scrollTarget = Math.min(position * this.workspace_.scale, metrics.contentHeight - metrics.viewHeight);
+      this.stepScrollAnimation_();
     }
-  }
+    /**
+     * Step the scrolling animation by scrolling a fraction of the way to
+     * a scroll target, and request the next frame if necessary.
+     * @private
+     */
 
-  if (!isValueValid) {
-    if (this.sourceBlock_) {
-      console.warn('Cannot set the dropdown\'s value to an unavailable option.' + ' Block type: ' + this.sourceBlock_.type + ', Field name: ' + this.name + ', Value: ' + opt_newValue);
+  }, {
+    key: "stepScrollAnimation_",
+    value: function stepScrollAnimation_() {
+      if (!this.scrollTarget) {
+        return;
+      }
+
+      var currentScrollPos = -this.workspace_.scrollY;
+      var diff = this.scrollTarget - currentScrollPos;
+
+      if (Math.abs(diff) < 1) {
+        this.scrollbar.set(this.scrollTarget);
+        this.scrollTarget = null;
+        return;
+      }
+
+      this.scrollbar.set(currentScrollPos + diff * this.scrollAnimationFraction);
+      requestAnimationFrame(this.stepScrollAnimation_.bind(this));
     }
+    /**
+     * Add additional padding to the bottom of the flyout if needed,
+     * in order to make it possible to scroll to the top of the last category.
+     * @param {!Blockly.utils.Metrics} metrics Default metrics for the flyout.
+     * @return {number} Additional bottom padding.
+     * @private
+     */
 
-    return null;
-  }
+  }, {
+    key: "calculateBottomPadding_",
+    value: function calculateBottomPadding_(metrics) {
+      if (this.scrollPositions.length > 0) {
+        var lastCategory = this.scrollPositions[this.scrollPositions.length - 1];
+        var lastPosition = lastCategory.position.y * this.workspace_.scale;
+        var lastCategoryHeight = metrics.contentHeight - lastPosition;
 
-  return (
-    /** @type {string} */
-    opt_newValue
-  );
-};
-/**
- * Update the value of this dropdown field.
- * @param {*} newValue The value to be saved. The default validator guarantees
- * that this is one of the valid dropdown options.
- * @protected
- */
+        if (lastCategoryHeight < metrics.viewHeight) {
+          return metrics.viewHeight - lastCategoryHeight;
+        }
+      }
 
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.doValueUpdate_ = function (newValue) {
-  blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].superClass_.doValueUpdate_.call(this, newValue);
-  var options = this.getOptions(true);
-
-  for (var i = 0, option; option = options[i]; i++) {
-    if (option[1] == this.value_) {
-      this.selectedOption_ = option;
+      return 0;
     }
-  }
-};
-/**
- * Updates the dropdown arrow to match the colour/style of the block.
- * @package
- */
+    /**
+     * @override
+     */
 
+  }, {
+    key: "getMetrics_",
+    value: function getMetrics_() {
+      var metrics = _get(_getPrototypeOf(ContinuousFlyout.prototype), "getMetrics_", this).call(this);
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.applyColour = function () {
-  if (this.borderRect_) {
-    this.borderRect_.setAttribute('stroke', this.sourceBlock_.style.colourTertiary);
+      if (metrics) {
+        metrics.contentHeight += this.calculateBottomPadding_(metrics);
+      }
 
-    if (this.menu_) {
-      this.borderRect_.setAttribute('fill', this.sourceBlock_.style.colourTertiary);
-    } else {
-      this.borderRect_.setAttribute('fill', 'transparent');
+      return metrics;
     }
-  } // Update arrow's colour.
+    /** @override */
 
+  }, {
+    key: "setMetrics_",
+    value: function setMetrics_(xyRatio) {
+      _get(_getPrototypeOf(ContinuousFlyout.prototype), "setMetrics_", this).call(this, xyRatio);
 
-  if (this.sourceBlock_ && this.arrow_) {
-    if (this.sourceBlock_.isShadow()) {
-      this.arrow_.style.fill = this.sourceBlock_.style.colourSecondary;
-    } else {
-      this.arrow_.style.fill = this.sourceBlock_.style.colourPrimary;
+      if (this.scrollPositions) {
+        this.selectCategoryByScrollPosition_(-this.workspace_.scrollY);
+      }
     }
-  }
-};
-/**
- * Draws the border with the correct width.
- * @protected
- */
+    /**
+     * Overrides the position function solely to change the x coord in RTL mode.
+     * The base function allows the workspace to go "under" the flyout, so
+     * to calculate the left edge of the flyout in RTL you would just subtract
+     * the flyout width from the total viewWidth to get x. However, in our
+     * flyout, the workspace already starts at the left edge of the flyout, so
+     * we don't need to subtract the flyout width again.
+     * Ideally there would be a smaller method for us to override instead,
+     * but for now we copy/paste this method and make our fixes.
+     * @override
+     */
+
+  }, {
+    key: "position",
+    value: function position() {
+      if (!this.isVisible()) {
+        return;
+      }
+
+      var targetWorkspaceMetrics = this.targetWorkspace.getMetrics();
+
+      if (!targetWorkspaceMetrics) {
+        // Hidden components will return null.
+        return;
+      } // Record the height for Blockly.Flyout.getMetrics_
 
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.render_ = function () {
-  // Hide both elements.
-  this.textContent_.nodeValue = '';
-  this.imageElement_.style.display = 'none'; // Show correct element.
+      this.height_ = targetWorkspaceMetrics.viewHeight;
+      var edgeWidth = this.width_ - this.CORNER_RADIUS;
+      var edgeHeight = targetWorkspaceMetrics.viewHeight - 2 * this.CORNER_RADIUS;
+      this.setBackgroundPath_(edgeWidth, edgeHeight); // Y is always 0 since this is a vertical flyout.
 
-  var option = this.selectedOption_ && this.selectedOption_[0];
+      var y = 0;
+      var x = 0; // If this flyout is the toolbox flyout.
 
-  if (option && _typeof(option) == 'object') {
-    this.renderSelectedImage_(
-    /** @type {!Blockly.FieldDropdown.ImageProperties} */
-    option);
-  } else {
-    this.renderSelectedText_();
-  }
+      if (this.targetWorkspace.toolboxPosition == this.toolboxPosition_) {
+        // If there is a category toolbox.
+        if (targetWorkspaceMetrics.toolboxWidth) {
+          if (this.toolboxPosition_ == core_browser["TOOLBOX_AT_LEFT"]) {
+            x = targetWorkspaceMetrics.toolboxWidth;
+          } else {
+            // TODO(https://github.com/google/blockly/issues/4396): Use a better
+            // API to adjust this value.
+            // This is the only line that changed from the original.
+            x = targetWorkspaceMetrics.viewWidth;
+          }
+        } else {
+          if (this.toolboxPosition_ == core_browser["TOOLBOX_AT_LEFT"]) {
+            x = 0;
+          } else {
+            x = targetWorkspaceMetrics.viewWidth;
+          }
+        }
+      } else {
+        if (this.toolboxPosition_ == core_browser["TOOLBOX_AT_LEFT"]) {
+          x = 0;
+        } else {
+          // Because the anchor point of the flyout is on the left, but we want
+          // to align the right edge of the flyout with the right edge of the
+          // blocklyDiv, we calculate the full width of the div minus the width
+          // of the flyout.
+          x = targetWorkspaceMetrics.viewWidth + targetWorkspaceMetrics.absoluteLeft - this.width_;
+        }
+      }
 
-  this.positionBorderRect_();
-};
-/**
- * Renders the selected option, which must be an image.
- * @param {!Blockly.FieldDropdown.ImageProperties} imageJson Selected
- *   option that must be an image.
- * @private
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.renderSelectedImage_ = function (imageJson) {
-  this.imageElement_.style.display = '';
-  this.imageElement_.setAttributeNS(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.XLINK_NS, 'xlink:href', imageJson.src);
-  this.imageElement_.setAttribute('height', imageJson.height);
-  this.imageElement_.setAttribute('width', imageJson.width);
-  var imageHeight = Number(imageJson.height);
-  var imageWidth = Number(imageJson.width); // Height and width include the border rect.
-
-  var hasBorder = !!this.borderRect_;
-  var height = Math.max(hasBorder ? this.getConstants().FIELD_DROPDOWN_BORDER_RECT_HEIGHT : 0, imageHeight + blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].IMAGE_Y_PADDING);
-  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
-  var arrowWidth = 0;
-
-  if (this.svgArrow_) {
-    arrowWidth = this.positionSVGArrow_(imageWidth + xPadding, height / 2 - this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE / 2);
-  } else {
-    arrowWidth = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.getFastTextWidth(
-    /** @type {!SVGTSpanElement} */
-    this.arrow_, this.getConstants().FIELD_TEXT_FONTSIZE, this.getConstants().FIELD_TEXT_FONTWEIGHT, this.getConstants().FIELD_TEXT_FONTFAMILY);
-  }
-
-  this.size_.width = imageWidth + arrowWidth + xPadding * 2;
-  this.size_.height = height;
-  var arrowX = 0;
-
-  if (this.sourceBlock_.RTL) {
-    var imageX = xPadding + arrowWidth;
-    this.imageElement_.setAttribute('x', imageX);
-  } else {
-    arrowX = imageWidth + arrowWidth;
-    this.textElement_.setAttribute('text-anchor', 'end');
-    this.imageElement_.setAttribute('x', xPadding);
-  }
-
-  this.imageElement_.setAttribute('y', height / 2 - imageHeight / 2);
-  this.positionTextElement_(arrowX + xPadding, imageWidth + arrowWidth);
-};
-/**
- * Renders the selected option, which must be text.
- * @private
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.renderSelectedText_ = function () {
-  // Retrieves the selected option to display through getText_.
-  this.textContent_.nodeValue = this.getDisplayText_();
-  blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.addClass(
-  /** @type {!Element} */
-  this.textElement_, 'blocklyDropdownText');
-  this.textElement_.setAttribute('text-anchor', 'start'); // Height and width include the border rect.
-
-  var hasBorder = !!this.borderRect_;
-  var height = Math.max(hasBorder ? this.getConstants().FIELD_DROPDOWN_BORDER_RECT_HEIGHT : 0, this.getConstants().FIELD_TEXT_HEIGHT);
-  var textWidth = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].dom.getFastTextWidth(this.textElement_, this.getConstants().FIELD_TEXT_FONTSIZE, this.getConstants().FIELD_TEXT_FONTWEIGHT, this.getConstants().FIELD_TEXT_FONTFAMILY);
-  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
-  var arrowWidth = 0;
-
-  if (this.svgArrow_) {
-    arrowWidth = this.positionSVGArrow_(textWidth + xPadding, height / 2 - this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE / 2);
-  }
-
-  this.size_.width = textWidth + arrowWidth + xPadding * 2;
-  this.size_.height = height;
-  this.positionTextElement_(xPadding, textWidth);
-};
-/**
- * Position a drop-down arrow at the appropriate location at render-time.
- * @param {number} x X position the arrow is being rendered at, in px.
- * @param {number} y Y position the arrow is being rendered at, in px.
- * @return {number} Amount of space the arrow is taking up, in px.
- * @private
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.positionSVGArrow_ = function (x, y) {
-  if (!this.svgArrow_) {
-    return 0;
-  }
-
-  var hasBorder = !!this.borderRect_;
-  var xPadding = hasBorder ? this.getConstants().FIELD_BORDER_RECT_X_PADDING : 0;
-  var textPadding = this.getConstants().FIELD_DROPDOWN_SVG_ARROW_PADDING;
-  var svgArrowSize = this.getConstants().FIELD_DROPDOWN_SVG_ARROW_SIZE;
-  var arrowX = this.sourceBlock_.RTL ? xPadding : x + textPadding;
-  this.svgArrow_.setAttribute('transform', 'translate(' + arrowX + ',' + y + ')');
-  return svgArrowSize + textPadding;
-};
-/**
- * Use the `getText_` developer hook to override the field's text
- * representation.  Get the selected option text. If the selected option is an
- * image we return the image alt text.
- * @return {?string} Selected option text.
- * @protected
- * @override
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.getText_ = function () {
-  if (!this.selectedOption_) {
-    return null;
-  }
-
-  var option = this.selectedOption_[0];
-
-  if (_typeof(option) == 'object') {
-    return option['alt'];
-  }
-
-  return option;
-};
-/**
- * Validates the data structure to be processed as an options list.
- * @param {?} options The proposed dropdown options.
- * @throws {TypeError} If proposed options are incorrectly structured.
- * @private
- */
-
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].validateOptions_ = function (options) {
-  if (!Array.isArray(options)) {
-    throw TypeError('FieldDropdown options must be an array.');
-  }
-
-  if (!options.length) {
-    throw TypeError('FieldDropdown options must not be an empty array.');
-  }
-
-  var foundError = false;
-
-  for (var i = 0; i < options.length; ++i) {
-    var tuple = options[i];
-
-    if (!Array.isArray(tuple)) {
-      foundError = true;
-      console.error('Invalid option[' + i + ']: Each FieldDropdown option must be an ' + 'array. Found: ', tuple);
-    } else if (typeof tuple[1] != 'string') {
-      foundError = true;
-      console.error('Invalid option[' + i + ']: Each FieldDropdown option id must be ' + 'a string. Found ' + tuple[1] + ' in: ', tuple);
-    } else if (tuple[0] && typeof tuple[0] != 'string' && typeof tuple[0].src != 'string') {
-      foundError = true;
-      console.error('Invalid option[' + i + ']: Each FieldDropdown option must have a ' + 'string label or image description. Found' + tuple[0] + ' in: ', tuple);
+      this.positionAt_(this.width_, this.height_, x, y);
     }
-  }
+    /**
+     * @override
+     */
 
-  if (foundError) {
-    throw TypeError('Found invalid FieldDropdown options.');
-  }
-};
-/**
- * Handles the given action.
- * This is only triggered when keyboard accessibility mode is enabled.
- * @param {!Blockly.Action} action The action to be handled.
- * @return {boolean} True if the field handled the action, false otherwise.
- * @package
- */
+  }, {
+    key: "show",
+    value: function show(flyoutDef) {
+      _get(_getPrototypeOf(ContinuousFlyout.prototype), "show", this).call(this, flyoutDef);
 
+      this.emptyRecycleBlocks_();
+    }
+    /**
+     * Empty out the recycled blocks, properly destroying everything.
+     * @protected
+     */
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].prototype.onBlocklyAction = function (action) {
-  if (this.menu_) {
-    if (action === blockly__WEBPACK_IMPORTED_MODULE_0__["navigation"].ACTION_PREVIOUS) {
-      this.menu_.highlightPrevious();
+  }, {
+    key: "emptyRecycleBlocks_",
+    value: function emptyRecycleBlocks_() {
+      // Clean out the old recycle bin.
+      var oldBlocks = this.recycleBlocks_;
+      this.recycleBlocks_ = [];
+
+      var _iterator3 = ContinuousFlyout_createForOfIteratorHelper(oldBlocks),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var oldBlock = _step3.value;
+          oldBlock.dispose(false, false);
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+    }
+    /**
+     * @override
+     */
+
+  }, {
+    key: "createBlock_",
+    value: function createBlock_(blockXml) {
+      var blockType = blockXml.getAttribute('type');
+      var blockIdx = this.recycleBlocks_.findIndex(function (block) {
+        return block.type === blockType;
+      });
+      var curBlock;
+
+      if (blockIdx > -1) {
+        curBlock = this.recycleBlocks_.splice(blockIdx, 1)[0];
+      } else {
+        curBlock = core_browser["Xml"].domToBlock(blockXml, this.workspace_);
+      }
+
+      if (!curBlock.isEnabled()) {
+        // Record blocks that were initially disabled.
+        // Do not enable these blocks as a result of capacity filtering.
+        this.permanentlyDisabled_.push(curBlock);
+      }
+
+      return curBlock;
+    }
+    /**
+     * @override
+     */
+
+  }, {
+    key: "clearOldBlocks_",
+    value: function clearOldBlocks_() {
+      // Delete any blocks from a previous showing.
+      var oldBlocks =
+      /** @type {!Array<!Blockly.BlockSvg>} */
+      this.workspace_.getTopBlocks(false);
+
+      var _iterator4 = ContinuousFlyout_createForOfIteratorHelper(oldBlocks),
+          _step4;
+
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var block = _step4.value;
+
+          if (block.workspace == this.workspace_) {
+            if (this.recyclingEnabled_ && this.blockIsRecyclable_(block)) {
+              this.recycleBlock_(block);
+            } else {
+              block.dispose(false, false);
+            }
+          }
+        } // Delete any mats from a previous showing.
+
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+
+      var _iterator5 = ContinuousFlyout_createForOfIteratorHelper(this.mats_),
+          _step5;
+
+      try {
+        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+          var rect = _step5.value;
+
+          if (rect) {
+            core_browser["Tooltip"].unbindMouseEvents(rect);
+            core_browser["utils"].dom.removeNode(rect);
+          }
+        }
+      } catch (err) {
+        _iterator5.e(err);
+      } finally {
+        _iterator5.f();
+      }
+
+      this.mats_.length = 0; // Delete any buttons from a previous showing.
+
+      var _iterator6 = ContinuousFlyout_createForOfIteratorHelper(this.buttons_),
+          _step6;
+
+      try {
+        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+          var button = _step6.value;
+          button.dispose();
+        }
+      } catch (err) {
+        _iterator6.e(err);
+      } finally {
+        _iterator6.f();
+      }
+
+      this.buttons_.length = 0; // Clear potential variables from the previous showing.
+
+      this.workspace_.getPotentialVariableMap().clear();
+    }
+    /**
+     * Determine if this block can be recycled in the flyout.  Blocks that have no
+     * variables and are not dynamic shadows can be recycled.
+     * @param {!Blockly.BlockSvg} block The block to attempt to recycle.
+     * @return {boolean} True if the block can be recycled.
+     * @protected
+     */
+
+  }, {
+    key: "blockIsRecyclable_",
+    value: function blockIsRecyclable_(block) {
+      // If the block needs to parse mutations, never recycle.
+      if (block.mutationToDom && block.domToMutation) {
+        return false;
+      }
+
+      var _iterator7 = ContinuousFlyout_createForOfIteratorHelper(block.inputList),
+          _step7;
+
+      try {
+        for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+          var input = _step7.value;
+
+          var _iterator8 = ContinuousFlyout_createForOfIteratorHelper(input.fieldRow),
+              _step8;
+
+          try {
+            for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+              var field = _step8.value;
+
+              // No variables.
+              if (field instanceof core_browser["FieldVariable"]) {
+                return false;
+              }
+
+              if (field instanceof core_browser["FieldDropdown"]) {
+                if (field.isOptionListDynamic()) {
+                  return false;
+                }
+              }
+            } // Check children.
+
+          } catch (err) {
+            _iterator8.e(err);
+          } finally {
+            _iterator8.f();
+          }
+
+          if (input.connection) {
+            var targetBlock =
+            /** @type {Blockly.BlockSvg} */
+            input.connection.targetBlock();
+
+            if (targetBlock && !this.blockIsRecyclable_(targetBlock)) {
+              return false;
+            }
+          }
+        }
+      } catch (err) {
+        _iterator7.e(err);
+      } finally {
+        _iterator7.f();
+      }
+
       return true;
-    } else if (action === blockly__WEBPACK_IMPORTED_MODULE_0__["navigation"].ACTION_NEXT) {
-      this.menu_.highlightNext();
-      return true;
     }
-  }
+    /**
+     * Sets the function used to determine whether a block is recyclable.
+     * @param {function(!Blockly.BlockSvg):boolean} func The function used to
+     *     determine if a block is recyclable.
+     * @public
+     */
 
-  return blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"].superClass_.onBlocklyAction.call(this, action);
-};
+  }, {
+    key: "setBlockIsRecyclable",
+    value: function setBlockIsRecyclable(func) {
+      this.blockIsRecyclable_ = func;
+    }
+    /**
+     * Set whether the flyout can recycle blocks.
+     * @param {boolean} isEnabled True to allow blocks to be recycled, false
+     *     otherwise.
+     * @public
+     */
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["fieldRegistry"].register('field_dropdown2', blockly__WEBPACK_IMPORTED_MODULE_0__["FieldDropdown"]);
+  }, {
+    key: "setRecyclingEnabled",
+    value: function setRecyclingEnabled(isEnabled) {
+      this.recyclingEnabled_ = isEnabled;
+    }
+    /**
+     * Puts a previously created block into the recycle bin and moves it to the
+     * top of the workspace. Used during large workspace swaps to limit the number
+     * of new DOM elements we need to create.
+     * @param {!Blockly.BlockSvg} block The block to recycle.
+     * @protected
+     */
 
-/***/ }),
+  }, {
+    key: "recycleBlock_",
+    value: function recycleBlock_(block) {
+      var xy = block.getRelativeToSurfaceXY();
+      block.moveBy(-xy.x, -xy.y);
+      this.recycleBlocks_.push(block);
+    }
+  }]);
 
-/***/ "./test/field_minus.js":
-/*!*****************************!*\
-  !*** ./test/field_minus.js ***!
-  \*****************************/
-/*! exports provided: createMinusField */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+  return ContinuousFlyout;
+}(core_browser["VerticalFlyout"]);
+// CONCATENATED MODULE: ./continuous-toolbox/src/ContinuousToolbox.js
+function ContinuousToolbox_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { ContinuousToolbox_typeof = function _typeof(obj) { return typeof obj; }; } else { ContinuousToolbox_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return ContinuousToolbox_typeof(obj); }
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createMinusField", function() { return createMinusField; });
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+function ContinuousToolbox_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = ContinuousToolbox_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function ContinuousToolbox_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return ContinuousToolbox_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return ContinuousToolbox_arrayLikeToArray(o, minLen); }
+
+function ContinuousToolbox_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function ContinuousToolbox_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function ContinuousToolbox_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function ContinuousToolbox_createClass(Constructor, protoProps, staticProps) { if (protoProps) ContinuousToolbox_defineProperties(Constructor.prototype, protoProps); if (staticProps) ContinuousToolbox_defineProperties(Constructor, staticProps); return Constructor; }
+
+function ContinuousToolbox_get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { ContinuousToolbox_get = Reflect.get; } else { ContinuousToolbox_get = function _get(target, property, receiver) { var base = ContinuousToolbox_superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return ContinuousToolbox_get(target, property, receiver || target); }
+
+function ContinuousToolbox_superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = ContinuousToolbox_getPrototypeOf(object); if (object === null) break; } return object; }
+
+function ContinuousToolbox_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) ContinuousToolbox_setPrototypeOf(subClass, superClass); }
+
+function ContinuousToolbox_setPrototypeOf(o, p) { ContinuousToolbox_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return ContinuousToolbox_setPrototypeOf(o, p); }
+
+function ContinuousToolbox_createSuper(Derived) { var hasNativeReflectConstruct = ContinuousToolbox_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = ContinuousToolbox_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = ContinuousToolbox_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return ContinuousToolbox_possibleConstructorReturn(this, result); }; }
+
+function ContinuousToolbox_possibleConstructorReturn(self, call) { if (call && (ContinuousToolbox_typeof(call) === "object" || typeof call === "function")) { return call; } return ContinuousToolbox_assertThisInitialized(self); }
+
+function ContinuousToolbox_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function ContinuousToolbox_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function ContinuousToolbox_getPrototypeOf(o) { ContinuousToolbox_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return ContinuousToolbox_getPrototypeOf(o); }
+
 /**
  * @license
  * Copyright 2020 Google LLC
@@ -22554,73 +21674,322 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 /**
- * @fileoverview A function that creates a minus button used for mutation.
+ * @fileoverview Toolbox that uses a continuous scrolling flyout.
  */
 
 
-
+var swap = false;
 /**
- * Creates a minus image field used for mutation.
- * @param {Object=} opt_args Untyped args passed to block.minus when the field
- *     is clicked.
- * @return {Blockly.FieldImage} The minus field.
+ * Class for continuous toolbox.
  */
 
-function createMinusField(opt_args) {
-  var minus = new blockly_core__WEBPACK_IMPORTED_MODULE_0__["FieldImage"](minusImage, 40, 40, undefined, onClick_);
-  /**
-   * Untyped args passed to block.minus when the field is clicked.
-   * @type {Object}
-   * @private
-   */
+var ContinuousToolbox_ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
+  ContinuousToolbox_inherits(ContinuousToolbox, _Blockly$Toolbox);
 
-  minus.args_ = opt_args;
-  return minus;
-}
-/**
- * Calls block.minus(args) when the minus field is clicked.
- * @param {Blockly.FieldImage} minusField The field being clicked.
- * @private
- */
+  var _super = ContinuousToolbox_createSuper(ContinuousToolbox);
 
-function onClick_(minusField) {
-  // TODO: This is a dupe of the mutator code, anyway to unify?
-  var block = minusField.getSourceBlock();
+  /** @override */
+  function ContinuousToolbox(workspace) {
+    ContinuousToolbox_classCallCheck(this, ContinuousToolbox);
 
-  if (block.isInFlyout) {
-    return;
+    return _super.call(this, workspace);
   }
+  /** @override */
 
-  blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].setGroup(true);
-  var oldMutationDom = block.mutationToDom();
-  var oldMutation = oldMutationDom && blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToText(oldMutationDom);
-  block.minus(minusField.args_);
-  var newMutationDom = block.mutationToDom();
-  var newMutation = newMutationDom && blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToText(newMutationDom);
 
-  if (oldMutation != newMutation) {
-    blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].fire(new blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].BlockChange(block, 'mutation', null, oldMutation, newMutation));
-  }
+  ContinuousToolbox_createClass(ContinuousToolbox, [{
+    key: "init",
+    value: function init() {
+      ContinuousToolbox_get(ContinuousToolbox_getPrototypeOf(ContinuousToolbox.prototype), "init", this).call(this); // Populate the flyout with all blocks and show it immediately.
 
-  blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].setGroup(false);
-}
 
-var minusImage = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAw' + 'MC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPS' + 'JNMTggMTFoLTEyYy0xLjEwNCAwLTIgLjg5Ni0yIDJzLjg5NiAyIDIgMmgxMmMxLjEwNCAw' + 'IDItLjg5NiAyLTJzLS44OTYtMi0yLTJ6IiBmaWxsPSJ3aGl0ZSIgLz48L3N2Zz4K';
+      var flyout = this.getFlyout();
+      flyout.show(this.getInitialFlyoutContents_());
+      flyout.recordScrollPositions();
+      flyout.hide(this.getInitialFlyoutContents_()); // Replace workspace.getMetrics with a version that measures the flyout.
+      // Ideally this would be set using the workspace options struct but that
+      // is not currently possible.
+      // TODO(https://github.com/google/blockly/issues/4377): Replace via
+      // options struct when possible.
 
-/***/ }),
+      this.workspace_.getMetrics = this.workspaceGetMetrics_.bind(this.workspace_);
+      var self = this;
 
-/***/ "./test/field_plus.js":
-/*!****************************!*\
-  !*** ./test/field_plus.js ***!
-  \****************************/
-/*! exports provided: createPlusField */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+      core_browser["hideFlyOut"] = function () {
+        self.getFlyout().hide(self.getInitialFlyoutContents_());
+      };
+    }
+    /** @override */
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPlusField", function() { return createPlusField; });
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+  }, {
+    key: "getFlyout",
+    value: function getFlyout() {
+      return (
+        /** @type {ContinuousFlyout} */
+        ContinuousToolbox_get(ContinuousToolbox_getPrototypeOf(ContinuousToolbox.prototype), "getFlyout", this).call(this)
+      );
+    }
+    /**
+     * Gets the contents that should be shown in the flyout immediately.
+     * This includes all blocks and labels for each category of block.
+     * @return {!Blockly.utils.toolbox.FlyoutItemInfoArray} Flyout contents.
+     * @private
+     */
+
+  }, {
+    key: "getInitialFlyoutContents_",
+    value: function getInitialFlyoutContents_() {
+      /** @type {!Blockly.utils.toolbox.FlyoutItemInfoArray} */
+      var contents = [];
+
+      var _iterator = ContinuousToolbox_createForOfIteratorHelper(this.contents_),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var toolboxItem = _step.value;
+
+          if (toolboxItem instanceof core_browser["ToolboxCategory"]) {
+            // Create a label node to go at the top of the category
+            contents.push({
+              kind: 'LABEL',
+              text: toolboxItem.getName()
+            });
+            /**
+             * @type {string|Blockly.utils.toolbox.FlyoutItemInfoArray|
+             *    Blockly.utils.toolbox.FlyoutItemInfo}
+             */
+
+            var itemContents = toolboxItem.getContents(); // Handle custom categories (e.g. variables and functions)
+
+            if (typeof itemContents === 'string') {
+              itemContents =
+              /** @type {!Blockly.utils.toolbox.DynamicCategoryInfo} */
+              {
+                custom: itemContents,
+                kind: 'CATEGORY'
+              };
+            }
+
+            contents = contents.concat(itemContents);
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return contents;
+    }
+    /** @override */
+
+  }, {
+    key: "refreshSelection",
+    value: function refreshSelection() {
+      if (localStorage.getItem('mode') == 'block' && this.getFlyout().isVisible()) this.getFlyout().show(this.getInitialFlyoutContents_());
+    }
+    /** @override */
+
+  }, {
+    key: "updateFlyout_",
+    value: function updateFlyout_(_oldItem, newItem) {
+      if (_oldItem == newItem) {
+        this.getFlyout().hide(this.getInitialFlyoutContents_());
+        this.deselectItem_(_oldItem);
+        return;
+      }
+
+      if (_oldItem == null) {
+        swap = true;
+      }
+
+      if (newItem) {
+        if (!this.getFlyout().isVisible()) this.getFlyout().show(this.getInitialFlyoutContents_());
+
+        try {
+          var target = this.getFlyout().getCategoryScrollPosition(newItem.name_).y;
+          this.getFlyout().scrollTo(target);
+        } catch (e) {}
+      }
+    }
+    /** @override */
+
+  }, {
+    key: "shouldDeselectItem_",
+    value: function shouldDeselectItem_(oldItem, newItem) {
+      // Should not deselect if the same category is clicked again.
+      return oldItem && oldItem !== newItem;
+    }
+    /**
+     * Gets a category by name.
+     * @param {string} name Name of category to get.
+     * @return {?Blockly.ToolboxCategory} Category, or null if not
+     *    found.
+     * @package
+     */
+
+  }, {
+    key: "getCategoryByName",
+    value: function getCategoryByName(name) {
+      var category = this.contents_.find(function (item) {
+        return item instanceof core_browser["ToolboxCategory"] && item.isSelectable() && name === item.getName();
+      });
+
+      if (category) {
+        return (
+          /** @type {!Blockly.ToolboxCategory} */
+          category
+        );
+      }
+
+      return null;
+    }
+    /**
+     * Selects the category with the given name.
+     * Similar to setSelectedItem, but importantly, does not call updateFlyout
+     * because this is called while the flyout is being scrolled.
+     * @param {string} name Name of category to select.
+     * @package
+     */
+    // selectCategoryByName(name) {
+    //   const newItem = this.getCategoryByName(name);
+    //   // if (!newItem) {
+    //   //   return;
+    //   // }
+    //   const oldItem = this.selectedItem_;
+    //
+    //   // if (this.shouldDeselectItem_(oldItem, newItem)) {
+    //     this.deselectItem_(oldItem);
+    //   // }
+    //
+    //   // if (this.shouldSelectItem_(oldItem, newItem)) {
+    //   this.selectItem_(newItem, oldItem);
+    //   // }
+    // }
+
+  }, {
+    key: "selectCategoryByName",
+    value: function selectCategoryByName(name) {
+      var newItem = this.getCategoryByName(name);
+
+      if (!newItem) {
+        return;
+      }
+
+      var oldItem = this.selectedItem_;
+
+      if (swap) {
+        swap = false;
+        var tmp = oldItem;
+        oldItem = newItem;
+        newItem = tmp;
+      }
+
+      if (this.shouldDeselectItem_(oldItem, newItem)) {
+        this.deselectItem_(oldItem);
+      }
+
+      if (this.shouldSelectItem_(oldItem, newItem)) {
+        this.selectItem_(oldItem, newItem);
+      }
+    }
+    /** @override */
+
+  }, {
+    key: "getClientRect",
+    value: function getClientRect() {
+      // If the flyout never closes, it should be the deletable area.
+      var flyout = this.getFlyout();
+
+      if (flyout && !flyout.autoClose) {
+        return flyout.getClientRect();
+      }
+
+      return ContinuousToolbox_get(ContinuousToolbox_getPrototypeOf(ContinuousToolbox.prototype), "getClientRect", this).call(this);
+    }
+    /**
+     * Gets adjusted metrics for the workspace, accounting for the flyout width.
+     * This will be set as the WorkspaceSvg's getMetrics function, as there
+     * is currently no way to set this using the options struct.
+     * TODO(https://github.com/google/blockly/issues/4377): Replace via options.
+     * @return {!Blockly.utils.Metrics} Contains size and position metrics of a
+     *     top level workspace.
+     * @private
+     * @this {Blockly.WorkspaceSvg}
+     */
+
+  }, {
+    key: "workspaceGetMetrics_",
+    value: function workspaceGetMetrics_() {
+      var toolboxDimensions = core_browser["WorkspaceSvg"].getDimensionsPx_(this.toolbox_);
+      var flyoutDimensions = core_browser["WorkspaceSvg"].getDimensionsPx_(this.toolbox_.getFlyout()); // Contains height and width in CSS pixels.
+      // svgSize is equivalent to the size of the injectionDiv at this point.
+
+      var svgSize = core_browser["svgSize"](this.getParentSvg());
+      var viewSize = {
+        height: svgSize.height,
+        width: svgSize.width
+      };
+
+      if (this.toolbox_) {
+        // Note: Not actually supported at this time due to ContinunousToolbox
+        // only supporting a vertical flyout. But included for completeness.
+        if (this.toolboxPosition == core_browser["TOOLBOX_AT_TOP"] || this.toolboxPosition == core_browser["TOOLBOX_AT_BOTTOM"]) {
+          viewSize.height -= toolboxDimensions.height + flyoutDimensions.height;
+        } else if (this.toolboxPosition == core_browser["TOOLBOX_AT_LEFT"] || this.toolboxPosition == core_browser["TOOLBOX_AT_RIGHT"]) {
+          viewSize.width -= toolboxDimensions.width + flyoutDimensions.width;
+        }
+      } // svgSize is now the space taken up by the Blockly workspace, not including
+      // the toolbox.
+
+
+      var contentDimensions = core_browser["WorkspaceSvg"].getContentDimensions_(this, viewSize);
+      var absoluteLeft = 0;
+
+      if (this.toolbox_ && this.toolboxPosition == core_browser["TOOLBOX_AT_LEFT"]) {
+        absoluteLeft = toolboxDimensions.width + flyoutDimensions.width;
+      }
+
+      var absoluteTop = 0;
+
+      if (this.toolbox_ && this.toolboxPosition == core_browser["TOOLBOX_AT_TOP"]) {
+        absoluteTop = toolboxDimensions.height + flyoutDimensions.height;
+      }
+
+      var metrics = {
+        contentHeight: contentDimensions.height,
+        contentWidth: contentDimensions.width + flyoutDimensions.width + flyoutDimensions.width,
+        contentTop: contentDimensions.top,
+        contentLeft: contentDimensions.left - flyoutDimensions.width,
+        viewHeight: viewSize.height,
+        viewWidth: viewSize.width + flyoutDimensions.width,
+        viewTop: -this.scrollY,
+        viewLeft: -this.scrollX,
+        //+ (flyoutDimensions.width * 10),
+        absoluteTop: absoluteTop,
+        absoluteLeft: absoluteLeft - flyoutDimensions.width,
+        // svgHeight: svgSize.height,
+        // svgWidth: svgSize.width,
+        toolboxWidth: toolboxDimensions.width,
+        toolboxHeight: toolboxDimensions.height,
+        toolboxPosition: this.toolboxPosition,
+        flyoutWidth: flyoutDimensions.width,
+        flyoutHeight: flyoutDimensions.height
+      };
+      return metrics;
+    }
+  }]);
+
+  return ContinuousToolbox;
+}(core_browser["Toolbox"]);
+// CONCATENATED MODULE: ./test/procedures.js
+function procedures_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = procedures_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function procedures_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return procedures_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return procedures_arrayLikeToArray(o, minLen); }
+
+function procedures_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 /**
  * @license
  * Copyright 2020 Google LLC
@@ -22628,119 +21997,671 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 /**
- * @fileoverview A field for a plus button used for mutation.
+ * @fileoverview Changes the procedure blocks to use a +/- mutator UI.
  */
 
 
+
+core_browser_default.a.Msg['PROCEDURE_VARIABLE'] = 'variable:';
+core_browser_default.a.Msg['PROCEDURES_DEFRETURN_TITLE'] = 'define';
+core_browser_default.a.Msg['PROCEDURES_DEFNORETURN_TITLE'] = 'define';
+core_browser_default.a.Msg['PROCEDURES_DEFRETURN_TITLE_OUTPUT'] = 'with output';
+/* eslint-disable quotes */
+
+core_browser_default.a.defineBlocksWithJsonArray([{
+  "type": "procedures_defnoreturn",
+  "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE} %1 %2",
+  "message1": "%{BKY_PROCEDURES_DEFNORETURN_DO} %1",
+  "args0": [{
+    "type": "field_input",
+    "name": "NAME",
+    "text": ""
+  }, {
+    "type": "input_dummy",
+    "name": "TOP"
+  }],
+  "args1": [{
+    "type": "input_statement",
+    "name": "STACK"
+  }],
+  "style": "procedure_blocks",
+  "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
+  "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
+  "extensions": ["get_procedure_def_no_return", "procedure_context_menu", "procedure_rename", "procedure_vars"],
+  "mutator": "procedure_def_mutator"
+}, {
+  "type": "procedures_defreturn",
+  "message0": "%{BKY_PROCEDURES_DEFRETURN_TITLE} %1 %{BKY_PROCEDURES_DEFRETURN_TITLE_OUTPUT} %2",
+  "message1": "%{BKY_PROCEDURES_DEFRETURN_DO} %1",
+  // "message2": "%{BKY_PROCEDURES_DEFRETURN_RETURN} %1",
+  "args0": [{
+    "type": "field_input",
+    "name": "NAME",
+    "text": ""
+  }, {
+    "type": "input_dummy",
+    "name": "TOP"
+  }],
+  "args1": [{
+    "type": "input_statement",
+    "name": "STACK"
+  }],
+  // "args2": [
+  //   {
+  //     "type": "input_value",
+  //     "align": "right",
+  //     "name": "RETURN",
+  //   },
+  // ],
+  "style": "procedure_blocks",
+  "helpUrl": "%{BKY_PROCEDURES_DEFRETURN_HELPURL}",
+  "tooltip": "%{BKY_PROCEDURES_DEFRETURN_TOOLTIP}",
+  "extensions": ["get_procedure_def_return", "procedure_context_menu", "procedure_rename", "procedure_vars"],
+  "mutator": "procedure_def_mutator"
+}]);
+/* eslint-enable quotes */
 
 /**
- * Creates a plus image field used for mutation.
- * @param {Object=} opt_args Untyped args passed to block.minus when the field
- *     is clicked.
- * @return {Blockly.FieldImage} The Plus field.
+ * Defines the what are essentially info-getters for the procedures_defnoreturn
+ * block.
+ * @type {{callType_: string, getProcedureDef: (function(): *[])}}
  */
 
-function createPlusField(opt_args) {
-  var plus = new blockly_core__WEBPACK_IMPORTED_MODULE_0__["FieldImage"](plusImage, 40, 40, undefined, onClick_);
+var getDefNoReturn = {
   /**
-   * Untyped args passed to block.plus when the field is clicked.
-   * @type {Object}
+   * Returns info about this block to be used by the Blockly.Procedures.
+   * @return {Array} An array of info.
+   * @this Blockly.Block
+   */
+  getProcedureDef: function getProcedureDef() {
+    var argNames = this.argData_.map(function (elem) {
+      return elem.model.name;
+    });
+    return [this.getFieldValue('NAME'), argNames, false];
+  },
+
+  /**
+   * Used by the context menu to create a caller block.
+   * @type {string}
+   */
+  callType_: 'procedures_callnoreturn'
+};
+core_browser_default.a.Extensions.registerMixin('get_procedure_def_no_return', getDefNoReturn);
+/**
+ * Defines what are essentially info-getters for the procedures_def_return
+ * block.
+ * @type {{callType_: string, getProcedureDef: (function(): *[])}}
+ */
+
+var getDefReturn = {
+  /**
+   * Returns info about this block to be used by the Blockly.Procedures.
+   * @return {Array} An array of info.
+   * @this Blockly.Block
+   */
+  getProcedureDef: function getProcedureDef() {
+    var argNames = this.argData_.map(function (elem) {
+      return elem.model.name;
+    });
+    return [this.getFieldValue('NAME'), argNames, true];
+  },
+
+  /**
+   * Used by the context menu to create a caller block.
+   * @type {string}
+   */
+  callType_: 'procedures_callreturn'
+};
+core_browser_default.a.Extensions.registerMixin('get_procedure_def_return', getDefReturn);
+var procedureContextMenu = {
+  /**
+   * Adds an option to create a caller block.
+   * Adds an option to create a variable getter for each variable included in
+   * the procedure definition.
+   * @this Blockly.Block
+   * @param {!Array} options The current options for the context menu.
+   */
+  customContextMenu: function customContextMenu(options) {
+    if (this.isInFlyout) {
+      return;
+    } // Add option to create caller.
+
+
+    var name = this.getFieldValue('NAME');
+    var text = core_browser_default.a.Msg['PROCEDURES_CREATE_DO'].replace('%1', name);
+    var xml = core_browser_default.a.utils.xml.createElement('block');
+    xml.setAttribute('type', this.callType_);
+    xml.appendChild(this.mutationToDom(true));
+    var callback = core_browser_default.a.ContextMenu.callbackFactory(this, xml);
+    options.push({
+      enabled: true,
+      text: text,
+      callback: callback
+    });
+
+    if (this.isCollapsed()) {
+      return;
+    } // Add options to create getters for each parameter.
+
+
+    var varModels = this.getVarModels();
+
+    var _iterator = procedures_createForOfIteratorHelper(varModels),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var model = _step.value;
+
+        var _text = core_browser_default.a.Msg['VARIABLES_SET_CREATE_GET'].replace('%1', model.name);
+
+        var _xml = core_browser_default.a.utils.xml.createElement('block');
+
+        _xml.setAttribute('type', 'variables_get');
+
+        _xml.appendChild(core_browser_default.a.Variables.generateVariableFieldDom(model));
+
+        var _callback = core_browser_default.a.ContextMenu.callbackFactory(this, _xml);
+
+        options.push({
+          enabled: true,
+          text: _text,
+          callback: _callback
+        });
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  }
+};
+core_browser_default.a.Extensions.registerMixin('procedure_context_menu', procedureContextMenu);
+var procedureDefMutator = {
+  /**
+   * Create XML to represent the argument inputs.
+   * @param {boolean=} isForCaller If true include the procedure name and
+   *     argument IDs. Used by Blockly.Procedures.mutateCallers for
+   *     reconnection.
+   * @return {!Element} XML storage element.
+   * @this Blockly.Block
+   */
+  mutationToDom: function mutationToDom() {
+    var isForCaller = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var container = core_browser_default.a.utils.xml.createElement('mutation');
+
+    if (isForCaller) {
+      container.setAttribute('name', this.getFieldValue('NAME'));
+    }
+
+    this.argData_.forEach(function (element) {
+      var argument = core_browser_default.a.utils.xml.createElement('arg');
+      var argModel = element.model;
+      argument.setAttribute('name', argModel.name);
+      argument.setAttribute('varid', argModel.getId());
+
+      if (isForCaller) {
+        argument.setAttribute('paramid', element.argId);
+      }
+
+      container.appendChild(argument);
+    }); // Not used by this block, but necessary if switching back and forth
+    // between this mutator UI and the default UI.
+
+    if (!this.hasStatements_) {
+      container.setAttribute('statements', 'false');
+    }
+
+    return container;
+  },
+
+  /**
+   * Parse XML to restore the argument inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function domToMutation(xmlElement) {
+    // We have to handle this so that the user doesn't add blocks to the stack,
+    // in which case it would be impossible to return to the old mutators.
+    this.hasStatements_ = xmlElement.getAttribute('statements') !== 'false';
+
+    if (!this.hasStatements_) {
+      this.removeInput('STACK');
+    }
+
+    var names = [];
+    var ids = [];
+
+    var _iterator2 = procedures_createForOfIteratorHelper(xmlElement.childNodes),
+        _step2;
+
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var childNode = _step2.value;
+
+        if (childNode.nodeName.toLowerCase() == 'arg') {
+          names.push(childNode.getAttribute('name'));
+          ids.push(childNode.getAttribute('varid') || childNode.getAttribute('varId'));
+        }
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+
+    this.updateShape_(names, ids);
+  },
+
+  /**
+   * Adds arguments to the block until it matches the targets.
+   * @param {!Array<string>} names An array of argument names to display.
+   * @param {!Array<string>} varIds An array of variable IDs associated with
+   *     those names.
+   * @this Blockly.Block
+   * @private
+   */
+  updateShape_: function updateShape_(names, varIds) {
+    if (names.length != varIds.length) {
+      throw Error('names and varIds must have the same length.');
+    } // Usually it's more efficient to modify the block, rather than tearing it
+    // down and rebuilding (less render calls), but in this case it's easier
+    // to just work from scratch.
+    // We need to remove args in reverse order so that it doesn't mess up
+    // as removeArg_ modifies our array.
+
+
+    for (var i = this.argData_.length - 1; i >= 0; i--) {
+      this.removeArg_(this.argData_[i].argId);
+    }
+
+    this.argData_ = [];
+    var length = varIds.length;
+
+    for (var _i = 0; _i < length; _i++) {
+      this.addArg_(names[_i], varIds[_i]);
+    }
+
+    core_browser_default.a.Procedures.mutateCallers(this);
+  },
+
+  /**
+   * Callback for the plus image. Adds an argument to the block and mutates
+   * callers to match.
+   */
+  plus: function plus() {
+    this.addArg_();
+    core_browser_default.a.Procedures.mutateCallers(this);
+  },
+
+  /**
+   * Callback for the minus image. Removes the argument associated with the
+   * given argument ID and mutates the callers to match.
+   * @param {string} argId The argId of the argument to remove.
+   * @this Blockly.Block
+   */
+  minus: function minus(argId) {
+    if (!this.argData_.length) {
+      return;
+    }
+
+    this.removeArg_(argId);
+    core_browser_default.a.Procedures.mutateCallers(this);
+  },
+
+  /**
+   * Adds an argument to the block and updates the block's parallel tracking
+   * arrays as appropriate.
+   * @param {?string=} name An optional name for the argument.
+   * @param {?string=} varId An optional variable ID for the argument.
+   * @this Blockly.Block
+   * @private
+   */
+  addArg_: function addArg_() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var varId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    if (!this.argData_.length) {
+      var withField = new core_browser_default.a.FieldLabel(core_browser_default.a.Msg['PROCEDURES_BEFORE_PARAMS']);
+      this.getInput('TOP').appendField(withField, 'WITH');
+    }
+
+    var argNames = this.argData_.map(function (elem) {
+      return elem.model.name;
+    });
+    name = name || core_browser_default.a.Variables.generateUniqueNameFromOptions(core_browser_default.a.Procedures.DEFAULT_ARG, argNames);
+    var variable = core_browser_default.a.Variables.getOrCreateVariablePackage(this.workspace, varId, name, '');
+    var argId = core_browser_default.a.utils.genUid();
+    this.addVarInput_(name, argId);
+
+    if (this.getInput('STACK')) {
+      this.moveInputBefore(argId, 'STACK');
+    } else {
+      this.moveInputBefore(argId, 'RETURN');
+    }
+
+    this.argData_.push({
+      model: variable,
+      argId: argId
+    });
+  },
+
+  /**
+   * Removes the argument associated with the given argument ID from the block.
+   * @param {string} argId An ID used to track arguments on the block.
+   * @private
+   */
+  removeArg_: function removeArg_(argId) {
+    if (this.removeInput(argId, true)) {
+      if (this.argData_.length == 1) {
+        // Becoming argumentless.
+        this.getInput('TOP').removeField('WITH');
+      }
+
+      this.argData_ = this.argData_.filter(function (element) {
+        return element.argId != argId;
+      });
+    }
+  },
+
+  /**
+   * Appends the actual inputs and fields associated with an argument to the
+   * block.
+   * @param {string} name The name of the argument.
+   * @param {string} argId The UUID of the argument (different from var ID).
+   * @this Blockly.Block
+   * @private
+   */
+  addVarInput_: function addVarInput_(name, argId) {
+    var nameField = new core_browser_default.a.FieldTextInput(name, this.validator_);
+    nameField.onFinishEditing_ = this.finishEditing_.bind(nameField);
+    nameField.varIdsToDelete_ = [];
+    nameField.preEditVarModel_ = null;
+    this.appendDummyInput(argId).setAlign(core_browser_default.a.ALIGN_RIGHT).appendField(createMinusField(argId)).appendField(core_browser_default.a.Msg['PROCEDURE_VARIABLE']) // Untranslated!
+    .appendField(nameField, argId); // The name of the field is the arg id.
+  },
+
+  /**
+   * Validates text entered into the argument name field.
+   * @param {string} newName The new text entered into the field.
+   * @return {?string} The field's new value.
+   * @this Blockly.FieldTextInput
+   */
+  validator_: function validator_(newName) {
+    var _this = this;
+
+    var sourceBlock = this.getSourceBlock();
+    var workspace = sourceBlock.workspace;
+    var argData = sourceBlock.argData_;
+    var argDatum = sourceBlock.argData_.find(function (element) {
+      return element.argId == _this.name;
+    });
+    var currId = argDatum.model.getId(); // Replace all whitespace with normal spaces, then trim.
+
+    newName = newName.replace(/[\s\xa0]+/g, ' ').trim();
+    var caselessName = newName.toLowerCase();
+    /**
+     * Returns true if the given argDatum is associated with this field, or has
+     * a different caseless name than the argDatum associated with this field.
+     * @param {{model: Blockly.VariableModel, argId:string}} argDatum The
+     *     argDatum we want to make sure does not conflict with the argDatum
+     *     associated with this field.
+     * @return {boolean} True if the given datum does not conflict with the
+     *     datum associated with this field.
+     * @this Blockly.FieldTextInput
+     */
+
+    var hasDifName = function hasDifName(argDatum) {
+      // The field name (aka id) is always equal to the arg id.
+      return argDatum.argId == _this.name || caselessName != argDatum.model.name.toLowerCase();
+    };
+    /**
+     * Returns true if the variable associated with this field is only used
+     * by this block, or callers of this procedure.
+     * @return {boolean} True if the variable associated with this field is only
+     *     used by this block, or callers of this procedure.
+     */
+
+
+    var varOnlyUsedHere = function varOnlyUsedHere() {
+      return workspace.getVariableUsesById(currId).every(function (block) {
+        return block.id == sourceBlock.id || block.getProcedureCall && block.getProcedureCall() == sourceBlock.getProcedureDef()[0];
+      });
+    };
+
+    if (!newName || !argData.every(hasDifName)) {
+      if (this.preEditVarModel_) {
+        argDatum.model = this.preEditVarModel_;
+        this.preEditVarModel_ = null;
+      }
+
+      core_browser_default.a.Procedures.mutateCallers(sourceBlock);
+      return null;
+    }
+
+    if (!this.varIdsToDelete_.length) {
+      this.preEditVarModel_ = argDatum.model;
+
+      if (varOnlyUsedHere()) {
+        this.varIdsToDelete_.push(currId);
+      }
+    } // Create new vars instead of renaming the old ones, so users can't
+    // accidentally rename/coalesce vars.
+
+
+    var model = workspace.getVariable(newName, '');
+
+    if (!model) {
+      model = workspace.createVariable(newName, '');
+      this.varIdsToDelete_.push(model.getId());
+    } else if (model.name != newName) {
+      // Blockly is case-insensitive so we have to update the var instead of
+      // creating a new one.
+      workspace.renameVariableById(model.getId(), newName);
+    }
+
+    if (model.getId() != currId) {
+      argDatum.model = model;
+    }
+
+    core_browser_default.a.Procedures.mutateCallers(sourceBlock);
+    return newName;
+  },
+
+  /**
+   * Removes any unused vars that were created as a result of editing.
+   * @param {string} _finalName The final value of the field.
+   * @this Blockly.FieldTextInput
+   */
+  finishEditing_: function finishEditing_(_finalName) {
+    var _this2 = this;
+
+    var source = this.getSourceBlock();
+    var argDatum = source.argData_.find(function (element) {
+      return element.argId == _this2.name;
+    });
+    var currentVarId = argDatum.model.getId();
+    this.varIdsToDelete_.forEach(function (id) {
+      if (id != currentVarId) {
+        source.workspace.deleteVariableById(id);
+      }
+    });
+    this.varIdsToDelete_.length = 0;
+    this.preEditVarModel_ = null;
+  }
+};
+/**
+ * Initializes some private variables for procedure blocks.
+ * @this Blockly.Block
+ */
+
+var procedures_procedureDefHelper = function procedureDefHelper() {
+  /**
+   * An array of objects containing data about the args belonging to the
+   * procedure definition.
+   * @type {!Array<{
+   *          model:Blockly.VariableModel,
+   *          argId: string
+   *       }>}
+   * @private
+   */
+  this.argData_ = [];
+  /**
+   * Does this block have a 'STACK' input for statements?
+   * @type {boolean}
    * @private
    */
 
-  plus.args_ = opt_args;
-  return plus;
-}
+  this.hasStatements_ = true;
+  this.getInput('TOP').insertFieldAt(0, createPlusField(), 'PLUS');
+};
+
+core_browser_default.a.Extensions.registerMutator('procedure_def_mutator', procedureDefMutator, procedures_procedureDefHelper);
 /**
- * Calls block.plus(args) when the plus field is clicked.
- * @param {!Blockly.FieldImage} plusField The field being clicked.
- * @private
+ * Sets the validator for the procedure's name field.
+ * @this Blockly.Block
  */
 
-function onClick_(plusField) {
-  // TODO: This is a dupe of the mutator code, anyway to unify?
-  var block = plusField.getSourceBlock();
+var procedures_procedureRename = function procedureRename() {
+  this.getField('NAME').setValidator(core_browser_default.a.Procedures.rename);
+};
 
-  if (block.isInFlyout) {
-    return;
-  }
+core_browser_default.a.Extensions.register('procedure_rename', procedures_procedureRename);
+/**
+ * Defines functions for dealing with variables and renaming variables.
+ * @this Blockly.Block
+ */
 
-  blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].setGroup(true);
-  var oldMutationDom = block.mutationToDom();
-  var oldMutation = oldMutationDom && blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToText(oldMutationDom);
-  block.plus(plusField.args_);
-  var newMutationDom = block.mutationToDom();
-  var newMutation = newMutationDom && blockly_core__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToText(newMutationDom);
+var procedures_procedureVars = function procedureVars() {
+  // This is a hack to get around the don't-override-builtins check.
+  var mixin = {
+    /**
+     * Return all variables referenced by this block.
+     * @return {!Array.<string>} List of variable names.
+     * @this Blockly.Block
+     */
+    getVars: function getVars() {
+      return this.argData_.map(function (elem) {
+        return elem.model.name;
+      });
+    },
 
-  if (oldMutation != newMutation) {
-    blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].fire(new blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].BlockChange(block, 'mutation', null, oldMutation, newMutation));
-  }
+    /**
+     * Return all variables referenced by this block.
+     * @return {!Array.<!Blockly.VariableModel>} List of variable models.
+     * @this Blockly.Block
+     */
+    getVarModels: function getVarModels() {
+      return this.argData_.map(function (elem) {
+        return elem.model;
+      });
+    },
 
-  blockly_core__WEBPACK_IMPORTED_MODULE_0__["Events"].setGroup(false);
-}
+    /**
+     * Notification that a variable was renamed to the same name as an existing
+     * variable. These variables are coalescing into a single variable with the
+     * ID of the variable that was already using the name.
+     * @param {string} oldId The ID of the variable that was renamed.
+     * @param {string} newId The ID of the variable that was already using
+     *     the name.
+     */
+    renameVarById: function renameVarById(oldId, newId) {
+      var argData = this.argData_.find(function (element) {
+        return element.model.getId() == oldId;
+      });
 
-var plusImage = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC' + '9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPSJNMT' + 'ggMTBoLTR2LTRjMC0xLjEwNC0uODk2LTItMi0ycy0yIC44OTYtMiAybC4wNzEgNGgtNC4wNz' + 'FjLTEuMTA0IDAtMiAuODk2LTIgMnMuODk2IDIgMiAybDQuMDcxLS4wNzEtLjA3MSA0LjA3MW' + 'MwIDEuMTA0Ljg5NiAyIDIgMnMyLS44OTYgMi0ydi00LjA3MWw0IC4wNzFjMS4xMDQgMCAyLS' + '44OTYgMi0ycy0uODk2LTItMi0yeiIgZmlsbD0id2hpdGUiIC8+PC9zdmc+Cg==';
+      if (!argData) {
+        return; // Not on this block.
+      }
 
-/***/ }),
+      var newVar = this.workspace.getVariableById(newId);
+      var newName = newVar.name;
+      this.addVarInput_(newName, newId);
+      this.moveInputBefore(newId, oldId);
+      this.removeInput(oldId);
+      argData.model = newVar;
+      core_browser_default.a.Procedures.mutateCallers(this);
+    },
 
-/***/ "./test/genCode.js":
-/*!*************************!*\
-  !*** ./test/genCode.js ***!
-  \*************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+    /**
+     * Notification that a variable is renaming but keeping the same ID.  If the
+     * variable is in use on this block, rerender to show the new name.
+     * @param {!Blockly.VariableModel} variable The variable being renamed.
+     * @package
+     * @override
+     * @this Blockly.Block
+     */
+    updateVarName: function updateVarName(variable) {
+      var id = variable.getId();
+      var argData = this.argData_.find(function (element) {
+        return element.model.getId() == id;
+      });
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
+      if (!argData) {
+        return; // Not on this block.
+      }
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"] = new blockly__WEBPACK_IMPORTED_MODULE_0__["Generator"]('genCode');
+      this.setFieldValue(variable.name, argData.argId);
+      argData.model = variable;
+    }
+  };
+  this.mixin(mixin, true);
+};
+
+core_browser_default.a.Extensions.register('procedure_vars', procedures_procedureVars);
+core_browser_default.a.Blocks["procedures_ifreturn"] = undefined;
+// EXTERNAL MODULE: ./node_modules/html2canvas/dist/html2canvas.js
+var html2canvas = __webpack_require__("./node_modules/html2canvas/dist/html2canvas.js");
+var html2canvas_default = /*#__PURE__*/__webpack_require__.n(html2canvas);
+
+// CONCATENATED MODULE: ./test/genCode.js
+
+blockly["genCode"] = new blockly["Generator"]('genCode');
 var usedVariables = {};
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].addReservedWords('func,if,return,var,while,null,true,false,', Object.getOwnPropertyNames(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].global).join(',')); //copied from Blockly python generator
+blockly["genCode"].addReservedWords('func,if,return,var,while,null,true,false,', Object.getOwnPropertyNames(blockly["utils"].global).join(',')); //copied from Blockly python generator
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC = 0; // 0 "" ...
+blockly["genCode"].ORDER_ATOMIC = 0; // 0 "" ...
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_COLLECTION = 1; // tuples, lists, dictionaries
+blockly["genCode"].ORDER_COLLECTION = 1; // tuples, lists, dictionaries
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_STRING_CONVERSION = 1; // `expression...`
+blockly["genCode"].ORDER_STRING_CONVERSION = 1; // `expression...`
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MEMBER = 2.1; // . []
+blockly["genCode"].ORDER_MEMBER = 2.1; // . []
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL = 2.2; // ()
+blockly["genCode"].ORDER_FUNCTION_CALL = 2.2; // ()
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_EXPONENTIATION = 3; // **
+blockly["genCode"].ORDER_EXPONENTIATION = 3; // **
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_UNARY_SIGN = 4; // + -
+blockly["genCode"].ORDER_UNARY_SIGN = 4; // + -
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_NOT = 4; // ~
+blockly["genCode"].ORDER_BITWISE_NOT = 4; // ~
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE = 5; // * / // %
+blockly["genCode"].ORDER_MULTIPLICATIVE = 5; // * / // %
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE = 6; // + -
+blockly["genCode"].ORDER_ADDITIVE = 6; // + -
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_SHIFT = 7; // << >>
+blockly["genCode"].ORDER_BITWISE_SHIFT = 7; // << >>
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_AND = 8; // &
+blockly["genCode"].ORDER_BITWISE_AND = 8; // &
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_XOR = 9; // ^
+blockly["genCode"].ORDER_BITWISE_XOR = 9; // ^
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_BITWISE_OR = 10; // |
+blockly["genCode"].ORDER_BITWISE_OR = 10; // |
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL = 11; // in, not in, is, is not,
+blockly["genCode"].ORDER_RELATIONAL = 11; // in, not in, is, is not,
 //     <, <=, >, >=, <>, !=, ==
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_NOT = 12; // not
+blockly["genCode"].ORDER_LOGICAL_NOT = 12; // not
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_AND = 13; // and
+blockly["genCode"].ORDER_LOGICAL_AND = 13; // and
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR = 14; // or
+blockly["genCode"].ORDER_LOGICAL_OR = 14; // or
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_CONDITIONAL = 15; // if else
+blockly["genCode"].ORDER_CONDITIONAL = 15; // if else
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LAMBDA = 16; // lambda
+blockly["genCode"].ORDER_LAMBDA = 16; // lambda
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE = 99; // (...)
+blockly["genCode"].ORDER_NONE = 99; // (...)
 //copied from Blockly javascript generator
 
 /**
@@ -22748,53 +22669,53 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE = 99; // (...)
  * @type {!Array.<!Array.<number>>}
  */
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_OVERRIDES = [// (foo()).bar -> foo().bar
+blockly["genCode"].ORDER_OVERRIDES = [// (foo()).bar -> foo().bar
 // (foo())[0] -> foo()[0]
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MEMBER], // (foo())() -> foo()()
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL], // (foo.bar).baz -> foo.bar.baz
+[blockly["genCode"].ORDER_FUNCTION_CALL, blockly["genCode"].ORDER_MEMBER], // (foo())() -> foo()()
+[blockly["genCode"].ORDER_FUNCTION_CALL, blockly["genCode"].ORDER_FUNCTION_CALL], // (foo.bar).baz -> foo.bar.baz
 // (foo.bar)[0] -> foo.bar[0]
 // (foo[0]).bar -> foo[0].bar
 // (foo[0])[1] -> foo[0][1]
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MEMBER, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MEMBER], // (foo.bar)() -> foo.bar()
+[blockly["genCode"].ORDER_MEMBER, blockly["genCode"].ORDER_MEMBER], // (foo.bar)() -> foo.bar()
 // (foo[0])() -> foo[0]()
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MEMBER, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL], // !(!foo) -> !!foo
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_NOT, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_NOT], // a * (b * c) -> a * b * c
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATION, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATION], // a + (b + c) -> a + b + c
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITION, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITION], // a && (b && c) -> a && b && c
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_AND, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_AND], // a || (b || c) -> a || b || c
-[blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR]];
+[blockly["genCode"].ORDER_MEMBER, blockly["genCode"].ORDER_FUNCTION_CALL], // !(!foo) -> !!foo
+[blockly["genCode"].ORDER_LOGICAL_NOT, blockly["genCode"].ORDER_LOGICAL_NOT], // a * (b * c) -> a * b * c
+[blockly["genCode"].ORDER_MULTIPLICATION, blockly["genCode"].ORDER_MULTIPLICATION], // a + (b + c) -> a + b + c
+[blockly["genCode"].ORDER_ADDITION, blockly["genCode"].ORDER_ADDITION], // a && (b && c) -> a && b && c
+[blockly["genCode"].ORDER_LOGICAL_AND, blockly["genCode"].ORDER_LOGICAL_AND], // a || (b || c) -> a || b || c
+[blockly["genCode"].ORDER_LOGICAL_OR, blockly["genCode"].ORDER_LOGICAL_OR]];
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].init = function (workspace) {
+blockly["genCode"].init = function (workspace) {
   allVariables = [];
-  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_ = Object.create(null);
-  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionNames_ = Object.create(null);
+  blockly["genCode"].definitions_ = Object.create(null);
+  blockly["genCode"].functionNames_ = Object.create(null);
 
-  if (!blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_) {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_ = new blockly__WEBPACK_IMPORTED_MODULE_0__["Names"](blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].RESERVED_WORDS_);
+  if (!blockly["genCode"].variableDB_) {
+    blockly["genCode"].variableDB_ = new blockly["Names"](blockly["genCode"].RESERVED_WORDS_);
   } else {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.reset();
+    blockly["genCode"].variableDB_.reset();
   }
 
-  if (!blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_) {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_ = new blockly__WEBPACK_IMPORTED_MODULE_0__["Names"](blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].RESERVED_WORDS_);
+  if (!blockly["genCode"].functionsDB_) {
+    blockly["genCode"].functionsDB_ = new blockly["Names"](blockly["genCode"].RESERVED_WORDS_);
   } else {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.reset();
+    blockly["genCode"].functionsDB_.reset();
   }
 
-  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.setVariableMap(workspace.getVariableMap());
+  blockly["genCode"].variableDB_.setVariableMap(workspace.getVariableMap());
   var defvars = []; // Add developer variables (not created or named by the user).
 
-  var devVarList = blockly__WEBPACK_IMPORTED_MODULE_0__["Variables"].allDeveloperVariables(workspace);
+  var devVarList = blockly["Variables"].allDeveloperVariables(workspace);
 
   for (var i = 0; i < devVarList.length; i++) {
-    defvars.push(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(devVarList[i], blockly__WEBPACK_IMPORTED_MODULE_0__["Names"].DEVELOPER_VARIABLE_TYPE));
+    defvars.push(blockly["genCode"].variableDB_.getName(devVarList[i], blockly["Names"].DEVELOPER_VARIABLE_TYPE));
   } // Add user variables, but only ones that are being used.
 
 
-  var variables = blockly__WEBPACK_IMPORTED_MODULE_0__["Variables"].allUsedVarModels(workspace);
+  var variables = blockly["Variables"].allUsedVarModels(workspace);
 
   for (var i = 0; i < variables.length; i++) {
-    defvars.push(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(variables[i].getId(), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]));
+    defvars.push(blockly["genCode"].variableDB_.getName(variables[i].getId(), blockly["VARIABLE_CATEGORY_NAME"]));
   } // Declare all of the variables.
   // if (defvars.length) {
   //   Blockly.genCode.definitions_['variables'] =
@@ -22808,19 +22729,19 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].init = function (workspace) {
   }
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].finish = function (code) {
+blockly["genCode"].finish = function (code) {
   // Convert the definitions dictionary into a list.
   var definitions = [];
 
-  for (var name in blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_) {
-    definitions.push(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_[name]);
+  for (var name in blockly["genCode"].definitions_) {
+    definitions.push(blockly["genCode"].definitions_[name]);
   } // Clean up temporary data.
 
 
-  delete blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_;
-  delete blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionNames_;
-  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.reset();
-  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.reset();
+  delete blockly["genCode"].definitions_;
+  delete blockly["genCode"].functionNames_;
+  blockly["genCode"].variableDB_.reset();
+  blockly["genCode"].functionsDB_.reset();
   var vars = '';
 
   for (var i = 0; i < Object.keys(usedVariables).length; i++) {
@@ -22832,20 +22753,20 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].finish = function (code) {
   return (vars + '\n' + definitions.join('\n\n') + '\n' + code).trim();
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrubNakedValue = function (line) {
+blockly["genCode"].scrubNakedValue = function (line) {
   return line + ';\n';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].quote_ = function (string) {
+blockly["genCode"].quote_ = function (string) {
   return '"' + string + '"';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].multiline_quote_ = function (string) {
-  var lines = string.split(/\n/g).map(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].quote_);
+blockly["genCode"].multiline_quote_ = function (string) {
+  var lines = string.split(/\n/g).map(blockly["genCode"].quote_);
   return lines.join(' + \'\\n\' +\n');
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrub_ = function (block, code, opt_thisOnly) {
+blockly["genCode"].scrub_ = function (block, code, opt_thisOnly) {
   var commentCode = ''; // Only collect comments for blocks that aren't inline.
 
   if (!block.outputConnection || !block.outputConnection.targetConnection) {
@@ -22853,21 +22774,21 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrub_ = function (block, code, 
     var comment = block.getCommentText();
 
     if (comment) {
-      comment = blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].string.wrap(comment, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].COMMENT_WRAP - 3);
-      commentCode += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].prefixLines(comment + '\n', '// ');
+      comment = blockly["utils"].string.wrap(comment, blockly["genCode"].COMMENT_WRAP - 3);
+      commentCode += blockly["genCode"].prefixLines(comment + '\n', '// ');
     } // Collect comments for all value arguments.
     // Don't collect comments for nested statements.
 
 
     for (var i = 0; i < block.inputList.length; i++) {
-      if (block.inputList[i].type == blockly__WEBPACK_IMPORTED_MODULE_0__["INPUT_VALUE"]) {
+      if (block.inputList[i].type == blockly["INPUT_VALUE"]) {
         var childBlock = block.inputList[i].connection.targetBlock();
 
         if (childBlock) {
-          comment = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].allNestedComments(childBlock);
+          comment = blockly["genCode"].allNestedComments(childBlock);
 
           if (comment) {
-            commentCode += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].prefixLines(comment, '// ');
+            commentCode += blockly["genCode"].prefixLines(comment, '// ');
           }
         }
       }
@@ -22875,13 +22796,13 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrub_ = function (block, code, 
   }
 
   var nextBlock = block.nextConnection && block.nextConnection.targetBlock();
-  var nextCode = opt_thisOnly ? '' : blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].blockToCode(nextBlock);
+  var nextCode = opt_thisOnly ? '' : blockly["genCode"].blockToCode(nextBlock);
   return commentCode + code + nextCode;
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].getAdjusted = function (block, atId, opt_delta, opt_negate, opt_order) {
+blockly["genCode"].getAdjusted = function (block, atId, opt_delta, opt_negate, opt_order) {
   var delta = opt_delta || 0;
-  var order = opt_order || blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE;
+  var order = opt_order || blockly["genCode"].ORDER_NONE;
 
   if (block.workspace.options.oneBasedIndex) {
     delta--;
@@ -22890,16 +22811,16 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].getAdjusted = function (block, a
   var defaultAtIndex = block.workspace.options.oneBasedIndex ? '1' : '0';
 
   if (delta > 0) {
-    var at = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, atId, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITION) || defaultAtIndex;
+    var at = blockly["genCode"].valueToCode(block, atId, blockly["genCode"].ORDER_ADDITION) || defaultAtIndex;
   } else if (delta < 0) {
-    var at = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, atId, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_SUBTRACTION) || defaultAtIndex;
+    var at = blockly["genCode"].valueToCode(block, atId, blockly["genCode"].ORDER_SUBTRACTION) || defaultAtIndex;
   } else if (opt_negate) {
-    var at = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, atId, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_UNARY_NEGATION) || defaultAtIndex;
+    var at = blockly["genCode"].valueToCode(block, atId, blockly["genCode"].ORDER_UNARY_NEGATION) || defaultAtIndex;
   } else {
-    var at = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, atId, order) || defaultAtIndex;
+    var at = blockly["genCode"].valueToCode(block, atId, order) || defaultAtIndex;
   }
 
-  if (blockly__WEBPACK_IMPORTED_MODULE_0__["isNumber"](at)) {
+  if (blockly["isNumber"](at)) {
     // If the index is a naked number, adjust it right now.
     at = Number(at) + delta;
 
@@ -22910,10 +22831,10 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].getAdjusted = function (block, a
     // If the index is dynamic, adjust it in code.
     if (delta > 0) {
       at = at + ' + ' + delta;
-      var innerOrder = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITION;
+      var innerOrder = blockly["genCode"].ORDER_ADDITION;
     } else if (delta < 0) {
       at = at + ' - ' + -delta;
-      var innerOrder = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_SUBTRACTION;
+      var innerOrder = blockly["genCode"].ORDER_SUBTRACTION;
     }
 
     if (opt_negate) {
@@ -22923,7 +22844,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].getAdjusted = function (block, a
         at = '-' + at;
       }
 
-      var innerOrder = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_UNARY_NEGATION;
+      var innerOrder = blockly["genCode"].ORDER_UNARY_NEGATION;
     }
 
     innerOrder = Math.floor(innerOrder);
@@ -22937,54 +22858,54 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].getAdjusted = function (block, a
   return at;
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['text'] = function (block) {
-  var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].quote_(block.getFieldValue('TEXT'));
-  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC];
+blockly["genCode"]['text'] = function (block) {
+  var code = blockly["genCode"].quote_(block.getFieldValue('TEXT'));
+  return [code, blockly["genCode"].ORDER_ATOMIC];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['text_print'] = function (block) {
-  var msg = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'TEXT', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '\'\'';
+blockly["genCode"]['text_print'] = function (block) {
+  var msg = blockly["genCode"].valueToCode(block, 'TEXT', blockly["genCode"].ORDER_NONE) || '\'\'';
   return 'print ' + msg + '\n';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_number'] = function (block) {
+blockly["genCode"]['math_number'] = function (block) {
   var code = Number(block.getFieldValue('NUM'));
-  var order = code >= 0 ? blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC : blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_UNARY_NEGATION;
+  var order = code >= 0 ? blockly["genCode"].ORDER_ATOMIC : blockly["genCode"].ORDER_UNARY_NEGATION;
   return [code, order];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_arithmetic'] = function (block) {
+blockly["genCode"]['math_arithmetic'] = function (block) {
   var OPERATORS = {
-    'ADD': [' + ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE],
-    'MINUS': [' - ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE],
-    'MULTIPLY': [' * ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE],
-    'DIVIDE': [' / ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE],
-    'POWER': [' ** ', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_EXPONENTIATION]
+    'ADD': [' + ', blockly["genCode"].ORDER_ADDITIVE],
+    'MINUS': [' - ', blockly["genCode"].ORDER_ADDITIVE],
+    'MULTIPLY': [' * ', blockly["genCode"].ORDER_MULTIPLICATIVE],
+    'DIVIDE': [' / ', blockly["genCode"].ORDER_MULTIPLICATIVE],
+    'POWER': [' ** ', blockly["genCode"].ORDER_EXPONENTIATION]
   };
   var tuple = OPERATORS[block.getFieldValue('OP')];
   var operator = tuple[0];
   var order = tuple[1];
-  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'A', order) || '0';
-  var argument1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'B', order) || '0';
+  var argument0 = blockly["genCode"].valueToCode(block, 'A', order) || '0';
+  var argument1 = blockly["genCode"].valueToCode(block, 'B', order) || '0';
   var code;
   code = argument0 + operator + argument1;
   return [code, order];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_modulo'] = function (block) {
-  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DIVIDEND', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE) || '0';
-  var argument1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DIVISOR', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE) || '0';
+blockly["genCode"]['math_modulo'] = function (block) {
+  var argument0 = blockly["genCode"].valueToCode(block, 'DIVIDEND', blockly["genCode"].ORDER_MULTIPLICATIVE) || '0';
+  var argument1 = blockly["genCode"].valueToCode(block, 'DIVISOR', blockly["genCode"].ORDER_MULTIPLICATIVE) || '0';
   var code = argument0 + ' % ' + argument1;
-  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MULTIPLICATIVE];
+  return [code, blockly["genCode"].ORDER_MULTIPLICATIVE];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['text_isEmpty'] = function (block) {
-  var text = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_MEMBER) || '\'\'';
-  return [text + ' == ""', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL];
+blockly["genCode"]['text_isEmpty'] = function (block) {
+  var text = blockly["genCode"].valueToCode(block, 'VALUE', blockly["genCode"].ORDER_MEMBER) || '\'\'';
+  return [text + ' == ""', blockly["genCode"].ORDER_RELATIONAL];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variables_get'] = function (block) {
-  var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+blockly["genCode"]['variables_get'] = function (block) {
+  var code = blockly["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly["VARIABLE_CATEGORY_NAME"]);
   parent = block.parentBlock_;
   var markAsUsed = true;
 
@@ -22999,48 +22920,48 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variables_get'] = function (blo
   }
 
   if (markAsUsed) usedVariables[code] = true;
-  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC];
+  return [code, blockly["genCode"].ORDER_ATOMIC];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variables_set'] = function (block) {
-  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '0';
-  var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+blockly["genCode"]['variables_set'] = function (block) {
+  var argument0 = blockly["genCode"].valueToCode(block, 'VALUE', blockly["genCode"].ORDER_NONE) || '0';
+  var varName = blockly["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly["VARIABLE_CATEGORY_NAME"]);
   return varName + ' = ' + argument0 + '\n';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_change'] = function (block) {
-  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DELTA', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ADDITIVE) || '0';
-  var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+blockly["genCode"]['math_change'] = function (block) {
+  var argument0 = blockly["genCode"].valueToCode(block, 'DELTA', blockly["genCode"].ORDER_ADDITIVE) || '0';
+  var varName = blockly["genCode"].variableDB_.getName(block.getFieldValue('VAR'), blockly["VARIABLE_CATEGORY_NAME"]);
   return varName + ' += ' + argument0 + '\n';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defreturn'] = function (block) {
+blockly["genCode"]['procedures_defreturn'] = function (block) {
   var varName;
   var workspace = block.workspace;
-  var variables = blockly__WEBPACK_IMPORTED_MODULE_0__["Variables"].allUsedVarModels(workspace) || [];
-  var funcName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["PROCEDURE_CATEGORY_NAME"]);
+  var variables = blockly["Variables"].allUsedVarModels(workspace) || [];
+  var funcName = blockly["genCode"].functionsDB_.getName(block.getFieldValue('NAME'), blockly["PROCEDURE_CATEGORY_NAME"]);
   var xfix1 = '';
 
-  if (blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_PREFIX) {
-    xfix1 += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].injectId(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_PREFIX, block);
+  if (blockly["genCode"].STATEMENT_PREFIX) {
+    xfix1 += blockly["genCode"].injectId(blockly["genCode"].STATEMENT_PREFIX, block);
   }
 
-  if (blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_SUFFIX) {
-    xfix1 += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].injectId(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_SUFFIX, block);
+  if (blockly["genCode"].STATEMENT_SUFFIX) {
+    xfix1 += blockly["genCode"].injectId(blockly["genCode"].STATEMENT_SUFFIX, block);
   }
 
   if (xfix1) {
-    xfix1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].prefixLines(xfix1, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT);
+    xfix1 = blockly["genCode"].prefixLines(xfix1, blockly["genCode"].INDENT);
   }
 
   var loopTrap = '';
 
-  if (blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INFINITE_LOOP_TRAP) {
-    loopTrap = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].prefixLines(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].injectId(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INFINITE_LOOP_TRAP, block), blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT);
+  if (blockly["genCode"].INFINITE_LOOP_TRAP) {
+    loopTrap = blockly["genCode"].prefixLines(blockly["genCode"].injectId(blockly["genCode"].INFINITE_LOOP_TRAP, block), blockly["genCode"].INDENT);
   }
 
-  var branch = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].statementToCode(block, 'STACK');
-  var returnValue = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'RETURN', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '';
+  var branch = blockly["genCode"].statementToCode(block, 'STACK');
+  var returnValue = blockly["genCode"].valueToCode(block, 'RETURN', blockly["genCode"].ORDER_NONE) || '';
   var xfix2 = '';
 
   if (branch && returnValue) {
@@ -23049,138 +22970,219 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defreturn'] = functi
   }
 
   if (returnValue) {
-    returnValue = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT + 'return ' + returnValue + '\n';
+    returnValue = blockly["genCode"].INDENT + 'return ' + returnValue + '\n';
   }
 
   var args = [];
   var variables = block.getVars();
 
   for (var i = 0; i < variables.length; i++) {
-    args[i] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(variables[i], blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+    args[i] = blockly["genCode"].variableDB_.getName(variables[i], blockly["VARIABLE_CATEGORY_NAME"]);
   }
 
   var code = 'func ' + funcName + '(' + args.join(', ') + '){\n' + xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';
-  code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].scrub_(block, code); // Add % so as not to collide with helper functions in definitions list.
+  code = blockly["genCode"].scrub_(block, code); // Add % so as not to collide with helper functions in definitions list.
 
-  blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_['%' + funcName] = code;
+  blockly["genCode"].definitions_['%' + funcName] = code;
   return null;
 }; // Defining a procedure without a return value uses the same generator as
 // a procedure with a return value.
 
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defnoreturn'] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defreturn'];
+blockly["genCode"]['procedures_defnoreturn'] = blockly["genCode"]['procedures_defreturn'];
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_callreturn'] = function (block) {
+blockly["genCode"]['procedures_callreturn'] = function (block) {
   // Call a procedure with a return value.
-  var funcName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionsDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["PROCEDURE_CATEGORY_NAME"]);
+  var funcName = blockly["genCode"].functionsDB_.getName(block.getFieldValue('NAME'), blockly["PROCEDURE_CATEGORY_NAME"]);
   var args = [];
   var variables = block.getVars();
 
   for (var i = 0; i < variables.length; i++) {
-    args[i] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'ARG' + i, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || 'null';
+    args[i] = blockly["genCode"].valueToCode(block, 'ARG' + i, blockly["genCode"].ORDER_NONE) || 'null';
   }
 
   var code = funcName + '(' + args.join(', ') + ')';
-  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_FUNCTION_CALL];
+  return [code, blockly["genCode"].ORDER_FUNCTION_CALL];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_callnoreturn'] = function (block) {
+blockly["genCode"]['procedures_callnoreturn'] = function (block) {
   // Call a procedure with no return value.
   // Generated code is for a function call as a statement is the same as a
   // function call as a value, with the addition of line ending.
-  var tuple = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_callreturn'](block);
+  var tuple = blockly["genCode"]['procedures_callreturn'](block);
   return tuple[0] + '\n';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_ifreturn'] = function (block) {
+blockly["genCode"]['procedures_ifreturn'] = function (block) {
   // Conditionally return value from a procedure.
-  var condition = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'CONDITION', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || 'false';
+  var condition = blockly["genCode"].valueToCode(block, 'CONDITION', blockly["genCode"].ORDER_NONE) || 'false';
   var code = 'if ' + condition + '{\n';
 
-  if (blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_SUFFIX) {
+  if (blockly["genCode"].STATEMENT_SUFFIX) {
     // Inject any statement suffix here since the regular one at the end
     // will not get executed if the return is triggered.
-    code += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].prefixLines(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].injectId(blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].STATEMENT_SUFFIX, block), blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT);
+    code += blockly["genCode"].prefixLines(blockly["genCode"].injectId(blockly["genCode"].STATEMENT_SUFFIX, block), blockly["genCode"].INDENT);
   }
 
   if (block.hasReturnValue_) {
-    var value = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || 'null';
-    code += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT + 'return ' + value + '\n}\n';
+    var value = blockly["genCode"].valueToCode(block, 'VALUE', blockly["genCode"].ORDER_NONE) || 'null';
+    code += blockly["genCode"].INDENT + 'return ' + value + '\n}\n';
   } else {
-    code += blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].INDENT + 'return\n}\n';
+    code += blockly["genCode"].INDENT + 'return\n}\n';
   }
 
   return code;
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['return_statement'] = function (block) {
-  var msg = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || 'null';
+blockly["genCode"]['return_statement'] = function (block) {
+  var msg = blockly["genCode"].valueToCode(block, 'VALUE', blockly["genCode"].ORDER_NONE) || 'null';
   return 'return ' + msg + '\n';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_boolean'] = function (block) {
+blockly["genCode"]['logic_boolean'] = function (block) {
   var code = block.getFieldValue('BOOL') == 'TRUE' ? 'true' : 'false';
-  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC];
+  return [code, blockly["genCode"].ORDER_ATOMIC];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_get'] = function (block) {
-  var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
-  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC];
+blockly["genCode"]['variable_get'] = function (block) {
+  var code = blockly["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly["VARIABLE_CATEGORY_NAME"]);
+  return [code, blockly["genCode"].ORDER_ATOMIC];
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_set'] = function (block) {
-  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'DATA', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '0';
-  var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+blockly["genCode"]['variable_set'] = function (block) {
+  var argument0 = blockly["genCode"].valueToCode(block, 'DATA', blockly["genCode"].ORDER_NONE) || '0';
+  var varName = blockly["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly["VARIABLE_CATEGORY_NAME"]);
   return varName + ' = ' + argument0 + '\n';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_declare'] = function (block) {
-  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'VALUE', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '0';
-  var varName = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+blockly["genCode"]['variable_declare'] = function (block) {
+  var argument0 = blockly["genCode"].valueToCode(block, 'VALUE', blockly["genCode"].ORDER_NONE) || '0';
+  var varName = blockly["genCode"].variableDB_.getName(block.getFieldValue('NAME'), blockly["VARIABLE_CATEGORY_NAME"]);
   allVariables.push([varName, varName]);
   return 'var ' + varName + ' = ' + argument0 + '\n';
 };
 
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['control_break'] = function (block) {
+blockly["genCode"]['control_break'] = function (block) {
   return 'break\n';
 };
+// CONCATENATED MODULE: ./test/themes.js
 
-/***/ }),
+var DarkTheme = blockly["Theme"].defineTheme('DarkTheme', {
+  'base': blockly["Themes"].Dark,
+  // 'componentStyles': {
+  // "workspaceBackgroundColour": "#1e1e1e",
+  // "toolboxBackgroundColour": "#333"
+  // },
+  'fontStyle': {
+    "family": "Source Code Pro, monospace",
+    "weight": "bold",
+    "size": 12
+  }
+});
+var LightTheme = blockly["Theme"].defineTheme('LightTheme', {
+  'base': blockly["Themes"].Classic,
+  'componentStyles': {
+    "workspaceBackgroundColour": "#EEE" // "toolboxBackgroundColour": "#333"
 
-/***/ "./test/index.js":
-/*!***********************!*\
-  !*** ./test/index.js ***!
-  \***********************/
-/*! exports provided: Blockly, workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+  },
+  'fontStyle': {
+    "family": "Source Code Pro, monospace",
+    "weight": "bold",
+    "size": 12
+  }
+});
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "workspace", function() { return workspace; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "changeTheme", function() { return changeTheme; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "changeView", function() { return changeView; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "genPhoto", function() { return genPhoto; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "injectBlockly", function() { return injectBlockly; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "runCode", function() { return runCode; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "editor", function() { return editor; });
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Blockly", function() { return blockly__WEBPACK_IMPORTED_MODULE_0__; });
-/* harmony import */ var _linenumbers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./linenumbers.js */ "./test/linenumbers.js");
-/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
-/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
-/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
-/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+// CONCATENATED MODULE: ./test/toolbox.js
+function toolbox_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { toolbox_typeof = function _typeof(obj) { return typeof obj; }; } else { toolbox_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return toolbox_typeof(obj); }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function toolbox_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function toolbox_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function toolbox_createClass(Constructor, protoProps, staticProps) { if (protoProps) toolbox_defineProperties(Constructor.prototype, protoProps); if (staticProps) toolbox_defineProperties(Constructor, staticProps); return Constructor; }
+
+function toolbox_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) toolbox_setPrototypeOf(subClass, superClass); }
+
+function toolbox_setPrototypeOf(o, p) { toolbox_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return toolbox_setPrototypeOf(o, p); }
+
+function toolbox_createSuper(Derived) { var hasNativeReflectConstruct = toolbox_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = toolbox_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = toolbox_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return toolbox_possibleConstructorReturn(this, result); }; }
+
+function toolbox_possibleConstructorReturn(self, call) { if (call && (toolbox_typeof(call) === "object" || typeof call === "function")) { return call; } return toolbox_assertThisInitialized(self); }
+
+function toolbox_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function toolbox_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function toolbox_getPrototypeOf(o) { toolbox_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return toolbox_getPrototypeOf(o); }
+
+
+
+var toolbox_CustomCategory = /*#__PURE__*/function (_Blockly$ToolboxCateg) {
+  toolbox_inherits(CustomCategory, _Blockly$ToolboxCateg);
+
+  var _super = toolbox_createSuper(CustomCategory);
+
+  function CustomCategory(a, b, c) {
+    var _this;
+
+    toolbox_classCallCheck(this, CustomCategory);
+
+    _this = _super.call(this, a, b, c);
+    _this.name = a.name;
+    return _this;
+  }
+
+  toolbox_createClass(CustomCategory, [{
+    key: "addColourBorder_",
+    value: function addColourBorder_(colour) {
+      this.rowDiv_.style.backgroundColor = colour;
+    }
+  }, {
+    key: "setSelected",
+    value: function setSelected(isSelected) {
+      var label = this.rowDiv_.getElementsByClassName('blocklyTreeLabel')[0];
+
+      if (isSelected) {
+        this.rowDiv_.style.backgroundColor = 'white';
+        label.style.color = this.colour_;
+        this.iconDom_.style.color = this.colour_;
+      } else {
+        this.rowDiv_.style.backgroundColor = this.colour_;
+        label.style.color = 'white';
+        this.iconDom_.style.color = 'white';
+      }
+
+      blockly["utils"].aria.setState(this.htmlDiv_, blockly["utils"].aria.State.SELECTED, isSelected);
+    }
+  }, {
+    key: "createIconDom_",
+    value: function createIconDom_() {
+      var icon = document.createElement('img'); // icon.src = './' + this.name + '.svg';
+
+      icon.src = 'https://developers.google.com/blockly/images/logos/logo_only.svg';
+
+      if (window.innerHeight > window.innerWidth) {
+        icon.width = '25';
+        icon.height = '25';
+      } else {
+        icon.width = '50';
+        icon.height = '50';
+      }
+
+      return icon;
+    }
+  }]);
+
+  return CustomCategory;
+}(blockly["ToolboxCategory"]);
+
+blockly["registry"].register(blockly["registry"].Type.TOOLBOX_ITEM, blockly["ToolboxCategory"].registrationName, toolbox_CustomCategory, true);
+// CONCATENATED MODULE: ./test/index.js
+function test_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = test_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function test_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return test_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return test_arrayLikeToArray(o, minLen); }
+
+function test_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -23195,7 +23197,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 function genPhoto() {
-  html2canvas__WEBPACK_IMPORTED_MODULE_6___default()(document.body, {
+  html2canvas_default()(document.body, {
     logging: false
   }).then(function (canvas) {
     document.body.appendChild(canvas);
@@ -23204,22 +23206,22 @@ function genPhoto() {
 
 var isDark = false;
 var isFirst = true;
-var code = null;
-var workspace;
+var test_code = null;
+var test_workspace;
 var genBlocks = false;
 
 function createWorkspace(blocklyDiv, options) {
-  workspace = blockly__WEBPACK_IMPORTED_MODULE_0__["inject"](blocklyDiv, options);
-  workspace.addChangeListener(function (event) {
+  test_workspace = blockly["inject"](blocklyDiv, options);
+  test_workspace.addChangeListener(function (event) {
     if (event.element == 'category' && event.newValue == null) {
-      blockly__WEBPACK_IMPORTED_MODULE_0__["hideFlyOut"]();
+      blockly["hideFlyOut"]();
     }
 
     if (localStorage.getItem('mode') == 'block') {
       runCode();
     }
   });
-  return workspace;
+  return test_workspace;
 }
 
 
@@ -23233,12 +23235,12 @@ function injectBlockly() {
   var xml;
 
   if (!isFirst) {
-    xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].workspaceToDom(workspace);
+    xml = blockly["Xml"].workspaceToDom(test_workspace);
   }
 
   var options = (_options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_8__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_8__["LightTheme"],
+    theme: isDark ? DarkTheme : LightTheme,
     renderer: 'zelos',
     collapse: true,
     comments: false,
@@ -23280,8 +23282,8 @@ function injectBlockly() {
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
   } else {
     options['plugins'] = {
-      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__["ContinuousToolbox"],
-      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__["ContinuousFlyout"]
+      'toolbox': ContinuousToolbox_ContinuousToolbox,
+      'flyoutsVerticalToolbox': ContinuousFlyout_ContinuousFlyout
     };
     sheet.innerHTML = "";
   }
@@ -23293,12 +23295,12 @@ function injectBlockly() {
     isFirst = false;
 
     try {
-      var _xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].textToDom(sessionStorage.getItem("blocks"));
+      var _xml = blockly["Xml"].textToDom(sessionStorage.getItem("blocks"));
 
-      blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToWorkspace(_xml, workspace);
+      blockly["Xml"].domToWorkspace(_xml, test_workspace);
     } catch (e) {}
   } else {
-    blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToWorkspace(xml, workspace);
+    blockly["Xml"].domToWorkspace(xml, test_workspace);
   }
 }
 
@@ -23308,18 +23310,18 @@ window.onresize = function (event) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_2__["initBlocks"])();
-  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["MATH_POWER_SYMBOL"] = "**";
+  initBlocks();
+  blockly["Msg"]["MATH_POWER_SYMBOL"] = "**";
   injectBlockly();
 });
 
 function runCode() {
-  code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].workspaceToCode(workspace); // jar.updateCode(code);
+  test_code = blockly["genCode"].workspaceToCode(test_workspace); // jar.updateCode(code);
 
   genBlocks = false;
-  editor.setValue(code);
+  editor.setValue(test_code);
   genBlocks = true;
-  localStorage.setItem('code', code);
+  localStorage.setItem('code', test_code);
 
   if (localStorage.getItem("mode") == "code") {// document.getElementById("callColor").click();
   }
@@ -23327,33 +23329,33 @@ function runCode() {
 
 window.onbeforeunload = function (e) {
   localStorage.setItem('allVariables', allVariables);
-  var xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].workspaceToDom(workspace);
-  sessionStorage.setItem("blocks", blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToPrettyText(xml));
+  var xml = blockly["Xml"].workspaceToDom(test_workspace);
+  sessionStorage.setItem("blocks", blockly["Xml"].domToPrettyText(xml));
 };
 
 if (localStorage.getItem('allVariables') != null) {
   allVariables = localStorage.getItem('allVariables');
-  var tmp = [];
+  var test_tmp = [];
   var data = allVariables.split(',');
   allVariables = [];
 
-  var _iterator = _createForOfIteratorHelper(data),
-      _step;
+  var test_iterator = test_createForOfIteratorHelper(data),
+      test_step;
 
   try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var i = _step.value;
-      tmp.push(i);
+    for (test_iterator.s(); !(test_step = test_iterator.n()).done;) {
+      var test_i = test_step.value;
+      test_tmp.push(test_i);
 
-      if (tmp.length == 2) {
-        allVariables.push(tmp);
-        tmp = [];
+      if (test_tmp.length == 2) {
+        allVariables.push(test_tmp);
+        test_tmp = [];
       }
     }
   } catch (err) {
-    _iterator.e(err);
+    test_iterator.e(err);
   } finally {
-    _iterator.f();
+    test_iterator.f();
   }
 }
 
@@ -23390,13 +23392,13 @@ langTools.setCompleters([langTools.snippetCompleter]);
 
 var config = ace.require("ace/config");
 
-var event = ace.require("ace/lib/event");
+var test_event = ace.require("ace/lib/event");
 
-event.addListener(editor.container, "dragover", function (e) {
+test_event.addListener(editor.container, "dragover", function (e) {
   var types = e.dataTransfer.types;
-  if (types && Array.prototype.indexOf.call(types, 'Files') !== -1) return event.preventDefault(e);
+  if (types && Array.prototype.indexOf.call(types, 'Files') !== -1) return test_event.preventDefault(e);
 });
-event.addListener(editor.container, "drop", function (e) {
+test_event.addListener(editor.container, "drop", function (e) {
   var file;
 
   try {
@@ -23414,9 +23416,9 @@ event.addListener(editor.container, "drop", function (e) {
       reader.readAsText(file);
     }
 
-    return event.preventDefault(e);
+    return test_event.preventDefault(e);
   } catch (err) {
-    return event.stopEvent(e);
+    return test_event.stopEvent(e);
   }
 });
 editor.setKeyboardHandler('ace/keyboard/sublime');
@@ -23500,7 +23502,7 @@ function changeViewWithoutSwap() {
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
     if (isDark) editor.setTheme("ace/theme/monokai0");else editor.setTheme("ace/theme/xcode0");
     isDark = !isDark;
-    document.getElementById('root').removeChild(blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().injectionDiv_);
+    document.getElementById('root').removeChild(blockly["getMainWorkspace"]().injectionDiv_);
     injectBlockly(); // document.getElementById("callColor").click();
 
     document.getElementById("genBlocks").click();
@@ -23509,9 +23511,9 @@ function changeViewWithoutSwap() {
   document.getElementById("gotocode").classList.toggle('selected');
   document.getElementById("gotoblock").classList.toggle('selected');
 
-  if (!document.getElementById("editor2").hidden && code != null) {
-    editor.setValue(code);
-    code = null;
+  if (!document.getElementById("editor2").hidden && test_code != null) {
+    editor.setValue(test_code);
+    test_code = null;
     editor.session.selection.moveTo(0, 0);
   }
 }
@@ -23520,8 +23522,8 @@ function changeView() {
   changeViewWithoutSwap();
   var tmp = localStorage.getItem('mode');
   if (tmp == "code") localStorage.setItem('mode', 'block');else localStorage.setItem('mode', 'code');
-  workspace.trashcan.emptyContents();
-  blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().cleanUp();
+  test_workspace.trashcan.emptyContents();
+  blockly["getMainWorkspace"]().cleanUp();
 }
 
 if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').checked = true;else document.getElementById('theme').checked = false;
@@ -23529,952 +23531,15 @@ if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').ch
 
 /***/ }),
 
-/***/ "./test/linenumbers.js":
-/*!*****************************!*\
-  !*** ./test/linenumbers.js ***!
-  \*****************************/
-/*! exports provided: withLineNumbers */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "withLineNumbers", function() { return withLineNumbers; });
-function withLineNumbers(highlight) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var opts = Object.assign({
-    "class": "codejar-linenumbers",
-    wrapClass: "codejar-wrap",
-    width: "35px",
-    backgroundColor: "rgba(128, 128, 128, 0.15)",
-    color: ""
-  }, options);
-  var lineNumbers;
-  return function (editor) {
-    highlight(editor);
-
-    if (!lineNumbers) {
-      lineNumbers = init(editor, opts);
-      editor.addEventListener("scroll", function () {
-        return lineNumbers.style.top = "-".concat(editor.scrollTop, "px");
-      });
-    }
-
-    var code = editor.textContent || "";
-    var linesCount = code.
-    /*replace(/\n+$/, "\n").*/
-    split("\n").length;
-    if (!code.endsWith("\n")) linesCount++;
-    var text = "";
-
-    for (var i = 1; i < linesCount; i++) {
-      text += "".concat(i, "\n");
-    }
-
-    lineNumbers.innerText = text;
-  };
-}
-
-function init(editor, opts) {
-  var css = getComputedStyle(editor);
-  var wrap = document.createElement("div");
-  wrap.className = opts.wrapClass;
-  wrap.style.position = "relative";
-  var gutter = document.createElement("div");
-  gutter.className = opts["class"];
-  wrap.appendChild(gutter); // Add own styles
-
-  gutter.style.position = "absolute";
-  gutter.style.top = "0px";
-  gutter.style.left = "0px";
-  gutter.style.bottom = "0px";
-  gutter.style.width = opts.width;
-  gutter.style.overflow = "hidden";
-  gutter.style.backgroundColor = opts.backgroundColor;
-  gutter.style.color = opts.color || css.color;
-  gutter.style.setProperty("mix-blend-mode", "difference"); // Copy editor styles
-
-  gutter.style.fontFamily = css.fontFamily;
-  gutter.style.fontSize = css.fontSize;
-  gutter.style.lineHeight = css.lineHeight;
-  gutter.style.paddingTop = css.paddingTop;
-  gutter.style.paddingLeft = css.paddingLeft;
-  gutter.style.borderTopLeftRadius = css.borderTopLeftRadius;
-  gutter.style.borderBottomLeftRadius = css.borderBottomLeftRadius; // Add line numbers
-
-  var lineNumbers = document.createElement("div");
-  lineNumbers.style.position = "relative";
-  lineNumbers.style.top = "0px";
-  gutter.appendChild(lineNumbers); // Tweak editor styles
-
-  editor.style.paddingLeft = "calc(".concat(opts.width, " + ").concat(gutter.style.paddingLeft, ")");
-  editor.style.whiteSpace = "pre"; // Swap editor with a wrap
-
-  editor.parentNode.insertBefore(wrap, editor);
-  wrap.appendChild(editor);
-  return lineNumbers;
-}
-
-/***/ }),
-
-/***/ "./test/procedures.js":
-/*!****************************!*\
-  !*** ./test/procedures.js ***!
-  \****************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _field_minus__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./field_minus */ "./test/field_minus.js");
-/* harmony import */ var _field_plus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./field_plus */ "./test/field_plus.js");
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
-/**
- * @fileoverview Changes the procedure blocks to use a +/- mutator UI.
- */
-
-
-
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURE_VARIABLE'] = 'variable:';
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_DEFRETURN_TITLE'] = 'define';
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_DEFNORETURN_TITLE'] = 'define';
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_DEFRETURN_TITLE_OUTPUT'] = 'with output';
-/* eslint-disable quotes */
-
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.defineBlocksWithJsonArray([{
-  "type": "procedures_defnoreturn",
-  "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE} %1 %2",
-  "message1": "%{BKY_PROCEDURES_DEFNORETURN_DO} %1",
-  "args0": [{
-    "type": "field_input",
-    "name": "NAME",
-    "text": ""
-  }, {
-    "type": "input_dummy",
-    "name": "TOP"
-  }],
-  "args1": [{
-    "type": "input_statement",
-    "name": "STACK"
-  }],
-  "style": "procedure_blocks",
-  "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
-  "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
-  "extensions": ["get_procedure_def_no_return", "procedure_context_menu", "procedure_rename", "procedure_vars"],
-  "mutator": "procedure_def_mutator"
-}, {
-  "type": "procedures_defreturn",
-  "message0": "%{BKY_PROCEDURES_DEFRETURN_TITLE} %1 %{BKY_PROCEDURES_DEFRETURN_TITLE_OUTPUT} %2",
-  "message1": "%{BKY_PROCEDURES_DEFRETURN_DO} %1",
-  // "message2": "%{BKY_PROCEDURES_DEFRETURN_RETURN} %1",
-  "args0": [{
-    "type": "field_input",
-    "name": "NAME",
-    "text": ""
-  }, {
-    "type": "input_dummy",
-    "name": "TOP"
-  }],
-  "args1": [{
-    "type": "input_statement",
-    "name": "STACK"
-  }],
-  // "args2": [
-  //   {
-  //     "type": "input_value",
-  //     "align": "right",
-  //     "name": "RETURN",
-  //   },
-  // ],
-  "style": "procedure_blocks",
-  "helpUrl": "%{BKY_PROCEDURES_DEFRETURN_HELPURL}",
-  "tooltip": "%{BKY_PROCEDURES_DEFRETURN_TOOLTIP}",
-  "extensions": ["get_procedure_def_return", "procedure_context_menu", "procedure_rename", "procedure_vars"],
-  "mutator": "procedure_def_mutator"
-}]);
-/* eslint-enable quotes */
-
-/**
- * Defines the what are essentially info-getters for the procedures_defnoreturn
- * block.
- * @type {{callType_: string, getProcedureDef: (function(): *[])}}
- */
-
-var getDefNoReturn = {
-  /**
-   * Returns info about this block to be used by the Blockly.Procedures.
-   * @return {Array} An array of info.
-   * @this Blockly.Block
-   */
-  getProcedureDef: function getProcedureDef() {
-    var argNames = this.argData_.map(function (elem) {
-      return elem.model.name;
-    });
-    return [this.getFieldValue('NAME'), argNames, false];
-  },
-
-  /**
-   * Used by the context menu to create a caller block.
-   * @type {string}
-   */
-  callType_: 'procedures_callnoreturn'
-};
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMixin('get_procedure_def_no_return', getDefNoReturn);
-/**
- * Defines what are essentially info-getters for the procedures_def_return
- * block.
- * @type {{callType_: string, getProcedureDef: (function(): *[])}}
- */
-
-var getDefReturn = {
-  /**
-   * Returns info about this block to be used by the Blockly.Procedures.
-   * @return {Array} An array of info.
-   * @this Blockly.Block
-   */
-  getProcedureDef: function getProcedureDef() {
-    var argNames = this.argData_.map(function (elem) {
-      return elem.model.name;
-    });
-    return [this.getFieldValue('NAME'), argNames, true];
-  },
-
-  /**
-   * Used by the context menu to create a caller block.
-   * @type {string}
-   */
-  callType_: 'procedures_callreturn'
-};
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMixin('get_procedure_def_return', getDefReturn);
-var procedureContextMenu = {
-  /**
-   * Adds an option to create a caller block.
-   * Adds an option to create a variable getter for each variable included in
-   * the procedure definition.
-   * @this Blockly.Block
-   * @param {!Array} options The current options for the context menu.
-   */
-  customContextMenu: function customContextMenu(options) {
-    if (this.isInFlyout) {
-      return;
-    } // Add option to create caller.
-
-
-    var name = this.getFieldValue('NAME');
-    var text = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_CREATE_DO'].replace('%1', name);
-    var xml = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('block');
-    xml.setAttribute('type', this.callType_);
-    xml.appendChild(this.mutationToDom(true));
-    var callback = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.ContextMenu.callbackFactory(this, xml);
-    options.push({
-      enabled: true,
-      text: text,
-      callback: callback
-    });
-
-    if (this.isCollapsed()) {
-      return;
-    } // Add options to create getters for each parameter.
-
-
-    var varModels = this.getVarModels();
-
-    var _iterator = _createForOfIteratorHelper(varModels),
-        _step;
-
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var model = _step.value;
-
-        var _text = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['VARIABLES_SET_CREATE_GET'].replace('%1', model.name);
-
-        var _xml = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('block');
-
-        _xml.setAttribute('type', 'variables_get');
-
-        _xml.appendChild(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Variables.generateVariableFieldDom(model));
-
-        var _callback = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.ContextMenu.callbackFactory(this, _xml);
-
-        options.push({
-          enabled: true,
-          text: _text,
-          callback: _callback
-        });
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-  }
-};
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMixin('procedure_context_menu', procedureContextMenu);
-var procedureDefMutator = {
-  /**
-   * Create XML to represent the argument inputs.
-   * @param {boolean=} isForCaller If true include the procedure name and
-   *     argument IDs. Used by Blockly.Procedures.mutateCallers for
-   *     reconnection.
-   * @return {!Element} XML storage element.
-   * @this Blockly.Block
-   */
-  mutationToDom: function mutationToDom() {
-    var isForCaller = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-    var container = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('mutation');
-
-    if (isForCaller) {
-      container.setAttribute('name', this.getFieldValue('NAME'));
-    }
-
-    this.argData_.forEach(function (element) {
-      var argument = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('arg');
-      var argModel = element.model;
-      argument.setAttribute('name', argModel.name);
-      argument.setAttribute('varid', argModel.getId());
-
-      if (isForCaller) {
-        argument.setAttribute('paramid', element.argId);
-      }
-
-      container.appendChild(argument);
-    }); // Not used by this block, but necessary if switching back and forth
-    // between this mutator UI and the default UI.
-
-    if (!this.hasStatements_) {
-      container.setAttribute('statements', 'false');
-    }
-
-    return container;
-  },
-
-  /**
-   * Parse XML to restore the argument inputs.
-   * @param {!Element} xmlElement XML storage element.
-   * @this Blockly.Block
-   */
-  domToMutation: function domToMutation(xmlElement) {
-    // We have to handle this so that the user doesn't add blocks to the stack,
-    // in which case it would be impossible to return to the old mutators.
-    this.hasStatements_ = xmlElement.getAttribute('statements') !== 'false';
-
-    if (!this.hasStatements_) {
-      this.removeInput('STACK');
-    }
-
-    var names = [];
-    var ids = [];
-
-    var _iterator2 = _createForOfIteratorHelper(xmlElement.childNodes),
-        _step2;
-
-    try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var childNode = _step2.value;
-
-        if (childNode.nodeName.toLowerCase() == 'arg') {
-          names.push(childNode.getAttribute('name'));
-          ids.push(childNode.getAttribute('varid') || childNode.getAttribute('varId'));
-        }
-      }
-    } catch (err) {
-      _iterator2.e(err);
-    } finally {
-      _iterator2.f();
-    }
-
-    this.updateShape_(names, ids);
-  },
-
-  /**
-   * Adds arguments to the block until it matches the targets.
-   * @param {!Array<string>} names An array of argument names to display.
-   * @param {!Array<string>} varIds An array of variable IDs associated with
-   *     those names.
-   * @this Blockly.Block
-   * @private
-   */
-  updateShape_: function updateShape_(names, varIds) {
-    if (names.length != varIds.length) {
-      throw Error('names and varIds must have the same length.');
-    } // Usually it's more efficient to modify the block, rather than tearing it
-    // down and rebuilding (less render calls), but in this case it's easier
-    // to just work from scratch.
-    // We need to remove args in reverse order so that it doesn't mess up
-    // as removeArg_ modifies our array.
-
-
-    for (var i = this.argData_.length - 1; i >= 0; i--) {
-      this.removeArg_(this.argData_[i].argId);
-    }
-
-    this.argData_ = [];
-    var length = varIds.length;
-
-    for (var _i = 0; _i < length; _i++) {
-      this.addArg_(names[_i], varIds[_i]);
-    }
-
-    blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(this);
-  },
-
-  /**
-   * Callback for the plus image. Adds an argument to the block and mutates
-   * callers to match.
-   */
-  plus: function plus() {
-    this.addArg_();
-    blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(this);
-  },
-
-  /**
-   * Callback for the minus image. Removes the argument associated with the
-   * given argument ID and mutates the callers to match.
-   * @param {string} argId The argId of the argument to remove.
-   * @this Blockly.Block
-   */
-  minus: function minus(argId) {
-    if (!this.argData_.length) {
-      return;
-    }
-
-    this.removeArg_(argId);
-    blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(this);
-  },
-
-  /**
-   * Adds an argument to the block and updates the block's parallel tracking
-   * arrays as appropriate.
-   * @param {?string=} name An optional name for the argument.
-   * @param {?string=} varId An optional variable ID for the argument.
-   * @this Blockly.Block
-   * @private
-   */
-  addArg_: function addArg_() {
-    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-    var varId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-    if (!this.argData_.length) {
-      var withField = new blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.FieldLabel(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURES_BEFORE_PARAMS']);
-      this.getInput('TOP').appendField(withField, 'WITH');
-    }
-
-    var argNames = this.argData_.map(function (elem) {
-      return elem.model.name;
-    });
-    name = name || blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Variables.generateUniqueNameFromOptions(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.DEFAULT_ARG, argNames);
-    var variable = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Variables.getOrCreateVariablePackage(this.workspace, varId, name, '');
-    var argId = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.genUid();
-    this.addVarInput_(name, argId);
-
-    if (this.getInput('STACK')) {
-      this.moveInputBefore(argId, 'STACK');
-    } else {
-      this.moveInputBefore(argId, 'RETURN');
-    }
-
-    this.argData_.push({
-      model: variable,
-      argId: argId
-    });
-  },
-
-  /**
-   * Removes the argument associated with the given argument ID from the block.
-   * @param {string} argId An ID used to track arguments on the block.
-   * @private
-   */
-  removeArg_: function removeArg_(argId) {
-    if (this.removeInput(argId, true)) {
-      if (this.argData_.length == 1) {
-        // Becoming argumentless.
-        this.getInput('TOP').removeField('WITH');
-      }
-
-      this.argData_ = this.argData_.filter(function (element) {
-        return element.argId != argId;
-      });
-    }
-  },
-
-  /**
-   * Appends the actual inputs and fields associated with an argument to the
-   * block.
-   * @param {string} name The name of the argument.
-   * @param {string} argId The UUID of the argument (different from var ID).
-   * @this Blockly.Block
-   * @private
-   */
-  addVarInput_: function addVarInput_(name, argId) {
-    var nameField = new blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.FieldTextInput(name, this.validator_);
-    nameField.onFinishEditing_ = this.finishEditing_.bind(nameField);
-    nameField.varIdsToDelete_ = [];
-    nameField.preEditVarModel_ = null;
-    this.appendDummyInput(argId).setAlign(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.ALIGN_RIGHT).appendField(Object(_field_minus__WEBPACK_IMPORTED_MODULE_1__["createMinusField"])(argId)).appendField(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Msg['PROCEDURE_VARIABLE']) // Untranslated!
-    .appendField(nameField, argId); // The name of the field is the arg id.
-  },
-
-  /**
-   * Validates text entered into the argument name field.
-   * @param {string} newName The new text entered into the field.
-   * @return {?string} The field's new value.
-   * @this Blockly.FieldTextInput
-   */
-  validator_: function validator_(newName) {
-    var _this = this;
-
-    var sourceBlock = this.getSourceBlock();
-    var workspace = sourceBlock.workspace;
-    var argData = sourceBlock.argData_;
-    var argDatum = sourceBlock.argData_.find(function (element) {
-      return element.argId == _this.name;
-    });
-    var currId = argDatum.model.getId(); // Replace all whitespace with normal spaces, then trim.
-
-    newName = newName.replace(/[\s\xa0]+/g, ' ').trim();
-    var caselessName = newName.toLowerCase();
-    /**
-     * Returns true if the given argDatum is associated with this field, or has
-     * a different caseless name than the argDatum associated with this field.
-     * @param {{model: Blockly.VariableModel, argId:string}} argDatum The
-     *     argDatum we want to make sure does not conflict with the argDatum
-     *     associated with this field.
-     * @return {boolean} True if the given datum does not conflict with the
-     *     datum associated with this field.
-     * @this Blockly.FieldTextInput
-     */
-
-    var hasDifName = function hasDifName(argDatum) {
-      // The field name (aka id) is always equal to the arg id.
-      return argDatum.argId == _this.name || caselessName != argDatum.model.name.toLowerCase();
-    };
-    /**
-     * Returns true if the variable associated with this field is only used
-     * by this block, or callers of this procedure.
-     * @return {boolean} True if the variable associated with this field is only
-     *     used by this block, or callers of this procedure.
-     */
-
-
-    var varOnlyUsedHere = function varOnlyUsedHere() {
-      return workspace.getVariableUsesById(currId).every(function (block) {
-        return block.id == sourceBlock.id || block.getProcedureCall && block.getProcedureCall() == sourceBlock.getProcedureDef()[0];
-      });
-    };
-
-    if (!newName || !argData.every(hasDifName)) {
-      if (this.preEditVarModel_) {
-        argDatum.model = this.preEditVarModel_;
-        this.preEditVarModel_ = null;
-      }
-
-      blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(sourceBlock);
-      return null;
-    }
-
-    if (!this.varIdsToDelete_.length) {
-      this.preEditVarModel_ = argDatum.model;
-
-      if (varOnlyUsedHere()) {
-        this.varIdsToDelete_.push(currId);
-      }
-    } // Create new vars instead of renaming the old ones, so users can't
-    // accidentally rename/coalesce vars.
-
-
-    var model = workspace.getVariable(newName, '');
-
-    if (!model) {
-      model = workspace.createVariable(newName, '');
-      this.varIdsToDelete_.push(model.getId());
-    } else if (model.name != newName) {
-      // Blockly is case-insensitive so we have to update the var instead of
-      // creating a new one.
-      workspace.renameVariableById(model.getId(), newName);
-    }
-
-    if (model.getId() != currId) {
-      argDatum.model = model;
-    }
-
-    blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(sourceBlock);
-    return newName;
-  },
-
-  /**
-   * Removes any unused vars that were created as a result of editing.
-   * @param {string} _finalName The final value of the field.
-   * @this Blockly.FieldTextInput
-   */
-  finishEditing_: function finishEditing_(_finalName) {
-    var _this2 = this;
-
-    var source = this.getSourceBlock();
-    var argDatum = source.argData_.find(function (element) {
-      return element.argId == _this2.name;
-    });
-    var currentVarId = argDatum.model.getId();
-    this.varIdsToDelete_.forEach(function (id) {
-      if (id != currentVarId) {
-        source.workspace.deleteVariableById(id);
-      }
-    });
-    this.varIdsToDelete_.length = 0;
-    this.preEditVarModel_ = null;
-  }
-};
-/**
- * Initializes some private variables for procedure blocks.
- * @this Blockly.Block
- */
-
-var procedureDefHelper = function procedureDefHelper() {
-  /**
-   * An array of objects containing data about the args belonging to the
-   * procedure definition.
-   * @type {!Array<{
-   *          model:Blockly.VariableModel,
-   *          argId: string
-   *       }>}
-   * @private
-   */
-  this.argData_ = [];
-  /**
-   * Does this block have a 'STACK' input for statements?
-   * @type {boolean}
-   * @private
-   */
-
-  this.hasStatements_ = true;
-  this.getInput('TOP').insertFieldAt(0, Object(_field_plus__WEBPACK_IMPORTED_MODULE_2__["createPlusField"])(), 'PLUS');
-};
-
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMutator('procedure_def_mutator', procedureDefMutator, procedureDefHelper);
-/**
- * Sets the validator for the procedure's name field.
- * @this Blockly.Block
- */
-
-var procedureRename = function procedureRename() {
-  this.getField('NAME').setValidator(blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.rename);
-};
-
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.register('procedure_rename', procedureRename);
-/**
- * Defines functions for dealing with variables and renaming variables.
- * @this Blockly.Block
- */
-
-var procedureVars = function procedureVars() {
-  // This is a hack to get around the don't-override-builtins check.
-  var mixin = {
-    /**
-     * Return all variables referenced by this block.
-     * @return {!Array.<string>} List of variable names.
-     * @this Blockly.Block
-     */
-    getVars: function getVars() {
-      return this.argData_.map(function (elem) {
-        return elem.model.name;
-      });
-    },
-
-    /**
-     * Return all variables referenced by this block.
-     * @return {!Array.<!Blockly.VariableModel>} List of variable models.
-     * @this Blockly.Block
-     */
-    getVarModels: function getVarModels() {
-      return this.argData_.map(function (elem) {
-        return elem.model;
-      });
-    },
-
-    /**
-     * Notification that a variable was renamed to the same name as an existing
-     * variable. These variables are coalescing into a single variable with the
-     * ID of the variable that was already using the name.
-     * @param {string} oldId The ID of the variable that was renamed.
-     * @param {string} newId The ID of the variable that was already using
-     *     the name.
-     */
-    renameVarById: function renameVarById(oldId, newId) {
-      var argData = this.argData_.find(function (element) {
-        return element.model.getId() == oldId;
-      });
-
-      if (!argData) {
-        return; // Not on this block.
-      }
-
-      var newVar = this.workspace.getVariableById(newId);
-      var newName = newVar.name;
-      this.addVarInput_(newName, newId);
-      this.moveInputBefore(newId, oldId);
-      this.removeInput(oldId);
-      argData.model = newVar;
-      blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Procedures.mutateCallers(this);
-    },
-
-    /**
-     * Notification that a variable is renaming but keeping the same ID.  If the
-     * variable is in use on this block, rerender to show the new name.
-     * @param {!Blockly.VariableModel} variable The variable being renamed.
-     * @package
-     * @override
-     * @this Blockly.Block
-     */
-    updateVarName: function updateVarName(variable) {
-      var id = variable.getId();
-      var argData = this.argData_.find(function (element) {
-        return element.model.getId() == id;
-      });
-
-      if (!argData) {
-        return; // Not on this block.
-      }
-
-      this.setFieldValue(variable.name, argData.argId);
-      argData.model = variable;
-    }
-  };
-  this.mixin(mixin, true);
-};
-
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.register('procedure_vars', procedureVars);
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Blocks["procedures_ifreturn"] = undefined;
-
-/***/ }),
-
-/***/ "./test/themes.js":
-/*!************************!*\
-  !*** ./test/themes.js ***!
-  \************************/
-/*! exports provided: DarkTheme, LightTheme */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DarkTheme", function() { return DarkTheme; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LightTheme", function() { return LightTheme; });
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
-
-var DarkTheme = blockly__WEBPACK_IMPORTED_MODULE_0__["Theme"].defineTheme('DarkTheme', {
-  'base': blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Dark,
-  // 'componentStyles': {
-  // "workspaceBackgroundColour": "#1e1e1e",
-  // "toolboxBackgroundColour": "#333"
-  // },
-  'fontStyle': {
-    "family": "Source Code Pro, monospace",
-    "weight": "bold",
-    "size": 12
-  }
-});
-var LightTheme = blockly__WEBPACK_IMPORTED_MODULE_0__["Theme"].defineTheme('LightTheme', {
-  'base': blockly__WEBPACK_IMPORTED_MODULE_0__["Themes"].Classic,
-  'componentStyles': {
-    "workspaceBackgroundColour": "#EEE" // "toolboxBackgroundColour": "#333"
-
-  },
-  'fontStyle': {
-    "family": "Source Code Pro, monospace",
-    "weight": "bold",
-    "size": 12
-  }
-});
-
-
-/***/ }),
-
-/***/ "./test/toolbox.js":
-/*!*************************!*\
-  !*** ./test/toolbox.js ***!
-  \*************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
-/* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-
-
-var CustomCategory = /*#__PURE__*/function (_Blockly$ToolboxCateg) {
-  _inherits(CustomCategory, _Blockly$ToolboxCateg);
-
-  var _super = _createSuper(CustomCategory);
-
-  function CustomCategory(a, b, c) {
-    var _this;
-
-    _classCallCheck(this, CustomCategory);
-
-    _this = _super.call(this, a, b, c);
-    _this.name = a.name;
-    return _this;
-  }
-
-  _createClass(CustomCategory, [{
-    key: "addColourBorder_",
-    value: function addColourBorder_(colour) {
-      this.rowDiv_.style.backgroundColor = colour;
-    }
-  }, {
-    key: "setSelected",
-    value: function setSelected(isSelected) {
-      var label = this.rowDiv_.getElementsByClassName('blocklyTreeLabel')[0];
-
-      if (isSelected) {
-        this.rowDiv_.style.backgroundColor = 'white';
-        label.style.color = this.colour_;
-        this.iconDom_.style.color = this.colour_;
-      } else {
-        this.rowDiv_.style.backgroundColor = this.colour_;
-        label.style.color = 'white';
-        this.iconDom_.style.color = 'white';
-      }
-
-      blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].aria.setState(this.htmlDiv_, blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].aria.State.SELECTED, isSelected);
-    }
-  }, {
-    key: "createIconDom_",
-    value: function createIconDom_() {
-      var icon = document.createElement('img'); // icon.src = './' + this.name + '.svg';
-
-      icon.src = 'https://developers.google.com/blockly/images/logos/logo_only.svg';
-
-      if (window.innerHeight > window.innerWidth) {
-        icon.width = '25';
-        icon.height = '25';
-      } else {
-        icon.width = '50';
-        icon.height = '50';
-      }
-
-      return icon;
-    }
-  }]);
-
-  return CustomCategory;
-}(blockly__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"]);
-
-blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].register(blockly__WEBPACK_IMPORTED_MODULE_0__["registry"].Type.TOOLBOX_ITEM, blockly__WEBPACK_IMPORTED_MODULE_0__["ToolboxCategory"].registrationName, CustomCategory, true);
-
-/***/ }),
-
-/***/ "./test/variables_mutator.js":
-/*!***********************************!*\
-  !*** ./test/variables_mutator.js ***!
-  \***********************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
-/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _field_minus__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./field_minus */ "./test/field_minus.js");
-/* harmony import */ var _field_plus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./field_plus */ "./test/field_plus.js");
-
-
-
-var controlsIfMutator = {
-  suppressPrefixSuffix: true,
-  hasValue: false,
-  mutationToDom: function mutationToDom() {
-    if (!this.hasValue) {
-      return null;
-    }
-
-    var container = blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.utils.xml.createElement('mutation');
-
-    if (this.hasValue) {
-      container.setAttribute('hasValue', 1);
-    }
-
-    return container;
-  },
-  domToMutation: function domToMutation(xmlElement) {
-    this.hasValue = !!parseInt(xmlElement.getAttribute('hasValue')) || 0;
-    this.updateShape_();
-  },
-  updateShape_: function updateShape_() {
-    if (this.hasValue) this.appendValue();
-  },
-  plus: function plus() {
-    if (this.hasValue) return;
-    this.appendValue();
-  },
-  minus: function minus(index) {
-    this.removeValue(index);
-  },
-  appendValue: function appendValue() {
-    this.hasValue = true;
-    this.removeInput('DUM1');
-    this.appendValueInput('VALUE').setCheck(null).appendField('=');
-    this.appendDummyInput('DUM').appendField(Object(_field_minus__WEBPACK_IMPORTED_MODULE_1__["createMinusField"])(), 'MINUS');
-  },
-  removeValue: function removeValue(opt_index) {
-    this.hasValue = false;
-    this.removeInput('VALUE');
-    this.removeInput('DUM');
-    this.appendDummyInput('DUM1').appendField(Object(_field_plus__WEBPACK_IMPORTED_MODULE_2__["createPlusField"])(), 'PLUS');
-  }
-};
-
-var controlsIfHelper = function controlsIfHelper() {
-  this.appendDummyInput('DUM1').appendField(Object(_field_plus__WEBPACK_IMPORTED_MODULE_2__["createPlusField"])(), 'PLUS');
-};
-
-blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMutator('variable_set_mutator', controlsIfMutator, controlsIfHelper);
-
-/***/ }),
-
 /***/ 0:
-/*!*********************************************************************************************************!*\
-  !*** multi (webpack)-dev-server/client?http://0.0.0.0:3000 (webpack)/hot/dev-server.js ./test/index.js ***!
-  \*********************************************************************************************************/
+/*!*****************************************************************************!*\
+  !*** multi (webpack)-dev-server/client?http://0.0.0.0:3000 ./test/index.js ***!
+  \*****************************************************************************/
 /*! no static exports found */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! /Users/radin/Projects/Blockly-test/node_modules/webpack-dev-server/client/index.js?http://0.0.0.0:3000 */"./node_modules/webpack-dev-server/client/index.js?http://0.0.0.0:3000");
-__webpack_require__(/*! /Users/radin/Projects/Blockly-test/node_modules/webpack/hot/dev-server.js */"./node_modules/webpack/hot/dev-server.js");
 module.exports = __webpack_require__(/*! ./test/index.js */"./test/index.js");
 
 
