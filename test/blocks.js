@@ -290,6 +290,10 @@ function initBlocks() {
         while (prev != null) {
           if (prevType == 'variable_declare') {
             this.menuGenerator_.push([prev.getField('NAME').getValue(), prev.getField('NAME').getValue()]);
+          } else if (prevType == 'procedures_defnoreturn' || prevType == 'procedures_defreturn') {
+            for (var i of prev.getVars()) {
+              this.menuGenerator_.push([i, i]);
+            }
           }
           prev = prev.getPreviousBlock();
           prevType = prev && prev.type;
@@ -314,6 +318,10 @@ function initBlocks() {
         while (prev != null) {
           if (prevType == 'variable_declare') {
             this.menuGenerator_.push([prev.getField('NAME').getValue(), prev.getField('NAME').getValue()]);
+          } else if (prevType == 'procedures_defnoreturn' || prevType == 'procedures_defreturn') {
+            for (var i of prev.getVars()) {
+              this.menuGenerator_.push([i, i]);
+            }
           }
           prev = prev.getPreviousBlock();
           prevType = prev && prev.type;
