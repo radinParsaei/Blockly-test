@@ -323,7 +323,7 @@ function initBlocks() {
               this.menuGenerator_.push([i, i]);
             }
           }
-          prev = prev.getPreviousBlock();
+          prev = prev.getPreviousBlock() || prev.getParent();
           prevType = prev && prev.type;
         }
       }

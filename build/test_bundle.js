@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "ed9a6bb9cc7d358a3c0f";
+/******/ 	var hotCurrentHash = "4ce3594066a8681ee7d1";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21736,7 +21736,7 @@ function initBlocks() {
             }
           }
 
-          prev = prev.getPreviousBlock();
+          prev = prev.getPreviousBlock() || prev.getParent();
           prevType = prev && prev.type;
         }
       };
@@ -23166,6 +23166,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['procedures_defreturn'] = functi
 
   for (var i = 0; i < variables.length; i++) {
     args[i] = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].variableDB_.getName(variables[i], blockly__WEBPACK_IMPORTED_MODULE_0__["VARIABLE_CATEGORY_NAME"]);
+    allVariables.push([variables[i], variables[i]]);
   }
 
   var code = 'func ' + funcName + '(' + args.join(', ') + '){\n' + xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';

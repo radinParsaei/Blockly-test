@@ -350,6 +350,7 @@ Blockly.genCode['procedures_defreturn'] = function(block) {
   for (var i = 0; i < variables.length; i++) {
     args[i] = Blockly.genCode.variableDB_.getName(variables[i],
         Blockly.VARIABLE_CATEGORY_NAME);
+        allVariables.push([variables[i], variables[i]]);
   }
   var code = 'func ' + funcName + '(' + args.join(', ') + '){\n' +
      xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';
