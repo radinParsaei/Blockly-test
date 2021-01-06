@@ -131,7 +131,7 @@ Blockly.genCode.finish = function(code) {
 };
 
 Blockly.genCode.scrubNakedValue = function(line) {
-  return line + ';\n';
+  return line + '\n';
 };
 
 Blockly.genCode.quote_ = function(string) {
@@ -418,6 +418,10 @@ Blockly.genCode['return_statement'] = function(block) {
 Blockly.genCode['logic_boolean'] = function(block) {
   var code = (block.getFieldValue('BOOL') == 'TRUE') ? 'true' : 'false';
   return [code, Blockly.genCode.ORDER_ATOMIC];
+};
+
+Blockly.genCode['logic_null'] = function(block) {
+  return ['null', Blockly.genCode.ORDER_ATOMIC];
 };
 
 Blockly.genCode['variable_get'] = function(block) {

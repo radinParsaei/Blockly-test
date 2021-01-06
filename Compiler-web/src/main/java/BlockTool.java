@@ -46,6 +46,8 @@ public class BlockTool {
     private String putVales(ValueBase val) {
         if (val instanceof SyntaxTree.Number) {
             return "<block type=\"math_number\"><field name=\"NUM\">" + val + "</field></block>";
+        } else if (val instanceof SyntaxTree.Null) {
+            return "<block type=\"logic_null\"></block>";
         } else if (val instanceof SyntaxTree.Text) {
             return "<block type=\"text\"><field name=\"TEXT\">" + ("" + val).replace("\n", "\\n")
                     .replace("\f", "\\f").replace("\t", "\\t").replace("\r", "\\r")
