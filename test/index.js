@@ -109,8 +109,10 @@ function injectBlockly() {
 }
 
 window.onresize = function(event) {
-  changeViewWithoutSwap();
-  changeViewWithoutSwap();
+  if (localStorage.getItem('mode') == 'block') {
+    document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
+    injectBlockly();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
