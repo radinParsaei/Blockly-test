@@ -1,4 +1,3 @@
-import org.teavm.jso.browser.Window;
 import org.teavm.jso.dom.html.HTMLDocument;
 import org.teavm.jso.dom.html.HTMLElement;
 
@@ -8,22 +7,38 @@ public class Client extends CompilerMain {
         HTMLDocument document = HTMLDocument.current();
         HTMLElement button = document.getElementById("run");
         button.addEventListener("click", evt -> {
-            SyntaxTree.getFunctions().clear();
-            SyntaxTree.getVariables().clear();
-            SyntaxTree.getClassesParameters().clear();
-            SyntaxTree.CreateLambda.setCounter(0);
-            SyntaxTree.resetNameSpaces();
-            for (int i : Targets.getIntervalCodes()) {
-                Window.clearInterval(i);
-            }
-            document.getElementById("console2").setInnerHTML("");
+            SyntaxTree.setId(SyntaxTree.getId() + 1);
+//            for (int i : Targets.getIntervalCodes()) {
+//                Window.clearInterval(i);
+//            }
             Compiler compiler = new Compiler(null, true, null, null, null);
             CustomCompileStep.used = false;
             REPLReader.setReadCode(false);
-            compile(compiler);
-            REPLReader.setReadCode(true);
-            compile(compiler);
-            CustomCompileStep.used = true;
+            Thread thread = new Thread(() -> {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                SyntaxTree.getFunctions().clear();
+                SyntaxTree.getVariables().clear();
+                SyntaxTree.getClassesParameters().clear();
+                SyntaxTree.CreateLambda.setCounter(0);
+                SyntaxTree.resetNameSpaces();
+                document.getElementById("console2").setInnerHTML("");
+                compile(compiler);
+                REPLReader.setReadCode(true);
+                compile(compiler);
+            });
+            thread.start();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                CustomCompileStep.used = true;
+            }).start();
         });
 
 //        HTMLElement buttonTmp = document.getElementById("callColor");
