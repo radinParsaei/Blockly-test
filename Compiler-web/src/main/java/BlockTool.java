@@ -177,7 +177,7 @@ public class BlockTool {
         if (program instanceof SyntaxTree.Programs) {
             for (ProgramBase program1 : ((SyntaxTree.Programs) program).getPrograms()) {
                 result.append(syntaxTreeToBlocksXML1(program1));
-                if (program1 instanceof SyntaxTree.Return || program1 instanceof SyntaxTree.Break) break;
+                if (program1 instanceof SyntaxTree.Return || program1 instanceof SyntaxTree.Break || program1 instanceof SyntaxTree.Continue) break;
             }
         } else if (program instanceof SyntaxTree.Print) {
             ValueBase[] args = ((SyntaxTree.Print) program).getArgs();
@@ -224,6 +224,9 @@ public class BlockTool {
             blockCount++;
         } else if (program instanceof SyntaxTree.Break) {
             result.append("<block type=\"control_break\">");
+            blockCount++;
+        } else if (program instanceof SyntaxTree.Continue) {
+            result.append("<block type=\"control_continue\">");
             blockCount++;
         } else if (program instanceof SyntaxTree.If) {
             int pBlockCount = blockCount;

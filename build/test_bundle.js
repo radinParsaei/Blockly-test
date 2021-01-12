@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "35e1aa2f4ad7509610e1";
+/******/ 	var hotCurrentHash = "dcd34ef9dfeab516da16";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21598,6 +21598,7 @@ function initBlocks() {
     blockToAddField.setCheck(["Number", "Boolean"]);
   }, null, Blockly.Msg['CONTROLS_WHILEUNTIL_INPUT_DO']], Blockly.Msg['CONTROLS_WHILEUNTIL_TOOLTIP_WHILE'], Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL']);
   addBlock("control_break", "Loops");
+  addBlock("control_continue", "Loops");
   Blockly.defineBlocksWithJsonArray([{
     "type": "text",
     "message0": "\"%1\"",
@@ -21666,6 +21667,13 @@ function initBlocks() {
     "style": 'loop_blocks',
     "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP}",
     "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_HELPURL}"
+  }, {
+    "type": "control_continue",
+    "message0": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE}",
+    "previousStatement": null,
+    "style": 'loop_blocks',
+    "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP}",
+    "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_HELPURL}"
   }]);
   Blockly.Blocks['variable_set'] = {
     init: function init() {
@@ -21831,6 +21839,7 @@ function initBlocks() {
   Blockly.Msg['SELECT_VARIABLE'] = 'select a variable';
   Blockly.Msg['VARIABLE_DECLARE'] = 'declare';
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK'];
+  Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE'];
 }
 
 
@@ -22806,7 +22815,7 @@ __webpack_require__.r(__webpack_exports__);
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"] = new blockly__WEBPACK_IMPORTED_MODULE_0__["Generator"]('genCode');
 var usedVariables = {};
-blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].addReservedWords('func,if,return,var,while,null,true,false,', Object.getOwnPropertyNames(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].global).join(',')); //copied from Blockly python generator
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].addReservedWords('func,if,return,var,while,null,true,false,class,for,this,init,new,break,continue', Object.getOwnPropertyNames(blockly__WEBPACK_IMPORTED_MODULE_0__["utils"].global).join(',')); //copied from Blockly python generator
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_ATOMIC = 0; // 0 "" ...
 
@@ -23257,6 +23266,10 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['variable_declare'] = function (
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['control_break'] = function (block) {
   return 'break\n';
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['control_continue'] = function (block) {
+  return 'continue\n';
 };
 
 /***/ }),

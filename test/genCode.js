@@ -5,7 +5,7 @@ Blockly.genCode = new Blockly.Generator('genCode');
 var usedVariables = {};
 
 Blockly.genCode.addReservedWords(
-    'func,if,return,var,while,null,true,false,',
+    'func,if,return,var,while,null,true,false,class,for,this,init,new,break,continue',
     Object.getOwnPropertyNames(Blockly.utils.global).join(','));
 
 //copied from Blockly python generator
@@ -449,4 +449,8 @@ Blockly.genCode['variable_declare'] = function(block) {
 
 Blockly.genCode['control_break'] = function(block) {
   return 'break\n';
+};
+
+Blockly.genCode['control_continue'] = function(block) {
+  return 'continue\n';
 };

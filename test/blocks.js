@@ -190,6 +190,7 @@ function initBlocks() {
   );
 
   addBlock("control_break", "Loops");
+  addBlock("control_continue", "Loops");
 
   Blockly.defineBlocksWithJsonArray([
     {
@@ -276,6 +277,13 @@ function initBlocks() {
       "style": 'loop_blocks',
       "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP}",
       "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_HELPURL}",
+    }, {
+      "type": "control_continue",
+      "message0": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE}",
+      "previousStatement": null,
+      "style": 'loop_blocks',
+      "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP}",
+      "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_HELPURL}",
     }]
   );
 
@@ -413,6 +421,7 @@ function initBlocks() {
   Blockly.Msg['SELECT_VARIABLE'] = 'select a variable';
   Blockly.Msg['VARIABLE_DECLARE'] = 'declare';
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK'];
+  Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE'];
 }
 
 export { initBlocks };
