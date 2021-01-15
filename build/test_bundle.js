@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "dcd34ef9dfeab516da16";
+/******/ 	var hotCurrentHash = "680d5da529be0710d844";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -21674,6 +21674,25 @@ function initBlocks() {
     "style": 'loop_blocks',
     "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP}",
     "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_HELPURL}"
+  }, {
+    "type": "logic_compare",
+    "message0": "%1 %2 %3",
+    "args0": [{
+      "type": "input_value",
+      "name": "A"
+    }, {
+      "type": "field_dropdown",
+      "name": "OP",
+      "options": [["=", "EQ"], ["\u2260", "NEQ"], ["\u200F<", "LT"], ["\u200F\u2264", "LTE"], ["\u200F>", "GT"], ["\u200F\u2265", "GTE"]]
+    }, {
+      "type": "input_value",
+      "name": "B"
+    }],
+    "inputsInline": true,
+    "output": "Boolean",
+    "style": "logic_blocks",
+    "helpUrl": "%{BKY_LOGIC_COMPARE_HELPURL}",
+    "extensions": ["logic_op_tooltip"]
   }]);
   Blockly.Blocks['variable_set'] = {
     init: function init() {
@@ -23270,6 +23289,22 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['control_break'] = function (blo
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['control_continue'] = function (block) {
   return 'continue\n';
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_compare'] = function (block) {
+  var OPERATORS = {
+    'EQ': '==',
+    'NEQ': '!=',
+    'LT': '<',
+    'LTE': '<=',
+    'GT': '>',
+    'GTE': '>='
+  };
+  var operator = OPERATORS[block.getFieldValue('OP')];
+  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'A', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL) || '0';
+  var argument1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'B', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL) || '0';
+  var code = argument0 + ' ' + operator + ' ' + argument1;
+  return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL];
 };
 
 /***/ }),

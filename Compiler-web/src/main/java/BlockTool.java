@@ -90,8 +90,11 @@ public class BlockTool {
                     !(((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Boolean)) {
                 return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
                         putVales(((SyntaxTree.Equals) val).getV1()) + "</value></block>";
+            } else {
+                return "<block type=\"logic_compare\"><field name=\"OP\">EQ</field><value name=\"A\">" +
+                        putVales(((SyntaxTree.Equals) val).getV1()) + "</value><value name=\"B\">" +
+                        putVales(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
             }
-            return "";
         } else if (val instanceof SyntaxTree.CallFunction) {
             String functionName = ((SyntaxTree.CallFunction) val).getFunctionName().split(":")[0];
             ((SyntaxTree.CallFunction) val).findFunction();

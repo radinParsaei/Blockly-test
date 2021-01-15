@@ -454,3 +454,19 @@ Blockly.genCode['control_break'] = function(block) {
 Blockly.genCode['control_continue'] = function(block) {
   return 'continue\n';
 };
+
+Blockly.genCode['logic_compare'] = function(block) {
+  var OPERATORS = {
+    'EQ': '==',
+    'NEQ': '!=',
+    'LT': '<',
+    'LTE': '<=',
+    'GT': '>',
+    'GTE': '>='
+  };
+  var operator = OPERATORS[block.getFieldValue('OP')];
+  var argument0 = Blockly.genCode.valueToCode(block, 'A', Blockly.genCode.ORDER_RELATIONAL) || '0';
+  var argument1 = Blockly.genCode.valueToCode(block, 'B', Blockly.genCode.ORDER_RELATIONAL) || '0';
+  var code = argument0 + ' ' + operator + ' ' + argument1;
+  return [code, Blockly.genCode.ORDER_RELATIONAL];
+};
