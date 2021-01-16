@@ -305,6 +305,7 @@ function changeViewWithoutSwap() {
     injectBlockly();
     // document.getElementById("callColor").click();
     document.getElementById("genBlocks").click();
+    document.getElementsByClassName('blocklyMenuItem')[0].click();
   } catch(e) {}
   document.getElementById("gotocode").classList.toggle('selected');
   document.getElementById("gotoblock").classList.toggle('selected');

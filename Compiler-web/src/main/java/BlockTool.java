@@ -80,6 +80,7 @@ public class BlockTool {
                     putVales(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Variable) {
             String[] variableName = ((SyntaxTree.Variable) val).getVariableName().split(":");
+            addVariableName(variableName[variableName.length - 1]);
             return "<block type=\"variable_get\"><field name=\"NAME\">" + variableName[variableName.length - 1] + "</field></block>";
         } else if (val instanceof SyntaxTree.Equals) {
             if (((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV1().toString().equals("") &&
