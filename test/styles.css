@@ -1,5 +1,4 @@
-html, body {
-  margin: 0;
+.label {
   font-family: "Source Code Pro", monospace !important;
 }
 * {

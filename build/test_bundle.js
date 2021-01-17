@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "8fcded739ca87a9dc476";
+/******/ 	var hotCurrentHash = "2f82625f50bbae27b913";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23313,7 +23313,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_compare'] = function (blo
 /*!***********************!*\
   !*** ./test/index.js ***!
   \***********************/
-/*! exports provided: Blockly, workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor */
+/*! exports provided: Blockly, workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, loadFont */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -23325,6 +23325,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "injectBlockly", function() { return injectBlockly; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "runCode", function() { return runCode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "editor", function() { return editor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadFont", function() { return loadFont; });
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Blockly", function() { return blockly__WEBPACK_IMPORTED_MODULE_0__; });
@@ -23357,11 +23358,79 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 function genPhoto() {
-  html2canvas__WEBPACK_IMPORTED_MODULE_6___default()(document.body, {
-    logging: false
-  }).then(function (canvas) {
-    document.body.appendChild(canvas);
-  });
+  var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  var bbox = document.getElementsByClassName("blocklyBlockCanvas")[0].getBBox();
+  svg.setAttribute('class', "zelos-renderer DarkTheme-theme");
+  svg.setAttribute('width', bbox.width);
+  svg.setAttribute('height', bbox.height);
+  svg.setAttribute('viewBox', bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height);
+  var child = blockly__WEBPACK_IMPORTED_MODULE_0__["mainWorkspace"].svgBlockCanvas_.cloneNode(true);
+  child.removeAttribute("transform");
+  svg.appendChild(child);
+  var div = document.createElement("div");
+  div.setAttribute('width', bbox.width);
+  div.setAttribute('height', bbox.height);
+  div.setAttribute('style', 'width: min-content;position: absolute;right: 5000px;top:-5000px;');
+  div.appendChild(svg);
+  document.body.appendChild(div);
+  loadFont(div);
+  setTimeout(function () {
+    try {
+      html2canvas__WEBPACK_IMPORTED_MODULE_6___default()(div, {
+        logging: false
+      }).then(function (canvas) {
+        var DOMURL = self.URL || self.webkitURL || self;
+        var img = canvas.toDataURL("image/png");
+        var element = document.createElement('a');
+        element.href = img;
+        element.download = 'capture.png';
+        element.click();
+        DOMURL.revokeObjectURL(element.href);
+        document.body.removeChild(div); // document.body.appendChild(canvas);
+        // document.body.removeChild(div);
+      });
+    } catch (e) {
+      alert(e);
+    }
+  }, 1000);
+}
+
+function loadFont(target) {
+  var request = new XMLHttpRequest();
+  request.open("get", "https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap");
+  request.responseType = "text";
+  request.send();
+
+  request.onloadend = function () {
+    var css = request.response;
+    var fontURLs = css.match(/https?:\/\/[^ \)]+/g);
+    var loaded = 0;
+    console.log(fontURLs);
+    fontURLs.forEach(function (url) {
+      var request = new XMLHttpRequest();
+      request.open("get", url);
+      request.responseType = "blob";
+
+      request.onloadend = function () {
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+          css = css.replace(new RegExp(url), reader.result);
+          loaded++;
+
+          if (loaded === fontURLs.length) {
+            var styleEl = document.createElement('style');
+            styleEl.appendChild(document.createTextNode(css));
+            target.querySelector('svg').appendChild(styleEl);
+          }
+        };
+
+        reader.readAsDataURL(request.response);
+      };
+
+      request.send();
+    });
+  };
 }
 
 var isDark = false;
@@ -23690,6 +23759,22 @@ function changeView() {
 }
 
 if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').checked = true;else document.getElementById('theme').checked = false;
+blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]['screenshot'] = 'Save blocks as image';
+var screenshot = {
+  displayText: function displayText() {
+    return blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]['screenshot'];
+  },
+  preconditionFn: function preconditionFn(scope) {
+    return 'enabled';
+  },
+  callback: function callback(scope) {
+    genPhoto();
+  },
+  scopeType: blockly__WEBPACK_IMPORTED_MODULE_0__["ContextMenuRegistry"].ScopeType.WORKSPACE,
+  id: 'screenshot',
+  weight: 1
+};
+blockly__WEBPACK_IMPORTED_MODULE_0__["ContextMenuRegistry"].registry.register(screenshot);
 
 
 /***/ }),

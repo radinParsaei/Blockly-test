@@ -9,9 +9,75 @@ import './procedures.js';
 import html2canvas from 'html2canvas';
 
 function genPhoto() {
-  html2canvas(document.body, {logging: false}).then(function(canvas) {
-      document.body.appendChild(canvas);
-  });
+  let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let bbox = document.getElementsByClassName("blocklyBlockCanvas")[0].getBBox();
+  svg.setAttribute('class', "zelos-renderer DarkTheme-theme");
+  svg.setAttribute('width', bbox.width);
+  svg.setAttribute('height', bbox.height);
+  svg.setAttribute('viewBox', bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height);
+  let child = Blockly.mainWorkspace.svgBlockCanvas_.cloneNode(true);
+  child.removeAttribute("transform");
+  svg.appendChild(child);
+  let div = document.createElement("div");
+  div.setAttribute('width', bbox.width);
+  div.setAttribute('height', bbox.height);
+  div.setAttribute('style', 'width: min-content;position: absolute;right: 5000px;top:-5000px;');
+  div.appendChild(svg);
+  document.body.appendChild(div);
+  loadFont(div);
+  setTimeout(function() {
+    try {
+      html2canvas(div, {logging: false}).then(function(canvas) {
+        let DOMURL = self.URL || self.webkitURL || self;
+        let img = canvas.toDataURL("image/png");
+        let element = document.createElement('a');
+        element.href = img;
+        element.download = 'capture.png';
+        element.click();
+        DOMURL.revokeObjectURL(element.href);
+        document.body.removeChild(div);
+        // document.body.appendChild(canvas);
+        // document.body.removeChild(div);
+      });
+    } catch(e) {
+      alert(e);
+    }
+  }, 1000);
+}
+
+function loadFont(target) {
+    const request = new XMLHttpRequest();
+    request.open("get", "https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap");
+    request.responseType = "text";
+    request.send();
+    request.onloadend = () => {
+
+        let css = request.response;
+        const fontURLs = css.match(/https?:\/\/[^ \)]+/g);
+        let loaded = 0;
+        console.log(fontURLs)
+        fontURLs.forEach(url => {
+
+            const request = new XMLHttpRequest();
+            request.open("get", url);
+            request.responseType = "blob";
+            request.onloadend = () => {
+
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    css = css.replace(new RegExp(url), reader.result);
+                    loaded++;
+                    if (loaded === fontURLs.length){
+                        const styleEl = document.createElement('style');
+                        styleEl.appendChild(document.createTextNode(css));
+                        target.querySelector('svg').appendChild(styleEl)
+                    }
+                };
+                reader.readAsDataURL(request.response);
+            };
+            request.send();
+        });
+    };
 }
 
 var isDark = false;
@@ -330,4 +396,22 @@ function changeView() {
 if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').checked = true;
 else document.getElementById('theme').checked = false;
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor };
+Blockly.Msg['screenshot'] = 'Save blocks as image';
+
+var screenshot = {
+  displayText: function() {
+    return Blockly.Msg['screenshot'];
+  },
+  preconditionFn: function(scope) {
+    return 'enabled';
+  },
+  callback: function(scope) {
+    genPhoto();
+  },
+  scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
+  id: 'screenshot',
+  weight: 1,
+};
+Blockly.ContextMenuRegistry.registry.register(screenshot);
+
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, loadFont };
