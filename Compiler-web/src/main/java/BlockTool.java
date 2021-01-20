@@ -104,6 +104,14 @@ public class BlockTool {
             return "<block type=\"logic_compare\"><field name=\"OP\">LT</field><value name=\"A\">" +
                     putVales(((SyntaxTree.LesserThan) val).getV1()) + "</value><value name=\"B\">" +
                     putVales(((SyntaxTree.LesserThan) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.GreaterThanOrEqual) {
+            return "<block type=\"logic_compare\"><field name=\"OP\">GTE</field><value name=\"A\">" +
+                    putVales(((SyntaxTree.GreaterThanOrEqual) val).getV1()) + "</value><value name=\"B\">" +
+                    putVales(((SyntaxTree.GreaterThanOrEqual) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.LesserThanOrEqual) {
+            return "<block type=\"logic_compare\"><field name=\"OP\">LTE</field><value name=\"A\">" +
+                    putVales(((SyntaxTree.LesserThanOrEqual) val).getV1()) + "</value><value name=\"B\">" +
+                    putVales(((SyntaxTree.LesserThanOrEqual) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Not) {
             if (((SyntaxTree.Not) val).getValue() instanceof SyntaxTree.Equals) {
                 return "<block type=\"logic_compare\"><field name=\"OP\">NEQ</field><value name=\"A\">" +
