@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "2f82625f50bbae27b913";
+/******/ 	var hotCurrentHash = "ce0c7fd1526190c65a7c";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23386,8 +23386,7 @@ function genPhoto() {
         element.download = 'capture.png';
         element.click();
         DOMURL.revokeObjectURL(element.href);
-        document.body.removeChild(div); // document.body.appendChild(canvas);
-        // document.body.removeChild(div);
+        document.body.removeChild(div);
       });
     } catch (e) {
       alert(e);
@@ -23405,7 +23404,6 @@ function loadFont(target) {
     var css = request.response;
     var fontURLs = css.match(/https?:\/\/[^ \)]+/g);
     var loaded = 0;
-    console.log(fontURLs);
     fontURLs.forEach(function (url) {
       var request = new XMLHttpRequest();
       request.open("get", url);

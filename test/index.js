@@ -36,8 +36,6 @@ function genPhoto() {
         element.click();
         DOMURL.revokeObjectURL(element.href);
         document.body.removeChild(div);
-        // document.body.appendChild(canvas);
-        // document.body.removeChild(div);
       });
     } catch(e) {
       alert(e);
@@ -51,18 +49,14 @@ function loadFont(target) {
     request.responseType = "text";
     request.send();
     request.onloadend = () => {
-
         let css = request.response;
         const fontURLs = css.match(/https?:\/\/[^ \)]+/g);
         let loaded = 0;
-        console.log(fontURLs)
         fontURLs.forEach(url => {
-
             const request = new XMLHttpRequest();
             request.open("get", url);
             request.responseType = "blob";
             request.onloadend = () => {
-
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     css = css.replace(new RegExp(url), reader.result);
