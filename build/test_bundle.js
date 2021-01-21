@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "d357d0349916f224ffaa";
+/******/ 	var hotCurrentHash = "c447af97c5e1eab5fe6f";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23305,6 +23305,31 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_compare'] = function (blo
   var argument1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'B', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL) || '0';
   var code = argument0 + ' ' + operator + ' ' + argument1;
   return [code, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_RELATIONAL];
+};
+
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_operation'] = function (block) {
+  var operator = block.getFieldValue('OP') == 'AND' ? 'and' : 'or';
+  var order = operator == 'and' ? blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_AND : blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR;
+  var argument0 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'A', order);
+  var argument1 = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'B', order);
+
+  if (!argument0 && !argument1) {
+    argument0 = 'false';
+    argument1 = 'false';
+  } else {
+    var defaultArgument = operator == 'and' ? 'true' : 'false';
+
+    if (!argument0) {
+      argument0 = defaultArgument;
+    }
+
+    if (!argument1) {
+      argument1 = defaultArgument;
+    }
+  }
+
+  var code = argument0 + ' ' + operator + ' ' + argument1;
+  return [code, order];
 };
 
 /***/ }),

@@ -470,3 +470,24 @@ Blockly.genCode['logic_compare'] = function(block) {
   var code = argument0 + ' ' + operator + ' ' + argument1;
   return [code, Blockly.genCode.ORDER_RELATIONAL];
 };
+
+Blockly.genCode['logic_operation'] = function(block) {
+  var operator = (block.getFieldValue('OP') == 'AND') ? 'and' : 'or';
+  var order = (operator == 'and') ? Blockly.genCode.ORDER_LOGICAL_AND : Blockly.genCode.ORDER_LOGICAL_OR;
+  var argument0 = Blockly.genCode.valueToCode(block, 'A', order);
+  var argument1 = Blockly.genCode.valueToCode(block, 'B', order);
+  if (!argument0 && !argument1) {
+    argument0 = 'false';
+    argument1 = 'false';
+  } else {
+    var defaultArgument = (operator == 'and') ? 'true' : 'false';
+    if (!argument0) {
+      argument0 = defaultArgument;
+    }
+    if (!argument1) {
+      argument1 = defaultArgument;
+    }
+  }
+  var code = argument0 + ' ' + operator + ' ' + argument1;
+  return [code, order];
+};
