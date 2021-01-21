@@ -78,6 +78,8 @@ public class BlockTool {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">POWER</field><value name=\"A\">" +
                     putVales(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
                     putVales(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.PrintFunction) {
+            return syntaxTreeToBlocksXML1(((SyntaxTree.PrintFunction) val).getProgram());
         } else if (val instanceof SyntaxTree.Variable) {
             String[] variableName = ((SyntaxTree.Variable) val).getVariableName().split(":");
             addVariableName(variableName[variableName.length - 1]);
@@ -235,7 +237,7 @@ public class BlockTool {
             blockCount++;
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
-            if (blockCount != 0) {
+            if (!(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction) && blockCount != 0) {
                 blockCount--;
                 for (int i = 0; i < blockCount; i++) {
                     result.append("</block></next>");

@@ -235,7 +235,7 @@ Blockly.genCode['text'] = function(block) {
 Blockly.genCode['text_print'] = function(block) {
   var msg = Blockly.genCode.valueToCode(block, 'TEXT',
       Blockly.genCode.ORDER_NONE) || '\'\'';
-  return 'print ' + msg + '\n';
+  return 'print(' + msg + ')\n';
 };
 
 Blockly.genCode['math_number'] = function(block) {

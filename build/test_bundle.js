@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "ce0c7fd1526190c65a7c";
+/******/ 	var hotCurrentHash = "d357d0349916f224ffaa";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23081,7 +23081,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['text'] = function (block) {
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['text_print'] = function (block) {
   var msg = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].valueToCode(block, 'TEXT', blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_NONE) || '\'\'';
-  return 'print ' + msg + '\n';
+  return 'print(' + msg + ')\n';
 };
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['math_number'] = function (block) {
