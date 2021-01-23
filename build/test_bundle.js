@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "e10084be3638a1fe40ae";
+/******/ 	var hotCurrentHash = "66b679df88a905cd76e2";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23677,6 +23677,13 @@ window.onresize = function (event) {
 document.addEventListener('DOMContentLoaded', function () {
   Object(_blocks_js__WEBPACK_IMPORTED_MODULE_3__["initBlocks"])();
   blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["MATH_POWER_SYMBOL"] = "**";
+  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_LOGIC"] = "Logic";
+  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_EVENTS"] = "Events";
+  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_LOOPS"] = "Loops";
+  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_MATH"] = "Math";
+  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_TEXT"] = "Text";
+  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_VARIABLE"] = "Variables";
+  blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_FUNCTIONS"] = "Functions";
   injectBlockly();
 });
 

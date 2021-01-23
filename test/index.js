@@ -186,6 +186,13 @@ window.onresize = function(event) {
 document.addEventListener('DOMContentLoaded', function() {
   initBlocks();
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
+  Blockly.Msg["CATEGORY_LOGIC"] = "Logic";
+  Blockly.Msg["CATEGORY_EVENTS"] = "Events";
+  Blockly.Msg["CATEGORY_LOOPS"] = "Loops";
+  Blockly.Msg["CATEGORY_MATH"] = "Math";
+  Blockly.Msg["CATEGORY_TEXT"] = "Text";
+  Blockly.Msg["CATEGORY_VARIABLE"] = "Variables";
+  Blockly.Msg["CATEGORY_FUNCTIONS"] = "Functions";
   injectBlockly();
 });
 
