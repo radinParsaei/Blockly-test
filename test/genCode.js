@@ -65,6 +65,7 @@ Blockly.genCode.ORDER_OVERRIDES = [
 ];
 
 Blockly.genCode.init = function(workspace) {
+  onStartUsed = 0;
   allVariables = [];
   Blockly.genCode.definitions_ = Object.create(null);
   Blockly.genCode.functionNames_ = Object.create(null);
@@ -453,6 +454,12 @@ Blockly.genCode['control_break'] = function(block) {
 
 Blockly.genCode['control_continue'] = function(block) {
   return 'continue\n';
+};
+
+Blockly.genCode['main_entry'] = function(block) {
+  block.disabled = onStartUsed != 0;
+  onStartUsed++;
+  return Blockly.genCode.statementToCode(block, 'STACK').replace(/^(\t|  )/gm, '');
 };
 
 Blockly.genCode['logic_compare'] = function(block) {

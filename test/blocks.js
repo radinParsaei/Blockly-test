@@ -314,6 +314,21 @@ function initBlocks() {
     "style": "logic_blocks",
     "helpUrl": "%{BKY_LOGIC_COMPARE_HELPURL}",
     "extensions": ["logic_op_tooltip"]
+  }, {
+    "type": "main_entry",
+    "message0": "%{BKY_MAIN_ENTRY} %1 %2",
+    "args0": [
+      {
+        "type": "input_dummy",
+      }, {
+        "type": "input_statement",
+        "name": "STACK",
+      }
+    ],
+    "style": "procedure_blocks",
+    "ADD_START_HATS": true,
+    "helpUrl": "%{BKY_MAIN_ENTRY_HELPURL}",
+    "tooltip": "%{BKY_MAIN_ENTRY_TOOLTIP}",
   }]
   );
 
@@ -402,13 +417,6 @@ function initBlocks() {
       block.appendChild(nameField);
       xmlList.push(block);
     }
-    if (Blockly.Blocks['procedures_ifreturn']) {
-      // <block type="procedures_ifreturn" gap="16"></block>
-      var block = Blockly.utils.xml.createElement('block');
-      block.setAttribute('type', 'procedures_ifreturn');
-      block.setAttribute('gap', 16);
-      xmlList.push(block);
-    }
     if (xmlList.length) {
       // Add slightly larger gap between system blocks and user calls.
       xmlList[xmlList.length - 1].setAttribute('gap', 24);
@@ -450,6 +458,7 @@ function initBlocks() {
   Blockly.Msg['RETURN_STATEMENT_TEXT'] = 'return';
   Blockly.Msg['SELECT_VARIABLE'] = 'select a variable';
   Blockly.Msg['VARIABLE_DECLARE'] = 'declare';
+  Blockly.Msg['MAIN_ENTRY'] = 'on start';
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK'];
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE'];
 }

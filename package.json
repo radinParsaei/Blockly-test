@@ -20,6 +20,7 @@
     "extends": "@blockly/eslint-config"
   },
   "dependencies": {
+    "@blockly/disable-top-blocks": "^0.1.2",
     "html2canvas": "^1.0.0-rc.7"
   }
 }

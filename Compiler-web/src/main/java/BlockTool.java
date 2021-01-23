@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 
 public class BlockTool {
     int blockCount = 0;
-    private final ArrayList<String> variables = new ArrayList<>();
+//    private final ArrayList<String> variables = new ArrayList<>();
     private final StringBuilder functions = new StringBuilder();
     private static boolean parentIsExecuteValue = false;
     private final HashMap<String, ArrayList<String>> functionParameters = new HashMap<>();
@@ -191,7 +191,7 @@ public class BlockTool {
 
     public String syntaxTreeToBlocksXML(ProgramBase program) {
         StringBuilder tmp = new StringBuilder("<xml xmlns=\"https://developers.google.com/blockly/xml\">");
-        String xml = syntaxTreeToBlocksXML1(program);
+        String xml = "<block type=\"main_entry\"><statement name=\"STACK\">" + syntaxTreeToBlocksXML1(program);
         tmp.append(functions.toString());
         tmp.append(xml);
         blockCount--;
@@ -199,7 +199,7 @@ public class BlockTool {
             tmp.append("</block></next>");
         }
         if (blockCount >= 0) tmp.append("</block>");
-        tmp.append("</xml>");
+        tmp.append("</statement></block></xml>");
         return tmp.toString().replace("<next><next>", "<next>");
     }
 

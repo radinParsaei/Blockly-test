@@ -22,6 +22,9 @@
         <block type="logic_compare"></block>
         <block type="logic_operation"></block>
       </category>
+      <category id="EventCategory" name="Events" colour="#995ba5">
+        <block type="main_entry"></block>
+      </category>
       <category id="LoopsCategory" name="Loops" colour="#5ba55b"></category>
       <category id="MathCategory" name="Math" colour="#5b67a5">
         <block type="math_number">
@@ -160,6 +163,7 @@
     <script type="text/javascript">
       var functions = {};
       var functionCodes = '';
+      var onStartUsed = 0;
       var allVariables = [];
 
       function changeTheme2() {

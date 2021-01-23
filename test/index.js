@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly';
+import {DisableTopBlocks} from '@blockly/disable-top-blocks';
 // import { CodeJar } from 'CodeJar';
 // import { withLineNumbers } from 'codejar/linenumbers';
 import { withLineNumbers } from './linenumbers.js';
@@ -80,9 +81,16 @@ var code = null;
 let workspace;
 var genBlocks = false;
 
+const disableTopBlocksPlugin = new DisableTopBlocks();
+disableTopBlocksPlugin.init();
+
 function createWorkspace(blocklyDiv, options) {
   workspace = Blockly.inject(blocklyDiv, options);
   workspace.addChangeListener(function(event) {
+    Blockly.Events.disableOrphans(event);
+    if (event.element == undefined && event.recordUndo && event.oldXml && event.oldXml.attributes.type.value == 'main_entry') {
+      onStartUsed--;
+    }
     if (event.element == 'category' && event.newValue == null) {
       Blockly.hideFlyOut();
     }
@@ -110,7 +118,7 @@ function injectBlockly() {
     renderer: 'zelos',
     collapse : true,
     comments : false,
-    disable : true,
+    disable : false,
     maxBlocks : Infinity,
     trashcan : true,
     css : true,
@@ -160,7 +168,7 @@ function injectBlockly() {
   if (isFirst) {
     isFirst = false;
     try {
-      const xml = Blockly.Xml.textToDom(sessionStorage.getItem("blocks"));
+      const xml = Blockly.Xml.textToDom(localStorage.getItem("blocks"));
       Blockly.Xml.domToWorkspace(xml, workspace);
     } catch (e) {}
   } else {
@@ -196,7 +204,7 @@ function runCode() {
 window.onbeforeunload = function (e) {
   localStorage.setItem('allVariables', allVariables);
   const xml = Blockly.Xml.workspaceToDom(workspace);
-  sessionStorage.setItem("blocks", Blockly.Xml.domToPrettyText(xml));
+  localStorage.setItem("blocks", Blockly.Xml.domToPrettyText(xml));
 };
 
 if (localStorage.getItem('allVariables') != null) {

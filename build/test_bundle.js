@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "c447af97c5e1eab5fe6f";
+/******/ 	var hotCurrentHash = "e10084be3638a1fe40ae";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1853,6 +1853,94 @@ var ContinuousToolbox = /*#__PURE__*/function (_Blockly$Toolbox) {
 
   return ContinuousToolbox;
 }(blockly_core__WEBPACK_IMPORTED_MODULE_0__["Toolbox"]);
+
+/***/ }),
+
+/***/ "./node_modules/@blockly/disable-top-blocks/src/index.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@blockly/disable-top-blocks/src/index.js ***!
+  \***************************************************************/
+/*! exports provided: DisableTopBlocks */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DisableTopBlocks", function() { return DisableTopBlocks; });
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly/core */ "./node_modules/blockly/core-browser.js");
+/* harmony import */ var blockly_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly_core__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * @fileoverview Plugin for changing the context menu to match the
+ * `disableOrphans` event handler.
+ */
+
+
+
+/**
+ * This plugin changes the logic of the enable/disable context menu item. It is
+ * enabled for all blocks except top-level blocks that have output or
+ * previous connections. In other words, the option is disabled for orphan
+ * blocks. Using this plugin allows users to disable valid non-orphan blocks,
+ * but not re-enable blocks that have been automatically disabled by
+ * `disableOrphans`.
+ */
+class DisableTopBlocks {
+  /**
+   * Modifies the context menu 'disable' option as described above.
+   */
+  init() {
+    const disableMenuItem =
+        blockly_core__WEBPACK_IMPORTED_MODULE_0__["ContextMenuRegistry"].registry.getItem('blockDisable');
+    this.oldPreconditionFn = disableMenuItem.preconditionFn;
+    disableMenuItem.preconditionFn =
+        function(/** @type {!Blockly.ContextMenuRegistry.Scope} */ scope) {
+          const block = scope.block;
+          if (!block.isInFlyout && block.workspace.options.disable &&
+              block.isEditable()) {
+            if (block.getInheritedDisabled() || isOrphan(block)) {
+              return 'disabled';
+            }
+            return 'enabled';
+          }
+          return 'hidden';
+        };
+  }
+
+  /**
+   * Turn off the effects of this plugin and restore the initial behavior.
+   * This is never required to be called. It is optional in case you need to
+   * disable the plugin.
+   */
+  dispose() {
+    const disableMenuItem =
+        blockly_core__WEBPACK_IMPORTED_MODULE_0__["ContextMenuRegistry"].registry.getItem('blockDisable');
+    disableMenuItem.preconditionFn = this.oldPreconditionFn;
+  }
+}
+
+/**
+ * A block is an orphan if its parent is an orphan, or if it doesn't have a
+ * parent but it does have a previous or output connection (so it expects to be
+ * attached to something). This means all children of orphan blocks are also
+ * orphans and cannot be manually re-enabled.
+ * @param {!Blockly.BlockSvg} block Block to check.
+ * @return {boolean} Whether the block is an orphan.
+ */
+function isOrphan(block) {
+  // If the parent is an orphan block, this block should also be considered
+  // an orphan so it cannot be manually re-enabled.
+  const parent = /** @type {Blockly.BlockSvg} */ (block.getParent());
+  if (parent && isOrphan(parent)) {
+    return true;
+  }
+  return !parent &&
+      !!(block.outputConnection || block.previousConnection);
+}
+
 
 /***/ }),
 
@@ -21693,6 +21781,19 @@ function initBlocks() {
     "style": "logic_blocks",
     "helpUrl": "%{BKY_LOGIC_COMPARE_HELPURL}",
     "extensions": ["logic_op_tooltip"]
+  }, {
+    "type": "main_entry",
+    "message0": "%{BKY_MAIN_ENTRY} %1 %2",
+    "args0": [{
+      "type": "input_dummy"
+    }, {
+      "type": "input_statement",
+      "name": "STACK"
+    }],
+    "style": "procedure_blocks",
+    "ADD_START_HATS": true,
+    "helpUrl": "%{BKY_MAIN_ENTRY_HELPURL}",
+    "tooltip": "%{BKY_MAIN_ENTRY_TOOLTIP}"
   }]);
   Blockly.Blocks['variable_set'] = {
     init: function init() {
@@ -21805,14 +21906,6 @@ function initBlocks() {
       xmlList.push(block);
     }
 
-    if (Blockly.Blocks['procedures_ifreturn']) {
-      // <block type="procedures_ifreturn" gap="16"></block>
-      var block = Blockly.utils.xml.createElement('block');
-      block.setAttribute('type', 'procedures_ifreturn');
-      block.setAttribute('gap', 16);
-      xmlList.push(block);
-    }
-
     if (xmlList.length) {
       // Add slightly larger gap between system blocks and user calls.
       xmlList[xmlList.length - 1].setAttribute('gap', 24);
@@ -21857,6 +21950,7 @@ function initBlocks() {
   Blockly.Msg['RETURN_STATEMENT_TEXT'] = 'return';
   Blockly.Msg['SELECT_VARIABLE'] = 'select a variable';
   Blockly.Msg['VARIABLE_DECLARE'] = 'declare';
+  Blockly.Msg['MAIN_ENTRY'] = 'on start';
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK'];
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE'];
 }
@@ -22902,6 +22996,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_OVERRIDES = [// (foo()).ba
 [blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR, blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].ORDER_LOGICAL_OR]];
 
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].init = function (workspace) {
+  onStartUsed = 0;
   allVariables = [];
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].definitions_ = Object.create(null);
   blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].functionNames_ = Object.create(null);
@@ -23291,6 +23386,12 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['control_continue'] = function (
   return 'continue\n';
 };
 
+blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['main_entry'] = function (block) {
+  block.disabled = onStartUsed != 0;
+  onStartUsed++;
+  return blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].statementToCode(block, 'STACK').replace(/^(\t|  )/gm, '');
+};
+
 blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_compare'] = function (block) {
   var OPERATORS = {
     'EQ': '==',
@@ -23354,16 +23455,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Blockly", function() { return blockly__WEBPACK_IMPORTED_MODULE_0__; });
-/* harmony import */ var _linenumbers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./linenumbers.js */ "./test/linenumbers.js");
-/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
-/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
-/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
-/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
+/* harmony import */ var _blockly_disable_top_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @blockly/disable-top-blocks */ "./node_modules/@blockly/disable-top-blocks/src/index.js");
+/* harmony import */ var _linenumbers_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./linenumbers.js */ "./test/linenumbers.js");
+/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
+/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
+/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
+/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
+/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -23371,6 +23473,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
  // import { CodeJar } from 'CodeJar';
 // import { withLineNumbers } from 'codejar/linenumbers';
@@ -23401,7 +23504,7 @@ function genPhoto() {
   loadFont(div);
   setTimeout(function () {
     try {
-      html2canvas__WEBPACK_IMPORTED_MODULE_6___default()(div, {
+      html2canvas__WEBPACK_IMPORTED_MODULE_7___default()(div, {
         logging: false
       }).then(function (canvas) {
         var DOMURL = self.URL || self.webkitURL || self;
@@ -23461,10 +23564,18 @@ var isFirst = true;
 var code = null;
 var workspace;
 var genBlocks = false;
+var disableTopBlocksPlugin = new _blockly_disable_top_blocks__WEBPACK_IMPORTED_MODULE_1__["DisableTopBlocks"]();
+disableTopBlocksPlugin.init();
 
 function createWorkspace(blocklyDiv, options) {
   workspace = blockly__WEBPACK_IMPORTED_MODULE_0__["inject"](blocklyDiv, options);
   workspace.addChangeListener(function (event) {
+    blockly__WEBPACK_IMPORTED_MODULE_0__["Events"].disableOrphans(event);
+
+    if (event.element == undefined && event.recordUndo && event.oldXml && event.oldXml.attributes.type.value == 'main_entry') {
+      onStartUsed--;
+    }
+
     if (event.element == 'category' && event.newValue == null) {
       blockly__WEBPACK_IMPORTED_MODULE_0__["hideFlyOut"]();
     }
@@ -23492,11 +23603,11 @@ function injectBlockly() {
 
   var options = (_options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_8__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_8__["LightTheme"],
+    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_9__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_9__["LightTheme"],
     renderer: 'zelos',
     collapse: true,
     comments: false,
-    disable: true,
+    disable: false,
     maxBlocks: Infinity,
     trashcan: true,
     css: true,
@@ -23534,8 +23645,8 @@ function injectBlockly() {
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
   } else {
     options['plugins'] = {
-      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__["ContinuousToolbox"],
-      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__["ContinuousFlyout"]
+      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_4__["ContinuousToolbox"],
+      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_5__["ContinuousFlyout"]
     };
     sheet.innerHTML = "";
   }
@@ -23547,7 +23658,7 @@ function injectBlockly() {
     isFirst = false;
 
     try {
-      var _xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].textToDom(sessionStorage.getItem("blocks"));
+      var _xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].textToDom(localStorage.getItem("blocks"));
 
       blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToWorkspace(_xml, workspace);
     } catch (e) {}
@@ -23564,7 +23675,7 @@ window.onresize = function (event) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_2__["initBlocks"])();
+  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_3__["initBlocks"])();
   blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["MATH_POWER_SYMBOL"] = "**";
   injectBlockly();
 });
@@ -23584,7 +23695,7 @@ function runCode() {
 window.onbeforeunload = function (e) {
   localStorage.setItem('allVariables', allVariables);
   var xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].workspaceToDom(workspace);
-  sessionStorage.setItem("blocks", blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToPrettyText(xml));
+  localStorage.setItem("blocks", blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToPrettyText(xml));
 };
 
 if (localStorage.getItem('allVariables') != null) {
