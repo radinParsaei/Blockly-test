@@ -337,8 +337,9 @@ function changeThemeWithoutSwap() {
   if (isDark) editor.setTheme("ace/theme/monokai0");
   else editor.setTheme("ace/theme/xcode0");
   document.getElementById("editor").classList.toggle('dark');
-  document.getElementById("console").classList.toggle('dark');
-  document.getElementById("console2").classList.toggle('dark');
+  document.getElementById("buttom_sheet_title").classList.toggle('dark');
+  document.getElementById("buttom_sheet").classList.toggle('dark');
+  document.getElementById("menu").classList.toggle('dark');
   isDark = !isDark;
 }
 

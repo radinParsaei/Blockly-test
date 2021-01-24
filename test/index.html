@@ -135,36 +135,85 @@
       </category>
       <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#995ba5" custom="PROCEDURE"></category>
     </xml>
-    <div style="height: 50px; width: 100%; background: #555;">
-      <div style="height: 50px; width: 100%; min-width: 320px; max-width: 500px; background: #555;padding-left: 5px">
-        <button class="selected" id="run">Run</button>
-
-        <span class="label" style="color: white;font-size: 75%;position: absolute;">Dark Mode</span>
-        <label class="switch">
-          <input type="checkbox" id="theme" onchange="changeTheme2()">
-          <span class="slider round"></span>
-        </label>
-        <span id="modeContainer">
-          <button id="gotoblock" onclick="goToBlock()">Blocks</button>
-          <button id="gotocode" class="selected" onclick="goToCode()">Code</button>
-        </span>
-      </div>
-    </div>
-    <div style="margin: 0; padding: 0; height: calc(100% - 50px);">
-      <div hidden class="dark" id="root" style="margin: 0; padding: 0; height: 75%; max-height: calc(100% - 100px)"></div>
-      <div id="editor2" style="height: 75%;max-height: calc(100% - 100px);overflow: scroll">
+    <div id="main_editor" style="margin: 0; padding: 0; height: calc(100% - 50px)">
+      <div hidden class="dark" id="root" style="margin: 0; padding: 0; height: 100%; border: none"></div>
+      <div id="editor2" style="height: 100%;overflow: scroll">
         <div class="dark editor" id="editor"></div>
       </div>
-      <div id="console" style="height: 25%; min-height: 100px;" class="dark">
+      <!-- <div id="console" style="height: 25%; min-height: 100px;" class="dark">
         <h4 style="color: gray; margin: 0;padding: 5px;">OUTPUT</h4>
         <div class="dark" id="console2" style="padding: 10px; padding-top: 0;"></div>
-      </div>
+      </div> -->
+    </div>
+    <div id="buttom_sheet" class="buttom_sheet dark" style="overflow: hidden">
+      <span id="buttom_sheet_title" style="position: relative; top: 5px; left: 50px; font-size: 24pt" class="dark"></span>
+      <a style="position: relative; top: -40px; left: 0px;" class="closebtn" onclick="closeButtomSheet()">&times;</a>
+      <div style="height: calc(100% - 22px); position: relative; top: -40px" id="buttom_sheet_div"></div>
+    </div>
+    <div class="dark" id="menu" style="height: 50px; float: top">
+      <span class="label" style="font-size: 75%;position: absolute;">Dark Mode</span>
+      <label class="switch" style="margin-top: 18px">
+        <input type="checkbox" id="theme" onchange="changeTheme2()">
+        <span class="slider round"></span>
+      </label>
+      <span id="modeContainer">
+        <button id="gotoblock" class="mode" onclick="goToBlock()">Blocks</button>
+        <button id="gotocode" class="selected mode" onclick="goToCode()">Code</button>
+      </span>
     </div>
     <script type="text/javascript">
       var functions = {};
       var functionCodes = '';
       var onStartUsed = 0;
       var allVariables = [];
+
+      function openButtomSheet(title) {
+        document.getElementById("buttom_sheet").style.height = "250px";
+        setTimeout(function() {
+          document.getElementById("main_editor").style.height = "calc(100% - 300px)";
+          window.onresize();
+          editor.resize();
+        }, 200);
+        if (title) document.getElementById("buttom_sheet_title").innerHTML = title;
+        document.getElementById("buttom_sheet_div").innerHTML = '';
+        return document.getElementById("buttom_sheet_div");
+      }
+
+      function closeButtomSheet() {
+        document.getElementById("buttom_sheet").style.height = "0";
+        document.getElementById("main_editor").style.height = "calc(100% - 50px)";
+        window.onresize();
+        editor.resize();
+      }
+
+      function addMenuOption(imgSrc, name, callBack, id) {
+        var child = document.createElement('img');
+        child.setAttribute('src', imgSrc);
+        addMenuOptionWithCustomImageElement(child, name, callBack, id);
+      }
+      function addMenuOptionWithCustomImageElement(imgElement, name, callBack, id) {
+        var child = document.createElement('div');
+        var child1 = document.createElement('p');
+        child1.setAttribute('style', "margin: 0; padding: 0");
+        child.appendChild(imgElement);
+        child1.innerHTML = name;
+        child.appendChild(child1);
+        child.setAttribute("class", "menuitem")
+        child.onclick = callBack;
+        child.setAttribute('id', id);
+        document.getElementById("menu").appendChild(child);
+      }
+      var element = document.createElement("p");
+      element.innerHTML = "&#9658;";
+      element.setAttribute('style', "color: #33aaff; font-size: 28px; margin: 0; margin-bottom: -5px; padding: 0; font-family: auto;");
+
+      addMenuOptionWithCustomImageElement(element,  "Run", function() {
+        let div = document.createElement('div');
+        div.setAttribute('id', 'console2');
+        div.setAttribute('class', 'dark');
+        div.setAttribute('style', 'padding: 10px; padding-top: 0; height: 200px; background-color: rgba(60, 60, 60, 0.5)');
+        openButtomSheet('console').appendChild(div);
+      }, 'run');
 
       function changeTheme2() {
          changeTheme();

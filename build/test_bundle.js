@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "66b679df88a905cd76e2";
+/******/ 	var hotCurrentHash = "32d617d3d832761214db";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23837,8 +23837,9 @@ function changeThemeWithoutSwap() {
   // else document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'gray';
   if (isDark) editor.setTheme("ace/theme/monokai0");else editor.setTheme("ace/theme/xcode0");
   document.getElementById("editor").classList.toggle('dark');
-  document.getElementById("console").classList.toggle('dark');
-  document.getElementById("console2").classList.toggle('dark');
+  document.getElementById("buttom_sheet_title").classList.toggle('dark');
+  document.getElementById("buttom_sheet").classList.toggle('dark');
+  document.getElementById("menu").classList.toggle('dark');
   isDark = !isDark;
 }
 
@@ -24864,8 +24865,8 @@ blockly_core__WEBPACK_IMPORTED_MODULE_0___default.a.Extensions.registerMutator('
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/radin/Projects/Blockly-test/node_modules/webpack-dev-server/client/index.js?http://0.0.0.0:3000 */"./node_modules/webpack-dev-server/client/index.js?http://0.0.0.0:3000");
-__webpack_require__(/*! /Users/radin/Projects/Blockly-test/node_modules/webpack/hot/dev-server.js */"./node_modules/webpack/hot/dev-server.js");
+__webpack_require__(/*! /Users/radin/Projects/Blockly-test7/node_modules/webpack-dev-server/client/index.js?http://0.0.0.0:3000 */"./node_modules/webpack-dev-server/client/index.js?http://0.0.0.0:3000");
+__webpack_require__(/*! /Users/radin/Projects/Blockly-test7/node_modules/webpack/hot/dev-server.js */"./node_modules/webpack/hot/dev-server.js");
 module.exports = __webpack_require__(/*! ./test/index.js */"./test/index.js");
 
 
