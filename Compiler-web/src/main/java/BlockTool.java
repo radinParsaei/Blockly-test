@@ -127,6 +127,9 @@ public class BlockTool {
                 return "<block type=\"logic_compare\"><field name=\"OP\">NEQ</field><value name=\"A\">" +
                         putVales(((SyntaxTree.Equals) ((SyntaxTree.Not) val).getValue()).getV1()) + "</value><value name=\"B\">" +
                         putVales(((SyntaxTree.Equals) ((SyntaxTree.Not) val).getValue()).getV2()) + "</value></block>";
+            } else {
+                return "<block type=\"logic_negate\"><value name=\"BOOL\">" +
+                        putVales(((SyntaxTree.Not) val).getValue()) + "</value></block>";
             }
         } else if (val instanceof SyntaxTree.CallFunction) {
             String functionName = ((SyntaxTree.CallFunction) val).getFunctionName().split(":")[0];

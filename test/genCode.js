@@ -498,3 +498,10 @@ Blockly.genCode['logic_operation'] = function(block) {
   var code = argument0 + ' ' + operator + ' ' + argument1;
   return [code, order];
 };
+
+Blockly.genCode['logic_negate'] = function(block) {
+  var argument0 = Blockly.genCode.valueToCode(block, 'BOOL',
+      Blockly.genCode.ORDER_LOGICAL_NOT) || 'true';
+  var code = '!' + argument0;
+  return [code, Blockly.genCode.ORDER_LOGICAL_NOT];
+};

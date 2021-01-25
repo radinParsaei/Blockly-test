@@ -329,6 +329,23 @@ function initBlocks() {
     "ADD_START_HATS": true,
     "helpUrl": "%{BKY_MAIN_ENTRY_HELPURL}",
     "tooltip": "%{BKY_MAIN_ENTRY_TOOLTIP}",
+  }, {
+    "type": "logic_negate",
+    "message0": "%{BKY_LOGIC_NEGATE_TITLE}",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "BOOL",
+        "check": [
+          "Number",
+          "Boolean"
+        ]
+      }
+    ],
+    "output": "Boolean",
+    "style": "logic_blocks",
+    "tooltip": "%{BKY_LOGIC_NEGATE_TOOLTIP}",
+    "helpUrl": "%{BKY_LOGIC_NEGATE_HELPURL}"
   }]
   );
 
