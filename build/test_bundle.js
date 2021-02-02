@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "9e7ec1721f7192a6f2a1";
+/******/ 	var hotCurrentHash = "ec0e0f00a5bf4d4120e9";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23571,7 +23571,7 @@ blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"]['logic_negate'] = function (bloc
 /*!***********************!*\
   !*** ./test/index.js ***!
   \***********************/
-/*! exports provided: Blockly, workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, loadFont */
+/*! exports provided: Blockly, workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -23583,21 +23583,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "injectBlockly", function() { return injectBlockly; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "runCode", function() { return runCode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "editor", function() { return editor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadFont", function() { return loadFont; });
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! blockly */ "./node_modules/blockly/index.js");
 /* harmony import */ var blockly__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(blockly__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Blockly", function() { return blockly__WEBPACK_IMPORTED_MODULE_0__; });
 /* harmony import */ var _blockly_disable_top_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @blockly/disable-top-blocks */ "./node_modules/@blockly/disable-top-blocks/src/index.js");
-/* harmony import */ var _linenumbers_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./linenumbers.js */ "./test/linenumbers.js");
-/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
-/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
-/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
-/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
-/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
+/* harmony import */ var _blocks_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blocks.js */ "./test/blocks.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousToolbox */ "./continuous-toolbox/src/ContinuousToolbox.js");
+/* harmony import */ var _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../continuous-toolbox/src/ContinuousFlyout */ "./continuous-toolbox/src/ContinuousFlyout.js");
+/* harmony import */ var _procedures_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./procedures.js */ "./test/procedures.js");
+/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
+/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _genCode_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./genCode.js */ "./test/genCode.js");
+/* harmony import */ var _themes_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./themes.js */ "./test/themes.js");
+/* harmony import */ var _toolbox_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./toolbox.js */ "./test/toolbox.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -23606,9 +23604,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-
- // import { CodeJar } from 'CodeJar';
-// import { withLineNumbers } from 'codejar/linenumbers';
 
 
 
@@ -23636,7 +23631,7 @@ function genPhoto() {
   loadFont(div);
   setTimeout(function () {
     try {
-      html2canvas__WEBPACK_IMPORTED_MODULE_7___default()(div, {
+      html2canvas__WEBPACK_IMPORTED_MODULE_6___default()(div, {
         logging: false
       }).then(function (canvas) {
         var DOMURL = self.URL || self.webkitURL || self;
@@ -23693,9 +23688,8 @@ function loadFont(target) {
 
 var isDark = false;
 var isFirst = true;
-var code = null;
 var workspace;
-var genBlocks = false;
+var editorCodeChanged = false;
 var disableTopBlocksPlugin = new _blockly_disable_top_blocks__WEBPACK_IMPORTED_MODULE_1__["DisableTopBlocks"]();
 disableTopBlocksPlugin.init();
 
@@ -23712,9 +23706,7 @@ function createWorkspace(blocklyDiv, options) {
       blockly__WEBPACK_IMPORTED_MODULE_0__["hideFlyOut"]();
     }
 
-    if (localStorage.getItem('mode') == 'block') {
-      runCode();
-    }
+    runCode();
   });
   return workspace;
 }
@@ -23735,7 +23727,7 @@ function injectBlockly() {
 
   var options = (_options = {
     toolbox: document.getElementById('toolbox'),
-    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_9__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_9__["LightTheme"],
+    theme: isDark ? _themes_js__WEBPACK_IMPORTED_MODULE_8__["DarkTheme"] : _themes_js__WEBPACK_IMPORTED_MODULE_8__["LightTheme"],
     renderer: 'zelos',
     collapse: true,
     comments: false,
@@ -23777,8 +23769,8 @@ function injectBlockly() {
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
   } else {
     options['plugins'] = {
-      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_4__["ContinuousToolbox"],
-      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_5__["ContinuousFlyout"]
+      'toolbox': _continuous_toolbox_src_ContinuousToolbox__WEBPACK_IMPORTED_MODULE_3__["ContinuousToolbox"],
+      'flyoutsVerticalToolbox': _continuous_toolbox_src_ContinuousFlyout__WEBPACK_IMPORTED_MODULE_4__["ContinuousFlyout"]
     };
     sheet.innerHTML = "";
   }
@@ -23788,12 +23780,6 @@ function injectBlockly() {
 
   if (isFirst) {
     isFirst = false;
-
-    try {
-      var _xml = blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].textToDom(localStorage.getItem("blocks"));
-
-      blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToWorkspace(_xml, workspace);
-    } catch (e) {}
   } else {
     blockly__WEBPACK_IMPORTED_MODULE_0__["Xml"].domToWorkspace(xml, workspace);
   }
@@ -23807,7 +23793,7 @@ window.onresize = function (event) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_3__["initBlocks"])();
+  Object(_blocks_js__WEBPACK_IMPORTED_MODULE_2__["initBlocks"])();
   blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["MATH_POWER_SYMBOL"] = "**";
   blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_LOGIC"] = "Logic";
   blockly__WEBPACK_IMPORTED_MODULE_0__["Msg"]["CATEGORY_EVENTS"] = "Events";
@@ -23820,15 +23806,14 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function runCode() {
-  code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].workspaceToCode(workspace); // jar.updateCode(code);
-
-  genBlocks = false;
-  editor.setValue(code);
-  genBlocks = true;
-  localStorage.setItem('code', code);
-
-  if (localStorage.getItem("mode") == "code") {// document.getElementById("callColor").click();
+  if (genBlocksCalled) {
+    return;
   }
+
+  console.log('.');
+  var code = blockly__WEBPACK_IMPORTED_MODULE_0__["genCode"].workspaceToCode(workspace);
+  editor.setValue(code);
+  editor.session.selection.moveTo(0, 0);
 }
 
 window.onbeforeunload = function (e) {
@@ -23862,14 +23847,6 @@ if (localStorage.getItem('allVariables') != null) {
     _iterator.f();
   }
 }
-
-var highlight = function highlight(editor) {
-  if (localStorage.getItem("mode") == "code") {// document.getElementById("callColor").click();
-  }
-}; // let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
-
-
-if (localStorage.getItem('code') == null) localStorage.setItem('code', '');
 
 var langTools = ace.require("ace/ext/language_tools");
 
@@ -23912,9 +23889,7 @@ event.addListener(editor.container, "drop", function (e) {
       var reader = new FileReader();
 
       reader.onload = function () {
-        // var mode = modelist.getModeForPath(file.name);
-        editor.session.doc.setValue(reader.result); // editor.session.setMode(mode.mode);
-        // editor.session.modeName = mode.name;
+        editor.session.doc.setValue(reader.result);
       };
 
       reader.readAsText(file);
@@ -23958,15 +23933,17 @@ editor.commands.addCommands([{
 }]);
 editor.commands.removeCommands(['showSettingsMenu', 'goToNextError', 'goToPreviousError', 'centerselection', 'fold', 'unfold', 'toggleFoldWidget', 'toggleParentFoldWidget', 'foldall', 'foldAllComments', 'foldOther', 'unfoldall', 'overwrite']);
 editor.commands.removeCommand('openCommandPallete');
-editor.session.setValue(localStorage.getItem('code'));
 editor.session.on('change', function (delta) {
-  localStorage.setItem('code', editor.getValue());
-  if (genBlocks) document.getElementById("genBlocks").click();
+  editorCodeChanged = true;
 });
+setInterval(function () {
+  if (editorCodeChanged) {
+    editorCodeChanged = false;
+    fs.writeFile(localStorage.getItem('currentDir') + editingFile, editor.getValue(), function () {});
+  }
+}, 2000);
 
 function changeThemeWithoutSwap() {
-  // if (isDark) document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'white';
-  // else document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'gray';
   if (isDark) editor.setTheme("ace/theme/monokai0");else editor.setTheme("ace/theme/xcode0");
   document.getElementById("editor").classList.toggle('dark');
   document.getElementById("buttom_sheet_title").classList.toggle('dark');
@@ -23979,11 +23956,7 @@ function changeTheme() {
   changeThemeWithoutSwap();
   var tmp = localStorage.getItem('theme');
   if (tmp == "light") localStorage.setItem('theme', 'dark');else localStorage.setItem('theme', 'light');
-} // jar.updateCode(localStorage.getItem('code'))
-// jar.onUpdate(code => {
-// localStorage.setItem('code', code)
-// });
-
+}
 
 if (!(localStorage.getItem('mode') == "block" || localStorage.getItem('mode') == "code")) {
   localStorage.setItem('mode', "code");
@@ -24008,20 +23981,13 @@ function changeViewWithoutSwap() {
     if (isDark) editor.setTheme("ace/theme/monokai0");else editor.setTheme("ace/theme/xcode0");
     isDark = !isDark;
     document.getElementById('root').removeChild(blockly__WEBPACK_IMPORTED_MODULE_0__["getMainWorkspace"]().injectionDiv_);
-    injectBlockly(); // document.getElementById("callColor").click();
-
+    injectBlockly();
     document.getElementById("genBlocks").click();
     document.getElementsByClassName('blocklyMenuItem')[0].click();
   } catch (e) {}
 
   document.getElementById("gotocode").classList.toggle('selected');
   document.getElementById("gotoblock").classList.toggle('selected');
-
-  if (!document.getElementById("editor2").hidden && code != null) {
-    editor.setValue(code);
-    code = null;
-    editor.session.selection.moveTo(0, 0);
-  }
 }
 
 function changeView() {
@@ -24049,94 +24015,9 @@ var screenshot = {
   weight: 1
 };
 blockly__WEBPACK_IMPORTED_MODULE_0__["ContextMenuRegistry"].registry.register(screenshot);
+if (localStorage.getItem('currentDir') == null) localStorage.setItem('currentDir', '/');
+loadFiles();
 
-
-/***/ }),
-
-/***/ "./test/linenumbers.js":
-/*!*****************************!*\
-  !*** ./test/linenumbers.js ***!
-  \*****************************/
-/*! exports provided: withLineNumbers */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "withLineNumbers", function() { return withLineNumbers; });
-function withLineNumbers(highlight) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var opts = Object.assign({
-    "class": "codejar-linenumbers",
-    wrapClass: "codejar-wrap",
-    width: "35px",
-    backgroundColor: "rgba(128, 128, 128, 0.15)",
-    color: ""
-  }, options);
-  var lineNumbers;
-  return function (editor) {
-    highlight(editor);
-
-    if (!lineNumbers) {
-      lineNumbers = init(editor, opts);
-      editor.addEventListener("scroll", function () {
-        return lineNumbers.style.top = "-".concat(editor.scrollTop, "px");
-      });
-    }
-
-    var code = editor.textContent || "";
-    var linesCount = code.
-    /*replace(/\n+$/, "\n").*/
-    split("\n").length;
-    if (!code.endsWith("\n")) linesCount++;
-    var text = "";
-
-    for (var i = 1; i < linesCount; i++) {
-      text += "".concat(i, "\n");
-    }
-
-    lineNumbers.innerText = text;
-  };
-}
-
-function init(editor, opts) {
-  var css = getComputedStyle(editor);
-  var wrap = document.createElement("div");
-  wrap.className = opts.wrapClass;
-  wrap.style.position = "relative";
-  var gutter = document.createElement("div");
-  gutter.className = opts["class"];
-  wrap.appendChild(gutter); // Add own styles
-
-  gutter.style.position = "absolute";
-  gutter.style.top = "0px";
-  gutter.style.left = "0px";
-  gutter.style.bottom = "0px";
-  gutter.style.width = opts.width;
-  gutter.style.overflow = "hidden";
-  gutter.style.backgroundColor = opts.backgroundColor;
-  gutter.style.color = opts.color || css.color;
-  gutter.style.setProperty("mix-blend-mode", "difference"); // Copy editor styles
-
-  gutter.style.fontFamily = css.fontFamily;
-  gutter.style.fontSize = css.fontSize;
-  gutter.style.lineHeight = css.lineHeight;
-  gutter.style.paddingTop = css.paddingTop;
-  gutter.style.paddingLeft = css.paddingLeft;
-  gutter.style.borderTopLeftRadius = css.borderTopLeftRadius;
-  gutter.style.borderBottomLeftRadius = css.borderBottomLeftRadius; // Add line numbers
-
-  var lineNumbers = document.createElement("div");
-  lineNumbers.style.position = "relative";
-  lineNumbers.style.top = "0px";
-  gutter.appendChild(lineNumbers); // Tweak editor styles
-
-  editor.style.paddingLeft = "calc(".concat(opts.width, " + ").concat(gutter.style.paddingLeft, ")");
-  editor.style.whiteSpace = "pre"; // Swap editor with a wrap
-
-  editor.parentNode.insertBefore(wrap, editor);
-  wrap.appendChild(editor);
-  return lineNumbers;
-}
 
 /***/ }),
 

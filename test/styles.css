@@ -4,23 +4,6 @@
 * {
   box-sizing: border-box;
 }
-/* #editor.dark {
-  background: #343434;
-  color: white;
-}
-#editor {
-  font-family: "Source Code Pro", monospace !important;
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: normal;
-  line-height: 20px;
-  padding: 10px;
-  tab-size: 4;
-  resize: none !important;
-}
-.codejar-wrap {
-  height: 100%;
-} */
 #menu.dark {
   background: #232323;
   color: white;
@@ -28,7 +11,7 @@
 #menu {
   background: #bcbcbc;
 }
-#menu p, #menu span, #menu button {
+#menu p, #menu span, #menu button, #menu a {
   -webkit-transition: color .5s ease-out;
   -moz-transition: color .5s ease-out;
   -o-transition: color .5s ease-out;
@@ -256,4 +239,102 @@ span[action=openCommandPallete] {
 }
 .blocklyMainBackground {
   stroke: transparent;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-gap: 2.5%;
+}
+@media only screen and (max-width: 1000px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-gap: 2.5%;
+  }
+}
+@media only screen and (max-width: 750px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-gap: 2.5%;
+  }
+  .child span {
+    font-size: 80pt !important;
+    padding-top: 40px;
+    padding-bottom: 10px;
+  }
+  .child.action span {
+    font-size: 80pt !important;
+    padding-top: 40px;
+    padding-bottom: 10px;
+  }
+}
+.layout[hidden] {
+  display: none;
+}
+div.child {
+  font-family: "Source Code Pro", monospace !important;
+  background: rgba(180, 180, 180, 0.6);
+  text-align: center;
+  user-select: none;
+  color: #33aaff;
+  height: 250px;
+  margin-bottom: 10px;
+  margin-top: -57px;
+  overflow: hidden;
+}
+div.child.action {
+  margin-top: 0;
+  background-color: #33aaff;
+  color: rgba(210, 210, 210);
+}
+a.file {
+  transition: all 0.1s;
+}
+a.file:hover {
+  transform: scale(1.07);
+}
+div.child p {
+  margin: 15px;
+  font-size: 24pt;
+  padding-bottom: 20px;
+  color: black;
+  margin-top: 0;
+  overflow: visible;
+}
+.child span {
+  font-size: 113pt;
+}
+.child.action span {
+  font-size: 113pt;
+  margin-top: 0;
+}
+.layout a {
+  color: black;
+  text-decoration: none;
+}
+#menu a {
+  color: inherit;
+  text-decoration: none;
+}
+.delete {
+  font-size: 40pt !important;
+  color: #33aaff;
+  transition: color .3s;
+}
+.delete:hover {
+  color: #e33;
+}
+#grid {
+  margin: 10px;
+}
+.home_btn {
+  font-size: 42px !important;
+  position: relative;
+  top: 15px;
+  margin-top: -11px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline:none;
 }

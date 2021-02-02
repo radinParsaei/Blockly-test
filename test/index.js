@@ -1,8 +1,5 @@
 import * as Blockly from 'blockly';
 import {DisableTopBlocks} from '@blockly/disable-top-blocks';
-// import { CodeJar } from 'CodeJar';
-// import { withLineNumbers } from 'codejar/linenumbers';
-import { withLineNumbers } from './linenumbers.js';
 import { initBlocks, functions, functionCodes } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
@@ -77,9 +74,8 @@ function loadFont(target) {
 
 var isDark = false;
 var isFirst = true;
-var code = null;
 let workspace;
-var genBlocks = false;
+var editorCodeChanged = false;
 
 const disableTopBlocksPlugin = new DisableTopBlocks();
 disableTopBlocksPlugin.init();
@@ -94,9 +90,7 @@ function createWorkspace(blocklyDiv, options) {
     if (event.element == 'category' && event.newValue == null) {
       Blockly.hideFlyOut();
     }
-    if (localStorage.getItem('mode') == 'block') {
-      runCode();
-    }
+    runCode();
   });
   return workspace;
 }
@@ -167,10 +161,6 @@ function injectBlockly() {
   createWorkspace(document.getElementById('root'), options);
   if (isFirst) {
     isFirst = false;
-    try {
-      const xml = Blockly.Xml.textToDom(localStorage.getItem("blocks"));
-      Blockly.Xml.domToWorkspace(xml, workspace);
-    } catch (e) {}
   } else {
     Blockly.Xml.domToWorkspace(xml, workspace);
   }
@@ -197,15 +187,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function runCode() {
-  code = Blockly.genCode.workspaceToCode(workspace);
-  // jar.updateCode(code);
-  genBlocks = false;
+  if (genBlocksCalled) {return;}
+  console.log('.');
+  let code = Blockly.genCode.workspaceToCode(workspace);
   editor.setValue(code);
-  genBlocks = true;
-  localStorage.setItem('code', code);
-  if (localStorage.getItem("mode") == "code") {
-    // document.getElementById("callColor").click();
-  }
+  editor.session.selection.moveTo(0, 0);
 }
 
 window.onbeforeunload = function (e) {
@@ -227,15 +213,6 @@ if (localStorage.getItem('allVariables') != null) {
     }
   }
 }
-
-const highlight = (editor) => {
-  if (localStorage.getItem("mode") == "code") {
-    // document.getElementById("callColor").click();
-  }
-}
-// let jar = CodeJar(document.querySelector('#editor'), withLineNumbers(highlight));
-if (localStorage.getItem('code') == null) localStorage.setItem('code', '');
-
 var langTools = ace.require("ace/ext/language_tools");
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai0");
@@ -274,10 +251,7 @@ event.addListener(editor.container, "drop", function(e) {
         if (window.FileReader) {
             var reader = new FileReader();
             reader.onload = function() {
-                // var mode = modelist.getModeForPath(file.name);
                 editor.session.doc.setValue(reader.result);
-                // editor.session.setMode(mode.mode);
-                // editor.session.modeName = mode.name;
             };
             reader.readAsText(file);
         }
@@ -325,15 +299,18 @@ editor.commands.removeCommands(['showSettingsMenu', 'goToNextError', 'goToPrevio
 
 editor.commands.removeCommand('openCommandPallete');
 
-editor.session.setValue(localStorage.getItem('code'));
 editor.session.on('change', function(delta) {
-  localStorage.setItem('code', editor.getValue());
-  if (genBlocks) document.getElementById("genBlocks").click();
+  editorCodeChanged = true;
 });
 
+setInterval(function() {
+  if (editorCodeChanged) {
+    editorCodeChanged = false;
+    fs.writeFile(localStorage.getItem('currentDir') + editingFile, editor.getValue(), function(){});
+  }
+}, 2000);
+
 function changeThemeWithoutSwap() {
-  // if (isDark) document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'white';
-  // else document.getElementsByClassName('codejar-linenumbers')[0].style.color = 'gray';
   if (isDark) editor.setTheme("ace/theme/monokai0");
   else editor.setTheme("ace/theme/xcode0");
   document.getElementById("editor").classList.toggle('dark');
@@ -351,11 +328,6 @@ function changeTheme() {
   else
       localStorage.setItem('theme', 'light');
 }
-
-// jar.updateCode(localStorage.getItem('code'))
-// jar.onUpdate(code => {
-  // localStorage.setItem('code', code)
-// });
 
 if (!(localStorage.getItem('mode') == "block" || localStorage.getItem('mode') == "code")) {
   localStorage.setItem('mode', "code");
@@ -379,17 +351,11 @@ function changeViewWithoutSwap() {
     isDark = !isDark;
     document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
     injectBlockly();
-    // document.getElementById("callColor").click();
     document.getElementById("genBlocks").click();
     document.getElementsByClassName('blocklyMenuItem')[0].click();
   } catch(e) {}
   document.getElementById("gotocode").classList.toggle('selected');
   document.getElementById("gotoblock").classList.toggle('selected');
-  if (!document.getElementById("editor2").hidden && code != null) {
-    editor.setValue(code);
-    code = null;
-    editor.session.selection.moveTo(0, 0);
-  }
 }
 
 function changeView() {
@@ -424,4 +390,8 @@ var screenshot = {
 };
 Blockly.ContextMenuRegistry.registry.register(screenshot);
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, loadFont };
+if (localStorage.getItem('currentDir') == null)
+    localStorage.setItem('currentDir', '/');
+  loadFiles();
+
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor };

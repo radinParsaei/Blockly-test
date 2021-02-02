@@ -12,6 +12,7 @@
     <meta name="description" content="test for compiler (github.com/radinParsaei/Compiler)">
     <meta name="author" content="radinParsaei">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
   <body style="margin: 0; padding: 0;" id="main" class="dark expand" onload="main()">
     <xml id="toolbox" style="display: none">
@@ -136,7 +137,8 @@
       </category>
       <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#995ba5" custom="PROCEDURE"></category>
     </xml>
-    <div id="main_editor" style="margin: 0; padding: 0; height: calc(100% - 50px)">
+    <div class="layout" id="grid"></div>
+    <div id="main_editor" hidden style="margin: 0; padding: 0; height: calc(100% - 50px)">
       <div hidden class="dark" id="root" style="margin: 0; padding: 0; height: 100%; border: none"></div>
       <div id="editor2" style="height: 100%;overflow: scroll">
         <div class="dark editor" id="editor"></div>
@@ -151,7 +153,7 @@
       <a style="position: relative; top: -40px; left: 0px;" class="closebtn" onclick="closeButtomSheet()">&times;</a>
       <div style="height: calc(100% - 22px); position: relative; top: -40px" id="buttom_sheet_div"></div>
     </div>
-    <div class="dark" id="menu" style="height: 50px; float: top">
+    <div class="dark" hidden id="menu" style="height: 50px; float: top">
       <span class="label" style="font-size: 75%;position: absolute;">Dark Mode</span>
       <label class="switch" style="margin-top: 16px">
         <input type="checkbox" id="theme" onchange="changeTheme2()">
@@ -161,12 +163,16 @@
         <button id="gotoblock" class="mode" onclick="goToBlock()">Blocks</button>
         <button id="gotocode" class="selected mode" onclick="goToCode()">Code</button>
       </span>
+      <a href="javascript:openFileBrowser()" class="material-icons home_btn" style="display:inline-block; float:right; margin-right: 5px">home</a>
     </div>
+    <script type="text/javascript" src="https://unpkg.com/browserfs@2.0.0/dist/browserfs.min.js"></script>
     <script type="text/javascript">
       var functions = {};
       var functionCodes = '';
       var onStartUsed = 0;
       var allVariables = [];
+      var editingFile = '';
+      var genBlocksCalled = false;
 
       function openButtomSheet(title) {
         document.getElementById("buttom_sheet").style.height = "250px";
@@ -236,6 +242,126 @@
       function getXML() {
         const xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
         alert(Blockly.Xml.domToPrettyText(xml));
+      }
+
+      BrowserFS.install(window);
+      BrowserFS.configure({
+        fs: "LocalStorage"
+      }, function(e) {
+        if (e) {
+          throw e;
+        }
+      });
+
+      var fs = require('fs');
+
+      var deleteDirectory = function(path) {
+        if (fs.existsSync(path)) {
+          fs.readdirSync(path).forEach(function (file, index) {
+            var curentPath = path + "/" + file;
+            if (fs.lstatSync(curentPath).isDirectory()) {
+              deleteDirectory(curentPath);
+            } else {
+              fs.unlinkSync(curentPath);
+            }
+          });
+          fs.rmdirSync(path);
+        }
+      };
+
+      function createFile() {
+        let name = prompt('file name:');
+        if (name == null) return;
+        if (fs.existsSync(localStorage.getItem('currentDir') + name)) {
+          alert('file with this name is already exists');
+          return;
+        }
+        fs.writeFile(localStorage.getItem('currentDir') + name, '\n', function(err) {});
+        loadFiles();
+      }
+
+      function createDirectory() {
+        let dirname = prompt('folder name:');
+        if (dirname == null) return;
+        if (!fs.existsSync(localStorage.getItem('currentDir') + dirname)){
+          fs.mkdirSync(localStorage.getItem('currentDir') + dirname);
+        } else {
+          alert('sorry this name is already used');
+        }
+        loadFiles();
+      }
+
+      function deleteFile(name) {
+        let q = confirm('do you want to remove \"' + name + "\"");
+        if (q) {
+          if (fs.lstatSync(localStorage.getItem('currentDir') + name).isDirectory()) {
+            deleteDirectory(localStorage.getItem('currentDir') + name);
+          } else {
+            try {
+              fs.unlinkSync(localStorage.getItem('currentDir') + name);
+            } catch(err) {
+              console.error(err);
+            }
+          }
+        }
+        loadFiles();
+      }
+
+      function loadFiles() {
+        fs.readdir(localStorage.getItem('currentDir'), function(e, contents) {
+          var back = '';
+          if (localStorage.getItem('currentDir').split('/').length > 2) {
+            back = '<a class=\"file\" href="javascript:back()"><div class="child action"><span class=\"material-icons\">undo</span><br><p>go back</p></div></a>'
+          }
+          document.getElementById('grid').innerHTML = back + '<a class=\"file\" href="javascript:createFile()"><div class="child action"><span class=\"material-icons\">note_add</span><br><p>cteate file</p></div></a>'
+                                                      + '<a class=\"file\" href="javascript:createDirectory()"><div class="child action"><span class=\"material-icons\">create_new_folder</span><br><p>cteate folder</p></div></a>';
+          for (var i of contents) {
+            var element = document.createElement('a');
+            element.setAttribute('class', 'file');
+            let isDir = fs.lstatSync(localStorage.getItem('currentDir') + i).isDirectory();
+            element.innerHTML = "<a style=\"position: relative;\" href=\"javascript:deleteFile('" + i + "')\"><span class=\"material-icons delete\">delete_forever</span></a><a href=\"javascript:" + (isDir? "openDir":"openFile")
+                               + "('" + i + "')\"><div class=\"child\"><span class=\"material-icons\">"
+                               + (isDir? "folder":"description") + "</span><br><p>"
+                               + i + "</p></div></a>";
+            document.getElementById('grid').appendChild(element);
+          }
+        });
+      }
+
+      function openFile(filename) {
+        editingFile = filename;
+        document.getElementById('grid').hidden = true;
+        document.getElementById('main_editor').hidden = false;
+        document.getElementById('menu').hidden = false;
+        editor.session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
+        editor.session.selection.moveTo(0, 0);
+        genBlocksCalled = true;
+        document.getElementById('genBlocks').click();
+        window.onresize();
+        setInterval(function() {
+          genBlocksCalled = false;
+        }, 200);
+      }
+
+      function openFileBrowser() {
+        document.getElementById('grid').hidden = false;
+        document.getElementById('main_editor').hidden = true;
+        document.getElementById('menu').hidden = true;
+        closeButtomSheet();
+        document.getElementById('buttom_sheet').hidden = true;
+        setInterval(function() {
+          document.getElementById('buttom_sheet').hidden = false;
+        }, 150);
+      }
+
+      function openDir(name) {
+        localStorage.setItem('currentDir', localStorage.getItem('currentDir') + name + '/');
+        loadFiles();
+      }
+
+      function back(name) {
+        localStorage.setItem('currentDir', localStorage.getItem('currentDir').substr(0, localStorage.getItem('currentDir').lastIndexOf('/', localStorage.getItem('currentDir').length - 2)) + '/');
+        loadFiles();
       }
     </script>
     <!-- <button hidden id="callColor"></button> -->
