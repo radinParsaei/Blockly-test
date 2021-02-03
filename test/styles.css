@@ -340,3 +340,9 @@ div.child p {
   border: none;
   outline:none;
 }
+#filepath {
+  margin: 10px;
+  font-size: 32pt;
+  margin-bottom: 30px;
+  font-family: "Source Code Pro", monospace;
+}

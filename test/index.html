@@ -137,6 +137,7 @@
       </category>
       <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#995ba5" custom="PROCEDURE"></category>
     </xml>
+    <p id="filepath"></p>
     <div class="layout" id="grid"></div>
     <div id="main_editor" hidden style="margin: 0; padding: 0; height: calc(100% - 50px)">
       <div hidden class="dark" id="root" style="margin: 0; padding: 0; height: 100%; border: none"></div>
@@ -317,6 +318,7 @@
 
       function loadFiles() {
         fs.readdir(localStorage.getItem('currentDir'), function(e, contents) {
+          document.getElementById('filepath').innerHTML = localStorage.getItem('currentDir');
           var back = '';
           if (localStorage.getItem('currentDir').split('/').length > 2) {
             back = '<a class=\"file\" href="javascript:back()"><div class="child action"><span class=\"material-icons\">undo</span><br><p>go back</p></div></a>'
@@ -343,6 +345,7 @@
       function openFile(filename) {
         editingFile = filename;
         document.getElementById('grid').hidden = true;
+        document.getElementById('filepath').hidden = true;
         document.getElementById('main_editor').hidden = false;
         document.getElementById('menu').hidden = false;
         editor.session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
@@ -358,6 +361,7 @@
       function openFileBrowser() {
         document.getElementById('grid').hidden = false;
         document.getElementById('main_editor').hidden = true;
+        document.getElementById('filepath').hidden = false;
         document.getElementById('menu').hidden = true;
         closeButtomSheet();
         document.getElementById('buttom_sheet').hidden = true;
