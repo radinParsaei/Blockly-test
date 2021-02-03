@@ -307,6 +307,14 @@
         loadFiles();
       }
 
+      function renameFile(name) {
+        let q = prompt('new name: ');
+        if (q) {
+          fs.renameSync(localStorage.getItem('currentDir') + name, localStorage.getItem('currentDir') + q);
+        }
+        loadFiles();
+      }
+
       function loadFiles() {
         fs.readdir(localStorage.getItem('currentDir'), function(e, contents) {
           var back = '';
@@ -319,7 +327,11 @@
             var element = document.createElement('a');
             element.setAttribute('class', 'file');
             let isDir = fs.lstatSync(localStorage.getItem('currentDir') + i).isDirectory();
-            element.innerHTML = "<a style=\"position: relative;\" href=\"javascript:deleteFile('" + i + "')\"><span class=\"material-icons delete\">delete_forever</span></a><a href=\"javascript:" + (isDir? "openDir":"openFile")
+            element.innerHTML = "<a style=\"position: relative;\" href=\"javascript:deleteFile('" + i
+                               + "')\"><span class=\"material-icons file_action\">delete_forever</span></a>"
+                               + "<br><a style=\"position: relative;\" href=\"javascript:renameFile('" + i
+                               + "')\"><span class=\"material-icons file_action\">drive_file_rename_outline</span></a>"
+                               + "<a href=\"javascript:" + (isDir? "openDir":"openFile")
                                + "('" + i + "')\"><div class=\"child\"><span class=\"material-icons\">"
                                + (isDir? "folder":"description") + "</span><br><p>"
                                + i + "</p></div></a>";
