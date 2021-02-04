@@ -324,6 +324,35 @@ div.child p {
   color: #33aaff;
   transition: color .3s;
 }
+@media only screen and (max-width: 400px) {
+  .child span {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 20px;
+  }
+  .child.action span {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+@media only screen and (max-width: 360px) {
+  .child span {
+    font-size: 55pt !important;
+    padding-top: 40px;
+    padding-bottom: 10px;
+  }
+  .child.action span {
+    font-size: 55pt !important;
+    padding-top: 40px;
+    padding-bottom: 10px;
+  }
+  div.child {
+    margin-bottom: 30px;
+  }
+  .file_action {
+    font-size: 30pt !important;
+  }
+}
 .file_action:hover {
   color: #e33;
 }
