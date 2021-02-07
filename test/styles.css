@@ -260,8 +260,7 @@ span[action=openCommandPallete] {
   }
   .child span {
     font-size: 80pt !important;
-    padding-top: 40px;
-    padding-bottom: 10px;
+    padding-top: 50px;
   }
   .child.action span {
     font-size: 80pt !important;
@@ -272,6 +271,9 @@ span[action=openCommandPallete] {
 .layout[hidden] {
   display: none;
 }
+#paste_button[hidden] {
+  display: none;
+}
 div.child {
   font-family: "Source Code Pro", monospace !important;
   background: rgba(180, 180, 180, 0.6);
@@ -280,7 +282,7 @@ div.child {
   color: #33aaff;
   height: 250px;
   margin-bottom: 10px;
-  margin-top: -114px;
+  margin-top: -171px;
   overflow: hidden;
 }
 div.child.action {
@@ -306,6 +308,7 @@ div.child p {
 }
 .child span {
   font-size: 113pt;
+  padding-bottom: 10px;
 }
 .child.action span {
   font-size: 113pt;
@@ -334,27 +337,43 @@ div.child p {
     padding-top: 20px;
     padding-bottom: 20px;
   }
+  .file_action {
+    font-size: 35pt !important;
+  }
+  .file_action_a {
+    bottom: 23px;
+  }
+  div.child {
+    margin-bottom: 40px;
+  }
 }
 @media only screen and (max-width: 360px) {
   .child span {
     font-size: 55pt !important;
     padding-top: 40px;
-    padding-bottom: 10px;
   }
   .child.action span {
     font-size: 55pt !important;
     padding-top: 40px;
-    padding-bottom: 10px;
-  }
-  div.child {
-    margin-bottom: 30px;
   }
   .file_action {
     font-size: 30pt !important;
   }
+  .file_action_a {
+    bottom: 30px;
+  }
+  div.child {
+    margin-bottom: 35px;
+  }
 }
 .file_action:hover {
   color: #e33;
+}
+.file_action.top_bar_action {
+  float: left;
+  padding: 10px;
+  padding-top: 0;
+  user-select: none;
 }
 #grid {
   margin: 10px;

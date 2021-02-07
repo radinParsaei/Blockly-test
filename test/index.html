@@ -137,6 +137,7 @@
       </category>
       <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#995ba5" custom="PROCEDURE"></category>
     </xml>
+    <a href="javascript:paste()"><span class="material-icons file_action top_bar_action" id="paste_button">content_paste</span></a>
     <p id="filepath"></p>
     <div class="layout" id="grid"></div>
     <div id="main_editor" hidden style="margin: 0; padding: 0; height: calc(100% - 50px)">
@@ -174,6 +175,8 @@
       var allVariables = [];
       var editingFile = '';
       var genBlocksCalled = false;
+      var copiedFilePath = null;
+      var copiedFileName = null;
 
       function openButtomSheet(title) {
         document.getElementById("buttom_sheet").style.height = "250px";
@@ -320,8 +323,75 @@
         loadFiles();
       }
 
+      function copyFile(name) {
+        copiedFilePath = localStorage.getItem('currentDir') + name;
+        copiedFileName = name;
+        checkPaste();
+      }
+
+      function checkPaste() {
+        document.getElementById('paste_button').hidden = copiedFilePath == null;
+      }
+
+      var path = require('path');
+
+      var mkdir = function(dir) {
+      	try {
+      		fs.mkdirSync(dir, 0755);
+      	} catch(e) {
+      		if(e.code != "EEXIST") {
+      			throw e;
+      		}
+      	}
+      };
+
+      var copyDir = function(src, dest) {
+      	mkdir(dest);
+      	var files = fs.readdirSync(src);
+      	for(var i = 0; i < files.length; i++) {
+      		var current = fs.lstatSync(path.join(src, files[i]));
+      		if(current.isDirectory()) {
+      			copyDir(path.join(src, files[i]), path.join(dest, files[i]));
+      		} else if(current.isSymbolicLink()) {
+      			var symlink = fs.readlinkSync(path.join(src, files[i]));
+      			fs.symlinkSync(symlink, path.join(dest, files[i]));
+      		} else {
+      			copy(path.join(src, files[i]), path.join(dest, files[i]));
+      		}
+      	}
+      };
+
+      var copy = function(src, dest) {
+      	fs.readFile(src, function(e, res) {
+      		fs.writeFile(dest, res, function() {});
+      	});
+      };
+
+      function paste() {
+        let pCopiedFileName = copiedFileName;
+        if (fs.existsSync(localStorage.getItem('currentDir') + tmp)) {
+          var tmp = copiedFileName;
+          while ((tmp = prompt("this file exists. please rename it", tmp)) != null &&
+                  fs.existsSync(localStorage.getItem('currentDir') + tmp));
+          if (tmp == null) return;
+          copiedFileName = tmp;
+        }
+        if (fs.lstatSync(copiedFilePath).isDirectory()) {
+          if (localStorage.getItem('currentDir').startsWith(copiedFilePath)) {
+            alert("couldn't copy folder to it's inside")
+            return;
+          }
+          copyDir(copiedFilePath, localStorage.getItem("currentDir") + copiedFileName);
+        } else {
+          copy(copiedFilePath, localStorage.getItem("currentDir") + copiedFileName);
+        }
+        copiedFileName = pCopiedFileName;
+        loadFiles();
+      }
+
       function loadFiles() {
         fs.readdir(localStorage.getItem('currentDir'), function(e, contents) {
+          checkPaste();
           document.getElementById('filepath').innerHTML = localStorage.getItem('currentDir');
           var back = '';
           if (localStorage.getItem('currentDir').split('/').length > 2) {
@@ -333,10 +403,12 @@
             var element = document.createElement('a');
             element.setAttribute('class', 'file');
             let isDir = fs.lstatSync(localStorage.getItem('currentDir') + i).isDirectory();
-            element.innerHTML = "<a style=\"position: relative;\" href=\"javascript:deleteFile('" + i
+            element.innerHTML = "<a class=\"file_action_a\" style=\"position: relative;\" href=\"javascript:deleteFile('" + i
                                + "')\"><span class=\"material-icons file_action\">delete_forever</span></a>"
-                               + "<br><a style=\"position: relative;\" href=\"javascript:renameFile('" + i
+                               + "<br><a class=\"file_action_a\" style=\"position: relative;\" href=\"javascript:renameFile('" + i
                                + "')\"><span class=\"material-icons file_action\">drive_file_rename_outline</span></a>"
+                               + "<br><a class=\"file_action_a\" style=\"position: relative;\" href=\"javascript:copyFile('" + i
+                               + "')\"><span class=\"material-icons file_action\">content_copy</span></a>"
                                + "<a href=\"javascript:" + (isDir? "openDir":"openFile")
                                + "('" + i + "')\"><div class=\"child\"><span class=\"material-icons\">"
                                + (isDir? "folder":"description") + "</span><br><p>"
@@ -350,6 +422,7 @@
         editingFile = filename;
         document.getElementById('grid').hidden = true;
         document.getElementById('filepath').hidden = true;
+        document.getElementById('paste_button').hidden = true;
         document.getElementById('main_editor').hidden = false;
         document.getElementById('menu').hidden = false;
         editor.session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
@@ -366,6 +439,7 @@
         document.getElementById('grid').hidden = false;
         document.getElementById('main_editor').hidden = true;
         document.getElementById('filepath').hidden = false;
+        checkPaste();
         document.getElementById('menu').hidden = true;
         closeButtomSheet();
         document.getElementById('buttom_sheet').hidden = true;
