@@ -310,6 +310,10 @@
 
       function renameFile(name) {
         let q = prompt('new name: ');
+        if (fs.existsSync(localStorage.getItem('currentDir') + q)) {
+          alert("sorry this file is already exists");
+          return;
+        }
         if (q) {
           fs.renameSync(localStorage.getItem('currentDir') + name, localStorage.getItem('currentDir') + q);
         }
