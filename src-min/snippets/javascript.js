@@ -1,22 +1,22 @@
 define("ace/snippets/javascript",["require","exports","module"],function(e,t,n){"use strict";t.snippetText=`
 # Variable
 snippet variable
-	var \${1:variable_name} = \${2:value}
+	var \${variable_name} = \${value}
 
 snippet set variable
-	\${1?:variable_name} = \${2:value}
+	variable = \${0:value}
 
 snippet declare variable
-	var \${1?:variable_name}
+	var \${0:variable_name}
 
 # Print
 snippet print
-	print \${1:value}
+	print(\${0:value})
 
 # Function
 snippet function
 	func \${1:function_name}(\${2:arguments}) {
-		\${3:// body...}
+		\${0:// body...}
 	}
 # if
 snippet if
@@ -25,7 +25,7 @@ snippet if
 	}
 # if ... else
 snippet ifelse
-	if (\${1:true}) {
+	if \${1:true} {
 		\${2}
 	} else {
 		\${0}
@@ -49,8 +49,8 @@ snippet ifelse
 
 # while (...) {...}
 snippet while
-	while (\${1:/* condition */}) {
-		\${0:/* code */}
+	while \${1:true} {
+		\${0}
 	}
 
 snippet break out of loop
