@@ -341,10 +341,10 @@ div.child p {
     font-size: 35pt !important;
   }
   .file_action_a {
-    bottom: 23px;
+    bottom: 15px;
   }
   div.child {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
   div.child.action {
     margin-top: -21px;
