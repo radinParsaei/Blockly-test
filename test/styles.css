@@ -346,6 +346,12 @@ div.child p {
   div.child {
     margin-bottom: 40px;
   }
+  div.child.action {
+    margin-top: -21px;
+  }
+  #filepath {
+    padding-bottom: 10px;
+  }
 }
 @media only screen and (max-width: 360px) {
   .child span {
@@ -364,6 +370,12 @@ div.child p {
   }
   div.child {
     margin-bottom: 35px;
+  }
+  div.child.action {
+    margin-top: -39px;
+  }
+  #filepath {
+    padding-bottom: 20px;
   }
 }
 .file_action:hover {
