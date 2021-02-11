@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" charset="utf-8" src="VM.js"></script>
+    <script type="text/javascript" charset="utf-8" src="teavm/classes.js"></script>
+    <title>Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="test/styles.css">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta charset="UTF-8">
+    <meta name="description" content="test for compiler (github.com/radinParsaei/Compiler)">
+    <meta name="author" content="radinParsaei">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body style="margin: 0; padding: 0;" id="main" class="dark expand" onload="main()">
+    <xml id="toolbox" style="display: none">
+      <category id="LogicCategory" name="%{BKY_CATEGORY_LOGIC}" colour="#5b80a5">
+        <block type="logic_boolean">
+          <field name="BOOL">TRUE</field>
+        </block>
+        <block type="logic_compare"></block>
+        <block type="logic_operation"></block>
+        <block type="logic_negate"></block>
+      </category>
+      <category id="EventCategory" name="%{BKY_CATEGORY_EVENTS}" colour="#995ba5">
+        <block type="main_entry"></block>
+      </category>
+      <category id="LoopsCategory" name="%{BKY_CATEGORY_LOOPS}" colour="#5ba55b"></category>
+      <category id="MathCategory" name="%{BKY_CATEGORY_MATH}" colour="#5b67a5">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+        <block type="math_arithmetic" gap="10">
+          <field name="OP">ADD</field>
+          <value name="A">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="B">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="math_arithmetic" gap="10">
+          <field name="OP">MINUS</field>
+          <value name="A">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="B">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="math_arithmetic" gap="10">
+          <field name="OP">MULTIPLY</field>
+          <value name="A">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="B">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="math_arithmetic" gap="10">
+          <field name="OP">DIVIDE</field>
+          <value name="A">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="B">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="math_arithmetic">
+          <field name="OP">POWER</field>
+          <value name="A">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="B">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="math_modulo">
+          <value name="DIVIDEND">
+            <shadow type="math_number">
+              <field name="NUM">64</field>
+            </shadow>
+          </value>
+          <value name="DIVISOR">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+        </block>
+      </category>
+      <category id="TextCategory" name="%{BKY_CATEGORY_TEXT}" colour="#5ba58c">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+        <block type="text_isEmpty">
+          <value name="VALUE">
+            <shadow type="text">
+              <field name="TEXT"></field>
+            </shadow>
+          </value>
+        </block>
+        <block type="text_print">
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">abc</field>
+            </shadow>
+          </value>
+        </block>
+      </category>
+      <sep></sep>
+      <category name="%{BKY_CATEGORY_VARIABLE}" colour="#a55b80" id="VariablesCategory">
+        <block type="variable_declare"></block>
+        <block type="variable_set"></block>
+        <block type="variable_get"></block>
+      </category>
+      <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#995ba5" custom="PROCEDURE"></category>
+    </xml>
+    <div style="max-width: 100%; overflow: scroll">
+      <a href="javascript:paste()"><span class="material-icons file_action top_bar_action" id="paste_button" style="margin-top: 10px">content_paste</span></a>
+      <p id="filepath"></p>
+    </div>
+    <div class="layout" id="grid"></div>
+    <div id="main_editor" hidden style="margin: 0; padding: 0; height: calc(100% - 50px)">
+      <div hidden class="dark" id="root" style="margin: 0; padding: 0; height: 100%; border: none"></div>
+      <div id="editor2" style="height: 100%;overflow: scroll">
+        <div class="dark editor" id="editor"></div>
+      </div>
+      <!-- <div id="console" style="height: 25%; min-height: 100px;" class="dark">
+        <h4 style="color: gray; margin: 0;padding: 5px;">OUTPUT</h4>
+        <div class="dark" id="console2" style="padding: 10px; padding-top: 0;"></div>
+      </div> -->
+    </div>
+    <div id="buttom_sheet" class="buttom_sheet dark" style="overflow: hidden">
+      <span id="buttom_sheet_title" style="position: relative; top: 5px; left: 50px; font-size: 24pt" class="dark"></span>
+      <a style="position: relative; top: -40px; left: 0px;" class="closebtn" onclick="closeButtomSheet()">&times;</a>
+      <div style="height: calc(100% - 22px); position: relative; top: -40px" id="buttom_sheet_div"></div>
+    </div>
+    <div class="dark" hidden id="menu" style="height: 50px; float: top">
+      <span class="label" style="font-size: 75%;position: absolute;">Dark Mode</span>
+      <label class="switch" style="margin-top: 16px">
+        <input type="checkbox" id="theme" onchange="changeTheme2()">
+        <span class="slider round"></span>
+      </label>
+      <span id="modeContainer">
+        <button id="gotoblock" class="mode" onclick="goToBlock()">Blocks</button>
+        <button id="gotocode" class="selected mode" onclick="goToCode()">Code</button>
+      </span>
+      <a href="javascript:openFileBrowser()" class="material-icons home_btn" style="display:inline-block; float:right; margin-right: 5px">home</a>
+    </div>
+    <script type="text/javascript" src="https://unpkg.com/browserfs@2.0.0/dist/browserfs.min.js"></script>
+    <script type="text/javascript">
+      var functions = {};
+      var functionCodes = '';
+      var onStartUsed = 0;
+      var allVariables = [];
+      var editingFile = '';
+      var genBlocksCalled = false;
+      var copiedFilePath = null;
+      var copiedFileName = null;
+
+      function openButtomSheet(title) {
+        document.getElementById("buttom_sheet").style.height = "250px";
+        setTimeout(function() {
+          document.getElementById("main_editor").style.height = "calc(100% - 300px)";
+          window.onresize();
+          editor.resize();
+        }, 200);
+        if (title) document.getElementById("buttom_sheet_title").innerHTML = title;
+        document.getElementById("buttom_sheet_div").innerHTML = '';
+        return document.getElementById("buttom_sheet_div");
+      }
+
+      function closeButtomSheet() {
+        document.getElementById("buttom_sheet").style.height = "0";
+        document.getElementById("main_editor").style.height = "calc(100% - 50px)";
+        window.onresize();
+        editor.resize();
+      }
+
+      function addMenuOption(imgSrc, name, callBack, id) {
+        var child = document.createElement('img');
+        child.setAttribute('src', imgSrc);
+        addMenuOptionWithCustomImageElement(child, name, callBack, id);
+      }
+      function addMenuOptionWithCustomImageElement(imgElement, name, callBack, id) {
+        var child = document.createElement('div');
+        var child1 = document.createElement('p');
+        child1.setAttribute('style', "margin: 0; padding: 0");
+        child.appendChild(imgElement);
+        child1.innerHTML = name;
+        child.appendChild(child1);
+        child.setAttribute("class", "menuitem")
+        child.onclick = callBack;
+        child.setAttribute('id', id);
+        document.getElementById("menu").appendChild(child);
+      }
+      var element = document.createElement("p");
+      element.innerHTML = "&#9658;";
+      element.setAttribute('style', "color: #33aaff; font-size: 28px; margin: 0; margin-bottom: -5px; padding: 0; font-family: auto;");
+
+      addMenuOptionWithCustomImageElement(element,  "Run", function() {
+        let div = document.createElement('div');
+        div.setAttribute('id', 'console2');
+        div.setAttribute('class', 'dark');
+        div.setAttribute('style', 'padding: 10px; padding-top: 0; height: 200px; background-color: rgba(60, 60, 60, 0.5)');
+        openButtomSheet('console').appendChild(div);
+      }, 'run');
+
+      function changeTheme2() {
+         changeTheme();
+         document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
+         injectBlockly();
+      }
+      function goToBlock() {
+        if (localStorage.getItem('mode') == 'code') changeView();
+      }
+      function goToCode() {
+        if (localStorage.getItem('mode') == 'block') changeView();
+      }
+
+      function setXML() {
+        const xml = Blockly.Xml.textToDom(prompt("xml"));
+        Blockly.Xml.domToWorkspace(xml, Blockly.getMainWorkspace());
+      }
+
+      function getXML() {
+        const xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
+        alert(Blockly.Xml.domToPrettyText(xml));
+      }
+
+      BrowserFS.install(window);
+      BrowserFS.configure({
+        fs: "LocalStorage"
+      }, function(e) {
+        if (e) {
+          throw e;
+        }
+      });
+
+      var fs = require('fs');
+
+      var deleteDirectory = function(path) {
+        if (fs.existsSync(path)) {
+          fs.readdirSync(path).forEach(function (file, index) {
+            var curentPath = path + "/" + file;
+            if (fs.lstatSync(curentPath).isDirectory()) {
+              deleteDirectory(curentPath);
+            } else {
+              fs.unlinkSync(curentPath);
+            }
+          });
+          fs.rmdirSync(path);
+        }
+      };
+
+      function createFile() {
+        let name = prompt('file name:');
+        if (name == null) return;
+        if (fs.existsSync(localStorage.getItem('currentDir') + name)) {
+          alert('file with this name is already exists');
+          return;
+        }
+        fs.writeFile(localStorage.getItem('currentDir') + name, '\n', function(err) {});
+        loadFiles();
+      }
+
+      function createDirectory() {
+        let dirname = prompt('folder name:');
+        if (dirname == null) return;
+        if (!fs.existsSync(localStorage.getItem('currentDir') + dirname)){
+          fs.mkdirSync(localStorage.getItem('currentDir') + dirname);
+        } else {
+          alert('sorry this name is already used');
+        }
+        loadFiles();
+      }
+
+      function deleteFile(name) {
+        let q = confirm('do you want to remove \"' + name + "\"");
+        if (q) {
+          if (fs.lstatSync(localStorage.getItem('currentDir') + name).isDirectory()) {
+            deleteDirectory(localStorage.getItem('currentDir') + name);
+          } else {
+            try {
+              fs.unlinkSync(localStorage.getItem('currentDir') + name);
+            } catch(err) {
+              console.error(err);
+            }
+          }
+        }
+        loadFiles();
+      }
+
+      function renameFile(name) {
+        let q = prompt('new name: ');
+        if (fs.existsSync(localStorage.getItem('currentDir') + q)) {
+          alert("sorry this file is already exists");
+          return;
+        }
+        if (q) {
+          fs.renameSync(localStorage.getItem('currentDir') + name, localStorage.getItem('currentDir') + q);
+        }
+        loadFiles();
+      }
+
+      function copyFile(name) {
+        copiedFilePath = localStorage.getItem('currentDir') + name;
+        copiedFileName = name;
+        checkPaste();
+      }
+
+      function checkPaste() {
+        document.getElementById('paste_button').hidden = copiedFilePath == null;
+      }
+
+      var path = require('path');
+
+      var mkdir = function(dir) {
+      	try {
+      		fs.mkdirSync(dir, 0755);
+      	} catch(e) {
+      		if(e.code != "EEXIST") {
+      			throw e;
+      		}
+      	}
+      };
+
+      var copyDir = function(src, dest) {
+      	mkdir(dest);
+      	var files = fs.readdirSync(src);
+      	for(var i = 0; i < files.length; i++) {
+      		var current = fs.lstatSync(path.join(src, files[i]));
+      		if(current.isDirectory()) {
+      			copyDir(path.join(src, files[i]), path.join(dest, files[i]));
+      		} else if(current.isSymbolicLink()) {
+      			var symlink = fs.readlinkSync(path.join(src, files[i]));
+      			fs.symlinkSync(symlink, path.join(dest, files[i]));
+      		} else {
+      			copy(path.join(src, files[i]), path.join(dest, files[i]));
+      		}
+      	}
+      };
+
+      var copy = function(src, dest) {
+      	fs.readFile(src, function(e, res) {
+      		fs.writeFile(dest, res, function() {});
+      	});
+      };
+
+      function paste() {
+        let pCopiedFileName = copiedFileName;
+        if (fs.existsSync(localStorage.getItem('currentDir') + tmp)) {
+          var tmp = copiedFileName;
+          while ((tmp = prompt("this file exists. please rename it", tmp)) != null &&
+                  fs.existsSync(localStorage.getItem('currentDir') + tmp));
+          if (tmp == null) return;
+          copiedFileName = tmp;
+        }
+        if (fs.lstatSync(copiedFilePath).isDirectory()) {
+          if (localStorage.getItem('currentDir').startsWith(copiedFilePath)) {
+            alert("couldn't copy folder to it's inside")
+            return;
+          }
+          copyDir(copiedFilePath, localStorage.getItem("currentDir") + copiedFileName);
+        } else {
+          copy(copiedFilePath, localStorage.getItem("currentDir") + copiedFileName);
+        }
+        copiedFileName = pCopiedFileName;
+        loadFiles();
+      }
+
+      function loadFiles() {
+        fs.readdir(localStorage.getItem('currentDir'), function(e, contents) {
+          checkPaste();
+          document.getElementById('filepath').innerHTML = localStorage.getItem('currentDir');
+          var back = '';
+          if (localStorage.getItem('currentDir').split('/').length > 2) {
+            back = '<a class=\"file\" href="javascript:back()"><div class="child action"><span class=\"material-icons\">undo</span><br><p>go back</p></div></a>'
+          }
+          document.getElementById('grid').innerHTML = back + '<a class=\"file\" href="javascript:createFile()"><div class="child action"><span class=\"material-icons\">note_add</span><br><p>cteate file</p></div></a>'
+                                                      + '<a class=\"file\" href="javascript:createDirectory()"><div class="child action"><span class=\"material-icons\">create_new_folder</span><br><p>cteate folder</p></div></a>';
+          for (var i of contents) {
+            var element = document.createElement('a');
+            element.setAttribute('class', 'file');
+            let isDir = fs.lstatSync(localStorage.getItem('currentDir') + i).isDirectory();
+            element.innerHTML = "<a class=\"file_action_a\" style=\"position: relative;\" href=\"javascript:deleteFile('" + i
+                               + "')\"><span class=\"material-icons file_action\">delete_forever</span></a>"
+                               + "<br><a class=\"file_action_a\" style=\"position: relative;\" href=\"javascript:renameFile('" + i
+                               + "')\"><span class=\"material-icons file_action\">drive_file_rename_outline</span></a>"
+                               + "<br><a class=\"file_action_a\" style=\"position: relative;\" href=\"javascript:copyFile('" + i
+                               + "')\"><span class=\"material-icons file_action\">content_copy</span></a>"
+                               + "<a href=\"javascript:" + (isDir? "openDir":"openFile")
+                               + "('" + i + "')\"><div class=\"child\"><span class=\"material-icons\">"
+                               + (isDir? "folder":"description") + "</span><br><p>"
+                               + i + "</p></div></a>";
+            document.getElementById('grid').appendChild(element);
+          }
+        });
+      }
+
+      function openFile(filename) {
+        editingFile = filename;
+        document.getElementById('grid').hidden = true;
+        document.getElementById('filepath').hidden = true;
+        document.getElementById('paste_button').hidden = true;
+        document.getElementById('main_editor').hidden = false;
+        document.getElementById('menu').hidden = false;
+        editor.session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
+        editor.session.selection.moveTo(0, 0);
+        genBlocksCalled = true;
+        document.getElementById('genBlocks').click();
+        window.onresize();
+        setInterval(function() {
+          genBlocksCalled = false;
+        }, 200);
+      }
+
+      function openFileBrowser() {
+        document.getElementById('grid').hidden = false;
+        document.getElementById('main_editor').hidden = true;
+        document.getElementById('filepath').hidden = false;
+        checkPaste();
+        document.getElementById('menu').hidden = true;
+        closeButtomSheet();
+        document.getElementById('buttom_sheet').hidden = true;
+        setInterval(function() {
+          document.getElementById('buttom_sheet').hidden = false;
+        }, 150);
+      }
+
+      function openDir(name) {
+        localStorage.setItem('currentDir', localStorage.getItem('currentDir') + name + '/');
+        loadFiles();
+      }
+
+      function back(name) {
+        localStorage.setItem('currentDir', localStorage.getItem('currentDir').substr(0, localStorage.getItem('currentDir').lastIndexOf('/', localStorage.getItem('currentDir').length - 2)) + '/');
+        loadFiles();
+      }
+    </script>
+    <!-- <button hidden id="callColor"></button> -->
+    <button hidden id="genBlocks"></button>
+    <script src="src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src-min/ext-language_tools.js"></script>
+    <script src="dist/index.js"></script>
+  </body>
+</html>

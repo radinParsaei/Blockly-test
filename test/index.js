@@ -97,6 +97,7 @@ function createWorkspace(blocklyDiv, options) {
 
 export { Blockly };
 
+
 import './genCode.js';
 import { DarkTheme, LightTheme } from './themes.js';
 import './toolbox.js'
@@ -188,7 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function runCode() {
   if (genBlocksCalled) {return;}
-  console.log('.');
   let code = Blockly.genCode.workspaceToCode(workspace);
   editor.setValue(code);
   editor.session.selection.moveTo(0, 0);
