@@ -274,6 +274,9 @@ span[action=openCommandPallete] {
 #paste_button[hidden] {
   display: none;
 }
+#top_div[hidden] {
+  display: none !important;
+}
 div.child {
   font-family: "Source Code Pro", monospace !important;
   background: rgba(180, 180, 180, 0.6);

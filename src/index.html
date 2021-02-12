@@ -137,7 +137,7 @@
       </category>
       <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#995ba5" custom="PROCEDURE"></category>
     </xml>
-    <div style="max-width: 100%; overflow: scroll">
+    <div id="top_div" style="max-width: 100%; overflow: auto; display: inline-flex;">
       <a href="javascript:paste()"><span class="material-icons file_action top_bar_action" id="paste_button" style="margin-top: 10px">content_paste</span></a>
       <p id="filepath"></p>
     </div>
@@ -423,8 +423,7 @@
       function openFile(filename) {
         editingFile = filename;
         document.getElementById('grid').hidden = true;
-        document.getElementById('filepath').hidden = true;
-        document.getElementById('paste_button').hidden = true;
+        document.getElementById('top_div').hidden = true;
         document.getElementById('main_editor').hidden = false;
         document.getElementById('menu').hidden = false;
         editor.session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
@@ -440,8 +439,7 @@
       function openFileBrowser() {
         document.getElementById('grid').hidden = false;
         document.getElementById('main_editor').hidden = true;
-        document.getElementById('filepath').hidden = false;
-        checkPaste();
+        document.getElementById('top_div').hidden = false;
         document.getElementById('menu').hidden = true;
         closeButtomSheet();
         document.getElementById('buttom_sheet').hidden = true;
