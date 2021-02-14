@@ -11,7 +11,7 @@ public class Client extends CompilerMain {
 //            for (int i : Targets.getIntervalCodes()) {
 //                Window.clearInterval(i);
 //            }
-            Compiler compiler = new Compiler(null, true, null, null, null);
+            Compiler compiler = new Compiler(null, true, null, null, null, null);
             CustomCompileStep.used = false;
             REPLReader.setReadCode(false);
             Thread thread = new Thread(() -> {
@@ -46,7 +46,7 @@ public class Client extends CompilerMain {
 //        color();
         HTMLElement buttonTmp = document.getElementById("genBlocks");
         buttonTmp.addEventListener("click", evt -> {
-            Compiler compiler = new Compiler(null, true, null, null, null);
+            Compiler compiler = new Compiler(null, true, null, null, null, null);
             SyntaxTree.getFunctions().clear();
             SyntaxTree.getVariables().clear();
             SyntaxTree.getClassesParameters().clear();
