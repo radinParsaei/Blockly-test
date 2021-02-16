@@ -160,7 +160,7 @@ input:checked + .slider:before {
 }
 
 .blocklyFlyoutLabelText {
-  font: bold 18pt Source Code Pro, "Trebuchet MS", sans-serif !important;
+  font: bold 24pt Source Code Pro, "Trebuchet MS", sans-serif !important;
 }
 
 .blocklyFlyoutButtonShadow {
@@ -408,4 +408,7 @@ div.child p {
   font-size: 32pt;
   margin-bottom: 30px;
   font-family: "Source Code Pro", monospace;
+}
+.smaller-title>.blocklyFlyoutLabelText {
+  font: bold 14pt Source Code Pro, "Trebuchet MS", sans-serif !important;
 }

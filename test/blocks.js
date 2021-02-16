@@ -49,7 +49,10 @@ function initBlocks() {
           }
         }
         if (output) {
-          this.setOutput(true, null);
+          if (typeof output == 'string')
+            this.setOutput(true, output);
+          else
+            this.setOutput(true, null);
         } else {
           this.setPreviousStatement(true, null);
           this.setNextStatement(true, null);
@@ -74,6 +77,15 @@ function initBlocks() {
       };
       functionCodes += functionCode;
     }
+  }
+
+  function addLabel(labelContent, category, style) {
+    var element = document.createElement("label");
+    element.setAttribute('text', labelContent);
+    if (style) {
+      element.setAttribute('web-class', style);
+    }
+    document.getElementById(category + "Category").appendChild(element);
   }
 
   function createShadows(values) {
@@ -191,6 +203,23 @@ function initBlocks() {
 
   addBlock("control_break", "Loops");
   addBlock("control_continue", "Loops");
+
+  addLabel("Advanced", "Logic", "smaller-title");
+
+  addBlock("logic_compare_advanced", "Logic", createShadows(['10', 10]), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || 'false';
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || 'true';
+    var OPERATORS = {
+      'EQ': '=?',
+      'NEQ': '!=?'
+    };
+    return [data + OPERATORS[block.getFieldValue('OP')] + data1, Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, function(self, blockToAddField) {self.appendDummyInput().appendField(new Blockly.FieldDropdown([
+      ['=?', 'EQ'],
+      ['!=?', 'NEQ']
+  ]), 'OP');}, null], Blockly.Msg['LOGIC_COMPARE_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_COMPARE_ADVANCED_HELPURL'], 'Boolean');
 
   Blockly.defineBlocksWithJsonArray([
     {

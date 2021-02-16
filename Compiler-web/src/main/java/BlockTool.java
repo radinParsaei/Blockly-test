@@ -94,10 +94,14 @@ public class BlockTool {
                 return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
                         putVales(((SyntaxTree.Equals) val).getV1()) + "</value></block>";
             } else {
-                return "<block type=\"logic_compare\"><field name=\"OP\">EQ</field><value name=\"A\">" +
+                return "<block type=\"logic_compare_advanced\"><field name=\"OP\">EQ</field><value name=\"A\">" +
                         putVales(((SyntaxTree.Equals) val).getV1()) + "</value><value name=\"B\">" +
                         putVales(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
             }
+        } else if (val instanceof SyntaxTree.StrictEquals) {
+            return "<block type=\"logic_compare\"><field name=\"OP\">EQ</field><value name=\"A\">" +
+                    putVales(((SyntaxTree.StrictEquals) val).getV1()) + "</value><value name=\"B\">" +
+                    putVales(((SyntaxTree.StrictEquals) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.GreaterThan) {
             return "<block type=\"logic_compare\"><field name=\"OP\">GT</field><value name=\"A\">" +
                     putVales(((SyntaxTree.GreaterThan) val).getV1()) + "</value><value name=\"B\">" +
@@ -123,9 +127,13 @@ public class BlockTool {
                     putVales(((SyntaxTree.Or) val).getV1()) + "</value><value name=\"B\">" +
                     putVales(((SyntaxTree.Or) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Not) {
-            if (((SyntaxTree.Not) val).getValue() instanceof SyntaxTree.Equals) {
+            if (((SyntaxTree.Not) val).getValue() instanceof SyntaxTree.StrictEquals) {
                 return "<block type=\"logic_compare\"><field name=\"OP\">NEQ</field><value name=\"A\">" +
-                        putVales(((SyntaxTree.Equals) ((SyntaxTree.Not) val).getValue()).getV1()) + "</value><value name=\"B\">" +
+                        putVales(((SyntaxTree.StrictEquals) ((SyntaxTree.Not) val).getValue()).getV1()) + "</value><value name=\"B\">" +
+                        putVales(((SyntaxTree.StrictEquals) ((SyntaxTree.Not) val).getValue()).getV2()) + "</value></block>";
+            } else if (((SyntaxTree.Not) val).getValue() instanceof SyntaxTree.Equals) {
+                return "<block type=\"logic_compare_advanced\"><field name=\"OP\">NEQ</field><value name=\"ARG0\">" +
+                        putVales(((SyntaxTree.Equals) ((SyntaxTree.Not) val).getValue()).getV1()) + "</value><value name=\"ARG1\">" +
                         putVales(((SyntaxTree.Equals) ((SyntaxTree.Not) val).getValue()).getV2()) + "</value></block>";
             } else {
                 return "<block type=\"logic_negate\"><value name=\"BOOL\">" +
