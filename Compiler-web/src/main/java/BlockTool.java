@@ -94,8 +94,8 @@ public class BlockTool {
                 return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
                         putVales(((SyntaxTree.Equals) val).getV1()) + "</value></block>";
             } else {
-                return "<block type=\"logic_compare_advanced\"><field name=\"OP\">EQ</field><value name=\"A\">" +
-                        putVales(((SyntaxTree.Equals) val).getV1()) + "</value><value name=\"B\">" +
+                return "<block type=\"logic_compare_advanced\"><field name=\"OP\">EQ</field><value name=\"ARG0\">" +
+                        putVales(((SyntaxTree.Equals) val).getV1()) + "</value><value name=\"ARG1\">" +
                         putVales(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
             }
         } else if (val instanceof SyntaxTree.StrictEquals) {
@@ -126,6 +126,14 @@ public class BlockTool {
             return "<block type=\"logic_operation\"><field name=\"OP\">OR</field><value name=\"A\">" +
                     putVales(((SyntaxTree.Or) val).getV1()) + "</value><value name=\"B\">" +
                     putVales(((SyntaxTree.Or) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.BitwiseAnd) {
+            return "<block type=\"logic_operation_advanced\"><field name=\"OP\">AND</field><value name=\"ARG0\">" +
+                    putVales(((SyntaxTree.BitwiseAnd) val).getV1()) + "</value><value name=\"ARG1\">" +
+                    putVales(((SyntaxTree.BitwiseAnd) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.BitwiseOr) {
+            return "<block type=\"logic_operation_advanced\"><field name=\"OP\">OR</field><value name=\"ARG0\">" +
+                    putVales(((SyntaxTree.BitwiseOr) val).getV1()) + "</value><value name=\"ARG1\">" +
+                    putVales(((SyntaxTree.BitwiseOr) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Not) {
             if (((SyntaxTree.Not) val).getValue() instanceof SyntaxTree.StrictEquals) {
                 return "<block type=\"logic_compare\"><field name=\"OP\">NEQ</field><value name=\"A\">" +

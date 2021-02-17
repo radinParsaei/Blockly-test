@@ -204,6 +204,22 @@ function initBlocks() {
   addBlock("control_break", "Loops");
   addBlock("control_continue", "Loops");
 
+  addBlock("logic_operation_advanced", "Logic", createShadows([true, true]), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || 'false';
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || 'true';
+    var OPERATORS = {
+      'OR': '|',
+      'AND': '&'
+    };
+    return [data + ' ' + OPERATORS[block.getFieldValue('OP')] + ' ' + data1, Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, function(self, blockToAddField) {self.appendDummyInput().appendField(new Blockly.FieldDropdown([
+      ['|', 'OR'],
+      ['&', 'AND']
+  ]), 'OP');}, null], Blockly.Msg['LOGIC_OPERATION_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_OPERATION_ADVANCED_HELPURL'], 'Boolean');
+
+
   addLabel("Advanced", "Logic", "smaller-title");
 
   addBlock("logic_compare_advanced", "Logic", createShadows(['10', 10]), function(block) {
@@ -215,7 +231,7 @@ function initBlocks() {
       'EQ': '=?',
       'NEQ': '!=?'
     };
-    return [data + OPERATORS[block.getFieldValue('OP')] + data1, Blockly.genCode.ORDER_ATOMIC];
+    return [data + ' ' + OPERATORS[block.getFieldValue('OP')] + ' ' + data1, Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true], '', [null, function(self, blockToAddField) {self.appendDummyInput().appendField(new Blockly.FieldDropdown([
       ['=?', 'EQ'],
       ['!=?', 'NEQ']
