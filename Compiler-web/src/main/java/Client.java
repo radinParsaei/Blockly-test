@@ -51,6 +51,7 @@ public class Client extends CompilerMain {
             SyntaxTree.getVariables().clear();
             SyntaxTree.getClassesParameters().clear();
             SyntaxTree.CreateLambda.setCounter(0);
+            Analyzer.clear();
             REPLReader.setReadCode(false);
             compile(compiler);
             REPLReader.setReadCode(true);

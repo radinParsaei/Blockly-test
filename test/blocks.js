@@ -9,9 +9,13 @@ function listVariables() {
   return res;
 }
 
+Blockly.Msg['TEXT_REPLACE_REPLACE'] = 'replace';
+Blockly.Msg['TEXT_REPLACE_WITH'] = 'with';
+Blockly.Msg['TEXT_REPLACE_IN'] = 'in';
+
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
-    blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output) {
+    blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
     var element = document.createElement("block");
     element.setAttribute('type', blockName);
     document.getElementById(blockCategory + "Category").appendChild(element);
@@ -25,6 +29,9 @@ function initBlocks() {
     } else return;
     Blockly.Blocks[blockName] = {
       init: function() {
+        if (inline) {
+          this.setInputsInline(true);
+        }
         this.setTooltip(tooltip);
         this.setHelpUrl(helpUrl);
         var i = 0;
@@ -219,6 +226,15 @@ function initBlocks() {
       ['&', 'AND']
   ]), 'OP');}, null], Blockly.Msg['LOGIC_OPERATION_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_OPERATION_ADVANCED_HELPURL'], 'Boolean');
 
+  addBlock("text_replace", "Text", createShadows(['Hello', 'H', 'h']), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data2 = Blockly.genCode.valueToCode(block, 'ARG2',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    return [data2 + '.replace(' + data + ', ' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true, true], '', [null, Blockly.Msg['TEXT_REPLACE_REPLACE'], null, Blockly.Msg['TEXT_REPLACE_WITH'], null, Blockly.Msg['TEXT_REPLACE_IN']], Blockly.Msg['TEXT_REPLACE_TOOLTIP'], Blockly.Msg['TEXT_REPLACE_HELPURL'], true, true);
 
   addLabel("Advanced", "Logic", "smaller-title");
 

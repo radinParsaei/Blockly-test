@@ -148,6 +148,17 @@ public class BlockTool {
                         putVales(((SyntaxTree.Not) val).getValue()) + "</value></block>";
             }
         } else if (val instanceof SyntaxTree.CallFunction) {
+            if (((SyntaxTree.CallFunction) val).getInstance() != null) {
+                if (Analyzer.matches(((SyntaxTree.CallFunction) val).getInstance(), Analyzer.TEXT)) {
+                    if (((SyntaxTree.CallFunction) val).getFunctionName().equals("replace") && ((SyntaxTree.CallFunction) val).getArgs().length == 2) {
+                            return "<block type=\"text_replace\"><value name=\"ARG2\">" +
+                                    putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"ARG1\">" +
+                                    putVales(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value><value name=\"ARG0\">" +
+                                    putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value></block>";
+
+                    }
+                }
+            }
             String functionName = ((SyntaxTree.CallFunction) val).getFunctionName().split(":")[0];
             ((SyntaxTree.CallFunction) val).findFunction();
             StringBuilder tmp = new StringBuilder("<block type=\"");
@@ -161,7 +172,7 @@ public class BlockTool {
                 int counter = 0;
                 for (String i : functionParameters.get(functionName)) {
                     args.append("<value name=\"ARG").append(counter).append("\">")
-                            .append(putVales(((SyntaxTree.SetVariable)((SyntaxTree.CallFunction) val).getVariableSetters()[counter]).getVariableValue()))
+                            .append(putVales(((SyntaxTree.SetVariable) ((SyntaxTree.CallFunction) val).getVariableSetters()[counter]).getVariableValue()))
                             .append("</value>");
                     tmp.append("<arg name=\"").append(i).append("\"></arg>");
                     counter++;
