@@ -505,3 +505,9 @@ Blockly.genCode['logic_negate'] = function(block) {
   var code = '!' + argument0;
   return [code, Blockly.genCode.ORDER_LOGICAL_NOT];
 };
+
+Blockly.genCode['text_length'] = function(block) {
+  var text = Blockly.genCode.valueToCode(block, 'VALUE',
+      Blockly.genCode.ORDER_NONE) || '\'\'';
+  return [text + '.length()', Blockly.genCode.ORDER_FUNCTION_CALL];
+};

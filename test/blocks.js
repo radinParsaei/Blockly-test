@@ -211,6 +211,8 @@ function initBlocks() {
   addBlock("control_break", "Loops");
   addBlock("control_continue", "Loops");
 
+  addBlock("text_length", "Text", '<value name="VALUE"><shadow type="text"><field name="TEXT">abc</field></shadow></value>');
+
   addBlock("logic_operation_advanced", "Logic", createShadows([true, true]), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
         Blockly.genCode.ORDER_NONE) || 'false';

@@ -155,7 +155,9 @@ public class BlockTool {
                                     putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"ARG1\">" +
                                     putVales(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value><value name=\"ARG0\">" +
                                     putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value></block>";
-
+                    } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("length") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_length\"><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
                     }
                 }
             }
