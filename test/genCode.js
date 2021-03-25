@@ -312,6 +312,18 @@ Blockly.genCode['math_change'] = function(block) {
   return varName + ' += ' + argument0 + '\n';
 };
 
+Blockly.genCode['text_changeCase'] = function(block) {
+  var OPERATORS = {
+    'UPPERCASE': '.toUpperCase()',
+    'LOWERCASE': '.toLowerCase()',
+    'TITLECASE': '.toTitleCase()'
+  };
+  var operator = OPERATORS[block.getFieldValue('CASE')];
+  var text = Blockly.genCode.valueToCode(block, 'TEXT',
+      Blockly.genCode.ORDER_MEMBER) || '\'\'';
+  var code = text + operator;
+  return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+};
 
 Blockly.genCode['procedures_defreturn'] = function(block) {
   var varName;

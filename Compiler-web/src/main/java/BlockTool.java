@@ -158,6 +158,23 @@ public class BlockTool {
                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("length") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
                         return "<block type=\"text_length\"><value name=\"VALUE\">" +
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("toUpper") ||
+                            ((SyntaxTree.CallFunction) val).getFunctionName().equals("toUpperCase")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_changeCase\"><value name=\"TEXT\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><field name=\"CASE\">UPPERCASE</field></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("toLower") ||
+                            ((SyntaxTree.CallFunction) val).getFunctionName().equals("toLowerCase")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_changeCase\"><value name=\"TEXT\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><field name=\"CASE\">LOWERCASE</field></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("toTitleCase")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_changeCase\"><value name=\"TEXT\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><field name=\"CASE\">TITLECASE</field></block>";
                     }
                 }
             }
