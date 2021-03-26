@@ -19,7 +19,7 @@ public class Targets {
     public static void print(ValueBase value) {
         HTMLDocument document = HTMLDocument.current();
         HTMLElement htmlParagraphElement = document.createElement("span");
-        htmlParagraphElement.setInnerHTML(value.toString().replace("\n", "<br>"));
+        htmlParagraphElement.setInnerHTML(value.toString().replace("\n", "<br>").replace(" ", "&nbsp;"));
         document.getElementById("console2").appendChild(htmlParagraphElement);
     }
 

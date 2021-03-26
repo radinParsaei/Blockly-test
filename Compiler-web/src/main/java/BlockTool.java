@@ -175,6 +175,21 @@ public class BlockTool {
                         return "<block type=\"text_changeCase\"><value name=\"TEXT\">" +
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) +
                                 "</value><field name=\"CASE\">TITLECASE</field></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("trim")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_trim\"><value name=\"TEXT\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><field name=\"MODE\">BOTH</field></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("trimLeft")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_trim\"><value name=\"TEXT\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><field name=\"MODE\">LEFT</field></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("trimRight")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_trim\"><value name=\"TEXT\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><field name=\"MODE\">RIGHT</field></block>";
                     }
                 }
             }

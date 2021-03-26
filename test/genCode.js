@@ -325,6 +325,19 @@ Blockly.genCode['text_changeCase'] = function(block) {
   return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
 };
 
+Blockly.genCode['text_trim'] = function(block) {
+  var OPERATORS = {
+    'LEFT': '.trimLeft()',
+    'RIGHT': '.trimRight()',
+    'BOTH': '.trim()'
+  };
+  var operator = OPERATORS[block.getFieldValue('MODE')];
+  var text = Blockly.genCode.valueToCode(block, 'TEXT',
+      Blockly.genCode.ORDER_MEMBER) || '\'\'';
+  var code = text + operator;
+  return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+};
+
 Blockly.genCode['procedures_defreturn'] = function(block) {
   var varName;
   var workspace = block.workspace;
