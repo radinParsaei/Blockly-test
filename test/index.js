@@ -351,7 +351,7 @@ function changeViewWithoutSwap() {
     isDark = !isDark;
     document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
     injectBlockly();
-    document.getElementById("genBlocks").click();
+    if (document.getElementById("editor2").hidden) document.getElementById("genBlocks").click();
     document.getElementsByClassName('blocklyMenuItem')[0].click();
   } catch(e) {}
   document.getElementById("gotocode").classList.toggle('selected');
