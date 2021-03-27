@@ -121,7 +121,7 @@ function injectBlockly() {
     rtl : false,
     scrollbars : true,
     sounds : false,
-    oneBasedIndex : true,
+    oneBasedIndex : false,
     grid : {
       spacing : 20,
       length : 2,

@@ -57,7 +57,7 @@ Blockly.genCode.ORDER_OVERRIDES = [
   // a * (b * c) -> a * b * c
   [Blockly.genCode.ORDER_MULTIPLICATION, Blockly.genCode.ORDER_MULTIPLICATION],
   // a + (b + c) -> a + b + c
-  [Blockly.genCode.ORDER_ADDITION, Blockly.genCode.ORDER_ADDITION],
+  [Blockly.genCode.ORDER_ADDITIVE, Blockly.genCode.ORDER_ADDITIVE],
   // a && (b && c) -> a && b && c
   [Blockly.genCode.ORDER_LOGICAL_AND, Blockly.genCode.ORDER_LOGICAL_AND],
   // a || (b || c) -> a || b || c
@@ -184,10 +184,10 @@ Blockly.genCode.getAdjusted = function(block, atId, opt_delta, opt_negate,
   var defaultAtIndex = block.workspace.options.oneBasedIndex ? '1' : '0';
   if (delta > 0) {
     var at = Blockly.genCode.valueToCode(block, atId,
-        Blockly.genCode.ORDER_ADDITION) || defaultAtIndex;
+        Blockly.genCode.ORDER_ADDITIVE) || defaultAtIndex;
   } else if (delta < 0) {
     var at = Blockly.genCode.valueToCode(block, atId,
-        Blockly.genCode.ORDER_SUBTRACTION) || defaultAtIndex;
+        Blockly.genCode.ORDER_ADDITIVE) || defaultAtIndex;
   } else if (opt_negate) {
     var at = Blockly.genCode.valueToCode(block, atId,
         Blockly.genCode.ORDER_UNARY_NEGATION) || defaultAtIndex;
@@ -206,10 +206,10 @@ Blockly.genCode.getAdjusted = function(block, atId, opt_delta, opt_negate,
     // If the index is dynamic, adjust it in code.
     if (delta > 0) {
       at = at + ' + ' + delta;
-      var innerOrder = Blockly.genCode.ORDER_ADDITION;
+      var innerOrder = Blockly.genCode.ORDER_ADDITIVE;
     } else if (delta < 0) {
       at = at + ' - ' + -delta;
-      var innerOrder = Blockly.genCode.ORDER_SUBTRACTION;
+      var innerOrder = Blockly.genCode.ORDER_ADDITIVE;
     }
     if (opt_negate) {
       if (delta) {

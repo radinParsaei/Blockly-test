@@ -12,6 +12,9 @@ function listVariables() {
 Blockly.Msg['TEXT_REPLACE_REPLACE'] = 'replace';
 Blockly.Msg['TEXT_REPLACE_WITH'] = 'with';
 Blockly.Msg['TEXT_REPLACE_IN'] = 'in';
+Blockly.Msg['TEXT_GET_SUBSTRING_FROM'] = 'get substring from';
+Blockly.Msg['TEXT_GET_SUBSTRING_TO'] = 'to';
+Blockly.Msg['TEXT_GET_SUBSTRING_END'] = 'end';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -237,6 +240,24 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || "'text'";
     return [data2 + '.replace(' + data + ', ' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true, true], '', [null, Blockly.Msg['TEXT_REPLACE_REPLACE'], null, Blockly.Msg['TEXT_REPLACE_WITH'], null, Blockly.Msg['TEXT_REPLACE_IN']], Blockly.Msg['TEXT_REPLACE_TOOLTIP'], Blockly.Msg['TEXT_REPLACE_HELPURL'], true, true);
+
+  addBlock("text_substring", "Text", createShadows(['abc', 1, 3]), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || "0";
+    var data2 = Blockly.genCode.valueToCode(block, 'ARG2',
+        Blockly.genCode.ORDER_NONE) || "0";
+    return [data + '.substring(' + data1 + ', ' + data2 + ')', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true, true], '', [null, Blockly.Msg['TEXT_GET_SUBSTRING_INPUT_IN_TEXT'], null, Blockly.Msg['TEXT_GET_SUBSTRING_FROM'], null, Blockly.Msg['TEXT_GET_SUBSTRING_TO']], Blockly.Msg['TEXT_GET_SUBSTRING_TOOLTIP'], Blockly.Msg['TEXT_GET_SUBSTRING_HELPURL'], true, true);
+
+  addBlock("text_substring1", "Text", createShadows(['abc', 1, 3]), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    return [data + '.substring(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, Blockly.Msg['TEXT_GET_SUBSTRING_INPUT_IN_TEXT'], null, Blockly.Msg['TEXT_GET_SUBSTRING_FROM'], undefined, Blockly.Msg['TEXT_GET_SUBSTRING_TO'], undefined, Blockly.Msg['TEXT_GET_SUBSTRING_END']], Blockly.Msg['TEXT_GET_SUBSTRING_TOOLTIP'], Blockly.Msg['TEXT_GET_SUBSTRING_HELPURL'], true, true);
 
   addLabel("Advanced", "Logic", "smaller-title");
 

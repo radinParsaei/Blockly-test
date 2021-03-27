@@ -190,6 +190,18 @@ public class BlockTool {
                         return "<block type=\"text_trim\"><value name=\"TEXT\">" +
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) +
                                 "</value><field name=\"MODE\">RIGHT</field></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("substring")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 2) {
+                        return "<block type=\"text_substring\"><value name=\"ARG0\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><value name=\"ARG1\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                "</value><value name=\"ARG2\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("substring")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                        return "<block type=\"text_substring1\"><value name=\"ARG0\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><value name=\"ARG1\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                "</value></block>";
                     }
                 }
             }
