@@ -202,6 +202,12 @@ public class BlockTool {
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) +
                                 "</value><value name=\"ARG1\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
                                 "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("startsWith")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                        return "<block type=\"text_startsWith\"><value name=\"ARG0\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><value name=\"ARG1\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                "</value></block>";
                     } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("contains") || (((SyntaxTree.CallFunction) val).getFunctionName().equals("includes"))) &&
                             ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
                         return "<block type=\"text_contains\"><value name=\"ARG0\">" +

@@ -16,6 +16,7 @@ Blockly.Msg['TEXT_GET_SUBSTRING_FROM'] = 'get substring from';
 Blockly.Msg['TEXT_GET_SUBSTRING_TO'] = 'to';
 Blockly.Msg['TEXT_GET_SUBSTRING_END'] = 'end';
 Blockly.Msg['TEXT_CONTAINS'] = 'contains';
+Blockly.Msg['TEXT_STARTS_WITH'] = 'starts with';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -266,7 +267,15 @@ function initBlocks() {
     var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
         Blockly.genCode.ORDER_NONE) || "'text'";
     return [data + '.contains(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
-  }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_CONTAINS']], Blockly.Msg['TEXT_GET_SUBSTRING_TOOLTIP'], Blockly.Msg['TEXT_GET_SUBSTRING_HELPURL'], true, true);
+  }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_CONTAINS']], Blockly.Msg['TEXT_CONTAINS_TOOLTIP'], Blockly.Msg['TEXT_CONTAINS_HELPURL'], "Boolean", true);
+
+  addBlock("text_startsWith", "Text", createShadows(['abc', 'a']), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    return [data + '.startsWith(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_STARTS_WITH']], Blockly.Msg['TEXT_STARTS_WITH_TOOLTIP'], Blockly.Msg['TEXT_STARTS_WITH_HELPURL'], "Boolean", true);
 
   addLabel("Advanced", "Logic", "smaller-title");
 
