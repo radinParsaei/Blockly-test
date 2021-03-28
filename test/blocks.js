@@ -17,6 +17,7 @@ Blockly.Msg['TEXT_GET_SUBSTRING_TO'] = 'to';
 Blockly.Msg['TEXT_GET_SUBSTRING_END'] = 'end';
 Blockly.Msg['TEXT_CONTAINS'] = 'contains';
 Blockly.Msg['TEXT_STARTS_WITH'] = 'starts with';
+Blockly.Msg['TEXT_ENDS_WITH'] = 'ends with';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -276,6 +277,14 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || "'text'";
     return [data + '.startsWith(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_STARTS_WITH']], Blockly.Msg['TEXT_STARTS_WITH_TOOLTIP'], Blockly.Msg['TEXT_STARTS_WITH_HELPURL'], "Boolean", true);
+
+  addBlock("text_endsWith", "Text", createShadows(['abc', 'c']), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    return [data + '.endsWith(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_ENDS_WITH']], Blockly.Msg['TEXT_ENDS_WITH_TOOLTIP'], Blockly.Msg['TEXT_ENDS_WITH_HELPURL'], "Boolean", true);
 
   addLabel("Advanced", "Logic", "smaller-title");
 
