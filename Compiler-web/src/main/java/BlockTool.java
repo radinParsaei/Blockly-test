@@ -79,6 +79,7 @@ public class BlockTool {
                     putVales(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
                     putVales(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.PrintFunction) {
+            parentIsExecuteValue = false;
             return syntaxTreeToBlocksXML1(((SyntaxTree.PrintFunction) val).getProgram());
         } else if (val instanceof SyntaxTree.Variable) {
             String[] variableName = ((SyntaxTree.Variable) val).getVariableName().split(":");
