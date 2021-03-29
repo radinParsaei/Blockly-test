@@ -303,6 +303,62 @@ function initBlocks() {
       ['!=?', 'NEQ']
   ]), 'OP');}, null], Blockly.Msg['LOGIC_COMPARE_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_COMPARE_ADVANCED_HELPURL'], 'Boolean');
 
+  Blockly.Constants.Text.TEXT_CHARAT_MUTATOR_MIXIN = {
+    /**
+     * Create XML to represent whether there is an 'AT' input.
+     * @return {!Element} XML storage element.
+     * @this {Blockly.Block}
+     */
+    mutationToDom: function() {
+      var container = Blockly.utils.xml.createElement('mutation');
+      container.setAttribute('at', !!this.isAt_);
+      return container;
+    },
+    /**
+     * Parse XML to restore the 'AT' input.
+     * @param {!Element} xmlElement XML storage element.
+     * @this {Blockly.Block}
+     */
+    domToMutation: function(xmlElement) {
+      // Note: Until January 2013 this block did not have mutations,
+      // so 'at' defaults to true.
+      var isAt = (xmlElement.getAttribute('at') != 'false');
+      this.updateAt_(isAt);
+    },
+    /**
+     * Create or delete an input for the numeric index.
+     * @param {boolean} isAt True if the input should exist.
+     * @private
+     * @this {Blockly.Block}
+     */
+    updateAt_: function(isAt) {
+      // Destroy old 'AT' and 'ORDINAL' inputs.
+      this.removeInput('AT', true);
+      this.removeInput('ORDINAL', true);
+      // Create either a value 'AT' input or a dummy input.
+      if (isAt) {
+        this.appendValueInput('AT');
+        if (Blockly.Msg['ORDINAL_NUMBER_SUFFIX']) {
+          this.appendDummyInput('ORDINAL')
+              .appendField(Blockly.Msg['ORDINAL_NUMBER_SUFFIX']);
+        }
+      }
+      if (Blockly.Msg['TEXT_CHARAT_TAIL']) {
+        this.removeInput('TAIL', true);
+        this.appendDummyInput('TAIL')
+            .appendField(Blockly.Msg['TEXT_CHARAT_TAIL']);
+      }
+
+      this.isAt_ = isAt;
+    }
+  };
+
+  delete Blockly.Extensions.ALL_['text_charAt_mutator'];
+
+  Blockly.Extensions.registerMutator('text_charAt_mutator',
+    Blockly.Constants.Text.TEXT_CHARAT_MUTATOR_MIXIN,
+    Blockly.Constants.Text.TEXT_CHARAT_EXTENSION);
+
   Blockly.defineBlocksWithJsonArray([
     {
       "type": "text",
@@ -457,6 +513,31 @@ function initBlocks() {
     "style": "logic_blocks",
     "tooltip": "%{BKY_LOGIC_NEGATE_TOOLTIP}",
     "helpUrl": "%{BKY_LOGIC_NEGATE_HELPURL}"
+  }, {
+    "type": "text_charAt",
+    "message0": "%{BKY_TEXT_CHARAT_TITLE}", // "in text %1 %2"
+    "args0": [
+      {
+        "type":"input_value",
+        "name": "VALUE",
+      },
+      {
+        "type": "field_dropdown",
+        "name": "WHERE",
+        "options": [
+          ["%{BKY_TEXT_CHARAT_FROM_START}", "FROM_START"],
+          ["%{BKY_TEXT_CHARAT_FROM_END}", "FROM_END"],
+          ["%{BKY_TEXT_CHARAT_FIRST}", "FIRST"],
+          ["%{BKY_TEXT_CHARAT_LAST}", "LAST"],
+          ["%{BKY_TEXT_CHARAT_RANDOM}", "RANDOM"]
+        ]
+      }
+    ],
+    "output": "String",
+    "style": "text_blocks",
+    "helpUrl": "%{BKY_TEXT_CHARAT_HELPURL}",
+    "inputsInline": true,
+    "mutator": "text_charAt_mutator"
   }]
   );
 

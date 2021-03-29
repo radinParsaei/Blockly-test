@@ -228,6 +228,32 @@ Blockly.genCode.getAdjusted = function(block, atId, opt_delta, opt_negate,
   return at;
 };
 
+Blockly.genCode['text_charAt'] = function(block) {
+  var where = block.getFieldValue('WHERE') || 'FROM_START';
+  var text = Blockly.genCode.valueToCode(block, 'VALUE',
+      Blockly.genCode.ORDER_MEMBER) || '\'\'';
+  switch (where) {
+    case 'FIRST':
+      var code = text + '.getFirstCharacter()';
+      return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+    case 'LAST':
+      var code = text + '.getLastCharacter()';
+      return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+    case 'FROM_START':
+      var at = Blockly.genCode.getAdjusted(block, 'AT');
+      var code = text + '.charAt(' + at + ')';
+      return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+    case 'FROM_END':
+      var at = Blockly.genCode.getAdjusted(block, 'AT');
+      var code = text + '.charAtFromEnd(' + at + ')';
+      return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+    case 'RANDOM':
+      var code = text + '.getRandomCharacter()';
+      return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+  }
+  throw Error('Unhandled option (text_charAt).');
+};
+
 Blockly.genCode['text'] = function(block) {
   var code = Blockly.genCode.quote_(block.getFieldValue('TEXT'));
   return [code, Blockly.genCode.ORDER_ATOMIC];
