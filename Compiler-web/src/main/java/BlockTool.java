@@ -333,7 +333,7 @@ public class BlockTool {
 
     public String syntaxTreeToBlocksXML1(ProgramBase program) {
         StringBuilder result;
-        if (blockCount != 0 && !(program instanceof SyntaxTree.Function) && !(program instanceof SyntaxTree.ExecuteValue)) {
+        if (blockCount != 0 && !(program instanceof SyntaxTree.Function)) {
             result = new StringBuilder("<next>");
         } else {
             result = new StringBuilder();
@@ -373,13 +373,6 @@ public class BlockTool {
             blockCount++;
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
-            if (!(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction) && blockCount != 0) {
-                blockCount--;
-                for (int i = 0; i < blockCount; i++) {
-                    result.append("</block></next>");
-                }
-                result.append("</block>");
-            }
             result.append(putVales(((SyntaxTree.ExecuteValue) program).getValue()));
             parentIsExecuteValue = false;
         } else if (program instanceof SyntaxTree.Return) {
