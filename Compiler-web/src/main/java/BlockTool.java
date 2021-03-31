@@ -227,9 +227,9 @@ public class BlockTool {
                     } else if (((((SyntaxTree.CallFunction) val).getFunctionName().equals("getFirstCharacter")) &&
                             ((SyntaxTree.CallFunction) val).getArgs().length == 0) ||
                             ((((SyntaxTree.CallFunction) val).getFunctionName().equals("charAt")) &&
-                            ((SyntaxTree.CallFunction) val).getArgs().length == 1 &&
-                            ((SyntaxTree.CallFunction) val).getArgs()[0] instanceof SyntaxTree.Number &&
-                            ((BigDecimal) ((SyntaxTree.CallFunction) val).getArgs()[0].getData()).intValue() == 0)) {
+                                    ((SyntaxTree.CallFunction) val).getArgs().length == 1 &&
+                                    ((SyntaxTree.CallFunction) val).getArgs()[0] instanceof SyntaxTree.Number &&
+                                    ((BigDecimal) ((SyntaxTree.CallFunction) val).getArgs()[0].getData()).intValue() == 0)) {
                         return "<block type=\"text_charAt\"><mutation at=\"false\"></mutation><field name=\"WHERE\">FIRST</field><value name=\"VALUE\">" +
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
                     } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("getRandomCharacter")) &&
@@ -247,6 +247,12 @@ public class BlockTool {
                         return "<block type=\"text_charAt\"><mutation at=\"true\"></mutation><field name=\"WHERE\">FROM_END</field><value name=\"VALUE\">" +
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) +
                                 "</value><value name=\"AT\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("codePointAt")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                        return "<block type=\"text_codePointAt\"><value name=\"ARG1\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><value name=\"ARG0\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
                                 "</value></block>";
                     } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("contains") || (((SyntaxTree.CallFunction) val).getFunctionName().equals("includes"))) &&
                             ((SyntaxTree.CallFunction) val).getArgs().length == 1) {

@@ -455,6 +455,7 @@
         editor.session.selection.moveTo(0, 0);
         genBlocksCalled = true;
         document.getElementById('genBlocks').click();
+        Blockly.getMainWorkspace().cleanUp();
         window.onresize();
         setInterval(function() {
           genBlocksCalled = false;
