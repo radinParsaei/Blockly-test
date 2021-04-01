@@ -20,6 +20,8 @@ Blockly.Msg['TEXT_STARTS_WITH'] = 'starts with';
 Blockly.Msg['TEXT_ENDS_WITH'] = 'ends with';
 Blockly.Msg['TEXT_CODE_POINT_AT'] = 'code of character';
 Blockly.Msg['TEXT_CODE_POINT_AT_IN'] = 'in';
+Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_EQUALS_TO'] = 'equals to';
+Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_IGNORE_CASE'] = 'ignoring case';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -255,6 +257,16 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || "'text'";
     return [data1 + '.codePointAt(' + data + ')', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true], '', [null, Blockly.Msg['TEXT_CODE_POINT_AT'], null, Blockly.Msg['TEXT_CODE_POINT_AT_IN']], Blockly.Msg['TEXT_REPLACE_TOOLTIP'], Blockly.Msg['TEXT_REPLACE_HELPURL'], true, true);
+
+  addBlock("text_equalsIgnoreCase", "Text", createShadows(['abc', 'ABC']), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data2 = Blockly.genCode.valueToCode(block, 'ARG2',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    return [data1 + '.equalsIgnoreCase(' + data + ')', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, undefined, Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_EQUALS_TO'], null, undefined, Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_IGNORE_CASE']], Blockly.Msg['TEXT_REPLACE_TOOLTIP'], Blockly.Msg['TEXT_REPLACE_HELPURL'], "Boolean", true);
 
   addBlock("text_substring", "Text", createShadows(['abc', 1, 3]), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
