@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
   Blockly.Msg["CATEGORY_TEXT"] = "Text";
   Blockly.Msg["CATEGORY_VARIABLE"] = "Variables";
   Blockly.Msg["CATEGORY_FUNCTIONS"] = "Functions";
+  Blockly.Msg["CATEGORY_LIST"] = "List";
   injectBlockly();
 });
 

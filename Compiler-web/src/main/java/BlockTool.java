@@ -53,6 +53,15 @@ public class BlockTool {
             return "<block type=\"text\"><field name=\"TEXT\">" + ("" + val).replace("\n", "\\n")
                     .replace("\f", "\\f").replace("\t", "\\t").replace("\r", "\\r")
                     .replace("\b", "\\b").replace("\"", "\\") + "</field></block>";
+        } else if (val instanceof SyntaxTree.CreateInstance && Analyzer.matches(val, Analyzer.INSTANCE) &&
+                Analyzer.getPossibleInstanceNames(val).size() == 1 && Analyzer.getPossibleInstanceNames(val).get(0).matches("%Array")) {
+            ArrayList<ValueBase> values = (ArrayList<ValueBase>) ((SyntaxTree.CreateInstance) val).getArgs()[0].getData();
+            StringBuilder stringBuilder = new StringBuilder("<block type=\"lists_create_with\"><mutation items=\"").append(values.size()).append("\"></mutation>");
+            System.out.println(values);
+            for (int i = 0; i < values.size(); i++) {
+                stringBuilder.append("<value name=\"ADD").append(i).append("\">").append(putVales(values.get(i))).append("</value>");
+            }
+            return stringBuilder.append("</block>").toString();
         } else if (val instanceof SyntaxTree.Boolean) {
             return "<block type=\"logic_boolean\"><field name=\"BOOL\">" + (((Boolean)val.getData())? "TRUE":"FALSE") + "</field></block>";
         } else if (val instanceof SyntaxTree.Add) {
