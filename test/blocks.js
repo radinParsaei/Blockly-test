@@ -1,5 +1,7 @@
 import './field_dropdown.js'
 import './variables_mutator.js';
+import {createMinusField} from './field_minus';
+import {createPlusField} from './field_plus';
 
 function listVariables() {
   var res = [[Blockly.Msg['SELECT_VARIABLE'], '']];
@@ -23,6 +25,7 @@ Blockly.Msg['TEXT_CODE_POINT_AT_IN'] = 'in';
 Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_EQUALS_TO'] = 'equals to';
 Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_IGNORE_CASE'] = 'ignoring case';
 Blockly.Msg['TEXT_MATCHES'] = 'matches regex';
+Blockly.Msg['TEXT_INDEX_OF_FROM_INDEX'] = 'from index';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -319,6 +322,8 @@ function initBlocks() {
     return [data + '.endsWith(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_ENDS_WITH']], Blockly.Msg['TEXT_ENDS_WITH_TOOLTIP'], Blockly.Msg['TEXT_ENDS_WITH_HELPURL'], "Boolean", true);
 
+  addBlock("text_indexOf", "Text");
+
   addLabel("Advanced", "Logic", "smaller-title");
 
   addBlock("logic_compare_advanced", "Logic", createShadows(['10', 10]), function(block) {
@@ -391,6 +396,59 @@ function initBlocks() {
   Blockly.Extensions.registerMutator('text_charAt_mutator',
     Blockly.Constants.Text.TEXT_CHARAT_MUTATOR_MIXIN,
     Blockly.Constants.Text.TEXT_CHARAT_EXTENSION);
+
+
+    const textIndexOfMutator = {
+      suppressPrefixSuffix: true,
+      hasFromIndex: false,
+      mutationToDom: function() {
+        if (!this.hasFromIndex) {
+          return null;
+        }
+        const container = Blockly.utils.xml.createElement('mutation');
+        if (this.hasFromIndex) {
+          container.setAttribute('hasFromIndex', 1);
+        }
+        return container;
+      },
+
+      domToMutation: function(xmlElement) {
+        this.hasFromIndex = !!parseInt(xmlElement.getAttribute('hasFromIndex')) || 0;
+        this.updateShape_();
+      },
+
+      updateShape_: function() {
+        if (this.hasFromIndex) this.appendValue();
+      },
+      plus: function() {
+        if (this.hasFromIndex) return;
+        this.appendValue();
+      },
+      minus: function(index) {
+        this.removeValue(index);
+      },
+      appendValue: function() {
+        this.hasFromIndex = true;
+        this.removeInput('DUM1');
+        this.appendValueInput('INDEX').setCheck(null).appendField(Blockly.Msg['TEXT_INDEX_OF_FROM_INDEX']);
+        this.appendDummyInput('DUM').appendField(
+                createMinusField(), 'MINUS');
+      },
+
+      removeValue: function(opt_index) {
+        this.hasFromIndex = false;
+        this.removeInput('INDEX');
+        this.removeInput('DUM');
+        this.appendDummyInput('DUM1').appendField(createPlusField(), 'PLUS');
+      },
+    };
+
+    const textIndexOfMutatorHelper = function() {
+      this.appendDummyInput('DUM1').appendField(createPlusField(), 'PLUS');
+    };
+
+    Blockly.Extensions.registerMutator('text_indexOf_mutator',
+        textIndexOfMutator, textIndexOfMutatorHelper);
 
   Blockly.defineBlocksWithJsonArray([
     {
@@ -571,6 +629,41 @@ function initBlocks() {
     "helpUrl": "%{BKY_TEXT_CHARAT_HELPURL}",
     "inputsInline": true,
     "mutator": "text_charAt_mutator"
+  }, {
+    "type": "text_indexOf",
+    "message0": "%{BKY_TEXT_INDEXOF_TITLE}",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "VALUE",
+      },
+      {
+        "type": "field_dropdown",
+        "name": "END",
+        "options": [
+          [
+            "%{BKY_TEXT_INDEXOF_OPERATOR_FIRST}",
+            "FIRST"
+          ],
+          [
+            "%{BKY_TEXT_INDEXOF_OPERATOR_LAST}",
+            "LAST"
+          ]
+        ]
+      },
+      {
+        "type": "input_value",
+        "name": "FIND",
+      }
+    ],
+    "output": "Number",
+    "style": "text_blocks",
+    "helpUrl": "%{BKY_TEXT_INDEXOF_HELPURL}",
+    "inputsInline": true,
+    "mutator": "text_indexOf_mutator",
+    "extensions": [
+      "text_indexOf_tooltip"
+    ]
   }]
   );
 

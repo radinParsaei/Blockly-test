@@ -272,6 +272,22 @@ Blockly.genCode['math_number'] = function(block) {
   return [code, order];
 };
 
+Blockly.genCode['text_indexOf'] = function(block) {
+  var operator = block.getFieldValue('END') == 'FIRST' ?
+      'indexOf' : 'lastIndexOf';
+  var substring = Blockly.genCode.valueToCode(block, 'FIND',
+      Blockly.genCode.ORDER_NONE) || '\'\'';
+  var text = Blockly.genCode.valueToCode(block, 'VALUE',
+      Blockly.genCode.ORDER_MEMBER) || '\'\'';
+  var index = Blockly.genCode.valueToCode(block, 'INDEX',
+      Blockly.genCode.ORDER_MEMBER);
+  var code = text + '.' + operator + '(' + substring + (index? (", " + index) : "") + ')';
+  if (block.workspace.options.oneBasedIndex) {
+    return [code + ' + 1', Blockly.genCode.ORDER_ADDITION];
+  }
+  return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+};
+
 Blockly.genCode['math_arithmetic'] = function(block) {
   var OPERATORS = {
     'ADD': [' + ', Blockly.genCode.ORDER_ADDITIVE],
@@ -492,11 +508,13 @@ Blockly.genCode['variable_set'] = function(block) {
 
 Blockly.genCode['variable_declare'] = function(block) {
   var argument0 = Blockly.genCode.valueToCode(block, 'VALUE',
-      Blockly.genCode.ORDER_NONE) || '0';
+      Blockly.genCode.ORDER_NONE);
   var varName = Blockly.genCode.variableDB_.getName(
       block.getFieldValue('NAME'), Blockly.VARIABLE_CATEGORY_NAME);
   allVariables.push([varName, varName]);
-  return 'var ' + varName + ' = ' + argument0 + '\n';
+  var code = 'var ' + varName;
+  if (argument0) code += " = " + argument0;
+  return code + "\n";
 };
 
 Blockly.genCode['control_break'] = function(block) {

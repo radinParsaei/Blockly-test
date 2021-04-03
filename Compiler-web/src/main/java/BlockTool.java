@@ -272,6 +272,30 @@ public class BlockTool {
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) +
                                 "</value><value name=\"ARG1\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
                                 "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("indexOf")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                        return "<block type=\"text_indexOf\"><field name=\"END\">FIRST</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><value name=\"FIND\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("indexOf")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 2) {
+                        return "<block type=\"text_indexOf\"><mutation hasFromIndex=\"1\"></mutation><field name=\"END\">FIRST</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><value name=\"FIND\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                "</value><value name=\"INDEX\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("lastIndexOf")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                        return "<block type=\"text_indexOf\"><field name=\"END\">LAST</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><value name=\"FIND\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("lastIndexOf")) &&
+                            ((SyntaxTree.CallFunction) val).getArgs().length == 2) {
+                        return "<block type=\"text_indexOf\"><mutation hasFromIndex=\"1\"></mutation><field name=\"END\">LAST</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) +
+                                "</value><value name=\"FIND\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                "</value><value name=\"INDEX\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value></block>";
                     }
                 }
             }
