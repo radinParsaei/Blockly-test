@@ -52,7 +52,7 @@ public class BlockTool {
         } else if (val instanceof SyntaxTree.Text) {
             return "<block type=\"text\"><field name=\"TEXT\">" + ("" + val).replace("\n", "\\n")
                     .replace("\f", "\\f").replace("\t", "\\t").replace("\r", "\\r")
-                    .replace("\b", "\\b").replace("\"", "\\") + "</field></block>";
+                    .replace("\b", "\\b").replace("\"", "\\").replace("\\", "\\\\") + "</field></block>";
         } else if (val instanceof SyntaxTree.CreateInstance && Analyzer.matches(val, Analyzer.INSTANCE) &&
                 Analyzer.getPossibleInstanceNames(val).size() == 1 && Analyzer.getPossibleInstanceNames(val).get(0).matches("%Array")) {
             ArrayList<ValueBase> values = (ArrayList<ValueBase>) ((SyntaxTree.CreateInstance) val).getArgs()[0].getData();
