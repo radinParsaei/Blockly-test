@@ -57,7 +57,6 @@ public class BlockTool {
                 Analyzer.getPossibleInstanceNames(val).size() == 1 && Analyzer.getPossibleInstanceNames(val).get(0).matches("%Array")) {
             ArrayList<ValueBase> values = (ArrayList<ValueBase>) ((SyntaxTree.CreateInstance) val).getArgs()[0].getData();
             StringBuilder stringBuilder = new StringBuilder("<block type=\"lists_create_with\"><mutation items=\"").append(values.size()).append("\"></mutation>");
-            System.out.println(values);
             for (int i = 0; i < values.size(); i++) {
                 stringBuilder.append("<value name=\"ADD").append(i).append("\">").append(putVales(values.get(i))).append("</value>");
             }
@@ -305,6 +304,33 @@ public class BlockTool {
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) +
                                 "</value><value name=\"FIND\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) +
                                 "</value><value name=\"INDEX\">" + putVales(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value></block>";
+                    }
+                } else if (Analyzer.matches(((SyntaxTree.CallFunction) val).getInstance(), Analyzer.INSTANCE) &&
+                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) val).getInstance()).size() == 1 &&
+                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) val).getInstance()).get(0).equals("%Array")) {
+                     if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("getFirstItem") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) ||
+                             ((SyntaxTree.CallFunction) val).getFunctionName().equals("get") && ((SyntaxTree.CallFunction) val).getArgs().length == 1 &&
+                             ((SyntaxTree.CallFunction) val).getArgs()[0] instanceof SyntaxTree.Number &&
+                             ((SyntaxTree.CallFunction) val).getArgs()[0].toString().equals("0")) {
+                        return "<block type=\"lists_getIndex\"><mutation statement=\"false\" at=\"false\"></mutation><field name=\"WHERE\">FIRST</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("getLastItem") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) ||
+                             ((SyntaxTree.CallFunction) val).getFunctionName().equals("getFromEnd") && ((SyntaxTree.CallFunction) val).getArgs().length == 1 &&
+                             ((SyntaxTree.CallFunction) val).getArgs()[0] instanceof SyntaxTree.Number &&
+                             ((SyntaxTree.CallFunction) val).getArgs()[0].toString().equals("0")) {
+                        return "<block type=\"lists_getIndex\"><mutation statement=\"false\" at=\"false\"></mutation><field name=\"WHERE\">LAST</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
+                    } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("get") && ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                        return "<block type=\"lists_getIndex\"><mutation statement=\"false\" at=\"true\"></mutation><field name=\"WHERE\">FROM_START</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"AT\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value></block>";
+                    } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("getFromEnd") && ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                        return "<block type=\"lists_getIndex\"><mutation statement=\"false\" at=\"true\"></mutation><field name=\"WHERE\">FROM_END</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"AT\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value></block>";
+                    } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("getRandomItem") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"lists_getIndex\"><mutation statement=\"false\" at=\"false\"></mutation><field name=\"WHERE\">RANDOM</field><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
                     }
                 }
             }

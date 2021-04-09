@@ -110,7 +110,20 @@ function initBlocks() {
     document.getElementById(category + "Category").appendChild(element);
   }
 
+  function putValue(value) {
+    if (typeof value == 'number') {
+      return '<shadow type="math_number"><field name="NUM">' + value + '</field></shadow>';
+    } else if (typeof value == 'string') {
+      return '<shadow type="text"><field name="TEXT">' + value + '</field></shadow>';
+    } else if (typeof value == 'boolean') {
+      return '<shadow type="logic_boolean"><field name="BOOL">' + (value? "TRUE":"FALSE") + '</field></shadow>';
+    } else if (value == null) {
+      return '<shadow type="logic_null"></shadow>';
+    }
+  }
+
   function createShadows(values) {
+    var out = "";
     var counter = 0;
     for (var i of values) {
       if (typeof i == 'number') {
@@ -119,6 +132,15 @@ function initBlocks() {
         out += '<value name="ARG' + counter++ + '"><shadow type="text"><field name="TEXT">' + i + '</field></shadow></value>';
       } else if (typeof i == 'boolean') {
         out += '<value name="ARG' + counter++ + '"><shadow type="logic_boolean"><field name="BOOL">' + (i? "TRUE":"FALSE") + '</field></shadow></value>';
+      } else if (i == null) {
+        out += '<value name="ARG' + counter++ + '"><shadow type="logic_null"></shadow></value>';
+      } else if (typeof i == 'object' && i instanceof Array) {
+        out += '<value name="ARG' + counter++ + '"><shadow type="lists_create_with"><mutation items="' + i.length + '"></mutation>';
+        var c = 0;
+        for (var j of i) {
+          out += '<value name="ADD' + c++ + '">' + putValue(j) + "</value>";
+        }
+        out += '</shadow></value>';
       }
     }
     return out;
@@ -667,6 +689,159 @@ function initBlocks() {
     ]
   }]
   );
+
+  Blockly.Blocks['lists_getIndex'] = {
+    init: function() {
+      // var MODE =
+      //     [
+      //       [Blockly.Msg['LISTS_GET_INDEX_GET'], 'GET'],
+      //       [Blockly.Msg['LISTS_GET_INDEX_GET_REMOVE'], 'GET_REMOVE'],
+      //       [Blockly.Msg['LISTS_GET_INDEX_REMOVE'], 'REMOVE']
+      //     ];
+      this.WHERE_OPTIONS =
+          [
+            [Blockly.Msg['LISTS_GET_INDEX_FROM_START'], 'FROM_START'],
+            [Blockly.Msg['LISTS_GET_INDEX_FROM_END'], 'FROM_END'],
+            [Blockly.Msg['LISTS_GET_INDEX_FIRST'], 'FIRST'],
+            [Blockly.Msg['LISTS_GET_INDEX_LAST'], 'LAST'],
+            [Blockly.Msg['LISTS_GET_INDEX_RANDOM'], 'RANDOM']
+          ];
+      this.setHelpUrl(Blockly.Msg['LISTS_GET_INDEX_HELPURL']);
+      this.setStyle('list_blocks');
+      // var modeMenu = new Blockly.FieldDropdown(MODE, function(value) {
+        // var isStatement = (value == 'REMOVE');
+        // this.getSourceBlock().updateStatement_(isStatement);
+      // });
+      this.appendValueInput('VALUE')
+          //.setCheck('Array')
+          .appendField(Blockly.Msg['LISTS_GET_INDEX_INPUT_IN_LIST']);
+      // this.appendDummyInput()
+          // .appendField(modeMenu, 'MODE')
+          // .appendField('', 'SPACE');
+      this.appendDummyInput().appendField(Blockly.Msg['LISTS_GET_INDEX_GET']);
+      this.appendDummyInput('AT');
+      if (Blockly.Msg['LISTS_GET_INDEX_TAIL']) {
+        this.appendDummyInput('TAIL')
+            .appendField(Blockly.Msg['LISTS_GET_INDEX_TAIL']);
+      }
+      this.setInputsInline(true);
+      this.setOutput(true);
+      this.updateAt_(true);
+      var thisBlock = this;
+      this.setTooltip(function() {
+        var mode = thisBlock.getFieldValue('MODE');
+        var where = thisBlock.getFieldValue('WHERE');
+        var tooltip = '';
+        switch (mode + ' ' + where) {
+          case 'GET FROM_START':
+          case 'GET FROM_END':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_FROM'];
+            break;
+          case 'GET FIRST':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_FIRST'];
+            break;
+          case 'GET LAST':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_LAST'];
+            break;
+          case 'GET RANDOM':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_RANDOM'];
+            break;
+          case 'GET_REMOVE FROM_START':
+          case 'GET_REMOVE FROM_END':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_FROM'];
+            break;
+          case 'GET_REMOVE FIRST':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_FIRST'];
+            break;
+          case 'GET_REMOVE LAST':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_LAST'];
+            break;
+          case 'GET_REMOVE RANDOM':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_RANDOM'];
+            break;
+          case 'REMOVE FROM_START':
+          case 'REMOVE FROM_END':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_REMOVE_FROM'];
+            break;
+          case 'REMOVE FIRST':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_REMOVE_FIRST'];
+            break;
+          case 'REMOVE LAST':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_REMOVE_LAST'];
+            break;
+          case 'REMOVE RANDOM':
+            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_REMOVE_RANDOM'];
+            break;
+        }
+        if (where == 'FROM_START' || where == 'FROM_END') {
+          var msg = (where == 'FROM_START') ?
+              Blockly.Msg['LISTS_INDEX_FROM_START_TOOLTIP'] :
+              Blockly.Msg['LISTS_INDEX_FROM_END_TOOLTIP'];
+          tooltip += '  ' + msg.replace('%1',
+                  thisBlock.workspace.options.oneBasedIndex ? '#1' : '#0');
+        }
+        return tooltip;
+      });
+    },
+    mutationToDom: function() {
+      var container = Blockly.utils.xml.createElement('mutation');
+      var isStatement = !this.outputConnection;
+      container.setAttribute('statement', isStatement);
+      var isAt = this.getInput('AT').type == Blockly.INPUT_VALUE;
+      container.setAttribute('at', isAt);
+      return container;
+    },
+    domToMutation: function(xmlElement) {
+      var isStatement = (xmlElement.getAttribute('statement') == 'true');
+      this.updateStatement_(isStatement);
+      var isAt = (xmlElement.getAttribute('at') != 'false');
+      this.updateAt_(isAt);
+    },
+    updateStatement_: function(newStatement) {
+      var oldStatement = !this.outputConnection;
+      if (newStatement != oldStatement) {
+        this.unplug(true, true);
+        if (newStatement) {
+          this.setOutput(false);
+          this.setPreviousStatement(true);
+          this.setNextStatement(true);
+        } else {
+          this.setPreviousStatement(false);
+          this.setNextStatement(false);
+          this.setOutput(true);
+        }
+      }
+    },
+    updateAt_: function(isAt) {
+      this.removeInput('AT');
+      this.removeInput('ORDINAL', true);
+      if (isAt) {
+        this.appendValueInput('AT');//.setCheck('Number');
+        if (Blockly.Msg['ORDINAL_NUMBER_SUFFIX']) {
+          this.appendDummyInput('ORDINAL')
+              .appendField(Blockly.Msg['ORDINAL_NUMBER_SUFFIX']);
+        }
+      } else {
+        this.appendDummyInput('AT');
+      }
+      var menu = new Blockly.FieldDropdown(this.WHERE_OPTIONS, function(value) {
+        var newAt = (value == 'FROM_START') || (value == 'FROM_END');
+        if (newAt != isAt) {
+          var block = this.getSourceBlock();
+          block.updateAt_(newAt);
+          block.setFieldValue(value, 'WHERE');
+          return null;
+        }
+        return undefined;
+      });
+      this.getInput('AT').appendField(menu, 'WHERE');
+      if (Blockly.Msg['LISTS_GET_INDEX_TAIL']) {
+        this.moveInputBefore('TAIL', null);
+      }
+    }
+  };
+
+  addBlock("lists_getIndex", "List", createShadows([[1, 2, 3], 0]).replace("ARG0", "VALUE").replace("ARG1", "AT"));
 
   Blockly.Blocks['procedures_callnoreturn'] = {
     /**

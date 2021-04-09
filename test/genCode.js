@@ -590,3 +590,47 @@ Blockly.genCode['text_length'] = function(block) {
       Blockly.genCode.ORDER_NONE) || '\'\'';
   return [text + '.length()', Blockly.genCode.ORDER_FUNCTION_CALL];
 };
+
+Blockly.genCode['lists_getIndex'] = function(block) {
+  var mode = block.getFieldValue('MODE') || 'GET';
+  var where = block.getFieldValue('WHERE') || 'FROM_START';
+  var listOrder = (where == 'RANDOM') ? Blockly.genCode.ORDER_NONE :
+      Blockly.genCode.ORDER_MEMBER;
+  var list = Blockly.genCode.valueToCode(block, 'VALUE', listOrder) || '[]';
+
+  switch (where) {
+    case ('FIRST'):
+      if (mode == 'GET') {
+        var code = list + '.getFirstItem()';
+        return [code, Blockly.genCode.ORDER_MEMBER];
+      }
+      break;
+    case ('LAST'):
+      if (mode == 'GET') {
+        var code = list + '.getLastItem()';
+        return [code, Blockly.genCode.ORDER_MEMBER];
+      }
+      break;
+    case ('FROM_START'):
+      var at = Blockly.genCode.getAdjusted(block, 'AT');
+      if (mode == 'GET') {
+        var code = list + '[' + at + ']';
+        return [code, Blockly.genCode.ORDER_MEMBER];
+      }
+      break;
+    case ('FROM_END'):
+      var at = Blockly.genCode.getAdjusted(block, 'AT');
+      if (mode == 'GET') {
+        var code = list + '.getFromEnd(' + at + ')';
+        return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
+      }
+      break;
+    case ('RANDOM'):
+      if (mode == 'GET') {
+        var code = list + '.getRandomItem()';
+        return [code, Blockly.genCode.ORDER_MEMBER];
+      }
+      break;
+  }
+  throw Error('Unhandled combination (lists_getIndex).');
+};
