@@ -212,7 +212,7 @@
         document.getElementById("buttom_sheet").style.height = "250px";
         setTimeout(function() {
           document.getElementById("main_editor").style.height = "calc(100% - 300px)";
-          window.onresize();
+          Blockly.svgResize(Blockly.mainWorkspace)
           editor.resize();
         }, 200);
         if (title) document.getElementById("buttom_sheet_title").innerHTML = title;
@@ -223,7 +223,7 @@
       function closeButtomSheet() {
         document.getElementById("buttom_sheet").style.height = "0";
         document.getElementById("main_editor").style.height = "calc(100% - 50px)";
-        window.onresize();
+        Blockly.svgResize(Blockly.mainWorkspace)
         editor.resize();
       }
 
@@ -459,7 +459,8 @@
         genBlocksCalled = true;
         document.getElementById('genBlocks').click();
         Blockly.getMainWorkspace().cleanUp();
-        window.onresize();
+        document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
+        injectBlockly();
         setInterval(function() {
           genBlocksCalled = false;
         }, 200);

@@ -167,13 +167,6 @@ function injectBlockly() {
   }
 }
 
-window.onresize = function(event) {
-  if (localStorage.getItem('mode') == 'block') {
-    document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
-    injectBlockly();
-  }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
   initBlocks();
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
