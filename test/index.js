@@ -72,8 +72,9 @@ function loadFont(target) {
     };
 }
 
-var isDark = false;
+var isDark = true;
 var isFirst = true;
+var editorCodeChanged1 = false;
 let workspace;
 var editorCodeChanged = false;
 
@@ -186,6 +187,7 @@ function runCode() {
   let code = Blockly.genCode.workspaceToCode(workspace);
   editor.setValue(code);
   editor.session.selection.moveTo(0, 0);
+  editorCodeChanged1 = false;
 }
 
 window.onbeforeunload = function (e) {
@@ -295,6 +297,7 @@ editor.commands.removeCommand('openCommandPallete');
 
 editor.session.on('change', function(delta) {
   editorCodeChanged = true;
+  editorCodeChanged1 = true;
 });
 
 setInterval(function() {
@@ -342,10 +345,13 @@ function changeViewWithoutSwap() {
     document.getElementById("root").hidden = !document.getElementById("root").hidden;
     if (isDark) editor.setTheme("ace/theme/monokai0");
     else editor.setTheme("ace/theme/xcode0");
-    isDark = !isDark;
-    document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
-    injectBlockly();
-    if (document.getElementById("editor2").hidden) document.getElementById("genBlocks").click();
+    // document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
+    // injectBlockly();
+    Blockly.svgResize(Blockly.mainWorkspace);
+    if (editorCodeChanged1 && document.getElementById("editor2").hidden) {
+      document.getElementById("genBlocks").click();
+    }
+    Blockly.mainWorkspace.scroll(0, 0);
     document.getElementsByClassName('blocklyMenuItem')[0].click();
   } catch(e) {}
   document.getElementById("gotocode").classList.toggle('selected');
