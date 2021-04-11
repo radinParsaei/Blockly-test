@@ -634,3 +634,9 @@ Blockly.genCode['lists_getIndex'] = function(block) {
   }
   throw Error('Unhandled combination (lists_getIndex).');
 };
+
+Blockly.genCode['lists_length'] = function(block) {
+  var list = Blockly.genCode.valueToCode(block, 'VALUE',
+      Blockly.genCode.ORDER_MEMBER) || '[]';
+  return [list + '.length()', Blockly.genCode.ORDER_MEMBER];
+};
