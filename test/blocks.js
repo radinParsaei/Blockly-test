@@ -1,6 +1,13 @@
 import './field_dropdown.js'
 import './variables_mutator.js';
 import './list_create.js';
+import './blocks/colour.js';
+import './blocks/lists.js';
+import './blocks/logic.js';
+import './blocks/loops.js';
+import './blocks/math.js';
+import './blocks/procedures.js';
+import './blocks/text.js';
 import {createMinusField} from './field_minus';
 import {createPlusField} from './field_plus';
 
@@ -364,63 +371,6 @@ function initBlocks() {
       ['!=?', 'NEQ']
   ]), 'OP');}, null], Blockly.Msg['LOGIC_COMPARE_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_COMPARE_ADVANCED_HELPURL'], 'Boolean');
 
-  Blockly.Constants.Text.TEXT_CHARAT_MUTATOR_MIXIN = {
-    /**
-     * Create XML to represent whether there is an 'AT' input.
-     * @return {!Element} XML storage element.
-     * @this {Blockly.Block}
-     */
-    mutationToDom: function() {
-      var container = Blockly.utils.xml.createElement('mutation');
-      container.setAttribute('at', !!this.isAt_);
-      return container;
-    },
-    /**
-     * Parse XML to restore the 'AT' input.
-     * @param {!Element} xmlElement XML storage element.
-     * @this {Blockly.Block}
-     */
-    domToMutation: function(xmlElement) {
-      // Note: Until January 2013 this block did not have mutations,
-      // so 'at' defaults to true.
-      var isAt = (xmlElement.getAttribute('at') != 'false');
-      this.updateAt_(isAt);
-    },
-    /**
-     * Create or delete an input for the numeric index.
-     * @param {boolean} isAt True if the input should exist.
-     * @private
-     * @this {Blockly.Block}
-     */
-    updateAt_: function(isAt) {
-      // Destroy old 'AT' and 'ORDINAL' inputs.
-      this.removeInput('AT', true);
-      this.removeInput('ORDINAL', true);
-      // Create either a value 'AT' input or a dummy input.
-      if (isAt) {
-        this.appendValueInput('AT');
-        if (Blockly.Msg['ORDINAL_NUMBER_SUFFIX']) {
-          this.appendDummyInput('ORDINAL')
-              .appendField(Blockly.Msg['ORDINAL_NUMBER_SUFFIX']);
-        }
-      }
-      if (Blockly.Msg['TEXT_CHARAT_TAIL']) {
-        this.removeInput('TAIL', true);
-        this.appendDummyInput('TAIL')
-            .appendField(Blockly.Msg['TEXT_CHARAT_TAIL']);
-      }
-
-      this.isAt_ = isAt;
-    }
-  };
-
-  delete Blockly.Extensions.ALL_['text_charAt_mutator'];
-
-  Blockly.Extensions.registerMutator('text_charAt_mutator',
-    Blockly.Constants.Text.TEXT_CHARAT_MUTATOR_MIXIN,
-    Blockly.Constants.Text.TEXT_CHARAT_EXTENSION);
-
-
     const textIndexOfMutator = {
       suppressPrefixSuffix: true,
       hasFromIndex: false,
@@ -475,21 +425,6 @@ function initBlocks() {
 
   Blockly.defineBlocksWithJsonArray([
     {
-      "type": "text",
-      "message0": "\"%1\"",
-      "args0": [{
-        "type": "field_input",
-        "name": "TEXT",
-        "text": ""
-      }],
-      "output": "String",
-      "style": "text_blocks",
-      "helpUrl": "%{BKY_TEXT_TEXT_HELPURL}",
-      "tooltip": "%{BKY_TEXT_TEXT_TOOLTIP}",
-      "extensions": [
-        "parent_tooltip_when_inline"
-      ]
-    }, {
       "type": "return_statement",
       "message0": "%{BKY_RETURN_STATEMENT_TEXT} %1",
       "args0": [{
@@ -503,37 +438,6 @@ function initBlocks() {
       "extensions": [
         "parent_tooltip_when_inline"
       ]
-    }, {
-      "type": "math_arithmetic",
-      "message0": "%1 %2 %3",
-      "args0": [
-        {
-          "type": "input_value",
-          "name": "A",
-          // "check": "Number"
-        },
-        {
-          "type": "field_dropdown",
-          "name": "OP",
-          "options": [
-            ["%{BKY_MATH_ADDITION_SYMBOL}", "ADD"],
-            ["%{BKY_MATH_SUBTRACTION_SYMBOL}", "MINUS"],
-            ["%{BKY_MATH_MULTIPLICATION_SYMBOL}", "MULTIPLY"],
-            ["%{BKY_MATH_DIVISION_SYMBOL}", "DIVIDE"],
-            ["%{BKY_MATH_POWER_SYMBOL}", "POWER"]
-          ]
-        },
-        {
-          "type": "input_value",
-          "name": "B",
-          // "check": "Number"
-        }
-      ],
-      "inputsInline": true,
-      "output": "Number",
-      "style": "math_blocks",
-      "helpUrl": "%{BKY_MATH_ARITHMETIC_HELPURL}",
-      "extensions": ["math_op_tooltip"]
     }, {
       "type": "variable_declare",
       "message0": "%{BKY_VARIABLE_DECLARE} %1",
@@ -566,36 +470,6 @@ function initBlocks() {
       "tooltip": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP}",
       "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_HELPURL}",
     }, {
-    "type": "logic_compare",
-    "message0": "%1 %2 %3",
-    "args0": [
-      {
-        "type": "input_value",
-        "name": "A"
-      },
-      {
-        "type": "field_dropdown",
-        "name": "OP",
-        "options": [
-          ["=", "EQ"],
-          ["\u2260", "NEQ"],
-          ["\u200F<", "LT"],
-          ["\u200F\u2264", "LTE"],
-          ["\u200F>", "GT"],
-          ["\u200F\u2265", "GTE"]
-        ]
-      },
-      {
-        "type": "input_value",
-        "name": "B"
-      }
-    ],
-    "inputsInline": true,
-    "output": "Boolean",
-    "style": "logic_blocks",
-    "helpUrl": "%{BKY_LOGIC_COMPARE_HELPURL}",
-    "extensions": ["logic_op_tooltip"]
-  }, {
     "type": "main_entry",
     "message0": "%{BKY_MAIN_ENTRY} %1 %2",
     "args0": [
@@ -610,236 +484,8 @@ function initBlocks() {
     "ADD_START_HATS": true,
     "helpUrl": "%{BKY_MAIN_ENTRY_HELPURL}",
     "tooltip": "%{BKY_MAIN_ENTRY_TOOLTIP}",
-  }, {
-    "type": "logic_negate",
-    "message0": "%{BKY_LOGIC_NEGATE_TITLE}",
-    "args0": [
-      {
-        "type": "input_value",
-        "name": "BOOL",
-        "check": [
-          "Number",
-          "Boolean"
-        ]
-      }
-    ],
-    "output": "Boolean",
-    "style": "logic_blocks",
-    "tooltip": "%{BKY_LOGIC_NEGATE_TOOLTIP}",
-    "helpUrl": "%{BKY_LOGIC_NEGATE_HELPURL}"
-  }, {
-    "type": "text_charAt",
-    "message0": "%{BKY_TEXT_CHARAT_TITLE}", // "in text %1 %2"
-    "args0": [
-      {
-        "type":"input_value",
-        "name": "VALUE",
-      },
-      {
-        "type": "field_dropdown",
-        "name": "WHERE",
-        "options": [
-          ["%{BKY_TEXT_CHARAT_FROM_START}", "FROM_START"],
-          ["%{BKY_TEXT_CHARAT_FROM_END}", "FROM_END"],
-          ["%{BKY_TEXT_CHARAT_FIRST}", "FIRST"],
-          ["%{BKY_TEXT_CHARAT_LAST}", "LAST"],
-          ["%{BKY_TEXT_CHARAT_RANDOM}", "RANDOM"]
-        ]
-      }
-    ],
-    "output": "String",
-    "style": "text_blocks",
-    "helpUrl": "%{BKY_TEXT_CHARAT_HELPURL}",
-    "inputsInline": true,
-    "mutator": "text_charAt_mutator"
-  }, {
-    "type": "text_indexOf",
-    "message0": "%{BKY_TEXT_INDEXOF_TITLE}",
-    "args0": [
-      {
-        "type": "input_value",
-        "name": "VALUE",
-      },
-      {
-        "type": "field_dropdown",
-        "name": "END",
-        "options": [
-          [
-            "%{BKY_TEXT_INDEXOF_OPERATOR_FIRST}",
-            "FIRST"
-          ],
-          [
-            "%{BKY_TEXT_INDEXOF_OPERATOR_LAST}",
-            "LAST"
-          ]
-        ]
-      },
-      {
-        "type": "input_value",
-        "name": "FIND",
-      }
-    ],
-    "output": "Number",
-    "style": "text_blocks",
-    "helpUrl": "%{BKY_TEXT_INDEXOF_HELPURL}",
-    "inputsInline": true,
-    "mutator": "text_indexOf_mutator",
-    "extensions": [
-      "text_indexOf_tooltip"
-    ]
-  }]
+  }, ]
   );
-
-  Blockly.Blocks['lists_getIndex'] = {
-    init: function() {
-      // var MODE =
-      //     [
-      //       [Blockly.Msg['LISTS_GET_INDEX_GET'], 'GET'],
-      //       [Blockly.Msg['LISTS_GET_INDEX_GET_REMOVE'], 'GET_REMOVE'],
-      //       [Blockly.Msg['LISTS_GET_INDEX_REMOVE'], 'REMOVE']
-      //     ];
-      this.WHERE_OPTIONS =
-          [
-            [Blockly.Msg['LISTS_GET_INDEX_FROM_START'], 'FROM_START'],
-            [Blockly.Msg['LISTS_GET_INDEX_FROM_END'], 'FROM_END'],
-            [Blockly.Msg['LISTS_GET_INDEX_FIRST'], 'FIRST'],
-            [Blockly.Msg['LISTS_GET_INDEX_LAST'], 'LAST'],
-            [Blockly.Msg['LISTS_GET_INDEX_RANDOM'], 'RANDOM']
-          ];
-      this.setHelpUrl(Blockly.Msg['LISTS_GET_INDEX_HELPURL']);
-      this.setStyle('list_blocks');
-      // var modeMenu = new Blockly.FieldDropdown(MODE, function(value) {
-        // var isStatement = (value == 'REMOVE');
-        // this.getSourceBlock().updateStatement_(isStatement);
-      // });
-      this.appendValueInput('VALUE')
-          //.setCheck('Array')
-          .appendField(Blockly.Msg['LISTS_GET_INDEX_INPUT_IN_LIST']);
-      // this.appendDummyInput()
-          // .appendField(modeMenu, 'MODE')
-          // .appendField('', 'SPACE');
-      this.appendDummyInput().appendField(Blockly.Msg['LISTS_GET_INDEX_GET']);
-      this.appendDummyInput('AT');
-      if (Blockly.Msg['LISTS_GET_INDEX_TAIL']) {
-        this.appendDummyInput('TAIL')
-            .appendField(Blockly.Msg['LISTS_GET_INDEX_TAIL']);
-      }
-      this.setInputsInline(true);
-      this.setOutput(true);
-      this.updateAt_(true);
-      var thisBlock = this;
-      this.setTooltip(function() {
-        var mode = thisBlock.getFieldValue('MODE');
-        var where = thisBlock.getFieldValue('WHERE');
-        var tooltip = '';
-        switch (mode + ' ' + where) {
-          case 'GET FROM_START':
-          case 'GET FROM_END':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_FROM'];
-            break;
-          case 'GET FIRST':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_FIRST'];
-            break;
-          case 'GET LAST':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_LAST'];
-            break;
-          case 'GET RANDOM':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_RANDOM'];
-            break;
-          case 'GET_REMOVE FROM_START':
-          case 'GET_REMOVE FROM_END':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_FROM'];
-            break;
-          case 'GET_REMOVE FIRST':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_FIRST'];
-            break;
-          case 'GET_REMOVE LAST':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_LAST'];
-            break;
-          case 'GET_REMOVE RANDOM':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_RANDOM'];
-            break;
-          case 'REMOVE FROM_START':
-          case 'REMOVE FROM_END':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_REMOVE_FROM'];
-            break;
-          case 'REMOVE FIRST':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_REMOVE_FIRST'];
-            break;
-          case 'REMOVE LAST':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_REMOVE_LAST'];
-            break;
-          case 'REMOVE RANDOM':
-            tooltip = Blockly.Msg['LISTS_GET_INDEX_TOOLTIP_REMOVE_RANDOM'];
-            break;
-        }
-        if (where == 'FROM_START' || where == 'FROM_END') {
-          var msg = (where == 'FROM_START') ?
-              Blockly.Msg['LISTS_INDEX_FROM_START_TOOLTIP'] :
-              Blockly.Msg['LISTS_INDEX_FROM_END_TOOLTIP'];
-          tooltip += '  ' + msg.replace('%1',
-                  thisBlock.workspace.options.oneBasedIndex ? '#1' : '#0');
-        }
-        return tooltip;
-      });
-    },
-    mutationToDom: function() {
-      var container = Blockly.utils.xml.createElement('mutation');
-      var isStatement = !this.outputConnection;
-      container.setAttribute('statement', isStatement);
-      var isAt = this.getInput('AT').type == Blockly.INPUT_VALUE;
-      container.setAttribute('at', isAt);
-      return container;
-    },
-    domToMutation: function(xmlElement) {
-      var isStatement = (xmlElement.getAttribute('statement') == 'true');
-      this.updateStatement_(isStatement);
-      var isAt = (xmlElement.getAttribute('at') != 'false');
-      this.updateAt_(isAt);
-    },
-    updateStatement_: function(newStatement) {
-      var oldStatement = !this.outputConnection;
-      if (newStatement != oldStatement) {
-        this.unplug(true, true);
-        if (newStatement) {
-          this.setOutput(false);
-          this.setPreviousStatement(true);
-          this.setNextStatement(true);
-        } else {
-          this.setPreviousStatement(false);
-          this.setNextStatement(false);
-          this.setOutput(true);
-        }
-      }
-    },
-    updateAt_: function(isAt) {
-      this.removeInput('AT');
-      this.removeInput('ORDINAL', true);
-      if (isAt) {
-        this.appendValueInput('AT');//.setCheck('Number');
-        if (Blockly.Msg['ORDINAL_NUMBER_SUFFIX']) {
-          this.appendDummyInput('ORDINAL')
-              .appendField(Blockly.Msg['ORDINAL_NUMBER_SUFFIX']);
-        }
-      } else {
-        this.appendDummyInput('AT');
-      }
-      var menu = new Blockly.FieldDropdown(this.WHERE_OPTIONS, function(value) {
-        var newAt = (value == 'FROM_START') || (value == 'FROM_END');
-        if (newAt != isAt) {
-          var block = this.getSourceBlock();
-          block.updateAt_(newAt);
-          block.setFieldValue(value, 'WHERE');
-          return null;
-        }
-        return undefined;
-      });
-      this.getInput('AT').appendField(menu, 'WHERE');
-      if (Blockly.Msg['LISTS_GET_INDEX_TAIL']) {
-        this.moveInputBefore('TAIL', null);
-      }
-    }
-  };
 
   addBlock("lists_getIndex", "List", createShadows([[1, 2, 3], 0]).replace("ARG0", "VALUE").replace("ARG1", "AT"));
   addBlock("lists_length", "List", createShadows([[1, 2, 3]]).replace("ARG0", "VALUE"));

@@ -1,4 +1,4 @@
-import * as Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 
 Blockly.genCode = new Blockly.Generator('genCode');
 

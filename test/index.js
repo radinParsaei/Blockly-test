@@ -1,4 +1,6 @@
-import * as Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
+import * as En from 'blockly/msg/en';
+Blockly.setLocale(En);
 import {DisableTopBlocks} from '@blockly/disable-top-blocks';
 import { initBlocks, functions, functionCodes } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';

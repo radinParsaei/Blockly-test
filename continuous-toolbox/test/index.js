@@ -8,7 +8,7 @@
  * @fileoverview Continuous toolbox plugin test.
  */
 
-import * as Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import {toolboxCategories, createPlayground} from '@blockly/dev-tools';
 import '../src/ContinuousCategory';
 import {ContinuousToolbox} from '../src/ContinuousToolbox';

@@ -1,4 +1,4 @@
-import * as Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 
 let DarkTheme = Blockly.Theme.defineTheme('DarkTheme', {
   'base': Blockly.Themes.Dark,

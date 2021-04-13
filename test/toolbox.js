@@ -1,4 +1,4 @@
-import * as Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 
 class CustomCategory extends Blockly.ToolboxCategory {
   constructor(a, b, c) {

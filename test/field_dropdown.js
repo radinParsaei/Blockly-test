@@ -11,7 +11,7 @@
  * @author fraser@google.com (Neil Fraser)
  */
 'use strict';
-import * as Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 
 // goog.provide('Blockly.FieldDropdown');
 
