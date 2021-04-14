@@ -459,27 +459,28 @@ Blockly.Blocks['lists_setIndex'] = {
    * @this {Blockly.Block}
    */
   init: function() {
-    var MODE =
-        [
-          [Blockly.Msg['LISTS_SET_INDEX_SET'], 'SET'],
-          [Blockly.Msg['LISTS_SET_INDEX_INSERT'], 'INSERT']
-        ];
-    this.WHERE_OPTIONS =
-        [
-          [Blockly.Msg['LISTS_GET_INDEX_FROM_START'], 'FROM_START'],
-          [Blockly.Msg['LISTS_GET_INDEX_FROM_END'], 'FROM_END'],
-          [Blockly.Msg['LISTS_GET_INDEX_FIRST'], 'FIRST'],
-          [Blockly.Msg['LISTS_GET_INDEX_LAST'], 'LAST'],
-          [Blockly.Msg['LISTS_GET_INDEX_RANDOM'], 'RANDOM']
-        ];
+    // var MODE =
+    //     [
+    //       [Blockly.Msg['LISTS_SET_INDEX_SET'], 'SET'],
+    //       [Blockly.Msg['LISTS_SET_INDEX_INSERT'], 'INSERT']
+    //     ];
+    // this.WHERE_OPTIONS =
+    //     [
+    //       [Blockly.Msg['LISTS_GET_INDEX_FROM_START'], 'FROM_START'],
+    //       [Blockly.Msg['LISTS_GET_INDEX_FROM_END'], 'FROM_END'],
+    //       [Blockly.Msg['LISTS_GET_INDEX_FIRST'], 'FIRST'],
+    //       [Blockly.Msg['LISTS_GET_INDEX_LAST'], 'LAST'],
+    //       [Blockly.Msg['LISTS_GET_INDEX_RANDOM'], 'RANDOM']
+    //     ];
     this.setHelpUrl(Blockly.Msg['LISTS_SET_INDEX_HELPURL']);
     this.setStyle('list_blocks');
     this.appendValueInput('LIST')
         .setCheck('Array')
         .appendField(Blockly.Msg['LISTS_SET_INDEX_INPUT_IN_LIST']);
     this.appendDummyInput()
-        .appendField(new Blockly.FieldDropdown(MODE), 'MODE')
-        .appendField('', 'SPACE');
+        // .appendField(new Blockly.FieldDropdown(MODE), 'MODE')
+        .appendField(Blockly.Msg['LISTS_SET_INDEX_SET']);
+        // .appendField('', 'SPACE');
     this.appendDummyInput('AT');
     this.appendValueInput('TO')
         .appendField(Blockly.Msg['LISTS_SET_INDEX_INPUT_TO']);
@@ -491,7 +492,7 @@ Blockly.Blocks['lists_setIndex'] = {
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     this.setTooltip(function() {
-      var mode = thisBlock.getFieldValue('MODE');
+      var mode = /*thisBlock.getFieldValue('MODE')*/ 'SET';
       var where = thisBlock.getFieldValue('WHERE');
       var tooltip = '';
       switch (mode + ' ' + where) {
@@ -564,7 +565,7 @@ Blockly.Blocks['lists_setIndex'] = {
     this.removeInput('ORDINAL', true);
     // Create either a value 'AT' input or a dummy input.
     if (isAt) {
-      this.appendValueInput('AT').setCheck('Number');
+      this.appendValueInput('AT');//.setCheck('Number');
       if (Blockly.Msg['ORDINAL_NUMBER_SUFFIX']) {
         this.appendDummyInput('ORDINAL')
             .appendField(Blockly.Msg['ORDINAL_NUMBER_SUFFIX']);
@@ -572,24 +573,24 @@ Blockly.Blocks['lists_setIndex'] = {
     } else {
       this.appendDummyInput('AT');
     }
-    var menu = new Blockly.FieldDropdown(this.WHERE_OPTIONS, function(value) {
-      var newAt = (value == 'FROM_START') || (value == 'FROM_END');
-      // The 'isAt' variable is available due to this function being a closure.
-      if (newAt != isAt) {
-        var block = this.getSourceBlock();
-        block.updateAt_(newAt);
-        // This menu has been destroyed and replaced.  Update the replacement.
-        block.setFieldValue(value, 'WHERE');
-        return null;
-      }
-      return undefined;
-    });
+    // var menu = new Blockly.FieldDropdown(this.WHERE_OPTIONS, function(value) {
+    //   var newAt = (value == 'FROM_START') || (value == 'FROM_END');
+    //   // The 'isAt' variable is available due to this function being a closure.
+    //   if (newAt != isAt) {
+    //     var block = this.getSourceBlock();
+    //     block.updateAt_(newAt);
+    //     // This menu has been destroyed and replaced.  Update the replacement.
+    //     block.setFieldValue(value, 'WHERE');
+    //     return null;
+    //   }
+    //   return undefined;
+    // });
     this.moveInputBefore('AT', 'TO');
     if (this.getInput('ORDINAL')) {
       this.moveInputBefore('ORDINAL', 'TO');
     }
 
-    this.getInput('AT').appendField(menu, 'WHERE');
+    this.getInput('AT').appendField(Blockly.Msg['LISTS_GET_INDEX_FROM_START']);//.appendField(menu, 'WHERE');
   }
 };
 

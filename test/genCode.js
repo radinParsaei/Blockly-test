@@ -640,3 +640,70 @@ Blockly.genCode['lists_length'] = function(block) {
       Blockly.genCode.ORDER_MEMBER) || '[]';
   return [list + '.length()', Blockly.genCode.ORDER_MEMBER];
 };
+
+Blockly.genCode['lists_setIndex'] = function(block) {
+  var list = Blockly.genCode.valueToCode(block, 'LIST',
+      Blockly.genCode.ORDER_MEMBER) || '[]';
+  var mode = block.getFieldValue('MODE') || 'SET';
+  var where = block.getFieldValue('WHERE') || 'FROM_START';
+  var value = Blockly.genCode.valueToCode(block, 'TO',
+      Blockly.genCode.ORDER_NONE) || 'null';
+  // function cacheList() {
+  //   if (list.match(/^\w+$/)) {
+  //     return '';
+  //   }
+  //   var listVar = Blockly.genCode.variableDB_.getDistinctName(
+  //       'tmp_list', Blockly.VARIABLE_CATEGORY_NAME);
+  //   var code = listVar + ' = ' + list + '\n';
+  //   list = listVar;
+  //   return code;
+  // }
+
+  switch (where) {
+    // case 'FIRST':
+    //   if (mode == 'SET') {
+    //     return list + '[0] = ' + value + '\n';
+    //   } else if (mode == 'INSERT') {
+    //     return list + '.insert(0, ' + value + ')\n';
+    //   }
+    //   break;
+    // case 'LAST':
+    //     if (mode == 'SET') {
+    //       return list + '[-1] = ' + value + '\n';
+    //     } else if (mode == 'INSERT') {
+    //       return list + '.append(' + value + ')\n';
+    //     }
+    //   break;
+    case 'FROM_START':
+      var at = Blockly.genCode.getAdjusted(block, 'AT');
+        if (mode == 'SET') {
+          return list + '[' + at + '] = ' + value + '\n';
+        // } else if (mode == 'INSERT') {
+        //   return list + '.insert(' + at + ', ' + value + ')\n';
+        }
+      break;
+    // case 'FROM_END':
+    //   var at = Blockly.genCode.getAdjusted(block, 'AT', 1, true);
+    //     if (mode == 'SET') {
+    //       return list + '[' + at + '] = ' + value + '\n';
+    //     } else if (mode == 'INSERT') {
+    //       return list + '.insert(' + at + ', ' + value + ')\n';
+    //     }
+    //   break;
+    // case 'RANDOM':
+    //     Blockly.genCode.definitions_['import_random'] = 'import random';
+    //     var code = cacheList();
+    //     var xVar = Blockly.genCode.variableDB_.getDistinctName(
+    //         'tmp_x', Blockly.VARIABLE_CATEGORY_NAME);
+    //     code += xVar + ' = int(random.random() * len(' + list + '))\n';
+    //     if (mode == 'SET') {
+    //       code += list + '[' + xVar + '] = ' + value + '\n';
+    //       return code;
+    //     } else if (mode == 'INSERT') {
+    //       code += list + '.insert(' + xVar + ', ' + value + ')\n';
+    //       return code;
+    //     }
+    //   break;
+  }
+  throw Error('Unhandled combination (lists_setIndex).');
+};
