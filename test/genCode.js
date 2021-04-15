@@ -5,8 +5,7 @@ Blockly.genCode = new Blockly.Generator('genCode');
 var usedVariables = {};
 
 Blockly.genCode.addReservedWords(
-    'func,if,return,var,while,null,true,false,class,for,this,init,new,break,continue',
-    Object.getOwnPropertyNames(Blockly.utils.global).join(','));
+    'func,if,return,var,while,null,true,false,class,for,this,init,new,break,continue');
 
 //copied from Blockly python generator
 Blockly.genCode.ORDER_ATOMIC = 0;            // 0 "" ...

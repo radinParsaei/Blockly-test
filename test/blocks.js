@@ -95,6 +95,7 @@ function initBlocks() {
     if (typeof blockFunctionName == "function") {
       Blockly.genCode[blockName] = blockFunctionName;
     } else {
+      Blockly.genCode.addReservedWords(blockFunctionName);
       Blockly.genCode[blockName] = function(block) {
         var code = blockFunctionName + "(";
         for (var i = 0; i < paramTypes.length; i++) {
@@ -193,9 +194,9 @@ function initBlocks() {
   //   }`, ['text 1', null, undefined, "text 2", null, function(block) { //image field
   //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
   //   }], 'tooltip', 'helpUrl', true);
-  addBlock("test", "Math", createShadows([1, 10]), "Math_randomBlock", ['min', 'max'], [true, true],
+  addBlock("test", "Math", createShadows([1, 10]), "random", ['min', 'max'], [true, true],
     `declareNativeFunction("random", "randint", 2)
-    func Math_randomBlock(min, max) {
+    func random(min, max) {
       return randint(min, max)
     }`, [Blockly.Msg['MATH_RANDOM_RANDINT_0'], null, undefined, Blockly.Msg['MATH_RANDOM_RANDINT_1'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], "Number");
 
