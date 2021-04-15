@@ -429,7 +429,7 @@ Blockly.genCode['procedures_defreturn'] = function(block) {
         Blockly.VARIABLE_CATEGORY_NAME);
         allVariables.push([variables[i], variables[i]]);
   }
-  var code = 'func ' + funcName + '(' + args.join(', ') + '){\n' +
+  var code = 'func ' + funcName + '(' + args.join(', ') + ') {\n' +
      xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';
   code = Blockly.genCode.scrub_(block, code);
   // Add % so as not to collide with helper functions in definitions list.
@@ -706,3 +706,50 @@ Blockly.genCode['lists_setIndex'] = function(block) {
   }
   throw Error('Unhandled combination (lists_setIndex).');
 };
+
+Blockly.genCode['procedures_defreturn_method'] = function(block) {
+  var varName;
+  var workspace = block.workspace;
+  var variables = Blockly.Variables.allUsedVarModels(workspace) || [];
+  var funcName = Blockly.genCode.functionsDB_.getName(
+      block.getFieldValue('NAME'), Blockly.PROCEDURE_CATEGORY_NAME);
+  var xfix1 = '';
+  if (Blockly.genCode.STATEMENT_PREFIX) {
+    xfix1 += Blockly.genCode.injectId(Blockly.genCode.STATEMENT_PREFIX, block);
+  }
+  if (Blockly.genCode.STATEMENT_SUFFIX) {
+    xfix1 += Blockly.genCode.injectId(Blockly.genCode.STATEMENT_SUFFIX, block);
+  }
+  if (xfix1) {
+    xfix1 = Blockly.genCode.prefixLines(xfix1, Blockly.genCode.INDENT);
+  }
+  var loopTrap = '';
+  if (Blockly.genCode.INFINITE_LOOP_TRAP) {
+    loopTrap = Blockly.genCode.prefixLines(
+        Blockly.genCode.injectId(Blockly.genCode.INFINITE_LOOP_TRAP, block),
+        Blockly.genCode.INDENT);
+  }
+  var branch = Blockly.genCode.statementToCode(block, 'STACK');
+  var returnValue = Blockly.genCode.valueToCode(block, 'RETURN',
+      Blockly.genCode.ORDER_NONE) || '';
+  var xfix2 = '';
+  if (branch && returnValue) {
+    // After executing the function body, revisit this block for the return.
+    xfix2 = xfix1;
+  }
+  if (returnValue) {
+    returnValue = Blockly.genCode.INDENT + 'return ' + returnValue + '\n';
+  }
+  var args = [];
+  var variables = block.getVars();
+  for (var i = 0; i < variables.length; i++) {
+    args[i] = Blockly.genCode.variableDB_.getName(variables[i],
+        Blockly.VARIABLE_CATEGORY_NAME);
+        allVariables.push([variables[i], variables[i]]);
+  }
+  var code = 'func ' + funcName + '(' + args.join(', ') + ') {\n' +
+     xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';
+  return code;
+};
+
+Blockly.genCode['procedures_defnoreturn_method'] = Blockly.genCode['procedures_defreturn_method'];

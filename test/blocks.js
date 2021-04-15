@@ -37,6 +37,7 @@ Blockly.Msg['TEXT_INDEX_OF_FROM_INDEX'] = 'from index';
 Blockly.Msg['MATH_RANDOM_RANDINT_0'] = 'random number from';
 Blockly.Msg['MATH_RANDOM_RANDINT_1'] = 'to';
 Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'] = 'returns a pesudorandom number between minimum and maximum values.';
+Blockly.Msg['CREATE_CLASS'] = 'create class';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -81,11 +82,14 @@ function initBlocks() {
           }
         }
         if (output) {
-          if (typeof output == 'string')
+          if (output == 'parent') {
+            // do nothing
+          } else if (typeof output == 'string') {
             this.setOutput(true, output);
-          else
+          } else {
             this.setOutput(true, null);
-        } else {
+          }
+        } else if (output != "parent") {
           this.setPreviousStatement(true, null);
           this.setNextStatement(true, null);
         }
@@ -119,6 +123,17 @@ function initBlocks() {
       element.setAttribute('web-class', style);
     }
     document.getElementById(category + "Category").appendChild(element);
+  }
+
+  function addCategory(name, text, color) {
+    if (Blockly.Msg["CATEGORY_" + name.toUpperCase()] == null) {
+      Blockly.Msg["CATEGORY_" + name.toUpperCase()] = text;
+    }
+    var element = document.createElement("category");
+    element.setAttribute('id', name + "Category");
+    element.setAttribute('name', "%{BKY_CATEGORY_" + name.toUpperCase() + "}");
+    element.setAttribute('colour', color);
+    document.getElementById("toolbox").appendChild(element);
   }
 
   function putValue(value) {
@@ -379,6 +394,19 @@ function initBlocks() {
       ['=?', 'EQ'],
       ['!=?', 'NEQ']
   ]), 'OP');}, null], Blockly.Msg['LOGIC_COMPARE_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_COMPARE_ADVANCED_HELPURL'], 'Boolean');
+
+  addCategory("Class", "Classes", "#ba6699");
+
+  addBlock("create_class", "Class", "", function(block) {
+    var code = Blockly.genCode.statementToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || '\n';
+    return 'class ' + (block.getFieldValue('NAME') || 'unnamed') + ' {\n' + code + '}';
+  }, [], [false], '', [function(block) {
+    block.appendDummyInput().appendField(Blockly.Msg['CREATE_CLASS']).appendField(new Blockly.FieldTextInput(), "NAME");
+  }, null], Blockly.Msg['LOGIC_COMPARE_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_COMPARE_ADVANCED_HELPURL'], 'parent');
+
+  addBlock("procedures_defnoreturn_method", "Class");
+  addBlock("procedures_defreturn_method", "Class");
 
     const textIndexOfMutator = {
       suppressPrefixSuffix: true,
@@ -1027,6 +1055,10 @@ function initBlocks() {
   Blockly.Msg['MAIN_ENTRY'] = 'on start';
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK'];
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE'];
+  Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'] = 'define function';
+  Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'];
+  Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'] = 'define method';
+  Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE_METHOD'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'];
 }
 
 export { initBlocks };

@@ -13,6 +13,7 @@ public class BlockTool {
     private final HashMap<String, ArrayList<String>> functionParameters = new HashMap<>();
     private final LinkedHashMap<String, String> variables1 = new LinkedHashMap<>();
     private String lastFunctionName = null;
+    private String parentClassName = null;
 
 //    private String getVariableName(String name) {
 //        String[] tmp = name.split(":");
@@ -419,7 +420,7 @@ public class BlockTool {
 
     public String syntaxTreeToBlocksXML1(ProgramBase program) {
         StringBuilder result;
-        if (blockCount != 0 && !(program instanceof SyntaxTree.Function)) {
+        if (blockCount != 0 && (!(program instanceof SyntaxTree.Function) || parentClassName != null)) {
             result = new StringBuilder("<next>");
         } else {
             result = new StringBuilder();
@@ -443,6 +444,7 @@ public class BlockTool {
             }
         } else if (program instanceof SyntaxTree.SetVariable) {
             String[] variableName = ((SyntaxTree.SetVariable) program).getVariableName().split(":");
+            if (parentClassName != null) variableName[variableName.length - 1] = variableName[variableName.length - 1].replace("#C" + parentClassName, "");
             if (((SyntaxTree.SetVariable) program).getIsDeclaration()) {
                 addVariableName(variableName[variableName.length - 1]);
                 result.append("<block type=\"variable_declare\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
@@ -512,6 +514,15 @@ public class BlockTool {
                     .append("</value><statement name=\"ARG1\">").append(syntaxTreeToBlocksXML(((SyntaxTree.While) program).getProgram(), false))
                     .append("</statement>");
             blockCount = pBlockCount + 1;
+        } else if (program instanceof SyntaxTree.CreateClass && !((SyntaxTree.CreateClass) program).getClassName().startsWith("%")) {
+            parentClassName = ((SyntaxTree.CreateClass) program).getClassName();
+            int pBlockCount = blockCount;
+            blockCount = 0;
+            functions.append("<block type=\"create_class\"><field name=\"NAME\">").append(((SyntaxTree.CreateClass) program).getClassName())
+                    .append("</field>").append("<statement name=\"ARG0\">").append(syntaxTreeToBlocksXML(((SyntaxTree.CreateClass) program).getPrograms(), false))
+                    .append("</statement></block>");
+            blockCount = pBlockCount;
+            parentClassName = null;
         } else if (program instanceof SyntaxTree.Function) {
             if (getFunctionBlock((((SyntaxTree.Function) program).getFunctionName())) == null) {
                 lastFunctionName = ((SyntaxTree.Function) program).getFunctionName();
@@ -519,21 +530,14 @@ public class BlockTool {
                 if (!functionParameters.containsKey(((SyntaxTree.Function) program).getFunctionName())) {
                     functionParameters.put(((SyntaxTree.Function) program).getFunctionName().split(":")[0], new ArrayList<>());
                 }
-                if (hasReturn) {
-                    functions.append("<block type=\"procedures_defreturn\"><mutation>");
-                    for (String i : ((SyntaxTree.Function) program).getArgs()) {
-                        functionParameters.get(((SyntaxTree.Function) program).getFunctionName().split(":")[0]).add(i);
-                        functions.append("<arg name=\"").append(i).append("\"></arg>");
-                        addVariableName(i);
-                    }
-                    int pBlockCount = blockCount;
-                    blockCount = 0;
-                    functions.append("</mutation>").append("<field name=\"NAME\">").append(((SyntaxTree.Function) program)
-                            .getFunctionName().split(":")[0]).append("</field><statement name=\"STACK\">")
-                            .append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram(), false)).append("</statement></block>");
-                    blockCount = pBlockCount;
+                StringBuilder functions;
+                if (parentClassName == null) {
+                    functions = this.functions;
                 } else {
-                    functions.append("<block type=\"procedures_defnoreturn\"><mutation>");
+                    functions = result;
+                }
+                if (hasReturn) {
+                    functions.append("<block type=\"procedures_defreturn").append(parentClassName != null? "_method" : "").append("\"><mutation>");
                     for (String i : ((SyntaxTree.Function) program).getArgs()) {
                         functionParameters.get(((SyntaxTree.Function) program).getFunctionName().split(":")[0]).add(i);
                         functions.append("<arg name=\"").append(i).append("\"></arg>");
@@ -541,10 +545,28 @@ public class BlockTool {
                     }
                     int pBlockCount = blockCount;
                     blockCount = 0;
-                    functions.append("</mutation><field name=\"NAME\">").append(((SyntaxTree.Function) program).getFunctionName().split(":")[0])
-                            .append("</field><statement name=\"STACK\">").append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram(), false))
-                            .append("</statement></block>");
+                    String functionName = ((SyntaxTree.Function) program).getFunctionName().split(":")[0];
+                    if (parentClassName != null) functionName = functionName.replace("#C" + parentClassName, "");
+                    functions.append("</mutation>").append("<field name=\"NAME\">").append(functionName).append("</field><statement name=\"STACK\">")
+                            .append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram(), false)).append("</statement>").append(parentClassName == null? "</block>":"");
                     blockCount = pBlockCount;
+                    if (parentClassName != null) blockCount++;
+                } else {
+                    functions.append("<block type=\"procedures_defnoreturn").append(parentClassName != null? "_method" : "").append("\"><mutation>");
+                    for (String i : ((SyntaxTree.Function) program).getArgs()) {
+                        functionParameters.get(((SyntaxTree.Function) program).getFunctionName().split(":")[0]).add(i);
+                        functions.append("<arg name=\"").append(i).append("\"></arg>");
+                        addVariableName(i);
+                    }
+                    int pBlockCount = blockCount;
+                    blockCount = 0;
+                    String functionName = ((SyntaxTree.Function) program).getFunctionName().split(":")[0];
+                    if (parentClassName != null) functionName = functionName.replace("#C" + parentClassName, "");
+                    functions.append("</mutation><field name=\"NAME\">").append(functionName)
+                            .append("</field><statement name=\"STACK\">").append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram(), false))
+                            .append("</statement>").append(parentClassName == null? "</block>":"");
+                    blockCount = pBlockCount;
+                    if (parentClassName != null) blockCount++;
                 }
                 lastFunctionName = null;
             }

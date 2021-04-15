@@ -50,8 +50,40 @@ Blockly.defineBlocksWithJsonArray([
       "procedure_vars",
     ],
     "mutator": "procedure_def_mutator",
-  },
-  {
+  }, {
+    "type": "procedures_defnoreturn_method",
+    "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE_METHOD} %1 %2",
+    "message1": "%{BKY_PROCEDURES_DEFNORETURN_DO} %1",
+    "args0": [
+      {
+        "type": "field_input",
+        "name": "NAME",
+        "text": "",
+      },
+      {
+        "type": "input_dummy",
+        "name": "TOP",
+      },
+    ],
+    "args1": [
+      {
+        "type": "input_statement",
+        "name": "STACK",
+      },
+    ],
+    "style": "procedure_blocks",
+    "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
+    "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
+    "previousStatement": null,
+    "nextStatement": null,
+    "extensions": [
+      "get_procedure_def_no_return",
+      "procedure_context_menu",
+      "procedure_rename",
+      "procedure_vars",
+    ],
+    "mutator": "procedure_def_mutator",
+  }, {
     "type": "procedures_defreturn",
     "message0": "%{BKY_PROCEDURES_DEFRETURN_TITLE} %1 %{BKY_PROCEDURES_DEFRETURN_TITLE_OUTPUT} %2",
     "message1": "%{BKY_PROCEDURES_DEFRETURN_DO} %1",
@@ -90,7 +122,48 @@ Blockly.defineBlocksWithJsonArray([
       "procedure_vars",
     ],
     "mutator": "procedure_def_mutator",
-  },
+  }, {
+    "type": "procedures_defreturn_method",
+    "message0": "%{BKY_PROCEDURES_DEFRETURN_TITLE_METHOD} %1 %{BKY_PROCEDURES_DEFRETURN_TITLE_OUTPUT} %2",
+    "message1": "%{BKY_PROCEDURES_DEFRETURN_DO} %1",
+    // "message2": "%{BKY_PROCEDURES_DEFRETURN_RETURN} %1",
+    "args0": [
+      {
+        "type": "field_input",
+        "name": "NAME",
+        "text": "",
+      },
+      {
+        "type": "input_dummy",
+        "name": "TOP",
+      },
+    ],
+    "args1": [
+      {
+        "type": "input_statement",
+        "name": "STACK",
+      },
+    ],
+    // "args2": [
+    //   {
+    //     "type": "input_value",
+    //     "align": "right",
+    //     "name": "RETURN",
+    //   },
+    // ],
+    "style": "procedure_blocks",
+    "helpUrl": "%{BKY_PROCEDURES_DEFRETURN_HELPURL}",
+    "tooltip": "%{BKY_PROCEDURES_DEFRETURN_TOOLTIP}",
+    "previousStatement": null,
+    "nextStatement": null,
+    "extensions": [
+      "get_procedure_def_return",
+      "procedure_context_menu",
+      "procedure_rename",
+      "procedure_vars",
+    ],
+    "mutator": "procedure_def_mutator",
+  }
 ]);
 /* eslint-enable quotes */
 
