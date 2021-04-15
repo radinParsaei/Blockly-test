@@ -34,6 +34,9 @@ Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_EQUALS_TO'] = 'equals to';
 Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_IGNORE_CASE'] = 'ignoring case';
 Blockly.Msg['TEXT_MATCHES'] = 'matches regex';
 Blockly.Msg['TEXT_INDEX_OF_FROM_INDEX'] = 'from index';
+Blockly.Msg['MATH_RANDOM_RANDINT_0'] = 'random number from';
+Blockly.Msg['MATH_RANDOM_RANDINT_1'] = 'to';
+Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'] = 'returns a pesudorandom number between minimum and maximum values.';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -101,7 +104,7 @@ function initBlocks() {
             code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
           if (i != paramTypes.length - 1) code += ', ';
         }
-        if (output) return [code + ')\n', Blockly.genCode.ORDER_FUNCTION_CALL];
+        if (output) return [code + ')', Blockly.genCode.ORDER_FUNCTION_CALL];
         else return code + ')\n';
       };
       functionCodes += functionCode;
@@ -190,6 +193,11 @@ function initBlocks() {
   //   }`, ['text 1', null, undefined, "text 2", null, function(block) { //image field
   //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
   //   }], 'tooltip', 'helpUrl', true);
+  addBlock("test", "Math", createShadows([1, 10]), "Math_randomBlock", ['min', 'max'], [true, true],
+    `declareNativeFunction("random", "randint", 2)
+    func Math_randomBlock(min, max) {
+      return randint(min, max)
+    }`, [Blockly.Msg['MATH_RANDOM_RANDINT_0'], null, undefined, Blockly.Msg['MATH_RANDOM_RANDINT_1'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], "Number");
 
   addBlock("logic_if", "Logic", '', function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
