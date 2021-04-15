@@ -8,6 +8,8 @@ import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 import './procedures.js';
 import html2canvas from 'html2canvas';
 
+Blockly.Flyout.prototype.MARGIN = 70;
+
 function genPhoto() {
   let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   let bbox = document.getElementsByClassName("blocklyBlockCanvas")[0].getBBox();
@@ -79,6 +81,7 @@ var isFirst = true;
 var editorCodeChanged1 = false;
 let workspace;
 var editorCodeChanged = false;
+var landscape;
 
 const disableTopBlocksPlugin = new DisableTopBlocks();
 disableTopBlocksPlugin.init();
@@ -150,16 +153,20 @@ function injectBlockly() {
   if (element != null) element.remove();
   let sheet = document.createElement('style');
   sheet.setAttribute('id', 'style');
-  if(window.innerHeight > window.innerWidth){
+  if (window.innerHeight > window.innerWidth) {
     options['horizontalLayout'] = true;
     options['toolboxPosition'] = 'end';
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
+    Blockly.Flyout.prototype.MARGIN = 70;
+    landscape = false;
   } else {
     options['plugins'] = {
       'toolbox': ContinuousToolbox,
       'flyoutsVerticalToolbox': ContinuousFlyout,
     }
     sheet.innerHTML = "";
+    Blockly.Flyout.prototype.MARGIN = 8;
+    landscape = true;
   }
   document.body.appendChild(sheet);
   createWorkspace(document.getElementById('root'), options);
@@ -258,6 +265,13 @@ event.addListener(editor.container, "drop", function(e) {
         return event.stopEvent(e);
     }
 });
+
+window.onresize = function() {
+  if (((window.innerHeight > window.innerWidth) && landscape) || ((window.innerHeight <= window.innerWidth) && !landscape)) {
+    document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
+    injectBlockly();
+  }
+}
 
 editor.setKeyboardHandler('ace/keyboard/sublime')
 editor.commands.addCommands([{
