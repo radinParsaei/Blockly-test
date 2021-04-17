@@ -96,19 +96,9 @@ public class BlockTool {
             addVariableName(variableName[variableName.length - 1]);
             return "<block type=\"variable_get\"><field name=\"NAME\">" + variableName[variableName.length - 1] + "</field></block>";
         } else if (val instanceof SyntaxTree.Equals) {
-            if (((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV1().toString().equals("") &&
-                    !(((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Boolean)) {
-                return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
-                        putVales(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
-            } else if (((SyntaxTree.Equals) val).getV2() instanceof SyntaxTree.Text && ((SyntaxTree.Equals) val).getV2().toString().equals("") &&
-                    !(((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Number || ((SyntaxTree.Equals) val).getV1() instanceof SyntaxTree.Boolean)) {
-                return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
-                        putVales(((SyntaxTree.Equals) val).getV1()) + "</value></block>";
-            } else {
-                return "<block type=\"logic_compare_advanced\"><field name=\"OP\">EQ</field><value name=\"ARG0\">" +
-                        putVales(((SyntaxTree.Equals) val).getV1()) + "</value><value name=\"ARG1\">" +
-                        putVales(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
-            }
+            return "<block type=\"logic_compare_advanced\"><field name=\"OP\">EQ</field><value name=\"ARG0\">" +
+                    putVales(((SyntaxTree.Equals) val).getV1()) + "</value><value name=\"ARG1\">" +
+                    putVales(((SyntaxTree.Equals) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.StrictEquals) {
             return "<block type=\"logic_compare\"><field name=\"OP\">EQ</field><value name=\"A\">" +
                     putVales(((SyntaxTree.StrictEquals) val).getV1()) + "</value><value name=\"B\">" +
@@ -168,6 +158,9 @@ public class BlockTool {
                                     putVales(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value></block>";
                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("length") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
                         return "<block type=\"text_length\"><value name=\"VALUE\">" +
+                                putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
+                    }  else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("isEmpty") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
                                 putVales(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
                     } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("toUpper") ||
                             ((SyntaxTree.CallFunction) val).getFunctionName().equals("toUpperCase")) &&
