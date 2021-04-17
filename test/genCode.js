@@ -327,8 +327,10 @@ Blockly.genCode['math_modulo'] = function(block) {
 Blockly.genCode['text_isEmpty'] = function(block) {
   var text = Blockly.genCode.valueToCode(block, 'VALUE',
       Blockly.genCode.ORDER_MEMBER) || '\'\'';
-  return [text + ' == ""', Blockly.genCode.ORDER_RELATIONAL];
+  return [text + '.isEmpty()', Blockly.genCode.ORDER_FUNCTION_CALL];
 };
+
+Blockly.genCode['lists_isEmpty'] = Blockly.genCode['text_isEmpty'];
 
 Blockly.genCode['variables_get'] = function(block) {
   var code = Blockly.genCode.variableDB_.getName(block.getFieldValue('VAR'),

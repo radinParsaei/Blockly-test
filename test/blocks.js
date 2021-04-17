@@ -527,6 +527,7 @@ function initBlocks() {
   addBlock("lists_getIndex", "List", createShadows([[1, 2, 3], 0]).replace('shadow', 'block').replace("ARG0", "VALUE").replace("ARG1", "AT"));
   addBlock("lists_length", "List", createShadows([[1, 2, 3]]).replace('shadow', 'block').replace("ARG0", "VALUE"));
   addBlock("lists_setIndex", "List", createShadows([undefined, 0, 0]).replace("ARG1", "AT").replace("ARG2", "TO"));
+  addBlock("lists_isEmpty", "List", createShadows([[]]).replace("ARG0", "VALUE").replace("shadow", "block"));
 
   Blockly.Blocks['procedures_callnoreturn'] = {
     /**

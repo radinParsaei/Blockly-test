@@ -90,7 +90,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       {
         "type": "input_value",
         "name": "VALUE",
-        "check": ["String", "Array"]
+        "check": "Array"
       }
     ],
     "output": "Boolean",
