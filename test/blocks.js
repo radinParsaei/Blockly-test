@@ -38,6 +38,8 @@ Blockly.Msg['MATH_RANDOM_RANDINT_0'] = 'random number from';
 Blockly.Msg['MATH_RANDOM_RANDINT_1'] = 'to';
 Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'] = 'returns a pesudorandom number between minimum and maximum values.';
 Blockly.Msg['CREATE_CLASS'] = 'create class';
+Blockly.Msg['CREATE_INSTANCE_OF'] = 'create new';
+Blockly.Msg['CREATE_INSTANCE_WITH'] = 'with';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -407,6 +409,7 @@ function initBlocks() {
 
   addBlock("procedures_defnoreturn_method", "Class");
   addBlock("procedures_defreturn_method", "Class");
+  addBlock("create_instance", "Class");
 
     const textIndexOfMutator = {
       suppressPrefixSuffix: true,
@@ -460,8 +463,79 @@ function initBlocks() {
     Blockly.Extensions.registerMutator('text_indexOf_mutator',
         textIndexOfMutator, textIndexOfMutatorHelper);
 
+  const creaeteInstanceMutator = {
+    itemCount_: 0,
+    mutationToDom: function() {
+      const container = Blockly.utils.xml.createElement('mutation');
+      container.setAttribute('items', this.itemCount_);
+      return container;
+    },
+    domToMutation: function(xmlElement) {
+      const targetCount = parseInt(xmlElement.getAttribute('items'), 10);
+      this.updateShape_(targetCount);
+    },
+    updateShape_: function(targetCount) {
+      while (this.itemCount_ < targetCount) {
+        this.addPart_();
+      }
+      while (this.itemCount_ > targetCount) {
+        this.removePart_();
+      }
+    },
+    plus: function() {
+      this.addPart_();
+    },
+    minus: function() {
+      if (this.itemCount_ == 0) {
+        return;
+      }
+      this.removePart_();
+    },
+    addPart_: function() {
+      this.topInput_ = this.appendValueInput('ARG' + this.itemCount_);
+      this.itemCount_++;
+      this.updatePlusMinus();
+    },
+    removePart_: function() {
+      this.itemCount_--;
+      this.removeInput('ARG' + this.itemCount_);
+      this.updatePlusMinus();
+    },
+    updatePlusMinus: function() {
+      if (this.getInput("DUM") != null ) this.removeInput("DUM");
+      var tmp = this.appendDummyInput("DUM");
+      if (this.itemCount_ != 0) tmp.appendField(createMinusField(), 'MINUS');
+      tmp.appendField(createPlusField(), 'PLUS');
+    }
+  };
+  const createInstanceHelper = function() {
+    this.updateShape_(0);
+    this.updatePlusMinus();
+  };
+
+  Blockly.Extensions.registerMutator('create_instance_mutator',
+      creaeteInstanceMutator, createInstanceHelper);
+
   Blockly.defineBlocksWithJsonArray([
     {
+      "type": "create_instance",
+      "message0": "%{BKY_CREATE_INSTANCE_OF} %1 %{BKY_CREATE_INSTANCE_WITH}",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME"
+        }
+      ],
+      "output": null,
+      "style": "procedure_blocks",
+      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
+      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
+      "mutator": "create_instance_mutator",
+      "inputsInline": true,
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
+    }, {
       "type": "return_statement",
       "message0": "%{BKY_RETURN_STATEMENT_TEXT} %1",
       "args0": [{

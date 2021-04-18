@@ -268,6 +268,16 @@ Blockly.genCode['lists_create_with'] = function(block) {
   return [code, Blockly.genCode.ORDER_ATOMIC];
 };
 
+Blockly.genCode['create_instance'] = function(block) {
+  var elements = new Array(block.itemCount_);
+  for (var i = 0; i < block.itemCount_; i++) {
+    elements[i] = Blockly.genCode.valueToCode(block, 'ARG' + i,
+        Blockly.genCode.ORDER_NONE) || 'null';
+  }
+  var code = 'new ' + block.getFieldValue("NAME") + '(' + elements.join(', ') + ')';
+  return [code, Blockly.genCode.ORDER_ATOMIC];
+};
+
 Blockly.genCode['text_print'] = function(block) {
   var msg = Blockly.genCode.valueToCode(block, 'TEXT',
       Blockly.genCode.ORDER_NONE) || '\'\'';
