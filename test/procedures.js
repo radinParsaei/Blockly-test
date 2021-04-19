@@ -14,76 +14,78 @@ import {createPlusField} from './field_plus';
 
 Blockly.Msg['PROCEDURE_VARIABLE'] = 'variable:';
 Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'] = 'define';
-Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE'] = 'define';
-Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_OUTPUT'] = 'with output';
+// Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE'] = 'define';
+Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_OUTPUT'] = '';//'with output';
 
 /* eslint-disable quotes */
 Blockly.defineBlocksWithJsonArray([
+  // {
+  //   "type": "procedures_defnoreturn",
+  //   "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE} %1 %2",
+  //   "message1": "%{BKY_PROCEDURES_DEFNORETURN_DO} %1",
+  //   "args0": [
+  //     {
+  //       "type": "field_input",
+  //       "name": "NAME",
+  //       "text": "",
+  //     },
+  //     {
+  //       "type": "input_dummy",
+  //       "name": "TOP",
+  //     },
+  //   ],
+  //   "args1": [
+  //     {
+  //       "type": "input_statement",
+  //       "name": "STACK",
+  //     },
+  //   ],
+  //   "style": "procedure_blocks",
+  //   "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
+  //   "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
+  //   "extensions": [
+  //     "get_procedure_def_no_return",
+  //     "procedure_context_menu",
+  //     "procedure_rename",
+  //     "procedure_vars",
+  //   ],
+  //   "mutator": "procedure_def_mutator",
+  // },
+  // {
+  //   "type": "procedures_defnoreturn_method",
+  //   "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE_METHOD} %1 %2",
+  //   "message1": "%{BKY_PROCEDURES_DEFNORETURN_DO} %1",
+  //   "args0": [
+  //     {
+  //       "type": "field_input",
+  //       "name": "NAME",
+  //       "text": "",
+  //     },
+  //     {
+  //       "type": "input_dummy",
+  //       "name": "TOP",
+  //     },
+  //   ],
+  //   "args1": [
+  //     {
+  //       "type": "input_statement",
+  //       "name": "STACK",
+  //     },
+  //   ],
+  //   "style": "procedure_blocks",
+  //   "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
+  //   "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
+  //   "previousStatement": null,
+  //   "nextStatement": null,
+  //   "extensions": [
+  //     "get_procedure_def_no_return",
+  //     "procedure_context_menu",
+  //     "procedure_rename",
+  //     "procedure_vars",
+  //   ],
+  //   "mutator": "procedure_def_mutator",
+  // },
   {
-    "type": "procedures_defnoreturn",
-    "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE} %1 %2",
-    "message1": "%{BKY_PROCEDURES_DEFNORETURN_DO} %1",
-    "args0": [
-      {
-        "type": "field_input",
-        "name": "NAME",
-        "text": "",
-      },
-      {
-        "type": "input_dummy",
-        "name": "TOP",
-      },
-    ],
-    "args1": [
-      {
-        "type": "input_statement",
-        "name": "STACK",
-      },
-    ],
-    "style": "procedure_blocks",
-    "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
-    "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
-    "extensions": [
-      "get_procedure_def_no_return",
-      "procedure_context_menu",
-      "procedure_rename",
-      "procedure_vars",
-    ],
-    "mutator": "procedure_def_mutator",
-  }, {
-    "type": "procedures_defnoreturn_method",
-    "message0": "%{BKY_PROCEDURES_DEFNORETURN_TITLE_METHOD} %1 %2",
-    "message1": "%{BKY_PROCEDURES_DEFNORETURN_DO} %1",
-    "args0": [
-      {
-        "type": "field_input",
-        "name": "NAME",
-        "text": "",
-      },
-      {
-        "type": "input_dummy",
-        "name": "TOP",
-      },
-    ],
-    "args1": [
-      {
-        "type": "input_statement",
-        "name": "STACK",
-      },
-    ],
-    "style": "procedure_blocks",
-    "helpUrl": "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
-    "tooltip": "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
-    "previousStatement": null,
-    "nextStatement": null,
-    "extensions": [
-      "get_procedure_def_no_return",
-      "procedure_context_menu",
-      "procedure_rename",
-      "procedure_vars",
-    ],
-    "mutator": "procedure_def_mutator",
-  }, {
     "type": "procedures_defreturn",
     "message0": "%{BKY_PROCEDURES_DEFRETURN_TITLE} %1 %{BKY_PROCEDURES_DEFRETURN_TITLE_OUTPUT} %2",
     "message1": "%{BKY_PROCEDURES_DEFRETURN_DO} %1",
@@ -172,25 +174,25 @@ Blockly.defineBlocksWithJsonArray([
  * block.
  * @type {{callType_: string, getProcedureDef: (function(): *[])}}
  */
-const getDefNoReturn = {
-  /**
-   * Returns info about this block to be used by the Blockly.Procedures.
-   * @return {Array} An array of info.
-   * @this Blockly.Block
-   */
-  getProcedureDef: function() {
-    const argNames = this.argData_.map((elem) => elem.model.name);
-    return [this.getFieldValue('NAME'), argNames, false];
-  },
-
-  /**
-   * Used by the context menu to create a caller block.
-   * @type {string}
-   */
-  callType_: 'procedures_callnoreturn',
-};
-
-Blockly.Extensions.registerMixin('get_procedure_def_no_return', getDefNoReturn);
+// const getDefNoReturn = {
+//   /**
+//    * Returns info about this block to be used by the Blockly.Procedures.
+//    * @return {Array} An array of info.
+//    * @this Blockly.Block
+//    */
+//   getProcedureDef: function() {
+//     const argNames = this.argData_.map((elem) => elem.model.name);
+//     return [this.getFieldValue('NAME'), argNames, false];
+//   },
+//
+//   /**
+//    * Used by the context menu to create a caller block.
+//    * @type {string}
+//    */
+//   callType_: 'procedures_callnoreturn',
+// };
+//
+// Blockly.Extensions.registerMixin('get_procedure_def_no_return', getDefNoReturn);
 
 /**
  * Defines what are essentially info-getters for the procedures_def_return

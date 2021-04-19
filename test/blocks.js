@@ -6,7 +6,7 @@ import './blocks/lists.js';
 import './blocks/logic.js';
 import './blocks/loops.js';
 import './blocks/math.js';
-import './blocks/procedures.js';
+// import './blocks/procedures.js';
 import './blocks/text.js';
 import {createMinusField} from './field_minus';
 import {createPlusField} from './field_plus';
@@ -407,7 +407,7 @@ function initBlocks() {
     block.appendDummyInput().appendField(Blockly.Msg['CREATE_CLASS']).appendField(new Blockly.FieldTextInput(), "NAME");
   }, null], Blockly.Msg['LOGIC_COMPARE_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_COMPARE_ADVANCED_HELPURL'], 'parent');
 
-  addBlock("procedures_defnoreturn_method", "Class");
+  // addBlock("procedures_defnoreturn_method", "Class");
   addBlock("procedures_defreturn_method", "Class");
   addBlock("create_instance", "Class");
 
@@ -1057,20 +1057,20 @@ function initBlocks() {
 
   Blockly.Procedures.flyoutCategory = function(workspace) {
     var xmlList = [];
-    if (Blockly.Blocks['procedures_defnoreturn']) {
-      // <block type="procedures_defnoreturn" gap="16">
-      //     <field name="NAME">do something</field>
-      // </block>
-      var block = Blockly.utils.xml.createElement('block');
-      block.setAttribute('type', 'procedures_defnoreturn');
-      block.setAttribute('gap', 16);
-      var nameField = Blockly.utils.xml.createElement('field');
-      nameField.setAttribute('name', 'NAME');
-      nameField.appendChild(Blockly.utils.xml.createTextNode(
-          Blockly.Msg['PROCEDURES_DEFNORETURN_PROCEDURE']));
-      block.appendChild(nameField);
-      xmlList.push(block);
-    }
+    // if (Blockly.Blocks['procedures_defnoreturn']) {
+    //   // <block type="procedures_defnoreturn" gap="16">
+    //   //     <field name="NAME">do something</field>
+    //   // </block>
+    //   var block = Blockly.utils.xml.createElement('block');
+    //   block.setAttribute('type', 'procedures_defnoreturn');
+    //   block.setAttribute('gap', 16);
+    //   var nameField = Blockly.utils.xml.createElement('field');
+    //   nameField.setAttribute('name', 'NAME');
+    //   nameField.appendChild(Blockly.utils.xml.createTextNode(
+    //       Blockly.Msg['PROCEDURES_DEFNORETURN_PROCEDURE']));
+    //   block.appendChild(nameField);
+    //   xmlList.push(block);
+    // }
     if (Blockly.Blocks['procedures_defreturn']) {
       // <block type="procedures_defreturn" gap="16">
       //     <field name="NAME">do something</field>
@@ -1116,8 +1116,29 @@ function initBlocks() {
 
     var tuple = Blockly.Procedures.allProcedures(workspace);
     populateProcedures(tuple[0], 'procedures_callnoreturn');
-    populateProcedures(tuple[1], 'procedures_callreturn');
+    // populateProcedures(tuple[1], 'procedures_callreturn');
     populateProcedures(tuple[1], 'procedures_callnoreturn');
+    var functionsWithReturn = [];
+    var containsReturn = [];
+    if (Blockly.getMainWorkspace()) {
+      for (var retBlock of Blockly.getMainWorkspace().getBlocksByType('return_statement')) {
+        var prev = retBlock.getPreviousBlock();
+        var prevType = prev && prev.type;
+        while (prev != null) {
+          if (prevType == 'procedures_defreturn') {
+            containsReturn += prev.getFieldValue("NAME");
+          }
+          prev = prev.getPreviousBlock();
+          prevType = prev && prev.type;
+        }
+      }
+    }
+    for (var i = 0; i < tuple[1].length; i++) {
+      if (containsReturn.includes(tuple[1][i][0])) {
+        functionsWithReturn = functionsWithReturn.concat([tuple[1][i]]);
+      }
+    }
+    populateProcedures(functionsWithReturn, 'procedures_callreturn');
     var block2 = Blockly.utils.xml.createElement('block');
     block2.setAttribute('type', 'return_statement');
     block2.setAttribute('gap', 16);
@@ -1131,9 +1152,9 @@ function initBlocks() {
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK'];
   Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE_TOOLTIP'] = Blockly.Msg['CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE'];
   Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'] = 'define function';
-  Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'];
+  // Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'];
   Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'] = 'define method';
-  Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE_METHOD'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'];
+  // Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE_METHOD'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'];
 }
 
 export { initBlocks };
