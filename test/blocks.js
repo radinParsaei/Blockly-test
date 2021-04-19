@@ -502,9 +502,16 @@ function initBlocks() {
       this.updatePlusMinus();
     },
     updatePlusMinus: function() {
-      if (this.getInput("DUM") != null ) this.removeInput("DUM");
+      if (this.getInput("WITH_DUM") != null) this.removeInput("WITH_DUM");
+      if (this.getInput("DUM") != null) this.removeInput("DUM");
       var tmp = this.appendDummyInput("DUM");
-      if (this.itemCount_ != 0) tmp.appendField(createMinusField(), 'MINUS');
+      if (this.itemCount_ != 0) {
+        this.appendDummyInput("WITH_DUM").appendField(Blockly.Msg['CREATE_INSTANCE_WITH']);
+        try {
+          this.moveInputBefore('WITH_DUM', 'ARG0');
+        } catch (e) {}
+        tmp.appendField(createMinusField(), 'MINUS');
+      }
       tmp.appendField(createPlusField(), 'PLUS');
     }
   };
@@ -519,7 +526,7 @@ function initBlocks() {
   Blockly.defineBlocksWithJsonArray([
     {
       "type": "create_instance",
-      "message0": "%{BKY_CREATE_INSTANCE_OF} %1 %{BKY_CREATE_INSTANCE_WITH}",
+      "message0": "%{BKY_CREATE_INSTANCE_OF} %1",
       "args0": [
         {
           "type": "field_input",
