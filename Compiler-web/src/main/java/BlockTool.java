@@ -14,6 +14,7 @@ public class BlockTool {
     private final LinkedHashMap<String, String> variables1 = new LinkedHashMap<>();
     private String lastFunctionName = null;
     private String parentClassName = null;
+    StringBuilder nakedValues = new StringBuilder();
 
 //    private String getVariableName(String name) {
 //        String[] tmp = name.split(":");
@@ -407,6 +408,7 @@ public class BlockTool {
             tmp.append("</block></next>");
         }
         if (blockCount >= 0) tmp.append("</block>");
+        if (addXml) tmp.append(nakedValues.toString());
         tmp.append(addXml? "</xml>":"");
         return tmp.toString().replace("<next><next>", "<next>");
     }
@@ -421,14 +423,19 @@ public class BlockTool {
             tmp.append("</block></next>");
         }
         if (blockCount >= 0) tmp.append("</block>");
-        tmp.append("</statement></block></xml>");
+        tmp.append("</statement></block>").append(nakedValues.toString()).append("</xml>");
         return tmp.toString().replace("<next><next>", "<next>");
     }
 
     public String syntaxTreeToBlocksXML1(ProgramBase program) {
         StringBuilder result;
         if (blockCount != 0 && (!(program instanceof SyntaxTree.Function) || parentClassName != null)) {
-            result = new StringBuilder("<next>");
+            if (!(program instanceof SyntaxTree.ExecuteValue && (!(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
+                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction)))) {
+                result = new StringBuilder("<next>");
+            } else {
+                result = new StringBuilder();
+            }
         } else {
             result = new StringBuilder();
         }
@@ -468,7 +475,13 @@ public class BlockTool {
             blockCount++;
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
-            result.append(putVales(((SyntaxTree.ExecuteValue) program).getValue()));
+            if (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
+                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction) {
+                result.append(putVales(((SyntaxTree.ExecuteValue) program).getValue()));
+
+            } else {
+                nakedValues.append(putVales(((SyntaxTree.ExecuteValue) program).getValue()));
+            }
             parentIsExecuteValue = false;
         } else if (program instanceof SyntaxTree.Return) {
             result.append("<block type=\"return_statement\"><value name=\"VALUE\">")

@@ -82,6 +82,7 @@ var editorCodeChanged1 = false;
 let workspace;
 var editorCodeChanged = false;
 var landscape;
+var injecting = false;
 
 const disableTopBlocksPlugin = new DisableTopBlocks();
 disableTopBlocksPlugin.init();
@@ -96,7 +97,7 @@ function createWorkspace(blocklyDiv, options) {
     if (event.element == 'category' && event.newValue == null) {
       Blockly.hideFlyOut();
     }
-    runCode();
+    if (!injecting) runCode();
   });
   return workspace;
 }
@@ -149,6 +150,7 @@ function injectBlockly() {
         wheel: true
     }
   };
+  injecting = true;
   let element = document.getElementById('style');
   if (element != null) element.remove();
   let sheet = document.createElement('style');
@@ -175,6 +177,7 @@ function injectBlockly() {
   } else {
     Blockly.Xml.domToWorkspace(xml, workspace);
   }
+  setTimeout(() => injecting = false, 100);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
