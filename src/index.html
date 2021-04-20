@@ -399,7 +399,7 @@
 
       function paste() {
         let pCopiedFileName = copiedFileName;
-        if (fs.existsSync(localStorage.getItem('currentDir') + tmp)) {
+        if (fs.existsSync(localStorage.getItem('currentDir') + copiedFileName)) {
           var tmp = copiedFileName;
           while ((tmp = prompt("this file exists. please rename it", tmp)) != null &&
                   fs.existsSync(localStorage.getItem('currentDir') + tmp));

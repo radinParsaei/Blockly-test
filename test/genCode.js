@@ -784,4 +784,9 @@ Blockly.genCode['class_call_method_statement'] = function(block) {
   return code + '\n';
 };
 
+Blockly.genCode['class_get_parameter'] = function(block) {
+  var code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) + '.' + block.getFieldValue("NAME");
+  return [code, Blockly.genCode.ORDER_MEMBER];
+};
+
 Blockly.genCode['procedures_defnoreturn_method'] = Blockly.genCode['procedures_defreturn_method'];

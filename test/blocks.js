@@ -42,6 +42,8 @@ Blockly.Msg['CREATE_INSTANCE_OF'] = 'create new';
 Blockly.Msg['CREATE_INSTANCE_WITH'] = 'with';
 Blockly.Msg['CLASS_CALL_METHOD'] = 'call method';
 Blockly.Msg['CLASS_CALL_METHOD_FROM'] = 'from instnace';
+Blockly.Msg['CLASS_GET_PARAMETER'] = 'get parameter';
+Blockly.Msg['CLASS_GET_PARAMETER_FROM'] = Blockly.Msg['CLASS_CALL_METHOD_FROM'];
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -412,6 +414,7 @@ function initBlocks() {
   // addBlock("procedures_defnoreturn_method", "Class");
   addBlock("procedures_defreturn_method", "Class");
   addBlock("create_instance", "Class");
+  addBlock("class_get_parameter", "Class");
   addBlock("class_call_method", "Class");
   addBlock("class_call_method_statement", "Class");
 
@@ -563,6 +566,26 @@ function initBlocks() {
       "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
       "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
       "mutator": "create_instance_mutator",
+      "inputsInline": true,
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
+    }, {
+      "type": "class_get_parameter",
+      "message0": "%{BKY_CLASS_GET_PARAMETER} %1 %{BKY_CLASS_GET_PARAMETER_FROM} %2",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME"
+        }, {
+          "type": "input_value",
+          "name": "INSTANCE"
+        }
+      ],
+      "output": null,
+      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
+      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
       "inputsInline": true,
       "extensions": [
         "parent_tooltip_when_inline"

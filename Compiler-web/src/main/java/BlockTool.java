@@ -104,6 +104,10 @@ public class BlockTool {
             parentIsExecuteValue = false;
             return syntaxTreeToBlocksXML1(((SyntaxTree.PrintFunction) val).getProgram());
         } else if (val instanceof SyntaxTree.Variable) {
+            if (((SyntaxTree.Variable) val).getInstance() != null) {
+                return "<block type=\"class_get_parameter\"><field name=\"NAME\">" + ((SyntaxTree.Variable) val).getVariableName() +
+                        "</field><value name=\"INSTANCE\">" + putValue(((SyntaxTree.Variable) val).getInstance()) + "</value></block>";
+            }
             String[] variableName = ((SyntaxTree.Variable) val).getVariableName().split(":");
             addVariableName(variableName[variableName.length - 1]);
             return "<block type=\"variable_get\"><field name=\"NAME\">" + variableName[variableName.length - 1] + "</field></block>";
