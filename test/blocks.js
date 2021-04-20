@@ -40,6 +40,8 @@ Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'] = 'returns a pesudorandom number betw
 Blockly.Msg['CREATE_CLASS'] = 'create class';
 Blockly.Msg['CREATE_INSTANCE_OF'] = 'create new';
 Blockly.Msg['CREATE_INSTANCE_WITH'] = 'with';
+Blockly.Msg['CLASS_CALL_METHOD'] = 'call method';
+Blockly.Msg['CLASS_CALL_METHOD_FROM'] = 'from instnace';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -410,6 +412,8 @@ function initBlocks() {
   // addBlock("procedures_defnoreturn_method", "Class");
   addBlock("procedures_defreturn_method", "Class");
   addBlock("create_instance", "Class");
+  addBlock("class_call_method", "Class");
+  addBlock("class_call_method_statement", "Class");
 
     const textIndexOfMutator = {
       suppressPrefixSuffix: true,
@@ -534,7 +538,50 @@ function initBlocks() {
         }
       ],
       "output": null,
-      "style": "procedure_blocks",
+      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
+      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
+      "mutator": "create_instance_mutator",
+      "inputsInline": true,
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
+    }, {
+      "type": "class_call_method",
+      "message0": "%{BKY_CLASS_CALL_METHOD} %1 %{BKY_CLASS_CALL_METHOD_FROM} %2",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME"
+        }, {
+          "type": "input_value",
+          "name": "INSTANCE"
+        }
+      ],
+      "output": null,
+      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
+      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
+      "mutator": "create_instance_mutator",
+      "inputsInline": true,
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
+    }, {
+      "type": "class_call_method_statement",
+      "message0": "%{BKY_CLASS_CALL_METHOD} %1 %{BKY_CLASS_CALL_METHOD_FROM} %2",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME"
+        }, {
+          "type": "input_value",
+          "name": "INSTANCE"
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
       "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
       "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
       "mutator": "create_instance_mutator",
