@@ -44,6 +44,9 @@ Blockly.Msg['CLASS_CALL_METHOD'] = 'call method';
 Blockly.Msg['CLASS_CALL_METHOD_FROM'] = 'from instnace';
 Blockly.Msg['CLASS_GET_PARAMETER'] = 'get parameter';
 Blockly.Msg['CLASS_GET_PARAMETER_FROM'] = Blockly.Msg['CLASS_CALL_METHOD_FROM'];
+Blockly.Msg['CLASS_SET_PARAMETER'] = 'set parameter';
+Blockly.Msg['CLASS_SET_PARAMETER_IN_INSTANCE'] = 'in';
+Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -417,6 +420,7 @@ function initBlocks() {
   addBlock("class_get_parameter", "Class");
   addBlock("class_call_method", "Class");
   addBlock("class_call_method_statement", "Class");
+  addBlock("class_set_parameter", "Class");
 
     const textIndexOfMutator = {
       suppressPrefixSuffix: true,
@@ -542,8 +546,8 @@ function initBlocks() {
       ],
       "output": null,
       "colour": document.getElementById("ClassCategory").getAttribute('colour'),
-      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
-      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
+      "helpUrl": "%{BKY_CLASSES_CREATE_INSTANCE_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_CREATE_INSTANCE_TOOLTIP}",
       "mutator": "create_instance_mutator",
       "inputsInline": true,
       "extensions": [
@@ -563,8 +567,8 @@ function initBlocks() {
       ],
       "output": null,
       "colour": document.getElementById("ClassCategory").getAttribute('colour'),
-      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
-      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
+      "helpUrl": "%{BKY_CLASSES_CALL_METHOD_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_CALL_METHOD_TOOLTIP}",
       "mutator": "create_instance_mutator",
       "inputsInline": true,
       "extensions": [
@@ -584,8 +588,8 @@ function initBlocks() {
       ],
       "output": null,
       "colour": document.getElementById("ClassCategory").getAttribute('colour'),
-      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
-      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
+      "helpUrl": "%{BKY_CLASSES_GET_PARAMETER_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_GET_PARAMETER_TOOLTIP}",
       "inputsInline": true,
       "extensions": [
         "parent_tooltip_when_inline"
@@ -605,9 +609,33 @@ function initBlocks() {
       "previousStatement": null,
       "nextStatement": null,
       "colour": document.getElementById("ClassCategory").getAttribute('colour'),
-      "helpUrl": "%{BKY_RETURN_STATEMENT_HELPURL}",
-      "tooltip": "%{BKY_RETURN_STATEMENT_TOOLTIP}",
+      "helpUrl": "%{BKY_CLASSES_CALL_METHOD_STATEMENT_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_CALL_METHOD_STATEMENT_TOOLTIP}",
       "mutator": "create_instance_mutator",
+      "inputsInline": true,
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
+    }, {
+      "type": "class_set_parameter",
+      "message0": "%{BKY_CLASS_SET_PARAMETER} %1 %{BKY_CLASS_SET_PARAMETER_IN_INSTANCE} %2 %{BKY_CLASS_SET_PARAMETER_TO} %3",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME"
+        }, {
+          "type": "input_value",
+          "name": "INSTANCE"
+        }, {
+          "type": "input_value",
+          "name": "VALUE"
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "helpUrl": "%{BKY_CLASSES_SET_PARAMETER_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_SET_PARAMETER_TOOLTIP}",
       "inputsInline": true,
       "extensions": [
         "parent_tooltip_when_inline"

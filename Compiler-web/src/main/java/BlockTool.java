@@ -482,20 +482,30 @@ public class BlockTool {
                 }
             }
         } else if (program instanceof SyntaxTree.SetVariable) {
-            String[] variableName = ((SyntaxTree.SetVariable) program).getVariableName().split(":");
-            if (parentClassName != null) variableName[variableName.length - 1] = variableName[variableName.length - 1].replace("#C" + parentClassName, "");
-            if (((SyntaxTree.SetVariable) program).getIsDeclaration()) {
-                addVariableName(variableName[variableName.length - 1]);
-                result.append("<block type=\"variable_declare\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
-                        .append("</field>");
-                if (!(((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Null)) {
-                    result.append("<mutation hasValue=\"1\"></mutation>").append("<value name=\"VALUE\">")
-                            .append(putValue(((SyntaxTree.SetVariable) program).getVariableValue())).append("</value>");
-                }
+            if (((SyntaxTree.SetVariable) program).getInstance() != null) {
+                result.append("<block type=\"class_set_parameter\"><field name=\"NAME\">")
+                        .append(((SyntaxTree.SetVariable) program).getVariableName())
+                        .append("</field><value name=\"INSTANCE\">")
+                        .append(putValue(((SyntaxTree.SetVariable) program).getInstance()))
+                        .append("</value><value name=\"VALUE\">")
+                        .append(putValue(((SyntaxTree.SetVariable) program).getVariableValue())).append("</value>");
             } else {
-                result.append("<block type=\"variable_set\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
-                        .append("</field><value name=\"DATA\">").append(putValue(((SyntaxTree.SetVariable) program).getVariableValue()))
-                        .append("</value>");
+                String[] variableName = ((SyntaxTree.SetVariable) program).getVariableName().split(":");
+                if (parentClassName != null)
+                    variableName[variableName.length - 1] = variableName[variableName.length - 1].replace("#C" + parentClassName, "");
+                if (((SyntaxTree.SetVariable) program).getIsDeclaration()) {
+                    addVariableName(variableName[variableName.length - 1]);
+                    result.append("<block type=\"variable_declare\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
+                            .append("</field>");
+                    if (!(((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Null)) {
+                        result.append("<mutation hasValue=\"1\"></mutation>").append("<value name=\"VALUE\">")
+                                .append(putValue(((SyntaxTree.SetVariable) program).getVariableValue())).append("</value>");
+                    }
+                } else {
+                    result.append("<block type=\"variable_set\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
+                            .append("</field><value name=\"DATA\">").append(putValue(((SyntaxTree.SetVariable) program).getVariableValue()))
+                            .append("</value>");
+                }
             }
             blockCount++;
         } else if (program instanceof SyntaxTree.ExecuteValue) {

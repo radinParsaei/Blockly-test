@@ -789,4 +789,10 @@ Blockly.genCode['class_get_parameter'] = function(block) {
   return [code, Blockly.genCode.ORDER_MEMBER];
 };
 
+Blockly.genCode['class_set_parameter'] = function(block) {
+  var code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) +
+        '.' + block.getFieldValue("NAME") + ' = ' + Blockly.genCode.valueToCode(block, 'VALUE', Blockly.genCode.ORDER_NONE);
+  return code + '\n';
+};
+
 Blockly.genCode['procedures_defnoreturn_method'] = Blockly.genCode['procedures_defreturn_method'];
