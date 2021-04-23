@@ -47,6 +47,7 @@ Blockly.Msg['CLASS_GET_PARAMETER_FROM'] = Blockly.Msg['CLASS_CALL_METHOD_FROM'];
 Blockly.Msg['CLASS_SET_PARAMETER'] = 'set parameter';
 Blockly.Msg['CLASS_SET_PARAMETER_IN_INSTANCE'] = 'in';
 Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
+Blockly.Msg['TEXT_REVERSE'] = 'reverse';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -386,6 +387,13 @@ function initBlocks() {
   }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_ENDS_WITH']], Blockly.Msg['TEXT_ENDS_WITH_TOOLTIP'], Blockly.Msg['TEXT_ENDS_WITH_HELPURL'], "Boolean", true);
 
   addBlock("text_indexOf", "Text");
+
+  addBlock("text_reverse", "Text", createShadows(['abc']), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    return [data + '.reverse()', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true], '', [null, Blockly.Msg['TEXT_REVERSE']], Blockly.Msg['TEXT_REVERSE_TOOLTIP'], Blockly.Msg['TEXT_REVERSE_HELPURL'], true, true);
+
 
   addLabel("Advanced", "Logic", "smaller-title");
 

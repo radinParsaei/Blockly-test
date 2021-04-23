@@ -178,6 +178,9 @@ public class BlockTool {
                     }  else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("isEmpty") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
                         return "<block type=\"text_isEmpty\"><value name=\"VALUE\">" +
                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
+                    }  else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("reverse") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                        return "<block type=\"text_reverse\"><value name=\"ARG0\">" +
+                                putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
                     } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("toUpper") ||
                             ((SyntaxTree.CallFunction) val).getFunctionName().equals("toUpperCase")) &&
                             ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
