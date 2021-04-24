@@ -34,6 +34,8 @@ Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_EQUALS_TO'] = 'equals to';
 Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_IGNORE_CASE'] = 'ignoring case';
 Blockly.Msg['TEXT_MATCHES'] = 'matches regex';
 Blockly.Msg['TEXT_INDEX_OF_FROM_INDEX'] = 'from index';
+Blockly.Msg['TEXT_REVERSE'] = 'reverse';
+Blockly.Msg['MATH_NEGATIVE_OF'] = 'negative of';
 Blockly.Msg['MATH_RANDOM_RANDINT_0'] = 'random number from';
 Blockly.Msg['MATH_RANDOM_RANDINT_1'] = 'to';
 Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'] = 'returns a pesudorandom number between minimum and maximum values.';
@@ -47,7 +49,6 @@ Blockly.Msg['CLASS_GET_PARAMETER_FROM'] = Blockly.Msg['CLASS_CALL_METHOD_FROM'];
 Blockly.Msg['CLASS_SET_PARAMETER'] = 'set parameter';
 Blockly.Msg['CLASS_SET_PARAMETER_IN_INSTANCE'] = 'in';
 Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
-Blockly.Msg['TEXT_REVERSE'] = 'reverse';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -219,11 +220,17 @@ function initBlocks() {
   //   }`, ['text 1', null, undefined, "text 2", null, function(block) { //image field
   //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
   //   }], 'tooltip', 'helpUrl', true);
-  addBlock("test", "Math", createShadows([1, 10]), "random", ['min', 'max'], [true, true],
+  addBlock("math_random_int", "Math", createShadows([1, 10]), "random", ['min', 'max'], [true, true],
     `declareNativeFunction("random", "randint", 2)
     func random(min, max) {
       return randint(min, max)
     }`, [Blockly.Msg['MATH_RANDOM_RANDINT_0'], null, undefined, Blockly.Msg['MATH_RANDOM_RANDINT_1'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], "Number");
+
+  addBlock("math_negative", "Math", createShadows([1]), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_UNARY_SIGN) || '0';
+    return ['-' + data, Blockly.genCode.ORDER_UNARY_SIGN];
+  }, [], [true], '', [Blockly.Msg['MATH_NEGATIVE_OF'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], true, true);
 
   addBlock("logic_if", "Logic", '', function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',

@@ -277,7 +277,7 @@ Blockly.genCode['text_print'] = function(block) {
 Blockly.genCode['math_number'] = function(block) {
   var code = Number(block.getFieldValue('NUM'));
   var order = code >= 0 ? Blockly.genCode.ORDER_ATOMIC :
-              Blockly.genCode.ORDER_UNARY_NEGATION;
+              Blockly.genCode.ORDER_UNARY_SIGN;
   return [code, order];
 };
 

@@ -100,6 +100,13 @@ public class BlockTool {
             return "<block type=\"math_arithmetic\"><field name=\"OP\">POWER</field><value name=\"A\">" +
                     putValue(((SyntaxTree.Pow) val).getV1()) + "</value><value name=\"B\">" +
                     putValue(((SyntaxTree.Pow) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.Negative) {
+            if (((SyntaxTree.Negative) val).getValue() instanceof SyntaxTree.Text) {
+                return "<block type=\"text_reverse\"><value name=\"ARG0\">" +
+                        putValue(((SyntaxTree.Negative) val).getValue()) + "</value></block>";
+            }
+            return "<block type=\"math_negative\"><value name=\"ARG0\">" + putValue(((SyntaxTree.Negative) val).getValue())
+                    + "</value></block>";
         } else if (val instanceof SyntaxTree.PrintFunction) {
             parentIsExecuteValue = false;
             return syntaxTreeToBlocksXML1(((SyntaxTree.PrintFunction) val).getProgram());
