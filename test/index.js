@@ -327,8 +327,8 @@ setInterval(function() {
 }, 2000);
 
 function changeThemeWithoutSwap() {
-  if (isDark) editor.setTheme("ace/theme/monokai0");
-  else editor.setTheme("ace/theme/xcode0");
+  if (isDark) editor.setTheme("ace/theme/xcode0");
+  else editor.setTheme("ace/theme/monokai0");
   document.getElementById("editor").classList.toggle('dark');
   document.getElementById("buttom_sheet_title").classList.toggle('dark');
   document.getElementById("buttom_sheet").classList.toggle('dark');
