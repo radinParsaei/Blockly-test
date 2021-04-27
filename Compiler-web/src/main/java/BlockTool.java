@@ -349,9 +349,14 @@ public class BlockTool {
                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"AT\">" +
                                 putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value></block>";
                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("getRandomItem") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
-                        return "<block type=\"lists_getIndex\"><mutation statement=\"false\" at=\"false\"></mutation><field name=\"WHERE\">RANDOM</field><value name=\"VALUE\">" +
-                                putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
-                    } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("length") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                         return "<block type=\"lists_getIndex\"><mutation statement=\"false\" at=\"false\"></mutation><field name=\"WHERE\">RANDOM</field><value name=\"VALUE\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
+                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("append") && ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                         blockCount++;
+                         return "<block type=\"lists_append\"><value name=\"ARG1\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"ARG0\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value>";
+                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("length") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
                         return "<block type=\"lists_length\"><value name=\"VALUE\">" +
                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("isEmpty") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {

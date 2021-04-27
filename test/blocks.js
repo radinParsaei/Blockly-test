@@ -48,7 +48,8 @@ Blockly.Msg['CLASS_GET_PARAMETER'] = 'get parameter';
 Blockly.Msg['CLASS_GET_PARAMETER_FROM'] = Blockly.Msg['CLASS_CALL_METHOD_FROM'];
 Blockly.Msg['CLASS_SET_PARAMETER'] = 'set parameter';
 Blockly.Msg['CLASS_SET_PARAMETER_IN_INSTANCE'] = 'in';
-Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
+Blockly.Msg['LISTS_APPEND_TO'] = Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
+Blockly.Msg['LISTS_APPEND'] = 'append';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -169,7 +170,7 @@ function initBlocks() {
         out += '<value name="ARG' + counter++ + '"><shadow type="text"><field name="TEXT">' + i + '</field></shadow></value>';
       } else if (typeof i == 'boolean') {
         out += '<value name="ARG' + counter++ + '"><shadow type="logic_boolean"><field name="BOOL">' + (i? "TRUE":"FALSE") + '</field></shadow></value>';
-      } else if (i == null) {
+      } else if (i === null) {
         out += '<value name="ARG' + counter++ + '"><shadow type="logic_null"></shadow></value>';
       } else if (typeof i == 'object' && i instanceof Array) {
         out += '<value name="ARG' + counter++ + '"><shadow type="lists_create_with"><mutation items="' + i.length + '"></mutation>';
@@ -178,6 +179,8 @@ function initBlocks() {
           out += '<value name="ADD' + c++ + '">' + putValue(j) + "</value>";
         }
         out += '</shadow></value>';
+      } else {
+        counter++;
       }
     }
     return out;
@@ -721,7 +724,14 @@ function initBlocks() {
   addBlock("lists_getIndex", "List", createShadows([[1, 2, 3], 0]).replace('shadow', 'block').replace("ARG0", "VALUE").replace("ARG1", "AT"));
   addBlock("lists_length", "List", createShadows([[1, 2, 3]]).replace('shadow', 'block').replace("ARG0", "VALUE"));
   addBlock("lists_setIndex", "List", createShadows([undefined, 0, 0]).replace("ARG1", "AT").replace("ARG2", "TO"));
-  addBlock("lists_isEmpty", "List", createShadows([[]]).replace("ARG0", "VALUE").replace("shadow", "block"));
+
+  addBlock("lists_append", "List", '', function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || 'false';
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || '';
+    return data + '.append(' + data1 + ')\n';
+  }, [], [true, true],'', [null, Blockly.Msg['LISTS_APPEND'], null, Blockly.Msg['LISTS_APPEND_TO']], Blockly.Msg['LISTS_APPEND_TO_TOOLTIP'], Blockly.Msg['LISTS_APPEND_TO_HELPURL'], false, true);
 
   Blockly.Blocks['procedures_callnoreturn'] = {
     /**
