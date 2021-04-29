@@ -50,6 +50,7 @@ Blockly.Msg['CLASS_SET_PARAMETER'] = 'set parameter';
 Blockly.Msg['CLASS_SET_PARAMETER_IN_INSTANCE'] = 'in';
 Blockly.Msg['LISTS_APPEND_TO'] = Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
 Blockly.Msg['LISTS_APPEND'] = 'append';
+Blockly.Msg['LISTS_REVERSE'] = 'reverse';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -732,6 +733,12 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || '';
     return data + '.append(' + data1 + ')\n';
   }, [], [true, true],'', [null, Blockly.Msg['LISTS_APPEND'], null, Blockly.Msg['LISTS_APPEND_TO']], Blockly.Msg['LISTS_APPEND_TO_TOOLTIP'], Blockly.Msg['LISTS_APPEND_TO_HELPURL'], false, true);
+
+    addBlock("lists_reverse", "List", '', function(block) {
+      var data = Blockly.genCode.valueToCode(block, 'ARG0',
+          Blockly.genCode.ORDER_NONE) || 'false';
+      return data + '.reverse()\n';
+    }, [], [true],'', [null, Blockly.Msg['LISTS_REVERSE']], Blockly.Msg['LISTS_REVERSE_TO_TOOLTIP'], Blockly.Msg['LISTS_REVERSE_TO_HELPURL'], false, true);
 
   Blockly.Blocks['procedures_callnoreturn'] = {
     /**
