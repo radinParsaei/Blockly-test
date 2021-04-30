@@ -363,6 +363,10 @@ public class BlockTool {
                          blockCount++;
                          return "<block type=\"lists_reverse\"><value name=\"ARG0\">" +
                                  putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value>";
+                    } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("sort") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                         blockCount++;
+                         return "<block type=\"lists_sort\"><value name=\"ARG0\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value>";
                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("isEmpty") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
                          return "<block type=\"lists_isEmpty\"><value name=\"VALUE\">" +
                                  putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";

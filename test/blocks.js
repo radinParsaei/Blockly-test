@@ -51,6 +51,7 @@ Blockly.Msg['CLASS_SET_PARAMETER_IN_INSTANCE'] = 'in';
 Blockly.Msg['LISTS_APPEND_TO'] = Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
 Blockly.Msg['LISTS_APPEND'] = 'append';
 Blockly.Msg['LISTS_REVERSE'] = 'reverse';
+Blockly.Msg['LISTS_SORT'] = 'sort';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -405,7 +406,6 @@ function initBlocks() {
     return [data + '.reverse()', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true], '', [null, Blockly.Msg['TEXT_REVERSE']], Blockly.Msg['TEXT_REVERSE_TOOLTIP'], Blockly.Msg['TEXT_REVERSE_HELPURL'], true, true);
 
-
   addLabel("Advanced", "Logic", "smaller-title");
 
   addBlock("logic_compare_advanced", "Logic", createShadows(['10', 10]), function(block) {
@@ -734,11 +734,17 @@ function initBlocks() {
     return data + '.append(' + data1 + ')\n';
   }, [], [true, true],'', [null, Blockly.Msg['LISTS_APPEND'], null, Blockly.Msg['LISTS_APPEND_TO']], Blockly.Msg['LISTS_APPEND_TO_TOOLTIP'], Blockly.Msg['LISTS_APPEND_TO_HELPURL'], false, true);
 
-    addBlock("lists_reverse", "List", '', function(block) {
-      var data = Blockly.genCode.valueToCode(block, 'ARG0',
-          Blockly.genCode.ORDER_NONE) || 'false';
-      return data + '.reverse()\n';
-    }, [], [true],'', [null, Blockly.Msg['LISTS_REVERSE']], Blockly.Msg['LISTS_REVERSE_TO_TOOLTIP'], Blockly.Msg['LISTS_REVERSE_TO_HELPURL'], false, true);
+  addBlock("lists_reverse", "List", '', function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || 'false';
+    return data + '.reverse()\n';
+  }, [], [true],'', [null, Blockly.Msg['LISTS_REVERSE']], Blockly.Msg['LISTS_REVERSE_TOOLTIP'], Blockly.Msg['LISTS_REVERSE_HELPURL'], false, true);
+
+  addBlock("lists_sort", "List", '', function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || 'false';
+    return data + '.sort()\n';
+  }, [], [true],'', [null, Blockly.Msg['LISTS_SORT']], Blockly.Msg['LISTS_SORT_TOOLTIP'], Blockly.Msg['LISTS_SORT_HELPURL'], false, true);
 
   Blockly.Blocks['procedures_callnoreturn'] = {
     /**
