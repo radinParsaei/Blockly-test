@@ -474,6 +474,7 @@ public class BlockTool {
         }
         if (blockCount >= 0) tmp.append("</block>");
         tmp.append("</statement></block>").append(nakedValues.toString()).append("</xml>");
+        System.out.println(tmp);
         return tmp.toString().replace("<next><next>", "<next>");
     }
 
@@ -481,8 +482,12 @@ public class BlockTool {
         StringBuilder result;
         if (blockCount != 0 && (!(program instanceof SyntaxTree.Function) || parentClassName != null) &&
                 (!(program instanceof SyntaxTree.CreateClass)) &&
-                (!(program instanceof SyntaxTree.ExecuteValue && (!(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
-                ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction))))) {
+                (!(program instanceof SyntaxTree.ExecuteValue && (!((((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
+                        !(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty") &&
+                                Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE)) &&
+                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
+                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array")) ||
+                        ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction))))) {
             result = new StringBuilder("<next>");
         } else {
             result = new StringBuilder();
@@ -533,10 +538,13 @@ public class BlockTool {
             blockCount++;
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
-            if (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
+            if ((((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
+                    !(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty") &&
+                    Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE)) &&
+                    Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
+                    Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array")) ||
                     ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction) {
                 result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
-
             } else {
                 nakedValues.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
             }
