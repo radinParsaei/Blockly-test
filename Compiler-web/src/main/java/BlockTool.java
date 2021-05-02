@@ -367,7 +367,11 @@ public class BlockTool {
                          blockCount++;
                          return "<block type=\"lists_sort\"><value name=\"ARG0\">" +
                                  putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value>";
-                    } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("isEmpty") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("numericSort") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
+                         blockCount++;
+                         return "<block type=\"lists_sort_numeric\"><value name=\"ARG0\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value>";
+                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("isEmpty") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
                          return "<block type=\"lists_isEmpty\"><value name=\"VALUE\">" +
                                  putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("set") && ((SyntaxTree.CallFunction) val).getArgs().length == 2) {

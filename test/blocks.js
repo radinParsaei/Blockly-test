@@ -52,6 +52,8 @@ Blockly.Msg['LISTS_APPEND_TO'] = Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
 Blockly.Msg['LISTS_APPEND'] = 'append';
 Blockly.Msg['LISTS_REVERSE'] = 'reverse';
 Blockly.Msg['LISTS_SORT'] = 'sort';
+Blockly.Msg['LISTS_SORT_NUMERIC'] = 'sort list';
+Blockly.Msg['LISTS_SORT_NUMERIC_NUMERICALLY'] = 'numerically';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -745,6 +747,12 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || 'false';
     return data + '.sort()\n';
   }, [], [true],'', [null, Blockly.Msg['LISTS_SORT']], Blockly.Msg['LISTS_SORT_TOOLTIP'], Blockly.Msg['LISTS_SORT_HELPURL'], false, true);
+
+  addBlock("lists_sort_numeric", "List", '', function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || 'false';
+    return data + '.numericSort()\n';
+  }, [], [true],'', [null, Blockly.Msg['LISTS_SORT_NUMERIC'], undefined, Blockly.Msg['LISTS_SORT_NUMERIC_NUMERICALLY']], Blockly.Msg['LISTS_SORT_NUMERIC_TOOLTIP'], Blockly.Msg['LISTS_SORT_NUMERIC_HELPURL'], false, true);
 
   Blockly.Blocks['procedures_callnoreturn'] = {
     /**
