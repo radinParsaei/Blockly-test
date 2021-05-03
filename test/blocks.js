@@ -54,6 +54,9 @@ Blockly.Msg['LISTS_REVERSE'] = 'reverse';
 Blockly.Msg['LISTS_SORT'] = 'sort';
 Blockly.Msg['LISTS_SORT_NUMERIC'] = 'sort list';
 Blockly.Msg['LISTS_SORT_NUMERIC_NUMERICALLY'] = 'numerically';
+Blockly.Msg['LISTS_INSERT'] = 'insert';
+Blockly.Msg['LISTS_INSERT_AT'] = 'at';
+Blockly.Msg['LISTS_INSERT_OF'] = 'of';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -730,11 +733,21 @@ function initBlocks() {
 
   addBlock("lists_append", "List", '', function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG1',
-        Blockly.genCode.ORDER_NONE) || 'false';
+        Blockly.genCode.ORDER_NONE);
     var data1 = Blockly.genCode.valueToCode(block, 'ARG0',
-        Blockly.genCode.ORDER_NONE) || '';
+        Blockly.genCode.ORDER_NONE);
     return data + '.append(' + data1 + ')\n';
-  }, [], [true, true],'', [null, Blockly.Msg['LISTS_APPEND'], null, Blockly.Msg['LISTS_APPEND_TO']], Blockly.Msg['LISTS_APPEND_TO_TOOLTIP'], Blockly.Msg['LISTS_APPEND_TO_HELPURL'], false, true);
+  }, [], [true, true],'', [null, Blockly.Msg['LISTS_APPEND'], null, Blockly.Msg['LISTS_APPEND_TO']], Blockly.Msg['LISTS_APPEND_TOOLTIP'], Blockly.Msg['LISTS_APPEND_HELPURL'], false, true);
+
+  addBlock("lists_insert", "List", '', function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE);
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE);
+    var data2 = Blockly.genCode.valueToCode(block, 'ARG2',
+        Blockly.genCode.ORDER_NONE);
+    return data2 + '.insert(' + data1 + ', ' + data + ')\n';
+  }, [], [true, true, true],'', [null, Blockly.Msg['LISTS_INSERT'], null, Blockly.Msg['LISTS_INSERT_AT'], null, Blockly.Msg['LISTS_INSERT_OF']], Blockly.Msg['LISTS_INSERT_TOOLTIP'], Blockly.Msg['LISTS_INSERT_HELPURL'], false, true);
 
   addBlock("lists_reverse", "List", '', function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',

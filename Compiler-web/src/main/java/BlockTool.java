@@ -356,6 +356,12 @@ public class BlockTool {
                          return "<block type=\"lists_append\"><value name=\"ARG1\">" +
                                  putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"ARG0\">" +
                                  putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value>";
+                    } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("insert") && ((SyntaxTree.CallFunction) val).getArgs().length == 2) {
+                         blockCount++;
+                         return "<block type=\"lists_insert\"><value name=\"ARG2\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"ARG1\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) + "</value><value name=\"ARG0\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value>";
                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("length") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
                          return "<block type=\"lists_length\"><value name=\"VALUE\">" +
                                  putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value></block>";
