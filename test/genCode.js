@@ -297,6 +297,8 @@ Blockly.genCode['text_indexOf'] = function(block) {
   return [code, Blockly.genCode.ORDER_FUNCTION_CALL];
 };
 
+Blockly.genCode['lists_indexOf'] = Blockly.genCode['text_indexOf'];
+
 Blockly.genCode['math_arithmetic'] = function(block) {
   var OPERATORS = {
     'ADD': [' + ', Blockly.genCode.ORDER_ADDITIVE],

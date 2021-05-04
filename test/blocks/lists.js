@@ -31,6 +31,10 @@
 
 import * as Blockly from 'blockly/core';
 
+Blockly.Msg['LISTS_INDEXOF_TITLE'] = 'in list %1 %2 %3';
+Blockly.Msg['LISTS_INDEXOF_OPERATOR_FIRST'] = "find first occurrence of item";
+Blockly.Msg['LISTS_INDEXOF_OPERATOR_LAST'] = "find last occurrence of item";
+
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for creating an empty list
   // The 'list_create_with' block is preferred as it is more flexible.
@@ -113,6 +117,41 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "style": "list_blocks",
     "tooltip": "%{BKY_LISTS_LENGTH_TOOLTIP}",
     "helpUrl": "%{BKY_LISTS_LENGTH_HELPURL}"
+  }, {
+    "type": "lists_indexOf",
+    "message0": "%{BKY_LISTS_INDEXOF_TITLE}",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "VALUE",
+      },
+      {
+        "type": "field_dropdown",
+        "name": "END",
+        "options": [
+          [
+            "%{BKY_LISTS_INDEXOF_OPERATOR_FIRST}",
+            "FIRST"
+          ],
+          [
+            "%{BKY_LISTS_INDEXOF_OPERATOR_LAST}",
+            "LAST"
+          ]
+        ]
+      },
+      {
+        "type": "input_value",
+        "name": "FIND",
+      }
+    ],
+    "output": "Number",
+    "style": "list_blocks",
+    "helpUrl": "%{BKY_TEXT_INDEXOF_HELPURL}",
+    "inputsInline": true,
+    "mutator": "text_indexOf_mutator",
+    "extensions": [
+      "text_indexOf_tooltip"
+    ]
   }
 ]);  // END JSON EXTRACT (Do not delete this comment.)
 
@@ -272,34 +311,34 @@ Blockly.Blocks['lists_create_with_item'] = {
   }
 };
 
-Blockly.Blocks['lists_indexOf'] = {
-  /**
-   * Block for finding an item in the list.
-   * @this {Blockly.Block}
-   */
-  init: function() {
-    var OPERATORS =
-        [
-          [Blockly.Msg['LISTS_INDEX_OF_FIRST'], 'FIRST'],
-          [Blockly.Msg['LISTS_INDEX_OF_LAST'], 'LAST']
-        ];
-    this.setHelpUrl(Blockly.Msg['LISTS_INDEX_OF_HELPURL']);
-    this.setStyle('list_blocks');
-    this.setOutput(true, 'Number');
-    this.appendValueInput('VALUE')
-        .setCheck('Array')
-        .appendField(Blockly.Msg['LISTS_INDEX_OF_INPUT_IN_LIST']);
-    this.appendValueInput('FIND')
-        .appendField(new Blockly.FieldDropdown(OPERATORS), 'END');
-    this.setInputsInline(true);
-    // Assign 'this' to a variable for use in the tooltip closure below.
-    var thisBlock = this;
-    this.setTooltip(function() {
-      return Blockly.Msg['LISTS_INDEX_OF_TOOLTIP'].replace('%1',
-          thisBlock.workspace.options.oneBasedIndex ? '0' : '-1');
-    });
-  }
-};
+// Blockly.Blocks['lists_indexOf'] = {
+//   /**
+//    * Block for finding an item in the list.
+//    * @this {Blockly.Block}
+//    */
+//   init: function() {
+//     var OPERATORS =
+//         [
+//           [Blockly.Msg['LISTS_INDEX_OF_FIRST'], 'FIRST'],
+//           [Blockly.Msg['LISTS_INDEX_OF_LAST'], 'LAST']
+//         ];
+//     this.setHelpUrl(Blockly.Msg['LISTS_INDEX_OF_HELPURL']);
+//     this.setStyle('list_blocks');
+//     this.setOutput(true, 'Number');
+//     this.appendValueInput('VALUE')
+//         .setCheck('Array')
+//         .appendField(Blockly.Msg['LISTS_INDEX_OF_INPUT_IN_LIST']);
+//     this.appendValueInput('FIND')
+//         .appendField(new Blockly.FieldDropdown(OPERATORS), 'END');
+//     this.setInputsInline(true);
+//     // Assign 'this' to a variable for use in the tooltip closure below.
+//     var thisBlock = this;
+//     this.setTooltip(function() {
+//       return Blockly.Msg['LISTS_INDEX_OF_TOOLTIP'].replace('%1',
+//           thisBlock.workspace.options.oneBasedIndex ? '0' : '-1');
+//     });
+//   }
+// };
 
 
   Blockly.Blocks['lists_getIndex'] = {

@@ -369,6 +369,30 @@ public class BlockTool {
                          blockCount++;
                          return "<block type=\"lists_reverse\"><value name=\"ARG0\">" +
                                  putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("indexOf")) &&
+                             ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                         return "<block type=\"lists_indexOf\"><field name=\"END\">FIRST</field><value name=\"VALUE\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) +
+                                 "</value><value name=\"FIND\">" + putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                 "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("indexOf")) &&
+                             ((SyntaxTree.CallFunction) val).getArgs().length == 2) {
+                         return "<block type=\"lists_indexOf\"><mutation hasFromIndex=\"1\"></mutation><field name=\"END\">FIRST</field><value name=\"VALUE\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) +
+                                 "</value><value name=\"FIND\">" + putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                 "</value><value name=\"INDEX\">" + putValue(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("lastIndexOf")) &&
+                             ((SyntaxTree.CallFunction) val).getArgs().length == 1) {
+                         return "<block type=\"lists_indexOf\"><field name=\"END\">LAST</field><value name=\"VALUE\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) +
+                                 "</value><value name=\"FIND\">" + putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                 "</value></block>";
+                    } else if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("lastIndexOf")) &&
+                             ((SyntaxTree.CallFunction) val).getArgs().length == 2) {
+                         return "<block type=\"lists_indexOf\"><mutation hasFromIndex=\"1\"></mutation><field name=\"END\">LAST</field><value name=\"VALUE\">" +
+                                 putValue(((SyntaxTree.CallFunction) val).getInstance()) +
+                                 "</value><value name=\"FIND\">" + putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) +
+                                 "</value><value name=\"INDEX\">" + putValue(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value></block>";
                     } else if (((SyntaxTree.CallFunction) val).getFunctionName().equals("sort") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) {
                          blockCount++;
                          return "<block type=\"lists_sort\"><value name=\"ARG0\">" +
@@ -484,7 +508,6 @@ public class BlockTool {
         }
         if (blockCount >= 0) tmp.append("</block>");
         tmp.append("</statement></block>").append(nakedValues.toString()).append("</xml>");
-        System.out.println(tmp);
         return tmp.toString().replace("<next><next>", "<next>");
     }
 

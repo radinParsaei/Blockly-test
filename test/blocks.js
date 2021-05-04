@@ -495,8 +495,8 @@ function initBlocks() {
       this.appendDummyInput('DUM1').appendField(createPlusField(), 'PLUS');
     };
 
-    Blockly.Extensions.registerMutator('text_indexOf_mutator',
-        textIndexOfMutator, textIndexOfMutatorHelper);
+  Blockly.Extensions.registerMutator('text_indexOf_mutator',
+      textIndexOfMutator, textIndexOfMutatorHelper);
 
   const creaeteInstanceMutator = {
     itemCount_: 0,
@@ -729,6 +729,7 @@ function initBlocks() {
 
   addBlock("lists_getIndex", "List", createShadows([[1, 2, 3], 0]).replace('shadow', 'block').replace("ARG0", "VALUE").replace("ARG1", "AT"));
   addBlock("lists_length", "List", createShadows([[1, 2, 3]]).replace('shadow', 'block').replace("ARG0", "VALUE"));
+  addBlock("lists_indexOf", "List");
   addBlock("lists_setIndex", "List", createShadows([undefined, 0, 0]).replace("ARG1", "AT").replace("ARG2", "TO"));
 
   addBlock("lists_append", "List", '', function(block) {
