@@ -330,6 +330,12 @@ function changeThemeWithoutSwap() {
   if (isDark) editor.setTheme("ace/theme/xcode0");
   else editor.setTheme("ace/theme/monokai0");
   document.getElementById("editor").classList.toggle('dark');
+  document.getElementById("grid").classList.toggle('dark');
+  document.getElementById("light_svg").classList.toggle('enabled');
+  document.getElementById("dark_svg").classList.toggle('enabled');
+  document.getElementById("theme_div").classList.toggle('dark');
+  document.body.classList.toggle('dark');
+  document.getElementById('filepath').classList.toggle('dark');
   document.getElementById("buttom_sheet_title").classList.toggle('dark');
   document.getElementById("buttom_sheet").classList.toggle('dark');
   document.getElementById("menu").classList.toggle('dark');
@@ -343,6 +349,8 @@ function changeTheme() {
       localStorage.setItem('theme', 'dark');
   else
       localStorage.setItem('theme', 'light');
+  if (localStorage.getItem('theme') == 'dark') document.getElementById('theme').checked = true;
+  else document.getElementById('theme').checked = false;
 }
 
 if (!(localStorage.getItem('mode') == "block" || localStorage.getItem('mode') == "code")) {

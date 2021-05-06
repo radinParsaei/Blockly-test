@@ -70,7 +70,7 @@ button.mode {
   margin-left: 10px;
 }
 button.mode.selected {
-  background: #33aaff;
+  background: #1A9FFF;
 }
 
 .switch {
@@ -112,11 +112,11 @@ button.mode.selected {
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #1A9FFF;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #1A9FFF;
 }
 
 input:checked + .slider:before {
@@ -282,15 +282,27 @@ div.child {
   background: rgba(180, 180, 180, 0.6);
   text-align: center;
   user-select: none;
-  color: #33aaff;
+  color: #1A9FFF;
   height: 250px;
   margin-bottom: 10px;
   margin-top: -171px;
   overflow: hidden;
 }
+#grid.dark div.child {
+  background: rgba(39, 39, 39, 0.5);
+}
+#grid.dark div.child.action {
+  background-color: #1A9FFF;
+}
+#grid.dark div.child p {
+  color: white;
+}
+#grid.dark div.child.action p {
+  color: #272727;
+}
 div.child.action {
   margin-top: 0;
-  background-color: #33aaff;
+  background-color: #1A9FFF;
   color: rgba(210, 210, 210);
 }
 a.file {
@@ -327,7 +339,7 @@ div.child p {
 }
 .file_action {
   font-size: 40pt !important;
-  color: #33aaff;
+  color: #1A9FFF;
   transition: color .3s;
 }
 @media only screen and (max-width: 400px) {
@@ -404,6 +416,7 @@ div.child p {
   outline:none;
 }
 #filepath {
+  transition: color 0.5s ease-out;
   margin: 10px;
   font-size: 32pt;
   margin-bottom: 30px;
@@ -411,4 +424,51 @@ div.child p {
 }
 .smaller-title>.blocklyFlyoutLabelText {
   font: bold 14pt Source Code Pro, "Trebuchet MS", sans-serif !important;
+}
+
+#theme_div {
+  position: absolute;
+  bottom: 50px;
+  right: 40px;
+  transform: scale(1.3);
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 100px;
+  padding-right: 20px;
+  transition: background 0.2s ease-out;
+}
+
+#theme_div.dark {
+  background: #272727;
+}
+
+#light_svg, #dark_svg {
+  fill: #0094FF;
+  padding: 10px;
+  transition: fill 0.55s ease-out, padding 0.15s ease-out;
+}
+
+#light_svg.enabled, #dark_svg.enabled {
+  fill: #E5E5E5;
+  border-radius: 100px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: #0094FF;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#dark_svg {
+  margin-bottom: -4px;
+}
+
+body {
+  transition: background 0.3s ease-out;
+}
+
+body.dark {
+  background: #0D0D0D;
+}
+
+#filepath.dark {
+  color: white;
 }
