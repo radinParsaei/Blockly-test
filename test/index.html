@@ -165,6 +165,11 @@
       </category>
       <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#995ba5" custom="PROCEDURE"></category>
     </xml>
+    <div id="top_div" style="max-width: 100%; overflow: auto; display: inline-flex;">
+      <a href="javascript:paste()"><span class="material-icons file_action top_bar_action" id="paste_button" style="margin-top: 10px">content_paste</span></a>
+      <p id="filepath" class="dark"></p>
+    </div>
+    <div class="layout dark" id="grid"></div>
     <div id="theme_div" class="dark">
       <div onclick="changeTheme()">
         <svg viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg" id="light_svg">
@@ -177,11 +182,6 @@
         </svg>
       </div>
     </div>
-    <div id="top_div" style="max-width: 100%; overflow: auto; display: inline-flex;">
-      <a href="javascript:paste()"><span class="material-icons file_action top_bar_action" id="paste_button" style="margin-top: 10px">content_paste</span></a>
-      <p id="filepath" class="dark"></p>
-    </div>
-    <div class="layout dark" id="grid"></div>
     <div id="main_editor" hidden style="margin: 0; padding: 0; height: calc(100% - 50px)">
       <div hidden class="dark" id="root" style="margin: 0; padding: 0; height: 100%; border: none"></div>
       <div id="editor2" style="height: 100%;overflow: scroll">
@@ -317,6 +317,11 @@
 
       function createFile() {
         let name = prompt('file name:');
+        if (name == '') {
+          alert("filename can't be empty");
+          createFile();
+          return;
+        }
         if (name == null) return;
         if (fs.existsSync(localStorage.getItem('currentDir') + name)) {
           alert('file with this name is already exists');
@@ -328,6 +333,11 @@
 
       function createDirectory() {
         let dirname = prompt('folder name:');
+        if (dirname == '') {
+          alert("directory name can't be empty");
+          createDirectory();
+          return;
+        }
         if (dirname == null) return;
         if (!fs.existsSync(localStorage.getItem('currentDir') + dirname)){
           fs.mkdirSync(localStorage.getItem('currentDir') + dirname);
