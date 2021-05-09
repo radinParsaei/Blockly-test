@@ -439,6 +439,9 @@ public class BlockTool {
             String functionName = ((SyntaxTree.CallFunction) val).getFunctionName().split(":")[0];
             ((SyntaxTree.CallFunction) val).findFunction();
             StringBuilder tmp = new StringBuilder("<block type=\"");
+            if (((SyntaxTree.CallFunction) val).isNativeFunction() && ((SyntaxTree.CallFunction) val).getFunctionName().equals("input:N#0#input")) {
+                return tmp.append("text_input\"></block>").toString();
+            }
             if (getFunctionBlock(((SyntaxTree.CallFunction) val).getFunctionName()) == null) {
                 if (parentIsExecuteValue)
                     tmp.append("procedures_callnoreturn");

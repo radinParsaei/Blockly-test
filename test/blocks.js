@@ -57,6 +57,7 @@ Blockly.Msg['LISTS_SORT_NUMERIC_NUMERICALLY'] = 'numerically';
 Blockly.Msg['LISTS_INSERT'] = 'insert';
 Blockly.Msg['LISTS_INSERT_AT'] = 'at';
 Blockly.Msg['LISTS_INSERT_OF'] = 'of';
+Blockly.Msg['TEXT_INPUT'] = 'prompt for input';
 
 function initBlocks() {
   function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
@@ -235,6 +236,9 @@ function initBlocks() {
     func random(min, max) {
       return randint(min, max)
     }`, [Blockly.Msg['MATH_RANDOM_RANDINT_0'], null, undefined, Blockly.Msg['MATH_RANDOM_RANDINT_1'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], "Number");
+
+  addBlock("text_input", "Text", createShadows([1, 10]), "input", [], [], '',
+        [Blockly.Msg['TEXT_INPUT']], Blockly.Msg['TEXT_INPUT_TOOLTIP'], Blockly.Msg['TEXT_INPUT_HELPURL'], "Text");
 
   addBlock("math_negative", "Math", createShadows([1]), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
