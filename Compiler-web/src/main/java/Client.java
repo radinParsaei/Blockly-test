@@ -28,7 +28,6 @@ public class Client extends CompilerMain {
                 document.getElementById("console2").setInnerHTML("");
                 compile(compiler);
                 REPLReader.setReadCode(true);
-                SyntaxTree.deleteNativeFunction("input", "input", 0);
                 compile(compiler);
             });
             thread.start();

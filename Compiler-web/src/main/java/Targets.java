@@ -44,7 +44,7 @@ public class Targets {
             lineNumber++;
         }
         line = line.substring(lineStart);
-        error.append(lineNumber).append("<br/>").append(line).append("<br/>");
+        error.append(lineNumber + 1).append("<br/>").append(line).append("<br/>");
         errorChar -= lineStart;
         for(; errorChar > 0; errorChar--) {
             error.append("&nbsp;");
