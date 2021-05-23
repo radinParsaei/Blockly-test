@@ -421,4 +421,6 @@ if (localStorage.getItem('currentDir') == null)
     localStorage.setItem('currentDir', '/');
   loadFiles();
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor };
+var Messages = Blockly.Msg;
+
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages };

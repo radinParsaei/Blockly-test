@@ -316,15 +316,15 @@
       };
 
       function createFile() {
-        let name = prompt('file name:');
+        let name = prompt(Messages['CREATE_FILE_FILENAME_PROMPT']);
         if (name == '') {
-          alert("filename can't be empty");
+          alert(Messages['FILENAME_CANT_BE_EMPTY']);
           createFile();
           return;
         }
         if (name == null) return;
         if (fs.existsSync(localStorage.getItem('currentDir') + name)) {
-          alert('file with this name is already exists');
+          alert(Messages['FILE_ALREADY_EXIST']);
           return;
         }
         fs.writeFile(localStorage.getItem('currentDir') + name, '\n', function(err) {});
@@ -332,9 +332,9 @@
       }
 
       function createDirectory() {
-        let dirname = prompt('folder name:');
+        let dirname = prompt(Messages['CREATE_DIR_DIRNAME_PROMPT']);
         if (dirname == '') {
-          alert("directory name can't be empty");
+          alert(Messages['DIR_NAME_CANT_BE_EMPTY']);
           createDirectory();
           return;
         }
@@ -342,13 +342,13 @@
         if (!fs.existsSync(localStorage.getItem('currentDir') + dirname)){
           fs.mkdirSync(localStorage.getItem('currentDir') + dirname);
         } else {
-          alert('sorry this name is already used');
+          alert(Messages['DIR_NAME_ALREADY_USED']);
         }
         loadFiles();
       }
 
       function deleteFile(name) {
-        let q = confirm('do you want to remove \"' + name + "\"");
+        let q = confirm(Messages['DELETE_CONFIRM_MSG'].replace("%1", name));
         if (q) {
           if (fs.lstatSync(localStorage.getItem('currentDir') + name).isDirectory()) {
             deleteDirectory(localStorage.getItem('currentDir') + name);
@@ -364,9 +364,9 @@
       }
 
       function renameFile(name) {
-        let q = prompt('new name: ');
+        let q = prompt(Messages['RENAME_FILE_PROMPT']);
         if (fs.existsSync(localStorage.getItem('currentDir') + q)) {
-          alert("sorry this file is already exists");
+          alert(Messages['RENAME_NAME_USED']);
           return;
         }
         if (q) {
@@ -423,14 +423,14 @@
         let pCopiedFileName = copiedFileName;
         if (fs.existsSync(localStorage.getItem('currentDir') + copiedFileName)) {
           var tmp = copiedFileName;
-          while ((tmp = prompt("this file exists. please rename it", tmp)) != null &&
+          while ((tmp = prompt(Messages['PASTE_FILE_EXISTS'], tmp)) != null &&
                   fs.existsSync(localStorage.getItem('currentDir') + tmp));
           if (tmp == null) return;
           copiedFileName = tmp;
         }
         if (fs.lstatSync(copiedFilePath).isDirectory()) {
           if (localStorage.getItem('currentDir').startsWith(copiedFilePath)) {
-            alert("couldn't copy folder to it's inside")
+            alert(Messages['ERR_COPY_FOLDER_IN_ITSELF'])
             return;
           }
           copyDir(copiedFilePath, localStorage.getItem("currentDir") + copiedFileName);
@@ -517,5 +517,18 @@
     <script src="src-min/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="src-min/ext-language_tools.js"></script>
     <script src="dist/index.js"></script>
+    <script>
+      Messages['FILENAME_CANT_BE_EMPTY'] = "filename can't be empty";
+      Messages['FILE_ALREADY_EXIST'] = 'file with this name is already exists';
+      Messages['DIR_NAME_CANT_BE_EMPTY'] = "directory name can't be empty";
+      Messages['DIR_NAME_ALREADY_USED'] = 'sorry this name is already used';
+      Messages['RENAME_NAME_USED'] = "sorry this file is already exists";
+      Messages['ERR_COPY_FOLDER_IN_ITSELF'] = "couldn't copy folder to it's inside";
+      Messages['PASTE_FILE_EXISTS'] = "this file exists. please rename it";
+      Messages['CREATE_FILE_FILENAME_PROMPT'] = 'file name:';
+      Messages['CREATE_DIR_DIRNAME_PROMPT'] = 'folder name:';
+      Messages['RENAME_FILE_PROMPT'] = 'new name:';
+      Messages['DELETE_CONFIRM_MSG'] = 'do you want to remove "%1"';
+    </script>
   </body>
 </html>
