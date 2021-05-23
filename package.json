@@ -23,6 +23,7 @@
   "dependencies": {
     "@blockly/disable-top-blocks": "^0.1.2",
     "html2canvas": "^1.0.0-rc.7",
-    "patch-package": "^6.4.7"
+    "patch-package": "^6.4.7",
+    "sweetalert2": "^11.0.11"
   }
 }

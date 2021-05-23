@@ -280,16 +280,6 @@
         if (localStorage.getItem('mode') == 'block') changeView();
       }
 
-      function setXML(arg) {
-        const xml = Blockly.Xml.textToDom(arg || prompt("xml"));
-        Blockly.Xml.domToWorkspace(xml, Blockly.getMainWorkspace());
-      }
-
-      function getXML() {
-        const xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
-        alert(Blockly.Xml.domToPrettyText(xml));
-      }
-
       BrowserFS.install(window);
       BrowserFS.configure({
         fs: "LocalStorage"
@@ -315,60 +305,85 @@
         }
       };
 
-      function createFile() {
-        let name = prompt(Messages['CREATE_FILE_FILENAME_PROMPT']);
-        if (name == '') {
-          alert(Messages['FILENAME_CANT_BE_EMPTY']);
-          createFile();
-          return;
+      async function createFile() {
+        const { value: name } = await Swal.fire({
+          title: Messages['CREATE_FILE_FILENAME_PROMPT'],
+          input: 'text',
+          inputValidator: (value) => {
+            if (!value) {
+              return Messages['FILENAME_CANT_BE_EMPTY']
+            }
+          }
+        })
+
+        if (name) {
+          if (fs.existsSync(localStorage.getItem('currentDir') + name)) {
+            Swal.fire(Messages['FILE_ALREADY_EXIST']);
+            return;
+          }
+          fs.writeFile(localStorage.getItem('currentDir') + name, '\n', function(err) {});
+          loadFiles();
         }
-        if (name == null) return;
-        if (fs.existsSync(localStorage.getItem('currentDir') + name)) {
-          alert(Messages['FILE_ALREADY_EXIST']);
-          return;
-        }
-        fs.writeFile(localStorage.getItem('currentDir') + name, '\n', function(err) {});
-        loadFiles();
       }
 
-      function createDirectory() {
-        let dirname = prompt(Messages['CREATE_DIR_DIRNAME_PROMPT']);
-        if (dirname == '') {
-          alert(Messages['DIR_NAME_CANT_BE_EMPTY']);
-          createDirectory();
-          return;
+      async function createDirectory() {
+        const { value: dirname } = await Swal.fire({
+          title: Messages['CREATE_DIR_DIRNAME_PROMPT'],
+          input: 'text',
+          inputValidator: (value) => {
+            if (!value) {
+              return Messages['DIR_NAME_CANT_BE_EMPTY']
+            }
+          }
+        })
+        if (dirname) {
+          if (!fs.existsSync(localStorage.getItem('currentDir') + dirname)){
+            fs.mkdirSync(localStorage.getItem('currentDir') + dirname);
+          } else {
+            Swal.fire(Messages['DIR_NAME_ALREADY_USED']);
+          }
+          loadFiles();
         }
-        if (dirname == null) return;
-        if (!fs.existsSync(localStorage.getItem('currentDir') + dirname)){
-          fs.mkdirSync(localStorage.getItem('currentDir') + dirname);
-        } else {
-          alert(Messages['DIR_NAME_ALREADY_USED']);
-        }
-        loadFiles();
       }
 
       function deleteFile(name) {
-        let q = confirm(Messages['DELETE_CONFIRM_MSG'].replace("%1", name));
-        if (q) {
-          if (fs.lstatSync(localStorage.getItem('currentDir') + name).isDirectory()) {
-            deleteDirectory(localStorage.getItem('currentDir') + name);
-          } else {
-            try {
-              fs.unlinkSync(localStorage.getItem('currentDir') + name);
-            } catch(err) {
-              console.error(err);
+        Swal.fire({
+          title: Messages['DELETE_CONFIRM_MSG'].replace("%1", name),
+          // text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#1A9FFF',
+          cancelButtonColor: '#f55',
+          confirmButtonText: Messages['DELETE_CONFIRM']
+        }).then((result) => {
+          if (result.isConfirmed) {
+            if (fs.lstatSync(localStorage.getItem('currentDir') + name).isDirectory()) {
+              deleteDirectory(localStorage.getItem('currentDir') + name);
+            } else {
+              try {
+                fs.unlinkSync(localStorage.getItem('currentDir') + name);
+              } catch(err) {
+                console.error(err);
+              }
             }
+            loadFiles();
           }
-        }
-        loadFiles();
+        })
       }
 
-      function renameFile(name) {
-        let q = prompt(Messages['RENAME_FILE_PROMPT']);
-        if (fs.existsSync(localStorage.getItem('currentDir') + q)) {
-          alert(Messages['RENAME_NAME_USED']);
-          return;
-        }
+      async function renameFile(name) {
+        const { value: q } = await Swal.fire({
+          title: Messages['RENAME_FILE_PROMPT'],
+          input: 'text',
+          inputValue: name,
+          inputValidator: (value) => {
+            if (value == '') {
+              return Messages['RENAME_NAME_EMPTY'];
+            } else if (fs.existsSync(localStorage.getItem('currentDir') + value)) {
+              return Messages['RENAME_NAME_USED'];
+            }
+          }
+        })
         if (q) {
           fs.renameSync(localStorage.getItem('currentDir') + name, localStorage.getItem('currentDir') + q);
         }
@@ -419,18 +434,26 @@
       	});
       };
 
-      function paste() {
+      async function paste() {
+        let prompt = async function(t, v) {
+          const { value: q } = await Swal.fire({
+            title: t,
+            input: 'text',
+            inputValue: v
+          });
+          return q
+        }
         let pCopiedFileName = copiedFileName;
         if (fs.existsSync(localStorage.getItem('currentDir') + copiedFileName)) {
           var tmp = copiedFileName;
-          while ((tmp = prompt(Messages['PASTE_FILE_EXISTS'], tmp)) != null &&
+          while ((tmp = await prompt(Messages['PASTE_FILE_EXISTS'], tmp)) != null &&
                   fs.existsSync(localStorage.getItem('currentDir') + tmp));
           if (tmp == null) return;
           copiedFileName = tmp;
         }
         if (fs.lstatSync(copiedFilePath).isDirectory()) {
           if (localStorage.getItem('currentDir').startsWith(copiedFilePath)) {
-            alert(Messages['ERR_COPY_FOLDER_IN_ITSELF'])
+            Swal.fire(Messages['ERR_COPY_FOLDER_IN_ITSELF'])
             return;
           }
           copyDir(copiedFilePath, localStorage.getItem("currentDir") + copiedFileName);
@@ -523,12 +546,14 @@
       Messages['DIR_NAME_CANT_BE_EMPTY'] = "directory name can't be empty";
       Messages['DIR_NAME_ALREADY_USED'] = 'sorry this name is already used';
       Messages['RENAME_NAME_USED'] = "sorry this file is already exists";
+      Messages['RENAME_NAME_EMPTY'] = Messages['FILENAME_CANT_BE_EMPTY'];
       Messages['ERR_COPY_FOLDER_IN_ITSELF'] = "couldn't copy folder to it's inside";
       Messages['PASTE_FILE_EXISTS'] = "this file exists. please rename it";
       Messages['CREATE_FILE_FILENAME_PROMPT'] = 'file name:';
       Messages['CREATE_DIR_DIRNAME_PROMPT'] = 'folder name:';
       Messages['RENAME_FILE_PROMPT'] = 'new name:';
       Messages['DELETE_CONFIRM_MSG'] = 'do you want to remove "%1"';
+      Messages['DELETE_CONFIRM'] = 'Yes, delete it!';
     </script>
   </body>
 </html>

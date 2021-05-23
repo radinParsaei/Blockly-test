@@ -7,6 +7,8 @@ import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 import './procedures.js';
 import html2canvas from 'html2canvas';
+// import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 Blockly.Flyout.prototype.MARGIN = 70;
 
@@ -83,6 +85,7 @@ let workspace;
 var editorCodeChanged = false;
 var landscape;
 var injecting = false;
+var swalTheme;
 
 const disableTopBlocksPlugin = new DisableTopBlocks();
 disableTopBlocksPlugin.init();
@@ -339,8 +342,23 @@ function changeThemeWithoutSwap() {
   document.getElementById("buttom_sheet_title").classList.toggle('dark');
   document.getElementById("buttom_sheet").classList.toggle('dark');
   document.getElementById("menu").classList.toggle('dark');
+  let head = document.getElementsByTagName("head")[0];
+  if (swalTheme) head.removeChild(swalTheme);
+  else swalTheme = document.createElement("link");
+  swalTheme.href = isDark? "//cdn.jsdelivr.net/npm/sweetalert2@11.0.11/dist/sweetalert2.css":"//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css";
+  swalTheme.type = "text/css";
+  swalTheme.rel = "stylesheet";
+  head.appendChild(swalTheme);
   isDark = !isDark;
 }
+
+let head = document.getElementsByTagName("head")[0];
+if (swalTheme) head.removeChild(swalTheme);
+else swalTheme = document.createElement("link");
+swalTheme.href = "//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css"
+swalTheme.type = "text/css";
+swalTheme.rel = "stylesheet";
+head.appendChild(swalTheme);
 
 function changeTheme() {
   changeThemeWithoutSwap();
@@ -423,4 +441,4 @@ if (localStorage.getItem('currentDir') == null)
 
 var Messages = Blockly.Msg;
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages };
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal };
