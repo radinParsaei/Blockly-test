@@ -231,11 +231,8 @@ function initBlocks() {
   //   }`, ['text 1', null, undefined, "text 2", null, function(block) { //image field
   //     block.appendDummyInput().appendField(new Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15, { alt: "*", flipRtl: "FALSE" }));
   //   }], 'tooltip', 'helpUrl', true);
-  addBlock("math_random_int", "Math", createShadows([1, 10]), "random", ['min', 'max'], [true, true],
-    `declareNativeFunction("random", "randint", 2)
-    func random(min, max) {
-      return randint(min, max)
-    }`, [Blockly.Msg['MATH_RANDOM_RANDINT_0'], null, undefined, Blockly.Msg['MATH_RANDOM_RANDINT_1'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], "Number");
+  addBlock("math_random_int", "Math", createShadows([1, 10]), "random", ['a', 'b'], [true, true],
+    `import 'random'`, [Blockly.Msg['MATH_RANDOM_RANDINT_0'], null, undefined, Blockly.Msg['MATH_RANDOM_RANDINT_1'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], "Number");
 
   addBlock("text_input", "Text", createShadows([1, 10]), "input", [], [], '',
         [Blockly.Msg['TEXT_INPUT']], Blockly.Msg['TEXT_INPUT_TOOLTIP'], Blockly.Msg['TEXT_INPUT_HELPURL'], "Text");

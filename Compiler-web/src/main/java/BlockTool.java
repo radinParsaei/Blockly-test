@@ -441,6 +441,8 @@ public class BlockTool {
             StringBuilder tmp = new StringBuilder("<block type=\"");
             if (((SyntaxTree.CallFunction) val).isNativeFunction() && ((SyntaxTree.CallFunction) val).getFunctionName().equals("input:N#0#input")) {
                 return tmp.append("text_input\"></block>").toString();
+            } else if (((SyntaxTree.CallFunction) val).isNativeFunction() && ((SyntaxTree.CallFunction) val).getFunctionName().equals("input:N#0#input")) {
+                return tmp.append("text_input\"></block>").toString();
             }
             if (getFunctionBlock(((SyntaxTree.CallFunction) val).getFunctionName()) == null) {
                 if (parentIsExecuteValue)
