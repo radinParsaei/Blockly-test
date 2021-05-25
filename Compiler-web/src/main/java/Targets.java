@@ -1,12 +1,15 @@
-//import org.teavm.jso.browser.Window;
+import org.teavm.jso.JSBody;
+import org.teavm.jso.JSObject;
 import org.teavm.jso.dom.html.HTMLDocument;
 import org.teavm.jso.dom.html.HTMLElement;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Targets {
+    @JSBody(params = { "fileName" }, script = "if(!fileName.startsWith('/')){fileName=localStorage.getItem('currentDir')+fileName} try{return fs.readFileSync(fileName)+'\\n'}catch(e){document.getElementById('console2').innerHTML+='<div style=\"color: #f55; position: relative\"><img src=\"test/error.png\" height=\"20\" style=\"padding-right: 10px\"><span style=\"position: absolute\">file ' + fileName + ' does not exist' + '</span></div>'}")
+    public static native String readFile(String fileName);
+
 //    private static final ArrayList<Integer> intervalCodes = new ArrayList<>();
     public static final boolean isWeb = true;
     public static final boolean isInThread = true;
@@ -59,6 +62,7 @@ public class Targets {
     }
 
     public static final boolean customWhile = false;
+
     public interface CustomWhileInterface {
         boolean run();
     }
