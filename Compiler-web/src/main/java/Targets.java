@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Targets {
-    @JSBody(params = { "fileName" }, script = "if(!fileName.startsWith('/')){fileName=localStorage.getItem('currentDir')+fileName} try{return fs.readFileSync(fileName)+'\\n'}catch(e){document.getElementById('console2').innerHTML+='<div style=\"color: #f55; position: relative\"><img src=\"test/error.png\" height=\"20\" style=\"padding-right: 10px\"><span style=\"position: absolute\">file ' + fileName + ' does not exist' + '</span></div>'}")
+    @JSBody(params = { "fileName" }, script = "if(!fileName.startsWith('/')){fileName=localStorage.getItem('currentDir')+fileName} try{return fs.readFileSync(fileName)+'\\n'}catch(e){document.getElementById('console2').innerHTML+='<div style=\"color: #f55; position: relative\"><img src=\"test/error.png\" height=\"20\" style=\"padding-right: 10px\"><span style=\"position: absolute\">file ' + fileName + ' does not exist' + '</span></div>';return '\\n'}")
     public static native String readFile(String fileName);
 
 //    private static final ArrayList<Integer> intervalCodes = new ArrayList<>();

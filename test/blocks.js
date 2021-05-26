@@ -59,141 +59,141 @@ Blockly.Msg['LISTS_INSERT_AT'] = 'at';
 Blockly.Msg['LISTS_INSERT_OF'] = 'of';
 Blockly.Msg['TEXT_INPUT'] = 'prompt for input';
 
-function initBlocks() {
-  function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
-    blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
-    var element = document.createElement("block");
-    element.setAttribute('type', blockName);
-    document.getElementById(blockCategory + "Category").appendChild(element);
-    element.innerHTML = blockDefaultValues;
-    if (blockFunctionName != undefined) {
-      var functionNameInBackend = blockFunctionName + ":";
-      for (var tmp of blockFunctionParameters) {
-        functionNameInBackend += "," + tmp;
+function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
+  blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
+  var element = document.createElement("block");
+  element.setAttribute('type', blockName);
+  document.getElementById(blockCategory + "Category").appendChild(element);
+  element.innerHTML = blockDefaultValues;
+  if (blockFunctionName != undefined) {
+    var functionNameInBackend = blockFunctionName + ":";
+    for (var tmp of blockFunctionParameters) {
+      functionNameInBackend += "," + tmp;
+    }
+    functions[functionNameInBackend] = blockName;
+  } else return;
+  Blockly.Blocks[blockName] = {
+    init: function() {
+      if (inline) {
+        this.setInputsInline(true);
       }
-      functions[functionNameInBackend] = blockName;
-    } else return;
-    Blockly.Blocks[blockName] = {
-      init: function() {
-        if (inline) {
-          this.setInputsInline(true);
-        }
-        this.setTooltip(tooltip);
-        this.setHelpUrl(helpUrl);
-        var i = 0;
-        var blockToAddField;
-        for (var tmp of blockUI) {
-          if (tmp === null) {
-            if (paramTypes[i]) {
-              blockToAddField = this.appendValueInput("ARG" + i);
-              blockToAddField.setCheck(null);
-            } else {
-              blockToAddField = this.appendStatementInput("ARG" + i);
-              blockToAddField.setCheck(null);
-            }
-            i++;
-          } else if (typeof tmp == 'string') {
-            if (!blockToAddField) blockToAddField = this.appendDummyInput();
-            blockToAddField.appendField(tmp);
-          } else if (typeof tmp == 'function') {
-            tmp(this, blockToAddField);
-          } else if (tmp === undefined) {
-            blockToAddField = undefined;
-          }
-        }
-        if (output) {
-          if (output == 'parent') {
-            // do nothing
-          } else if (typeof output == 'string') {
-            this.setOutput(true, output);
+      this.setTooltip(tooltip);
+      this.setHelpUrl(helpUrl);
+      var i = 0;
+      var blockToAddField;
+      for (var tmp of blockUI) {
+        if (tmp === null) {
+          if (paramTypes[i]) {
+            blockToAddField = this.appendValueInput("ARG" + i);
+            blockToAddField.setCheck(null);
           } else {
-            this.setOutput(true, null);
+            blockToAddField = this.appendStatementInput("ARG" + i);
+            blockToAddField.setCheck(null);
           }
-        } else if (output != "parent") {
-          this.setPreviousStatement(true, null);
-          this.setNextStatement(true, null);
+          i++;
+        } else if (typeof tmp == 'string') {
+          if (!blockToAddField) blockToAddField = this.appendDummyInput();
+          blockToAddField.appendField(tmp);
+        } else if (typeof tmp == 'function') {
+          tmp(this, blockToAddField);
+        } else if (tmp === undefined) {
+          blockToAddField = undefined;
         }
-        this.setColour(document.getElementById(blockCategory + "Category").getAttribute('colour'));
       }
+      if (output) {
+        if (output == 'parent') {
+          // do nothing
+        } else if (typeof output == 'string') {
+          this.setOutput(true, output);
+        } else {
+          this.setOutput(true, null);
+        }
+      } else if (output != "parent") {
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+      }
+      this.setColour(document.getElementById(blockCategory + "Category").getAttribute('colour'));
+    }
+  };
+  if (typeof blockFunctionName == "function") {
+    Blockly.genCode[blockName] = blockFunctionName;
+  } else {
+    Blockly.genCode.addReservedWords(blockFunctionName);
+    Blockly.genCode[blockName] = function(block) {
+      var code = blockFunctionName + "(";
+      for (var i = 0; i < paramTypes.length; i++) {
+        if (paramTypes[i])
+          code += Blockly.genCode.valueToCode(block, 'ARG' + i, Blockly.genCode.ORDER_ATOMIC);
+        else
+          code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
+        if (i != paramTypes.length - 1) code += ', ';
+      }
+      if (output) return [code + ')', Blockly.genCode.ORDER_FUNCTION_CALL];
+      else return code + ')\n';
     };
-    if (typeof blockFunctionName == "function") {
-      Blockly.genCode[blockName] = blockFunctionName;
-    } else {
-      Blockly.genCode.addReservedWords(blockFunctionName);
-      Blockly.genCode[blockName] = function(block) {
-        var code = blockFunctionName + "(";
-        for (var i = 0; i < paramTypes.length; i++) {
-          if (paramTypes[i])
-            code += Blockly.genCode.valueToCode(block, 'ARG' + i, Blockly.genCode.ORDER_ATOMIC);
-          else
-            code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
-          if (i != paramTypes.length - 1) code += ', ';
-        }
-        if (output) return [code + ')', Blockly.genCode.ORDER_FUNCTION_CALL];
-        else return code + ')\n';
-      };
-      functionCodes += functionCode;
-    }
+    functionCodes += functionCode;
   }
+}
 
-  function addLabel(labelContent, category, style) {
-    var element = document.createElement("label");
-    element.setAttribute('text', labelContent);
-    if (style) {
-      element.setAttribute('web-class', style);
-    }
-    document.getElementById(category + "Category").appendChild(element);
+function addLabel(labelContent, category, style) {
+  var element = document.createElement("label");
+  element.setAttribute('text', labelContent);
+  if (style) {
+    element.setAttribute('web-class', style);
   }
+  document.getElementById(category + "Category").appendChild(element);
+}
 
-  function addCategory(name, text, color) {
-    if (Blockly.Msg["CATEGORY_" + name.toUpperCase()] == null) {
-      Blockly.Msg["CATEGORY_" + name.toUpperCase()] = text;
-    }
-    var element = document.createElement("category");
-    element.setAttribute('id', name + "Category");
-    element.setAttribute('name', "%{BKY_CATEGORY_" + name.toUpperCase() + "}");
-    element.setAttribute('colour', color);
-    document.getElementById("toolbox").appendChild(element);
+function addCategory(name, text, color) {
+  if (Blockly.Msg["CATEGORY_" + name.toUpperCase()] == null) {
+    Blockly.Msg["CATEGORY_" + name.toUpperCase()] = text;
   }
+  var element = document.createElement("category");
+  element.setAttribute('id', name + "Category");
+  element.setAttribute('name', "%{BKY_CATEGORY_" + name.toUpperCase() + "}");
+  element.setAttribute('colour', color);
+  document.getElementById("toolbox").appendChild(element);
+}
 
-  function putValue(value) {
-    if (typeof value == 'number') {
-      return '<shadow type="math_number"><field name="NUM">' + value + '</field></shadow>';
-    } else if (typeof value == 'string') {
-      return '<shadow type="text"><field name="TEXT">' + value + '</field></shadow>';
-    } else if (typeof value == 'boolean') {
-      return '<shadow type="logic_boolean"><field name="BOOL">' + (value? "TRUE":"FALSE") + '</field></shadow>';
-    } else if (value == null) {
-      return '<shadow type="logic_null"></shadow>';
-    }
+function putValue(value) {
+  if (typeof value == 'number') {
+    return '<shadow type="math_number"><field name="NUM">' + value + '</field></shadow>';
+  } else if (typeof value == 'string') {
+    return '<shadow type="text"><field name="TEXT">' + value + '</field></shadow>';
+  } else if (typeof value == 'boolean') {
+    return '<shadow type="logic_boolean"><field name="BOOL">' + (value? "TRUE":"FALSE") + '</field></shadow>';
+  } else if (value == null) {
+    return '<shadow type="logic_null"></shadow>';
   }
+}
 
-  function createShadows(values) {
-    var out = "";
-    var counter = 0;
-    for (var i of values) {
-      if (typeof i == 'number') {
-        out += '<value name="ARG' + counter++ + '"><shadow type="math_number"><field name="NUM">' + i + '</field></shadow></value>';
-      } else if (typeof i == 'string') {
-        out += '<value name="ARG' + counter++ + '"><shadow type="text"><field name="TEXT">' + i + '</field></shadow></value>';
-      } else if (typeof i == 'boolean') {
-        out += '<value name="ARG' + counter++ + '"><shadow type="logic_boolean"><field name="BOOL">' + (i? "TRUE":"FALSE") + '</field></shadow></value>';
-      } else if (i === null) {
-        out += '<value name="ARG' + counter++ + '"><shadow type="logic_null"></shadow></value>';
-      } else if (typeof i == 'object' && i instanceof Array) {
-        out += '<value name="ARG' + counter++ + '"><shadow type="lists_create_with"><mutation items="' + i.length + '"></mutation>';
-        var c = 0;
-        for (var j of i) {
-          out += '<value name="ADD' + c++ + '">' + putValue(j) + "</value>";
-        }
-        out += '</shadow></value>';
-      } else {
-        counter++;
+function createShadows(values) {
+  var out = "";
+  var counter = 0;
+  for (var i of values) {
+    if (typeof i == 'number') {
+      out += '<value name="ARG' + counter++ + '"><shadow type="math_number"><field name="NUM">' + i + '</field></shadow></value>';
+    } else if (typeof i == 'string') {
+      out += '<value name="ARG' + counter++ + '"><shadow type="text"><field name="TEXT">' + i + '</field></shadow></value>';
+    } else if (typeof i == 'boolean') {
+      out += '<value name="ARG' + counter++ + '"><shadow type="logic_boolean"><field name="BOOL">' + (i? "TRUE":"FALSE") + '</field></shadow></value>';
+    } else if (i === null) {
+      out += '<value name="ARG' + counter++ + '"><shadow type="logic_null"></shadow></value>';
+    } else if (typeof i == 'object' && i instanceof Array) {
+      out += '<value name="ARG' + counter++ + '"><shadow type="lists_create_with"><mutation items="' + i.length + '"></mutation>';
+      var c = 0;
+      for (var j of i) {
+        out += '<value name="ADD' + c++ + '">' + putValue(j) + "</value>";
       }
+      out += '</shadow></value>';
+    } else {
+      counter++;
     }
-    return out;
   }
+  return out;
+}
 
+function initBlocks() {
   // addBlock("math_arithmetic", "Math", `<field name="OP">ADD</field>
   // <value name="A">
     // <shadow type="math_number">
@@ -1323,4 +1323,4 @@ function initBlocks() {
   // Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE_METHOD'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'];
 }
 
-export { initBlocks };
+export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel };

@@ -2,7 +2,7 @@ import * as Blockly from 'blockly/core';
 import * as En from 'blockly/msg/en';
 Blockly.setLocale(En);
 import {DisableTopBlocks} from '@blockly/disable-top-blocks';
-import { initBlocks, functions, functionCodes } from './blocks.js';
+import { initBlocks, addCategory, addBlock } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 import './procedures.js';
@@ -185,6 +185,12 @@ function injectBlockly() {
 
 document.addEventListener('DOMContentLoaded', function() {
   initBlocks();
+  addCategory("Import", "Import", "#8855ff");
+  addBlock("import", "Import", "", function(block) {
+    return 'import \'' + (block.getFieldValue('NAME') || 'unnamed') + '\'';
+  }, [], [], '', [function(block) {
+    block.appendDummyInput().appendField(Blockly.Msg['IMPORT_IMPORT']).appendField(new Blockly.FieldTextInput(), "NAME");
+  }], Blockly.Msg['IMPORT_IMPORT_TOOLTIP'], Blockly.Msg['IMPORT_IMPORT_HELPURL']);
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
   Blockly.Msg["CATEGORY_LOGIC"] = "Logic";
   Blockly.Msg["CATEGORY_EVENTS"] = "Events";
@@ -194,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
   Blockly.Msg["CATEGORY_VARIABLE"] = "Variables";
   Blockly.Msg["CATEGORY_FUNCTIONS"] = "Functions";
   Blockly.Msg["CATEGORY_LIST"] = "List";
+  Blockly.Msg['IMPORT_IMPORT'] = "import";
   injectBlockly();
 });
 

@@ -597,6 +597,9 @@ public class BlockTool {
         } else if (program instanceof SyntaxTree.Continue) {
             result.append("<block type=\"control_continue\">");
             blockCount++;
+        } else if (program instanceof SyntaxTree.Import) {
+            result.append("<block type=\"import\"><field name=\"NAME\">").append(((SyntaxTree.Import) program).getFileName()).append("</field>");
+            blockCount++;
         } else if (program instanceof SyntaxTree.If) {
             int pBlockCount = blockCount;
             blockCount = 0;
