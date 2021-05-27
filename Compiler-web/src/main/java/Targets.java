@@ -1,5 +1,4 @@
 import org.teavm.jso.JSBody;
-import org.teavm.jso.JSObject;
 import org.teavm.jso.dom.html.HTMLDocument;
 import org.teavm.jso.dom.html.HTMLElement;
 
@@ -7,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Targets {
-    @JSBody(params = { "fileName" }, script = "if(!fileName.startsWith('/')){fileName=localStorage.getItem('currentDir')+fileName} try{return fs.readFileSync(fileName)+'\\n'}catch(e){document.getElementById('console2').innerHTML+='<div style=\"color: #f55; position: relative\"><img src=\"test/error.png\" height=\"20\" style=\"padding-right: 10px\"><span style=\"position: absolute\">file ' + fileName + ' does not exist' + '</span></div>';return '\\n'}")
+    @JSBody(params = { "fileName" }, script = "if(!fileName.startsWith('/')){fileName=localStorage.getItem('currentDir')+fileName} try{return fs.readFileSync(fileName)+'\\n'}catch(e){if(document.getElementById('console2'))document.getElementById('console2').innerHTML+='<div style=\"color: #f55; position: relative\"><img src=\"test/error.png\" height=\"20\" style=\"padding-right: 10px\"><span style=\"position: absolute\">file ' + fileName + ' does not exist' + '</span></div>';return '\\n'}")
     public static native String readFile(String fileName);
 
 //    private static final ArrayList<Integer> intervalCodes = new ArrayList<>();
@@ -30,10 +29,13 @@ public class Targets {
 
     public static void error(String error) {
         HTMLDocument document = HTMLDocument.current();
-        HTMLElement htmlParagraphElement = document.createElement("div");
-        htmlParagraphElement.setInnerHTML("<img src=\"test/error.png\" height=\"20\"/><span style=\"position: absolute\">&nbsp;" + error.replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;") + "</span>");
-        htmlParagraphElement.setAttribute("style", "color: #f55; position: relative");
-        document.getElementById("console2").appendChild(htmlParagraphElement);
+        HTMLElement htmlElement = document.getElementById("console2");
+        if (htmlElement != null) {
+            HTMLElement htmlParagraphElement = document.createElement("div");
+            htmlParagraphElement.setInnerHTML("<img src=\"test/error.png\" height=\"20\"/><span style=\"position: absolute\">&nbsp;" + error.replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;") + "</span>");
+            htmlParagraphElement.setAttribute("style", "color: #f55; position: relative");
+            htmlElement.appendChild(htmlParagraphElement);
+        }
     }
 
     public static void tokenizerError(int errorChar, String line) { // just for Web(teaVM)

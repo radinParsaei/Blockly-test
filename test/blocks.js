@@ -1281,6 +1281,10 @@ function initBlocks() {
     }
 
     var tuple = Blockly.Procedures.allProcedures(workspace);
+    for (const [i, value] of Object.entries(functionsInImportedFiles)) {
+      if (value) tuple[0] = tuple[0].concat([[i.split(":")[0], i.split(":")[1].split(',').slice(1), true]]);
+      else tuple[1] = tuple[1].concat([[i.split(":")[0], i.split(":")[1].split(',').slice(1), true]]);
+    }
     populateProcedures(tuple[0], 'procedures_callnoreturn');
     // populateProcedures(tuple[1], 'procedures_callreturn');
     populateProcedures(tuple[1], 'procedures_callnoreturn');

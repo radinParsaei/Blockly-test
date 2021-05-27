@@ -219,6 +219,7 @@
       var genBlocksCalled = false;
       var copiedFilePath = null;
       var copiedFileName = null;
+      var functionsInImportedFiles = {};
 
       function openButtomSheet(title) {
         document.getElementById("buttom_sheet").style.height = "250px";
@@ -266,6 +267,7 @@
         div.setAttribute('class', 'dark');
         div.setAttribute('style', 'padding: 10px; padding-top: 0; height: 200px; background-color: rgba(60, 60, 60, 0.5)');
         openButtomSheet('console').appendChild(div);
+        Compiler.run();
       }, 'run');
 
       function changeTheme2() {

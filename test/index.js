@@ -187,7 +187,8 @@ document.addEventListener('DOMContentLoaded', function() {
   initBlocks();
   addCategory("Import", "Import", "#8855ff");
   addBlock("import", "Import", "", function(block) {
-    return 'import \'' + (block.getFieldValue('NAME') || 'unnamed') + '\'';
+    Compiler.parseImport(block.getFieldValue('NAME'));
+    return 'import \'' + (block.getFieldValue('NAME') || 'unnamed') + '\'\n';
   }, [], [], '', [function(block) {
     block.appendDummyInput().appendField(Blockly.Msg['IMPORT_IMPORT']).appendField(new Blockly.FieldTextInput(), "NAME");
   }], Blockly.Msg['IMPORT_IMPORT_TOOLTIP'], Blockly.Msg['IMPORT_IMPORT_HELPURL']);
@@ -202,10 +203,13 @@ document.addEventListener('DOMContentLoaded', function() {
   Blockly.Msg["CATEGORY_LIST"] = "List";
   Blockly.Msg['IMPORT_IMPORT'] = "import";
   injectBlockly();
+  setTimeout(runCode, 30);
 });
 
 function runCode() {
   if (genBlocksCalled) {return;}
+  functionsInImportedFiles = {};
+  try { Compiler.clearImports(); } catch (e) {}
   let code = Blockly.genCode.workspaceToCode(workspace);
   editor.setValue(code);
   editor.session.selection.moveTo(0, 0);

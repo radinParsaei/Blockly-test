@@ -3,7 +3,8 @@ import org.teavm.jso.JSBody;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.Map;
+//import java.util.LinkedHashMap;
 
 public class BlockTool {
     int blockCount = 0;
@@ -11,10 +12,11 @@ public class BlockTool {
     private final StringBuilder functions = new StringBuilder();
     private static boolean parentIsExecuteValue = false;
     private final HashMap<String, ArrayList<String>> functionParameters = new HashMap<>();
-    private final LinkedHashMap<String, String> variables1 = new LinkedHashMap<>();
+//    private final LinkedHashMap<String, String> variables1 = new LinkedHashMap<>();
     private String lastFunctionName = null;
     private String parentClassName = null;
-    StringBuilder nakedValues = new StringBuilder();
+    private final StringBuilder nakedValues = new StringBuilder();
+    static final HashMap<String, ArrayList<String>> importedFunctionParameters = new HashMap<>();
 
 //    private String getVariableName(String name) {
 //        String[] tmp = name.split(":");
@@ -503,6 +505,8 @@ public class BlockTool {
     }
 
     public String syntaxTreeToBlocksXML(ProgramBase program) {
+        for (Map.Entry<String, ArrayList<String>> entry : importedFunctionParameters.entrySet())
+            functionParameters.put(entry.getKey(), entry.getValue());
         StringBuilder tmp = new StringBuilder("<xml xmlns=\"https://developers.google.com/blockly/xml\">");
         String xml = "<block type=\"main_entry\"><statement name=\"STACK\">" + syntaxTreeToBlocksXML1(program);
         tmp.append(functions.toString());
@@ -598,8 +602,12 @@ public class BlockTool {
             result.append("<block type=\"control_continue\">");
             blockCount++;
         } else if (program instanceof SyntaxTree.Import) {
+            Client.Compile.exportFunctionsAndVariables(((SyntaxTree.Import) program).getProgram());
             result.append("<block type=\"import\"><field name=\"NAME\">").append(((SyntaxTree.Import) program).getFileName()).append("</field>");
             blockCount++;
+            for (Map.Entry<String, ArrayList<String>> entry : importedFunctionParameters.entrySet()) {
+                functionParameters.put(entry.getKey(), entry.getValue());
+            }
         } else if (program instanceof SyntaxTree.If) {
             int pBlockCount = blockCount;
             blockCount = 0;
@@ -701,7 +709,7 @@ public class BlockTool {
         return result.toString();
     }
 
-    private boolean hasReturn(ProgramBase program) {
+    static boolean hasReturn(ProgramBase program) {
         boolean hasReturn = false;
         if (program instanceof SyntaxTree.Programs) {
             for (ProgramBase program1 : ((SyntaxTree.Programs) program).getPrograms()) {
