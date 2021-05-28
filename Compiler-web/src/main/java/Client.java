@@ -73,7 +73,7 @@ public class Client extends CompilerMain {
             if (object instanceof SyntaxTree.SetVariable && ((SyntaxTree.SetVariable) object).getIsDeclaration()) {
 
             } else if (object instanceof SyntaxTree.Function) {
-                addImportedFunction(((SyntaxTree.Function) object).getFunctionName(), BlockTool.hasReturn((ProgramBase) object));
+                addImportedFunction(((SyntaxTree.Function) object).getFunctionName(), BlockTool.hasReturn(((SyntaxTree.Function) object).getProgram()));
                 BlockTool.importedFunctionParameters.put(((SyntaxTree.Function) object).getFunctionName().split(":")[0], new ArrayList<>(Arrays.asList(((SyntaxTree.Function) object).getArgs())));
             } else if (object instanceof SyntaxTree.Programs) {
                 for (ProgramBase program : ((SyntaxTree.Programs) object).getPrograms()) {

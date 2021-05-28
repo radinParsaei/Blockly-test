@@ -523,13 +523,7 @@ public class BlockTool {
     public String syntaxTreeToBlocksXML1(ProgramBase program) {
         StringBuilder result;
         if (blockCount != 0 && (!(program instanceof SyntaxTree.Function) || parentClassName != null) &&
-                (!(program instanceof SyntaxTree.CreateClass)) &&
-                (!(program instanceof SyntaxTree.ExecuteValue && (!((((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
-                        !(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty") &&
-                                Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE)) &&
-                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
-                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array")) ||
-                        ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction))))) {
+                (!(program instanceof SyntaxTree.CreateClass)) && (!(program instanceof SyntaxTree.ExecuteValue) || executeValueNeedsNext((SyntaxTree.ExecuteValue) program))) {
             result = new StringBuilder("<next>");
         } else {
             result = new StringBuilder();
@@ -580,15 +574,22 @@ public class BlockTool {
             blockCount++;
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
-            if ((((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
-                    !(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty") &&
-                    Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE)) &&
+            boolean isInstanceOfArray = (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
+                    Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE) &&
                     Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
-                    Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array")) ||
-                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction) {
-                result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
+                    Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array"));
+            if (isInstanceOfArray || !(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
+                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction ||
+                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.ExitFunction) ||
+                    (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
+                    Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.TEXT))) {
+                if (isInstanceOfArray && !((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty")) {
+                    result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
+                } else {
+                    nakedValues.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
+                }
             } else {
-                nakedValues.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
+                result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
             }
             parentIsExecuteValue = false;
         } else if (program instanceof SyntaxTree.Return) {
@@ -661,7 +662,7 @@ public class BlockTool {
         } else if (program instanceof SyntaxTree.Function) {
             if (getFunctionBlock((((SyntaxTree.Function) program).getFunctionName())) == null) {
                 lastFunctionName = ((SyntaxTree.Function) program).getFunctionName();
-                boolean hasReturn = hasReturn(((SyntaxTree.Function) program).getProgram());
+//                boolean hasReturn = hasReturn(((SyntaxTree.Function) program).getProgram());
                 if (!functionParameters.containsKey(((SyntaxTree.Function) program).getFunctionName())) {
                     functionParameters.put(((SyntaxTree.Function) program).getFunctionName().split(":")[0], new ArrayList<>());
                 }
@@ -707,6 +708,22 @@ public class BlockTool {
             }
         }
         return result.toString();
+    }
+
+    private boolean executeValueNeedsNext(SyntaxTree.ExecuteValue program) {
+        boolean isInstanceOfArray = (program.getValue() instanceof SyntaxTree.CallFunction &&
+                Analyzer.matches(((SyntaxTree.CallFunction) program.getValue()).getInstance(), Analyzer.INSTANCE) &&
+                Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) program.getValue()).getInstance()).size() == 1 &&
+                Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) program.getValue()).getInstance()).get(0).equals("%Array"));
+        if (isInstanceOfArray || !(program.getValue() instanceof SyntaxTree.CallFunction ||
+                program.getValue() instanceof SyntaxTree.PrintFunction ||
+                program.getValue() instanceof SyntaxTree.ExitFunction) ||
+                (program.getValue() instanceof SyntaxTree.CallFunction &&
+                        Analyzer.matches(((SyntaxTree.CallFunction) program.getValue()).getInstance(), Analyzer.TEXT))) {
+            return isInstanceOfArray && !((SyntaxTree.CallFunction) program.getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty");
+        } else {
+            return true;
+        }
     }
 
     static boolean hasReturn(ProgramBase program) {
