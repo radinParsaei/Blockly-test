@@ -1172,6 +1172,9 @@ function initBlocks() {
       let self = this;
       field.onOpenMenu = function() {
         this.menuGenerator_ = [[Blockly.Msg['SELECT_VARIABLE'], '']]
+        for (let i of variablesInImportedFiles) {
+          this.menuGenerator_.push([i, i])
+        }
         var prev = self.getPreviousBlock();
         var prevType = prev && prev.type;
         while (prev != null) {

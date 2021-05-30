@@ -11,7 +11,10 @@ public class Client extends CompilerMain {
 //    private static boolean isFirst = true;
 
     @JSBody(params = { "name", "value" }, script = "functionsInImportedFiles[name]=value")
-    public static native String addImportedFunction(String name, boolean value);
+    public static native void addImportedFunction(String name, boolean value);
+
+    @JSBody(params = { "name" }, script = "variablesInImportedFiles.push(name)")
+    public static native void addImportedVariable(String name);
 
     public interface CompileExport extends JSObject {
         void run();
@@ -71,7 +74,7 @@ public class Client extends CompilerMain {
 
         static void exportFunctionsAndVariables(Object object) {
             if (object instanceof SyntaxTree.SetVariable && ((SyntaxTree.SetVariable) object).getIsDeclaration()) {
-
+                addImportedVariable(((SyntaxTree.SetVariable) object).getVariableName());
             } else if (object instanceof SyntaxTree.Function) {
                 addImportedFunction(((SyntaxTree.Function) object).getFunctionName(), BlockTool.hasReturn(((SyntaxTree.Function) object).getProgram()));
                 BlockTool.importedFunctionParameters.put(((SyntaxTree.Function) object).getFunctionName().split(":")[0], new ArrayList<>(Arrays.asList(((SyntaxTree.Function) object).getArgs())));

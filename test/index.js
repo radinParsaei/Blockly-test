@@ -209,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function runCode() {
   if (genBlocksCalled) {return;}
   functionsInImportedFiles = {};
+  variablesInImportedFiles = [];
   try { Compiler.clearImports(); } catch (e) {}
   let code = Blockly.genCode.workspaceToCode(workspace);
   editor.setValue(code);
