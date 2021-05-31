@@ -1070,18 +1070,19 @@ function initBlocks() {
       //     Blockly.Events.setGroup(false);
       //   }
       //} else
-      if (event.type == Blockly.Events.BLOCK_DELETE) {
-        // Look for the case where a procedure definition has been deleted,
-        // leaving this block (a procedure call) orphaned.  In this case, delete
-        // the orphan.
-        var name = this.getProcedureCall();
-        var def = Blockly.Procedures.getDefinition(name, this.workspace);
-        if (!def) {
-          Blockly.Events.setGroup(event.group);
-          this.dispose(true);
-          Blockly.Events.setGroup(false);
-        }
-      } else if (event.type == Blockly.Events.CHANGE && event.element == 'disabled') {
+      // if (event.type == Blockly.Events.BLOCK_DELETE) {
+      //   // Look for the case where a procedure definition has been deleted,
+      //   // leaving this block (a procedure call) orphaned.  In this case, delete
+      //   // the orphan.
+      //   var name = this.getProcedureCall();
+      //   var def = Blockly.Procedures.getDefinition(name, this.workspace);
+      //   if (!def) {
+      //     Blockly.Events.setGroup(event.group);
+      //     this.dispose(true);
+      //     Blockly.Events.setGroup(false);
+      //   }
+      // } else
+      if (event.type == Blockly.Events.CHANGE && event.element == 'disabled') {
         var name = this.getProcedureCall();
         var def = Blockly.Procedures.getDefinition(name, this.workspace);
         if (def && def.id == event.blockId) {
