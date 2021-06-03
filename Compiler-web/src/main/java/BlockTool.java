@@ -441,6 +441,34 @@ public class BlockTool {
             String functionName = ((SyntaxTree.CallFunction) val).getFunctionName().split(":")[0];
             ((SyntaxTree.CallFunction) val).findFunction();
             StringBuilder tmp = new StringBuilder("<block type=\"");
+            if (((SyntaxTree.CallFunction) val).getFunctionName().startsWith("#C") && SyntaxTree.staticFunctions.contains(((SyntaxTree.CallFunction) val).getFunctionName())) {
+                if (parentIsExecuteValue) {
+                    StringBuilder stringBuilder = new StringBuilder("<block type=\"class_call_static_method_statement\"><mutation items=\"")
+                            .append(((SyntaxTree.CallFunction) val).getArgs().length).append("\"></mutation><field name=\"NAME\">")
+                            .append(((SyntaxTree.CallFunction) val).getFunctionName().replace("#C", "").split("#")[1].split(":")[0])
+                            .append("</field><field name=\"CLASS\">")
+                            .append(((SyntaxTree.CallFunction) val).getFunctionName().replace("#C", "").split("#")[0])
+                            .append("</field>");
+                    for (int i = 0; i < ((SyntaxTree.CallFunction) val).getArgs().length; i++) {
+                        stringBuilder.append("<value name=\"ARG").append(i).append("\">")
+                                .append(putValue(((SyntaxTree.CallFunction) val).getArgs()[i])).append("</value>");
+                    }
+                    blockCount++;
+                    return stringBuilder.toString();
+                } else {
+                    StringBuilder stringBuilder = new StringBuilder("<block type=\"class_call_static_method\"><mutation items=\"")
+                            .append(((SyntaxTree.CallFunction) val).getArgs().length).append("\"></mutation><field name=\"NAME\">")
+                            .append(((SyntaxTree.CallFunction) val).getFunctionName().replace("#C", "").split("#")[1].split(":")[0])
+                            .append("</field><field name=\"CLASS\">")
+                            .append(((SyntaxTree.CallFunction) val).getFunctionName().replace("#C", "").split("#")[0])
+                            .append("</field>");
+                    for (int i = 0; i < ((SyntaxTree.CallFunction) val).getArgs().length; i++) {
+                        stringBuilder.append("<value name=\"ARG").append(i).append("\">")
+                                .append(putValue(((SyntaxTree.CallFunction) val).getArgs()[i])).append("</value>");
+                    }
+                    return stringBuilder.append("</block>").toString();
+                }
+            }
             if (((SyntaxTree.CallFunction) val).isNativeFunction() && ((SyntaxTree.CallFunction) val).getFunctionName().equals("input:N#0#input")) {
                 return tmp.append("text_input\"></block>").toString();
             } else if (((SyntaxTree.CallFunction) val).isNativeFunction() && ((SyntaxTree.CallFunction) val).getFunctionName().equals("input:N#0#input")) {
@@ -485,6 +513,8 @@ public class BlockTool {
                     tmp.append("</block>");
             }
             return tmp.toString();
+        } else if (val instanceof SyntaxTree.AwaitedValue) {
+            return putValue(((SyntaxTree.AwaitedValue) val).fetchValue());
         }
         return "";
     }
@@ -556,7 +586,7 @@ public class BlockTool {
             } else {
                 String[] variableName = ((SyntaxTree.SetVariable) program).getVariableName().split(":");
                 if (parentClassName != null)
-                    variableName[variableName.length - 1] = variableName[variableName.length - 1].replace("#C" + parentClassName, "");
+                    variableName[variableName.length - 1] = variableName[variableName.length - 1].replace("#C" + parentClassName + "#", "");
                 if (((SyntaxTree.SetVariable) program).getIsDeclaration()) {
                     addVariableName(variableName[variableName.length - 1]);
                     result.append("<block type=\"variable_declare\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
@@ -580,7 +610,8 @@ public class BlockTool {
                     Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array"));
             if (isInstanceOfArray || !(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
                     ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction ||
-                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.ExitFunction) ||
+                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.ExitFunction ||
+                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.AwaitedValue) ||
                     (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
                     Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.TEXT))) {
                 if (isInstanceOfArray && !((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty")) {
@@ -673,7 +704,7 @@ public class BlockTool {
                     functions = result;
                 }
 //                if (hasReturn) {
-                    functions.append("<block type=\"procedures_defreturn").append(parentClassName != null? "_method" : "").append("\"><mutation>");
+                    functions.append("<block type=\"procedures_defreturn").append(((SyntaxTree.Function) program).isStatic()? "_static":"").append(parentClassName != null? "_method" : "").append("\"><mutation>");
                     for (String i : ((SyntaxTree.Function) program).getArgs()) {
                         functionParameters.get(((SyntaxTree.Function) program).getFunctionName().split(":")[0]).add(i);
                         functions.append("<arg name=\"").append(i).append("\"></arg>");
@@ -682,7 +713,7 @@ public class BlockTool {
                     int pBlockCount = blockCount;
                     blockCount = 0;
                     String functionName = ((SyntaxTree.Function) program).getFunctionName().split(":")[0];
-                    if (parentClassName != null) functionName = functionName.replace("#C" + parentClassName, "");
+                    if (parentClassName != null) functionName = functionName.replace("#C" + parentClassName + "#", "");
                     functions.append("</mutation>").append("<field name=\"NAME\">").append(functionName).append("</field><statement name=\"STACK\">")
                             .append(syntaxTreeToBlocksXML(((SyntaxTree.Function) program).getProgram(), false)).append("</statement>").append(parentClassName == null? "</block>":"");
                     blockCount = pBlockCount;
@@ -717,7 +748,8 @@ public class BlockTool {
                 Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) program.getValue()).getInstance()).get(0).equals("%Array"));
         if (isInstanceOfArray || !(program.getValue() instanceof SyntaxTree.CallFunction ||
                 program.getValue() instanceof SyntaxTree.PrintFunction ||
-                program.getValue() instanceof SyntaxTree.ExitFunction) ||
+                program.getValue() instanceof SyntaxTree.ExitFunction ||
+                program.getValue() instanceof SyntaxTree.AwaitedValue) ||
                 (program.getValue() instanceof SyntaxTree.CallFunction &&
                         Analyzer.matches(((SyntaxTree.CallFunction) program.getValue()).getInstance(), Analyzer.TEXT))) {
             return isInstanceOfArray && !((SyntaxTree.CallFunction) program.getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty");

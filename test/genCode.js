@@ -776,13 +776,35 @@ Blockly.genCode['class_call_method'] = function(block) {
   return [code, Blockly.genCode.ORDER_ATOMIC];
 };
 
-Blockly.genCode['class_call_method_statement'] = function(block) {
+Blockly.genCode['class_call_static_method'] = function(block) {
   var elements = new Array(block.itemCount_);
   for (var i = 0; i < block.itemCount_; i++) {
     elements[i] = Blockly.genCode.valueToCode(block, 'ARG' + i,
         Blockly.genCode.ORDER_NONE) || 'null';
   }
-  var code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) + '.' + block.getFieldValue("NAME") + '(' + elements.join(', ') + ')';
+  var code = block.getFieldValue("CLASS") + '.' + block.getFieldValue("NAME") + '(' + elements.join(', ') + ')';
+  return [code, Blockly.genCode.ORDER_ATOMIC];
+};
+
+Blockly.genCode['class_call_static_method_statement'] = function(block) {
+  // var elements = new Array(block.itemCount_);
+  // for (var i = 0; i < block.itemCount_; i++) {
+    // elements[i] = Blockly.genCode.valueToCode(block, 'ARG' + i,
+        // Blockly.genCode.ORDER_NONE) || 'null';
+  // }
+  // var code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) + '.' + block.getFieldValue("NAME") + '(' + elements.join(', ') + ')';
+  let code = Blockly.genCode['class_call_static_method'](block)[0];
+  return code + '\n';
+};
+
+Blockly.genCode['class_call_method_statement'] = function(block) {
+  // var elements = new Array(block.itemCount_);
+  // for (var i = 0; i < block.itemCount_; i++) {
+    // elements[i] = Blockly.genCode.valueToCode(block, 'ARG' + i,
+        // Blockly.genCode.ORDER_NONE) || 'null';
+  // }
+  // var code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) + '.' + block.getFieldValue("NAME") + '(' + elements.join(', ') + ')';
+  let code = Blockly.genCode['class_call_method'](block)[0];
   return code + '\n';
 };
 
@@ -797,4 +819,7 @@ Blockly.genCode['class_set_parameter'] = function(block) {
   return code + '\n';
 };
 
-Blockly.genCode['procedures_defnoreturn_method'] = Blockly.genCode['procedures_defreturn_method'];
+// Blockly.genCode['procedures_defnoreturn_method'] = Blockly.genCode['procedures_defreturn_method'];
+Blockly.genCode['procedures_defreturn_static_method'] = function(block) {
+  return 'static ' + Blockly.genCode['procedures_defreturn_method'](block);
+}

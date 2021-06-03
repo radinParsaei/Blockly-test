@@ -44,6 +44,8 @@ Blockly.Msg['CREATE_INSTANCE_OF'] = 'create new';
 Blockly.Msg['CREATE_INSTANCE_WITH'] = 'with';
 Blockly.Msg['CLASS_CALL_METHOD'] = 'call method';
 Blockly.Msg['CLASS_CALL_METHOD_FROM'] = 'from instnace';
+Blockly.Msg['CLASS_CALL_STATIC_METHOD'] = 'call static method';
+Blockly.Msg['CLASS_CALL_STATIC_METHOD_FROM'] = 'from';
 Blockly.Msg['CLASS_GET_PARAMETER'] = 'get parameter';
 Blockly.Msg['CLASS_GET_PARAMETER_FROM'] = Blockly.Msg['CLASS_CALL_METHOD_FROM'];
 Blockly.Msg['CLASS_SET_PARAMETER'] = 'set parameter';
@@ -58,6 +60,7 @@ Blockly.Msg['LISTS_INSERT'] = 'insert';
 Blockly.Msg['LISTS_INSERT_AT'] = 'at';
 Blockly.Msg['LISTS_INSERT_OF'] = 'of';
 Blockly.Msg['TEXT_INPUT'] = 'prompt for input';
+Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_STATIC_METHOD'] = 'define static method';
 
 function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
   blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
@@ -446,6 +449,8 @@ function initBlocks() {
   addBlock("class_call_method", "Class");
   addBlock("class_call_method_statement", "Class");
   addBlock("class_set_parameter", "Class");
+  addBlock("class_call_static_method", "Class");
+  addBlock("class_call_static_method_statement", "Class");
 
     const textIndexOfMutator = {
       suppressPrefixSuffix: true,
@@ -591,6 +596,49 @@ function initBlocks() {
         }
       ],
       "output": null,
+      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "helpUrl": "%{BKY_CLASSES_CALL_METHOD_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_CALL_METHOD_TOOLTIP}",
+      "mutator": "create_instance_mutator",
+      "inputsInline": true,
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
+    }, {
+      "type": "class_call_static_method",
+      "message0": "%{BKY_CLASS_CALL_STATIC_METHOD} %1 %{BKY_CLASS_CALL_STATIC_METHOD_FROM} %2",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME"
+        }, {
+          "type": "field_input",
+          "name": "CLASS"
+        }
+      ],
+      "output": null,
+      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "helpUrl": "%{BKY_CLASSES_CALL_METHOD_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_CALL_METHOD_TOOLTIP}",
+      "mutator": "create_instance_mutator",
+      "inputsInline": true,
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
+    }, {
+      "type": "class_call_static_method_statement",
+      "message0": "%{BKY_CLASS_CALL_STATIC_METHOD} %1 %{BKY_CLASS_CALL_STATIC_METHOD_FROM} %2",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME"
+        }, {
+          "type": "field_input",
+          "name": "CLASS"
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
       "colour": document.getElementById("ClassCategory").getAttribute('colour'),
       "helpUrl": "%{BKY_CLASSES_CALL_METHOD_HELPURL}",
       "tooltip": "%{BKY_CLASSES_CALL_METHOD_TOOLTIP}",
