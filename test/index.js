@@ -236,7 +236,8 @@ if (localStorage.getItem('allVariables') != null) {
     }
   }
 }
-var langTools = ace.require("ace/ext/language_tools");
+let langTools = ace.require("ace/ext/language_tools");
+let lang = ace.require("ace/lib/lang");
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai0");
 editor.session.setMode("ace/mode/javascript");
@@ -257,7 +258,66 @@ editor.setOptions({
     fadeFoldWidgets: true
 });
 
-langTools.setCompleters([langTools.snippetCompleter])
+let IDCompleter = {
+  getCompletions: function(editor, session, pos, prefix, callback) {
+    let code = editor.getValue();
+    let importRegexp =  /import '(\w+)'/gm;
+    let match = importRegexp.exec(code);
+    do {
+      try {
+        fs.readFile(match[1], function(e, res) {
+          res = (res + '').replace(/"(.*?(\\")*)*(")|'(.*?(\\')*)*(')/gm, '');
+          var wordList = []
+          const regexp = /(class|func|var) +([A-Za-z]+\d*_*)+/gm;
+          const array = [...res.matchAll(regexp)];
+          for (var i of array) {
+            if (i[0].trim().startsWith('func')) i[0] += ':';
+            i[0] = i[0].replace(/class|func|var/, '').trim();
+            if (!/if|else|for|break|import|continue|class|init|while|var|static|this|new|func|return|null|true|false/.test(i[0])) wordList.push(i[0]);
+          }
+          callback(null, [...wordList.map(function(word) {
+            let isFunc = word.endsWith(':');
+            word = word.replace(':', '');
+            return {
+              caption: word,
+              value: isFunc? word + '()' : word,
+              type: 'userDefined',
+              file: match[1]
+            };
+          })]);
+        });
+      } catch (e) {}
+    } while((match = importRegexp.exec(code)) !== null);
+    code = code.replace(/"(.*?(\\")*)*(")|'(.*?(\\')*)*(')/gm, '');
+    var wordList = []
+    const regexp = /(class|func|var) +([A-Za-z]+\d*_*)+/gm;
+    const array = [...code.matchAll(regexp)];
+    for (var i of array) {
+      if (i[0].trim().startsWith('func')) i[0] += ':';
+      i[0] = i[0].replace(/class|func|var/, '').trim();
+      if (!/if|else|for|break|import|continue|class|init|while|var|static|this|new|func|return|null|true|false/.test(i[0])) wordList.push(i[0]);
+    }
+    callback(null, [...wordList.map(function(word) {
+      let isFunc = word.endsWith(':');
+      word = word.replace(':', '');
+      return {
+        caption: word,
+        value: isFunc? word + '()' : word,
+        type: 'userDefined'
+      };
+    })]);
+  }, getDocTooltip: function(item) {
+    if (item.type == "userDefined" && !item.docHTML) {
+      item.docHTML = [
+          "<b>", lang.escapeHTML(item.caption), "</b>", "<hr/>",
+          "something you defined",
+          item.file != null? " in file " + item.file : ""
+      ].join("");
+    }
+  }
+}
+
+langTools.setCompleters([langTools.snippetCompleter, IDCompleter])
 
 var config = ace.require("ace/config");
 var event = ace.require("ace/lib/event");
