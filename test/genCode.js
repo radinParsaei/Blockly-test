@@ -809,18 +809,24 @@ Blockly.genCode['class_call_method_statement'] = function(block) {
 };
 
 Blockly.genCode['class_get_property'] = function(block) {
-  var code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) + '.' + block.getFieldValue("NAME");
+  let code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) + '.' + block.getFieldValue("NAME");
   return [code, Blockly.genCode.ORDER_MEMBER];
 };
 
 Blockly.genCode['class_get_static_property'] = function(block) {
-  var code = block.getFieldValue('CLASS') + '.' + block.getFieldValue("NAME");
+  let code = block.getFieldValue('CLASS') + '.' + block.getFieldValue("NAME");
   return [code, Blockly.genCode.ORDER_MEMBER];
 };
 
 Blockly.genCode['class_set_property'] = function(block) {
-  var code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) +
+  let code = Blockly.genCode.valueToCode(block, 'INSTANCE', Blockly.genCode.ORDER_NONE) +
         '.' + block.getFieldValue("NAME") + ' = ' + Blockly.genCode.valueToCode(block, 'VALUE', Blockly.genCode.ORDER_NONE);
+  return code + '\n';
+};
+
+Blockly.genCode['class_set_static_property'] = function(block) {
+  let code = block.getFieldValue('CLASS') + '.' + block.getFieldValue("NAME") +
+        ' = ' + Blockly.genCode.valueToCode(block, 'VALUE', Blockly.genCode.ORDER_NONE);
   return code + '\n';
 };
 

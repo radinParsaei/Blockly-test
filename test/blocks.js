@@ -52,7 +52,9 @@ Blockly.Msg['CLASS_GET_STATIC_PROPERTY'] = 'get static property';
 Blockly.Msg['CLASS_GET_STATIC_PROPERTY_FROM'] = 'from class';
 Blockly.Msg['CLASS_SET_PROPERTY'] = 'set property';
 Blockly.Msg['CLASS_SET_PROPERTY_IN_INSTANCE'] = 'in';
-Blockly.Msg['LISTS_APPEND_TO'] = Blockly.Msg['CLASS_SET_PROPERTY_TO'] = 'to';
+Blockly.Msg['CLASS_SET_STATIC_PROPERTY'] = 'set static property';
+Blockly.Msg['CLASS_SET_STATIC_PROPERTY_IN_INSTANCE'] = 'in class';
+Blockly.Msg['CLASS_SET_PROPERTY_TO'] = Blockly.Msg['CLASS_SET_STATIC_PROPERTY_TO'] = Blockly.Msg['LISTS_APPEND_TO'] = 'to';
 Blockly.Msg['LISTS_APPEND'] = 'append';
 Blockly.Msg['LISTS_REVERSE'] = 'reverse';
 Blockly.Msg['LISTS_SORT'] = 'sort';
@@ -449,13 +451,14 @@ function initBlocks() {
   addBlock("procedures_defreturn_method", "Class");
   addBlock("create_instance", "Class");
   addBlock("class_get_property", "Class");
+  addBlock("class_set_property", "Class");
   addBlock("class_call_method", "Class");
   addBlock("class_call_method_statement", "Class");
-  addBlock("class_set_property", "Class");
   addBlock("class_call_static_method", "Class");
   addBlock("class_call_static_method_statement", "Class");
   addBlock("class_declare_static_property", "Class");
   addBlock("class_get_static_property", "Class");
+  addBlock("class_set_static_property", "Class");
 
     const textIndexOfMutator = {
       suppressPrefixSuffix: true,
@@ -752,6 +755,30 @@ function initBlocks() {
       "colour": document.getElementById("ClassCategory").getAttribute('colour'),
       "helpUrl": "%{BKY_CLASS_SET_PROPERTY_HELPURL}",
       "tooltip": "%{BKY_CLASS_SET_PROPERTY_TOOLTIP}",
+      "inputsInline": true,
+      "extensions": [
+        "parent_tooltip_when_inline"
+      ]
+    }, {
+      "type": "class_set_static_property",
+      "message0": "%{BKY_CLASS_SET_STATIC_PROPERTY} %1 %{BKY_CLASS_SET_STATIC_PROPERTY_IN_INSTANCE} %2 %{BKY_CLASS_SET_STATIC_PROPERTY_TO} %3",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME"
+        }, {
+          "type": "field_input",
+          "name": "CLASS"
+        }, {
+          "type": "input_value",
+          "name": "VALUE"
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "helpUrl": "%{BKY_CLASS_SET_STATIC_PROPERTY_HELPURL}",
+      "tooltip": "%{BKY_CLASS_SET_STATIC_PROPERTY_TOOLTIP}",
       "inputsInline": true,
       "extensions": [
         "parent_tooltip_when_inline"
