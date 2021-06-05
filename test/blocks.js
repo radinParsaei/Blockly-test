@@ -46,11 +46,11 @@ Blockly.Msg['CLASS_CALL_METHOD'] = 'call method';
 Blockly.Msg['CLASS_CALL_METHOD_FROM'] = 'from instnace';
 Blockly.Msg['CLASS_CALL_STATIC_METHOD'] = 'call static method';
 Blockly.Msg['CLASS_CALL_STATIC_METHOD_FROM'] = 'from';
-Blockly.Msg['CLASS_GET_PARAMETER'] = 'get parameter';
-Blockly.Msg['CLASS_GET_PARAMETER_FROM'] = Blockly.Msg['CLASS_CALL_METHOD_FROM'];
-Blockly.Msg['CLASS_SET_PARAMETER'] = 'set parameter';
-Blockly.Msg['CLASS_SET_PARAMETER_IN_INSTANCE'] = 'in';
-Blockly.Msg['LISTS_APPEND_TO'] = Blockly.Msg['CLASS_SET_PARAMETER_TO'] = 'to';
+Blockly.Msg['CLASS_GET_PROPERTY'] = 'get property';
+Blockly.Msg['CLASS_GET_PROPERTY_FROM'] = Blockly.Msg['CLASS_CALL_METHOD_FROM'];
+Blockly.Msg['CLASS_SET_PROPERTY'] = 'set property';
+Blockly.Msg['CLASS_SET_PROPERTY_IN_INSTANCE'] = 'in';
+Blockly.Msg['LISTS_APPEND_TO'] = Blockly.Msg['CLASS_SET_PROPERTY_TO'] = 'to';
 Blockly.Msg['LISTS_APPEND'] = 'append';
 Blockly.Msg['LISTS_REVERSE'] = 'reverse';
 Blockly.Msg['LISTS_SORT'] = 'sort';
@@ -61,6 +61,7 @@ Blockly.Msg['LISTS_INSERT_AT'] = 'at';
 Blockly.Msg['LISTS_INSERT_OF'] = 'of';
 Blockly.Msg['TEXT_INPUT'] = 'prompt for input';
 Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_STATIC_METHOD'] = 'define static method';
+Blockly.Msg['CLASS_DECLARE_STATIC_PROPERTY'] = 'declare static property';
 
 function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
   blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
@@ -445,12 +446,13 @@ function initBlocks() {
   // addBlock("procedures_defnoreturn_method", "Class");
   addBlock("procedures_defreturn_method", "Class");
   addBlock("create_instance", "Class");
-  addBlock("class_get_parameter", "Class");
+  addBlock("class_get_property", "Class");
   addBlock("class_call_method", "Class");
   addBlock("class_call_method_statement", "Class");
-  addBlock("class_set_parameter", "Class");
+  addBlock("class_set_property", "Class");
   addBlock("class_call_static_method", "Class");
   addBlock("class_call_static_method_statement", "Class");
+  addBlock("class_declare_static_property", "Class");
 
     const textIndexOfMutator = {
       suppressPrefixSuffix: true,
@@ -648,8 +650,8 @@ function initBlocks() {
         "parent_tooltip_when_inline"
       ]
     }, {
-      "type": "class_get_parameter",
-      "message0": "%{BKY_CLASS_GET_PARAMETER} %1 %{BKY_CLASS_GET_PARAMETER_FROM} %2",
+      "type": "class_get_property",
+      "message0": "%{BKY_CLASS_GET_PROPERTY} %1 %{BKY_CLASS_GET_PROPERTY_FROM} %2",
       "args0": [
         {
           "type": "field_input",
@@ -661,12 +663,30 @@ function initBlocks() {
       ],
       "output": null,
       "colour": document.getElementById("ClassCategory").getAttribute('colour'),
-      "helpUrl": "%{BKY_CLASSES_GET_PARAMETER_HELPURL}",
-      "tooltip": "%{BKY_CLASSES_GET_PARAMETER_TOOLTIP}",
+      "helpUrl": "%{BKY_CLASSES_GET_PROPERTY_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_GET_PROPERTY_TOOLTIP}",
       "inputsInline": true,
       "extensions": [
         "parent_tooltip_when_inline"
       ]
+    }, {
+      "type": "class_declare_static_property",
+      "message0": "%{BKY_CLASS_DECLARE_STATIC_PROPERTY} %1",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "NAME",
+          "text": ""
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      // "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": 'variable_blocks',
+      "tooltip": "%{BKY_CLASS_DECLARE_STATIC_PROPERTY_TOOLTIP}",
+      "helpUrl": "%{BKY_CLASS_DECLARE_STATIC_PROPERTY_HELPURL}",
+      "mutator": "variable_set_mutator",
+      "inputsInline": true
     }, {
       "type": "class_call_method_statement",
       "message0": "%{BKY_CLASS_CALL_METHOD} %1 %{BKY_CLASS_CALL_METHOD_FROM} %2",
@@ -690,8 +710,8 @@ function initBlocks() {
         "parent_tooltip_when_inline"
       ]
     }, {
-      "type": "class_set_parameter",
-      "message0": "%{BKY_CLASS_SET_PARAMETER} %1 %{BKY_CLASS_SET_PARAMETER_IN_INSTANCE} %2 %{BKY_CLASS_SET_PARAMETER_TO} %3",
+      "type": "class_set_property",
+      "message0": "%{BKY_CLASS_SET_PROPERTY} %1 %{BKY_CLASS_SET_PROPERTY_IN_INSTANCE} %2 %{BKY_CLASS_SET_PROPERTY_TO} %3",
       "args0": [
         {
           "type": "field_input",
@@ -707,8 +727,8 @@ function initBlocks() {
       "previousStatement": null,
       "nextStatement": null,
       "colour": document.getElementById("ClassCategory").getAttribute('colour'),
-      "helpUrl": "%{BKY_CLASSES_SET_PARAMETER_HELPURL}",
-      "tooltip": "%{BKY_CLASSES_SET_PARAMETER_TOOLTIP}",
+      "helpUrl": "%{BKY_CLASSES_SET_PROPERTY_HELPURL}",
+      "tooltip": "%{BKY_CLASSES_SET_PROPERTY_TOOLTIP}",
       "inputsInline": true,
       "extensions": [
         "parent_tooltip_when_inline"

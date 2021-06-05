@@ -589,7 +589,7 @@ public class BlockTool {
                     variableName[variableName.length - 1] = variableName[variableName.length - 1].replace("#C" + parentClassName + "#", "");
                 if (((SyntaxTree.SetVariable) program).getIsDeclaration()) {
                     addVariableName(variableName[variableName.length - 1]);
-                    result.append("<block type=\"variable_declare\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
+                    result.append("<block type=\"").append(((SyntaxTree.SetVariable) program).isStatic()? "class_declare_static_property":"variable_declare").append("\"><field name=\"NAME\">").append(variableName[variableName.length - 1])
                             .append("</field>");
                     if (!(((SyntaxTree.SetVariable) program).getVariableValue() instanceof SyntaxTree.Null)) {
                         result.append("<mutation hasValue=\"1\"></mutation>").append("<value name=\"VALUE\">")

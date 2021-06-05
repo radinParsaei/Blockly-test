@@ -823,3 +823,7 @@ Blockly.genCode['class_set_parameter'] = function(block) {
 Blockly.genCode['procedures_defreturn_static_method'] = function(block) {
   return 'static ' + Blockly.genCode['procedures_defreturn_method'](block);
 }
+
+Blockly.genCode['class_declare_static_property'] = function(block) {
+  return 'static ' + Blockly.genCode['variable_declare'](block);
+}
