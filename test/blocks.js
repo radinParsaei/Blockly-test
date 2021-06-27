@@ -66,6 +66,8 @@ Blockly.Msg['LISTS_INSERT_OF'] = 'of';
 Blockly.Msg['TEXT_INPUT'] = 'prompt for input';
 Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_STATIC_METHOD'] = 'define static method';
 Blockly.Msg['CLASS_DECLARE_STATIC_PROPERTY'] = 'declare static property';
+Blockly.Msg['MATH_LEFT_SHIFT'] = 'left shift';
+Blockly.Msg['MATH_LEFT_SHIFT_WITH'] = 'with';
 
 function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
   blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
@@ -250,6 +252,14 @@ function initBlocks() {
         Blockly.genCode.ORDER_UNARY_SIGN) || '0';
     return ['-' + data, Blockly.genCode.ORDER_UNARY_SIGN];
   }, [], [true], '', [Blockly.Msg['MATH_NEGATIVE_OF'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], true, true);
+
+  addBlock("math_left_shift", "Math", createShadows([1, 1]), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || '0';
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || '0';
+    return [data1 + '<<' + data, Blockly.genCode.ORDER_BITWISE_SHIFT];
+  }, [], [true, true], '', [null, Blockly.Msg['MATH_LEFT_SHIFT'], null, Blockly.Msg['MATH_LEFT_SHIFT_WITH']], Blockly.Msg['MATH_LEFT_SHIFT_TOOLTIP'], Blockly.Msg['MATH_LEFT_SHIFT_HELPURL'], true, true);
 
   addBlock("logic_if", "Logic", '', function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
