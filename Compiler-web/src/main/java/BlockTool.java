@@ -165,6 +165,14 @@ public class BlockTool {
             return "<block type=\"logic_operation_advanced\"><field name=\"OP\">OR</field><value name=\"ARG0\">" +
                     putValue(((SyntaxTree.BitwiseOr) val).getV1()) + "</value><value name=\"ARG1\">" +
                     putValue(((SyntaxTree.BitwiseOr) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.LeftShift) {
+            return "<block type=\"math_shift\"><field name=\"ARG1\">LEFT</field><value name=\"ARG0\">" +
+                    putValue(((SyntaxTree.LeftShift) val).getV1()) + "</value><value name=\"ARG2\">" +
+                    putValue(((SyntaxTree.LeftShift) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.RightShift) {
+            return "<block type=\"math_shift\"><field name=\"ARG1\">RIGHT</field><value name=\"ARG0\">" +
+                    putValue(((SyntaxTree.RightShift) val).getV1()) + "</value><value name=\"ARG2\">" +
+                    putValue(((SyntaxTree.RightShift) val).getV2()) + "</value></block>";
         } else if (val instanceof SyntaxTree.Not) {
             if (((SyntaxTree.Not) val).getValue() instanceof SyntaxTree.StrictEquals) {
                 return "<block type=\"logic_compare\"><field name=\"OP\">NEQ</field><value name=\"A\">" +
