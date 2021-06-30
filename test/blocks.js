@@ -69,6 +69,7 @@ Blockly.Msg['CLASS_DECLARE_STATIC_PROPERTY'] = 'declare static property';
 Blockly.Msg['MATH_LEFT_SHIFT'] = 'left shift';
 Blockly.Msg['MATH_RIGHT_SHIFT'] = 'right shift';
 Blockly.Msg['MATH_LEFT_SHIFT_WITH'] = 'with';
+Blockly.Msg['LOGIC_BITWISE_NOT'] = 'bitwise not';
 
 function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
   blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
@@ -315,6 +316,12 @@ function initBlocks() {
     Blockly.Msg['CONTROLS_IF_ELSE_TOOLTIP'],
     Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL']
   );
+
+  addBlock("logic_bitwise_not", "Logic", createShadows([1]), function(block) {
+    let data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || '1';
+    return ['~' + data, Blockly.genCode.ORDER_BITWISE_NOT];
+  }, [], [true], '', [null, Blockly.Msg['LOGIC_BITWISE_NOT']], Blockly.Msg['LOGIC_BITWISE_NOT_TOOLTIP'], Blockly.Msg['LOGIC_BITWISE_NOT_HELPURL'], true, true);
 
   addBlock("loops_while", "Loops", '', function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',

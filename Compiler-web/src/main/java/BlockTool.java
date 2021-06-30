@@ -165,6 +165,9 @@ public class BlockTool {
             return "<block type=\"logic_operation_advanced\"><field name=\"OP\">OR</field><value name=\"ARG0\">" +
                     putValue(((SyntaxTree.BitwiseOr) val).getV1()) + "</value><value name=\"ARG1\">" +
                     putValue(((SyntaxTree.BitwiseOr) val).getV2()) + "</value></block>";
+        } else if (val instanceof SyntaxTree.BitwiseNot) {
+            return "<block type=\"logic_bitwise_not\"><value name=\"ARG0\">" +
+                    putValue(((SyntaxTree.BitwiseNot) val).getValue()) + "</value></block>";
         } else if (val instanceof SyntaxTree.LeftShift) {
             return "<block type=\"math_shift\"><field name=\"ARG1\">LEFT</field><value name=\"ARG0\">" +
                     putValue(((SyntaxTree.LeftShift) val).getV1()) + "</value><value name=\"ARG2\">" +
