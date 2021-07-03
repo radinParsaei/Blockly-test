@@ -32,8 +32,9 @@ class CustomCategory extends Blockly.ToolboxCategory {
       icon.width = '25';
       icon.height = '25';
     } else {
-      icon.width = '50';
-      icon.height = '50';
+      icon.width = '40';
+      icon.height = '40';
+      icon.setAttribute('style', 'margin: 0;margin-top: 6px;margin-bottom: 6px');
     }
     return icon;
   }

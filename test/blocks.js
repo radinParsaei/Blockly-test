@@ -250,15 +250,14 @@ function initBlocks() {
   addBlock("math_random_int", "Math", createShadows([1, 10]), "random", ['a', 'b'], [true, true],
     `import 'random'`, [Blockly.Msg['MATH_RANDOM_RANDINT_0'], null, undefined, Blockly.Msg['MATH_RANDOM_RANDINT_1'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], "Number");
 
-  addBlock("text_input", "Text", createShadows([1, 10]), "input", [], [], '',
-        [Blockly.Msg['TEXT_INPUT']], Blockly.Msg['TEXT_INPUT_TOOLTIP'], Blockly.Msg['TEXT_INPUT_HELPURL'], "Text");
-
   addBlock("math_negative", "Math", createShadows([1]), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
         Blockly.genCode.ORDER_UNARY_SIGN) || '0';
     return ['-' + data, Blockly.genCode.ORDER_UNARY_SIGN];
   }, [], [true], '', [Blockly.Msg['MATH_NEGATIVE_OF'], null], Blockly.Msg['MATH_RANDOM_RANDINT_TOOLTIP'], Blockly.Msg['MATH_RANDOM_RANDINT_HELPURL'], true, true);
 
+  addLabel("Advanced", "Math", "smaller-title");
+  
   addBlock("math_shift", "Math", createShadows([8, undefined, 1]), function(block) {
     let side = block.getFieldValue('ARG1');
     let data = Blockly.genCode.valueToCode(block, 'ARG2',
@@ -267,6 +266,8 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || '0';
     return [data1 + (side == 'LEFT'? ' << ':' >> ') + data, Blockly.genCode.ORDER_BITWISE_SHIFT];
   }, [], [true, true, true], '', [null, [[Blockly.Msg['MATH_LEFT_SHIFT'], 'LEFT'], [Blockly.Msg['MATH_RIGHT_SHIFT'], 'RIGHT']], null, Blockly.Msg['MATH_LEFT_SHIFT_WITH']], Blockly.Msg['MATH_LEFT_SHIFT_TOOLTIP'], Blockly.Msg['MATH_LEFT_SHIFT_HELPURL'], true, true);
+
+  addLabel("Statements", "Logic", "smaller-title");
 
   addBlock("logic_if", "Logic", '', function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
@@ -317,28 +318,13 @@ function initBlocks() {
     Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL']
   );
 
+  addLabel("Advanced", "Logic", "smaller-title");
+
   addBlock("logic_bitwise_not", "Logic", createShadows([1]), function(block) {
     let data = Blockly.genCode.valueToCode(block, 'ARG0',
         Blockly.genCode.ORDER_NONE) || '1';
     return ['~' + data, Blockly.genCode.ORDER_BITWISE_NOT];
   }, [], [true], '', [null, Blockly.Msg['LOGIC_BITWISE_NOT']], Blockly.Msg['LOGIC_BITWISE_NOT_TOOLTIP'], Blockly.Msg['LOGIC_BITWISE_NOT_HELPURL'], true, true);
-
-  addBlock("loops_while", "Loops", '', function(block) {
-    var data = Blockly.genCode.valueToCode(block, 'ARG0',
-        Blockly.genCode.ORDER_NONE) || 'false';
-    var code = Blockly.genCode.statementToCode(block, 'ARG1',
-        Blockly.genCode.ORDER_NONE) || '';
-    return 'while ' + data + ' {\n' + code + '}\n';
-  }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_WHILEUNTIL_OPERATOR_WHILE'], function(self, blockToAddField) {
-    blockToAddField.setCheck(["Number", "Boolean"]);
-  }, null, Blockly.Msg['CONTROLS_WHILEUNTIL_INPUT_DO']], Blockly.Msg['CONTROLS_WHILEUNTIL_TOOLTIP_WHILE'],
-    Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL']
-  );
-
-  addBlock("control_break", "Loops");
-  addBlock("control_continue", "Loops");
-
-  addBlock("text_length", "Text", '<value name="VALUE"><shadow type="text"><field name="TEXT">abc</field></shadow></value>');
 
   addBlock("logic_operation_advanced", "Logic", createShadows([true, true]), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
@@ -354,6 +340,26 @@ function initBlocks() {
       ['|', 'OR'],
       ['&', 'AND']
   ]), 'OP');}, null], Blockly.Msg['LOGIC_OPERATION_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_OPERATION_ADVANCED_HELPURL'], 'Boolean');
+
+
+  addBlock("loops_while", "Loops", '', function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || 'false';
+    var code = Blockly.genCode.statementToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || '';
+    return 'while ' + data + ' {\n' + code + '}\n';
+  }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_WHILEUNTIL_OPERATOR_WHILE'], function(self, blockToAddField) {
+    blockToAddField.setCheck(["Number", "Boolean"]);
+  }, null, Blockly.Msg['CONTROLS_WHILEUNTIL_INPUT_DO']], Blockly.Msg['CONTROLS_WHILEUNTIL_TOOLTIP_WHILE'],
+    Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL']
+  );
+
+  addBlock("control_break", "Loops");
+  addBlock("control_continue", "Loops");
+  addLabel("On Start", "Loops", "smaller-title");
+  addBlock("main_entry", "Loops");
+
+  addBlock("text_length", "Text", '<value name="VALUE"><shadow type="text"><field name="TEXT">abc</field></shadow></value>');
 
   addBlock("text_replace", "Text", createShadows(['Hello', 'H', 'h']), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
@@ -375,16 +381,6 @@ function initBlocks() {
     return [data1 + '.codePointAt(' + data + ')', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true], '', [null, Blockly.Msg['TEXT_CODE_POINT_AT'], null, Blockly.Msg['TEXT_CODE_POINT_AT_IN']], Blockly.Msg['TEXT_CODE_POINT_AT_TOOLTIP'], Blockly.Msg['TEXT_CODE_POINT_AT_HELPURL'], true, true);
 
-  addBlock("text_equalsIgnoreCase", "Text", createShadows(['abc', 'ABC']), function(block) {
-    var data = Blockly.genCode.valueToCode(block, 'ARG0',
-        Blockly.genCode.ORDER_NONE) || "'text'";
-    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
-        Blockly.genCode.ORDER_NONE) || "'text'";
-    var data2 = Blockly.genCode.valueToCode(block, 'ARG2',
-        Blockly.genCode.ORDER_NONE) || "'text'";
-    return [data1 + '.equalsIgnoreCase(' + data + ')', Blockly.genCode.ORDER_ATOMIC];
-  }, [], [true, true], '', [null, undefined, Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_EQUALS_TO'], null, undefined, Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_IGNORE_CASE']], Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_TOOLTIP'], Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_HELPURL'], "Boolean", true);
-
   addBlock("text_substring", "Text", createShadows(['abc', 1, 3]), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
         Blockly.genCode.ORDER_NONE) || "'text'";
@@ -403,6 +399,14 @@ function initBlocks() {
     return [data + '.substring(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true], '', [null, Blockly.Msg['TEXT_GET_SUBSTRING_INPUT_IN_TEXT'], null, Blockly.Msg['TEXT_GET_SUBSTRING_FROM'], undefined, Blockly.Msg['TEXT_GET_SUBSTRING_TO'], undefined, Blockly.Msg['TEXT_GET_SUBSTRING_END']], Blockly.Msg['TEXT_GET_SUBSTRING_TOOLTIP'], Blockly.Msg['TEXT_GET_SUBSTRING_HELPURL'], true, true);
 
+  addBlock("text_indexOf", "Text");
+
+  addBlock("text_reverse", "Text", createShadows(['abc']), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    return [data + '.reverse()', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true], '', [null, Blockly.Msg['TEXT_REVERSE']], Blockly.Msg['TEXT_REVERSE_TOOLTIP'], Blockly.Msg['TEXT_REVERSE_HELPURL'], true, true);
+
   addBlock("text_contains", "Text", createShadows(['abc', 'a']), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
         Blockly.genCode.ORDER_NONE) || "'text'";
@@ -410,6 +414,18 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || "'text'";
     return [data + '.contains(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_CONTAINS']], Blockly.Msg['TEXT_CONTAINS_TOOLTIP'], Blockly.Msg['TEXT_CONTAINS_HELPURL'], "Boolean", true);
+
+  addBlock("text_equalsIgnoreCase", "Text", createShadows(['abc', 'ABC']), function(block) {
+    var data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data1 = Blockly.genCode.valueToCode(block, 'ARG1',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    var data2 = Blockly.genCode.valueToCode(block, 'ARG2',
+        Blockly.genCode.ORDER_NONE) || "'text'";
+    return [data1 + '.equalsIgnoreCase(' + data + ')', Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, undefined, Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_EQUALS_TO'], null, undefined, Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_IGNORE_CASE']], Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_TOOLTIP'], Blockly.Msg['TEXT_EQUALS_IGNORE_CASE_HELPURL'], "Boolean", true);
+
+  addBlock("text_isEmpty", "Text", '<shadow type="text"><field name="TEXT"></field></shadow>');
 
   addBlock("text_matches", "Text", createShadows(['123', '\\\\d+']), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
@@ -435,16 +451,6 @@ function initBlocks() {
     return [data + '.endsWith(' + data1 + ')', Blockly.genCode.ORDER_ATOMIC];
   }, [], [true, true], '', [null, null, Blockly.Msg['TEXT_ENDS_WITH']], Blockly.Msg['TEXT_ENDS_WITH_TOOLTIP'], Blockly.Msg['TEXT_ENDS_WITH_HELPURL'], "Boolean", true);
 
-  addBlock("text_indexOf", "Text");
-
-  addBlock("text_reverse", "Text", createShadows(['abc']), function(block) {
-    var data = Blockly.genCode.valueToCode(block, 'ARG0',
-        Blockly.genCode.ORDER_NONE) || "'text'";
-    return [data + '.reverse()', Blockly.genCode.ORDER_ATOMIC];
-  }, [], [true], '', [null, Blockly.Msg['TEXT_REVERSE']], Blockly.Msg['TEXT_REVERSE_TOOLTIP'], Blockly.Msg['TEXT_REVERSE_HELPURL'], true, true);
-
-  addLabel("Advanced", "Logic", "smaller-title");
-
   addBlock("logic_compare_advanced", "Logic", createShadows(['10', 10]), function(block) {
     var data = Blockly.genCode.valueToCode(block, 'ARG0',
         Blockly.genCode.ORDER_NONE) || 'false';
@@ -461,6 +467,10 @@ function initBlocks() {
   ]), 'OP');}, null], Blockly.Msg['LOGIC_COMPARE_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_COMPARE_ADVANCED_HELPURL'], 'Boolean');
 
   addCategory("Class", "Classes", "#ba6699");
+  addCategory("Console", "Console", "3344dd");
+  addBlock("text_print", "Console", createShadows(['abc']).replace('ARG0', 'TEXT'))
+  addBlock("text_input", "Console", createShadows([1, 10]), "input", [], [], '',
+  [Blockly.Msg['TEXT_INPUT']], Blockly.Msg['TEXT_INPUT_TOOLTIP'], Blockly.Msg['TEXT_INPUT_HELPURL'], "Text");
 
   addBlock("create_class", "Class", "", function(block) {
     var code = Blockly.genCode.statementToCode(block, 'ARG0',

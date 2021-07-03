@@ -194,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }], Blockly.Msg['IMPORT_IMPORT_TOOLTIP'], Blockly.Msg['IMPORT_IMPORT_HELPURL']);
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
   Blockly.Msg["CATEGORY_LOGIC"] = "Logic";
-  Blockly.Msg["CATEGORY_EVENTS"] = "Events";
   Blockly.Msg["CATEGORY_LOOPS"] = "Loops";
   Blockly.Msg["CATEGORY_MATH"] = "Math";
   Blockly.Msg["CATEGORY_TEXT"] = "Text";
