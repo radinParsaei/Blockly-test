@@ -26,15 +26,16 @@ class CustomCategory extends Blockly.ToolboxCategory {
 
   createIconDom_() {
     const icon = document.createElement('img');
-    // icon.src = './' + this.name + '.svg';
-    icon.src = 'https://developers.google.com/blockly/images/logos/logo_only.svg';
+    icon.src = this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg';
+    console.log(icon.src);
+    // icon.src = 'https://developers.google.com/blockly/images/logos/logo_only.svg';
     if(window.innerHeight > window.innerWidth){
       icon.width = '25';
       icon.height = '25';
     } else {
-      icon.width = '40';
-      icon.height = '40';
-      icon.setAttribute('style', 'margin: 0;margin-top: 6px;margin-bottom: 6px');
+      icon.width = '50';
+      icon.height = '50';
+      icon.setAttribute('style', 'padding: 7px');
     }
     return icon;
   }
