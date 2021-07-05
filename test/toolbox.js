@@ -13,10 +13,12 @@ class CustomCategory extends Blockly.ToolboxCategory {
   setSelected(isSelected){
     var label = this.rowDiv_.getElementsByClassName('blocklyTreeLabel')[0];
     if (isSelected) {
+      this.rowDiv_.firstChild.childNodes[0].setAttribute('style', this.rowDiv_.firstChild.childNodes[0].getAttribute('style').replace('background:white', 'background:' + this.colour_).replace('background: white', 'background:' + this.colour_));
       this.rowDiv_.style.backgroundColor = 'white';
       label.style.color = this.colour_;
       this.iconDom_.style.color = this.colour_;
     } else {
+      this.rowDiv_.firstChild.childNodes[0].setAttribute('style', this.rowDiv_.firstChild.childNodes[0].getAttribute('style').replace(/background:.*\d+\); margin/, 'background:white; margin'));
       this.rowDiv_.style.backgroundColor = this.colour_;
       label.style.color = 'white';
       this.iconDom_.style.color = 'white';
@@ -26,16 +28,17 @@ class CustomCategory extends Blockly.ToolboxCategory {
 
   createIconDom_() {
     const icon = document.createElement('img');
-    icon.src = this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg';
-    console.log(icon.src);
+    // icon.src = this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg';
+    icon.setAttribute('style', '-webkit-mask:url("' + this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg") center/contain;mask:url("' + '") center/contain;display:inline-block;background:white')
+    // console.log(icon.src);
     // icon.src = 'https://developers.google.com/blockly/images/logos/logo_only.svg';
     if(window.innerHeight > window.innerWidth){
       icon.width = '25';
       icon.height = '25';
     } else {
-      icon.width = '50';
-      icon.height = '50';
-      icon.setAttribute('style', 'padding: 7px');
+      icon.width = '42';
+      icon.height = '42';
+      icon.setAttribute('style', icon.getAttribute('style') + ';' + 'margin: 7px');
     }
     return icon;
   }
