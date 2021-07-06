@@ -132,7 +132,11 @@ input:checked + .slider:before {
 }
 
 .blocklyTreeLabel {
-	font-family: "Trebuchet MS", sans-serif !important;
+	font-family: "Roboto" !important;
+  font-size: 19px;
+  margin: 14px;
+  margin-left: -4px;
+  margin-right: 0;
 }
 
 .blocklyTreeLabel {

@@ -11,6 +11,8 @@ import './blocks/text.js';
 import {createMinusField} from './field_minus';
 import {createPlusField} from './field_plus';
 
+import { DarkTheme, LightTheme } from './themes.js';
+
 function listVariables() {
   var res = [[Blockly.Msg['SELECT_VARIABLE'], '']];
   for (var i of allVariables) {
@@ -128,7 +130,8 @@ function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionNam
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
       }
-      this.setColour(document.getElementById(blockCategory + "Category").getAttribute('colour'));
+      if (DarkTheme.blockStyles[blockCategory.toLowerCase() + '_blocks'] != undefined) this.setStyle(blockCategory.toLowerCase() + '_blocks');
+      else this.setColour(document.getElementById(blockCategory + "Category").getAttribute('colour'));
     }
   };
   if (typeof blockFunctionName == "function") {
@@ -284,7 +287,7 @@ function initBlocks() {
   }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_IF_MSG_IF'], function(self, blockToAddField) {
     blockToAddField.setCheck(["Number", "Boolean"]);
   }, null,Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_IF_TOOLTIP'],
-    Blockly.Msg['CONTROLS_IF_HELPURL']
+    Blockly.Msg['CONTROLS_IF_HELPURL'], false, undefined, 'logic_blocks'
   );
 
   addBlock("logic_elseif", "Logic", '', function(block) {
@@ -302,8 +305,8 @@ function initBlocks() {
     return code;
   }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_IF_MSG_ELSEIF'], function(self, blockToAddField) {
     blockToAddField.setCheck(["Number", "Boolean"]);
-  }, null,Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_IF_TOOLTIP'],
-    Blockly.Msg['CONTROLS_IF_HELPURL']
+  }, null,Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_ELSE_IF_TOOLTIP'] || Blockly.Msg['CONTROLS_IF_TOOLTIP'],
+    Blockly.Msg['CONTROLS_ELSE_IF_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL'], false, undefined, 'logic_blocks'
   );
 
   addBlock("logic_else", "Logic", '', function(block) {
@@ -314,8 +317,8 @@ function initBlocks() {
         }
     return ' else {\n' + code + '}\n';
   }, [], [false],'', [Blockly.Msg['CONTROLS_IF_MSG_ELSE'], null, Blockly.Msg['CONTROLS_IF_MSG_THEN']],
-    Blockly.Msg['CONTROLS_IF_ELSE_TOOLTIP'],
-    Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL']
+    Blockly.Msg['CONTROLS_ELSE_TOOLTIP'] || Blockly.Msg['CONTROLS_IF_TOOLTIP'],
+    Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL'], false, undefined, 'logic_blocks'
   );
 
   addLabel("Advanced", "Logic", "smaller-title");
@@ -351,7 +354,7 @@ function initBlocks() {
   }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_WHILEUNTIL_OPERATOR_WHILE'], function(self, blockToAddField) {
     blockToAddField.setCheck(["Number", "Boolean"]);
   }, null, Blockly.Msg['CONTROLS_WHILEUNTIL_INPUT_DO']], Blockly.Msg['CONTROLS_WHILEUNTIL_TOOLTIP_WHILE'],
-    Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL']
+    Blockly.Msg['CONTROLS_WHILEUNTIL_HELPURL'], false, undefined, 'loop_blocks'
   );
 
   addBlock("control_break", "Loops");
@@ -466,7 +469,7 @@ function initBlocks() {
       ['!=?', 'NEQ']
   ]), 'OP');}, null], Blockly.Msg['LOGIC_COMPARE_ADVANCED_TOOLTIP'], Blockly.Msg['LOGIC_COMPARE_ADVANCED_HELPURL'], 'Boolean');
 
-  addCategory("Class", "Classes", "#ba6699");
+  addCategory("Class", "Classes", "#BD488E");
   addCategory("Console", "Console", "3344dd");
   addBlock("text_print", "Console", createShadows(['abc']).replace('ARG0', 'TEXT'))
   addBlock("text_input", "Console", createShadows([1, 10]), "input", [], [], '',
@@ -616,7 +619,7 @@ function initBlocks() {
         }
       ],
       "output": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_CREATE_INSTANCE_HELPURL}",
       "tooltip": "%{BKY_CLASS_CREATE_INSTANCE_TOOLTIP}",
       "mutator": "create_instance_mutator",
@@ -637,7 +640,7 @@ function initBlocks() {
         }
       ],
       "output": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_CALL_METHOD_HELPURL}",
       "tooltip": "%{BKY_CLASS_CALL_METHOD_TOOLTIP}",
       "mutator": "create_instance_mutator",
@@ -658,7 +661,7 @@ function initBlocks() {
         }
       ],
       "output": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_CALL_METHOD_HELPURL}",
       "tooltip": "%{BKY_CLASS_CALL_METHOD_TOOLTIP}",
       "mutator": "create_instance_mutator",
@@ -680,7 +683,7 @@ function initBlocks() {
       ],
       "previousStatement": null,
       "nextStatement": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_CALL_METHOD_HELPURL}",
       "tooltip": "%{BKY_CLASS_CALL_METHOD_TOOLTIP}",
       "mutator": "create_instance_mutator",
@@ -701,7 +704,7 @@ function initBlocks() {
         }
       ],
       "output": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_GET_PROPERTY_HELPURL}",
       "tooltip": "%{BKY_CLASS_GET_PROPERTY_TOOLTIP}",
       "inputsInline": true,
@@ -721,7 +724,7 @@ function initBlocks() {
         }
       ],
       "output": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_GET_STATIC_PROPERTY_HELPURL}",
       "tooltip": "%{BKY_CLASS_GET_STATIC_PROPERTY_TOOLTIP}",
       "inputsInline": true,
@@ -740,7 +743,7 @@ function initBlocks() {
       ],
       "previousStatement": null,
       "nextStatement": null,
-      // "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      // "style": "class_blocks",
       "style": 'variable_blocks',
       "tooltip": "%{BKY_CLASS_DECLARE_STATIC_PROPERTY_TOOLTIP}",
       "helpUrl": "%{BKY_CLASS_DECLARE_STATIC_PROPERTY_HELPURL}",
@@ -760,7 +763,7 @@ function initBlocks() {
       ],
       "previousStatement": null,
       "nextStatement": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_CALL_METHOD_STATEMENT_HELPURL}",
       "tooltip": "%{BKY_CLASS_CALL_METHOD_STATEMENT_TOOLTIP}",
       "mutator": "create_instance_mutator",
@@ -785,7 +788,7 @@ function initBlocks() {
       ],
       "previousStatement": null,
       "nextStatement": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_SET_PROPERTY_HELPURL}",
       "tooltip": "%{BKY_CLASS_SET_PROPERTY_TOOLTIP}",
       "inputsInline": true,
@@ -809,7 +812,7 @@ function initBlocks() {
       ],
       "previousStatement": null,
       "nextStatement": null,
-      "colour": document.getElementById("ClassCategory").getAttribute('colour'),
+      "style": "class_blocks",
       "helpUrl": "%{BKY_CLASS_SET_STATIC_PROPERTY_HELPURL}",
       "tooltip": "%{BKY_CLASS_SET_STATIC_PROPERTY_TOOLTIP}",
       "inputsInline": true,
