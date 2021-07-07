@@ -98,7 +98,7 @@ function createWorkspace(blocklyDiv, options) {
       onStartUsed--;
     }
     if (event.element == 'category' && event.newValue == null) {
-      Blockly.hideFlyOut();
+      if (Blockly.hideFlyOut) Blockly.hideFlyOut();
     }
     if (!injecting) runCode();
   });

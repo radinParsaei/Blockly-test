@@ -139,6 +139,10 @@ input:checked + .slider:before {
   margin-right: 0;
 }
 
+.horizontal .blocklyTreeLabel {
+  margin: 5px;
+}
+
 .blocklyTreeLabel {
   color: white;
 }
@@ -283,7 +287,7 @@ span[action=openCommandPallete] {
 }
 div.child {
   font-family: "Source Code Pro", monospace !important;
-  background: rgba(180, 180, 180, 0.6);
+  background: rgba(180, 180, 180, 0.35);
   text-align: center;
   user-select: none;
   color: #1A9FFF;
@@ -291,7 +295,7 @@ div.child {
   margin-bottom: 10px;
   margin-top: -171px;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: 7px;
 }
 #grid.dark div.child {
   background: rgba(39, 39, 39, 0.5);

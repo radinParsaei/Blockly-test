@@ -18,7 +18,7 @@ class CustomCategory extends Blockly.ToolboxCategory {
       label.style.color = this.colour_;
       this.iconDom_.style.color = this.colour_;
     } else {
-      this.rowDiv_.firstChild.childNodes[0].setAttribute('style', this.rowDiv_.firstChild.childNodes[0].getAttribute('style').replace(/background:.*\d+\); margin/, 'background:white; margin'));
+      this.rowDiv_.firstChild.childNodes[0].setAttribute('style', this.rowDiv_.firstChild.childNodes[0].getAttribute('style').replace(/background:.*\d+\); margin/, 'background:white; margin').replace(/background:.*\d+\); color/, 'background:white; color'));
       this.rowDiv_.style.backgroundColor = this.colour_;
       label.style.color = 'white';
       this.iconDom_.style.color = 'white';
@@ -32,7 +32,9 @@ class CustomCategory extends Blockly.ToolboxCategory {
     icon.setAttribute('style', '-webkit-mask:url("' + this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg") center/contain;mask:url("' + '") center/contain;display:inline-block;background:white')
     // console.log(icon.src);
     // icon.src = 'https://developers.google.com/blockly/images/logos/logo_only.svg';
-    if(window.innerHeight > window.innerWidth){
+    var label = this.rowDiv_;
+    if (window.innerHeight > window.innerWidth) {
+      if (label != null) label.classList.add('horizontal');
       icon.width = '25';
       icon.height = '25';
     } else {
