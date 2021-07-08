@@ -163,6 +163,11 @@ input:checked + .slider:before {
 .blocklyTreeRow div * {
   transition: background 0.22s ease-in-out;
 }
+path.blocklyPath[fill="none"], .blocklyOutlinePath[filter] {
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 3.5px;
+  filter: none;
+}
 .customIcon {
   color: white;
 }
