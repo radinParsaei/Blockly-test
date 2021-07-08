@@ -1348,7 +1348,7 @@ function initBlocks() {
       this.setNextStatement(true, null);
 
       this.appendValueInput("DATA").appendField(Blockly.Msg['VARIABLES_SET'].split('%1')[0]).appendField(field, 'NAME').appendField(Blockly.Msg['VARIABLES_SET'].split('%1')[1].split('%2')[0]);
-      this.setColour(document.getElementById("VariablesCategory").getAttribute('colour'));
+      this.setStyle('variable_blocks')
     }
   };
 
@@ -1375,7 +1375,7 @@ function initBlocks() {
       this.setOutput(true, null);
 
       this.appendDummyInput().appendField(Blockly.Msg['VARIABLES_GET']).appendField(field, 'NAME');
-      this.setColour(document.getElementById("VariablesCategory").getAttribute('colour'));
+      this.setStyle('variable_blocks')
     }
   };
 

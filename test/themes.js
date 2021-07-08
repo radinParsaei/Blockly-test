@@ -44,9 +44,9 @@ let DarkTheme = Blockly.Theme.defineTheme('DarkTheme', {
       'colourTertiary': '#CB660A',
     },
     'variable_blocks': {
-      'colourPrimary': '#a55b99',
-      'colourSecondary': '#dbbdd6',
-      'colourTertiary': '#84497a',
+      'colourPrimary': '#7815F5',
+      'colourSecondary': '#8926F6',
+      'colourTertiary': '#6704E4',
     },
     'variable_dynamic_blocks': {
       'colourPrimary': '#a55b99',
@@ -115,9 +115,9 @@ let LightTheme = Blockly.Theme.defineTheme('LightTheme', {
       'colourTertiary': '#CB660A',
     },
     'variable_blocks': {
-      'colourPrimary': '#a55b99',
-      'colourSecondary': '#dbbdd6',
-      'colourTertiary': '#84497a',
+      'colourPrimary': '#7815F5',
+      'colourSecondary': '#8926F6',
+      'colourTertiary': '#6704E4',
     },
     'variable_dynamic_blocks': {
       'colourPrimary': '#a55b99',
