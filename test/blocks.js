@@ -212,6 +212,17 @@ function createShadows(values) {
   return out;
 }
 
+var callBackCounter = 0;
+var clickListeners = []
+
+function addButton(category, text, onClick) {
+  var element = document.createElement("button");
+  element.setAttribute('text', text);
+  element.setAttribute('callbackKey', 'callback' + (++callBackCounter));
+  document.getElementById(category + "Category").appendChild(element);
+  clickListeners.push(workspace => workspace.registerButtonCallback('callback' + callBackCounter, onClick))
+}
+
 function initBlocks() {
   // addBlock("math_arithmetic", "Math", `<field name="OP">ADD</field>
   // <value name="A">
@@ -1485,4 +1496,4 @@ function initBlocks() {
   // Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE_METHOD'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'];
 }
 
-export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel };
+export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel, addButton, clickListeners };

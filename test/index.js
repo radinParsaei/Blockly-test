@@ -2,7 +2,7 @@ import * as Blockly from 'blockly/core';
 import * as En from 'blockly/msg/en';
 Blockly.setLocale(En);
 import {DisableTopBlocks} from '@blockly/disable-top-blocks';
-import { initBlocks, addCategory, addBlock } from './blocks.js';
+import { initBlocks, addCategory, addBlock, addButton, clickListeners } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 import './procedures.js';
@@ -107,7 +107,6 @@ function createWorkspace(blocklyDiv, options) {
 
 export { Blockly };
 
-
 import './genCode.js';
 import { DarkTheme, LightTheme } from './themes.js';
 import './toolbox.js'
@@ -175,6 +174,9 @@ function injectBlockly() {
   }
   document.body.appendChild(sheet);
   createWorkspace(document.getElementById('root'), options);
+  for (var i of clickListeners) {
+    i(workspace)
+  }
   if (isFirst) {
     isFirst = false;
   } else {
@@ -192,6 +194,23 @@ document.addEventListener('DOMContentLoaded', function() {
   }, [], [], '', [function(block) {
     block.appendDummyInput().appendField(Blockly.Msg['IMPORT_IMPORT']).appendField(new Blockly.FieldTextInput(), "NAME");
   }], Blockly.Msg['IMPORT_IMPORT_TOOLTIP'], Blockly.Msg['IMPORT_IMPORT_HELPURL']);
+  addButton('Import', 'import package', function() {
+    Swal.fire({
+      title: 'please enter repository name',
+      input: 'text',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'repository name can\'t be empty'
+        }
+      }
+    }).then((repoName) => {
+      if (repoName.value) {
+        fetch(`https://api.github.com/repos/${repoName.value}/branches`).then(response => response.json())
+        .then(data => fetch(`https://raw.githubusercontent.com/${repoName.value}/${data[0].name}/${repoName.value.split('/')[1]}.js`).then(response => response.text()).then(code => eval(code)).catch(a => Swal.fire(a.toString())))
+        .catch(a => Swal.fire(a.toString()))
+      }
+    })
+  })
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
   Blockly.Msg["CATEGORY_LOGIC"] = "Logic";
   Blockly.Msg["CATEGORY_LOOPS"] = "Loops";
@@ -512,4 +531,4 @@ if (localStorage.getItem('currentDir') == null)
 
 var Messages = Blockly.Msg;
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal };
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners };
