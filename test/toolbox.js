@@ -1,5 +1,7 @@
 import * as Blockly from 'blockly/core';
 
+var icons = {}
+
 class CustomCategory extends Blockly.ToolboxCategory {
   constructor(a, b, c) {
     super(a, b, c);
@@ -29,7 +31,8 @@ class CustomCategory extends Blockly.ToolboxCategory {
   createIconDom_() {
     const icon = document.createElement('img');
     // icon.src = this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg';
-    icon.setAttribute('style', '-webkit-mask:url("' + this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg") center/contain;mask:url("' + '") center/contain;display:inline-block;background:white')
+    let url = Object.keys(icons).includes(this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase())? icons[this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase()] : this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg';
+    icon.setAttribute('style', '-webkit-mask:url("' + url + '") center/contain;mask:url("' + url + '") center/contain;display:inline-block;background:white')
     // console.log(icon.src);
     // icon.src = 'https://developers.google.com/blockly/images/logos/logo_only.svg';
     var label = this.rowDiv_;
@@ -50,3 +53,5 @@ Blockly.registry.register(
     Blockly.registry.Type.TOOLBOX_ITEM,
     Blockly.ToolboxCategory.registrationName,
     CustomCategory, true);
+
+export { icons }

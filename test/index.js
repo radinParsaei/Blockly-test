@@ -2,12 +2,13 @@ import * as Blockly from 'blockly/core';
 import * as En from 'blockly/msg/en';
 Blockly.setLocale(En);
 import {DisableTopBlocks} from '@blockly/disable-top-blocks';
-import { initBlocks, addCategory, addBlock, addButton, clickListeners } from './blocks.js';
+import { initBlocks, addCategory, addBlock, addButton, clickListeners, createShadows, createBlocksFromYAML } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 import './procedures.js';
 import html2canvas from 'html2canvas';
 // import Swal from 'sweetalert2';
+import './toolbox.js';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 Blockly.Flyout.prototype.MARGIN = 70;
@@ -109,7 +110,6 @@ export { Blockly };
 
 import './genCode.js';
 import { DarkTheme, LightTheme } from './themes.js';
-import './toolbox.js'
 
 function injectBlockly() {
   var xml;
@@ -211,6 +211,30 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
   })
+  let yml = `
+---
+  Test:
+    color: ff0000
+    icon: text.svg
+    blocks:
+      - test:
+          shadows:
+            - 1
+          args:
+            a: value
+            b: statement
+          function: test
+          code: func test(a, b) {\
+  print(a)\
+  b()\
+}
+          messages:
+            - test
+            -
+          hasReturn: false
+          tooltip: test
+`
+  // createBlocksFromYAML(yml)
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
   Blockly.Msg["CATEGORY_LOGIC"] = "Logic";
   Blockly.Msg["CATEGORY_LOOPS"] = "Loops";

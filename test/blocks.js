@@ -10,8 +10,10 @@ import './blocks/math.js';
 import './blocks/text.js';
 import {createMinusField} from './field_minus';
 import {createPlusField} from './field_plus';
+import { icons } from './toolbox.js';
 
 import { DarkTheme, LightTheme } from './themes.js';
+const yaml = require('js-yaml');
 
 function listVariables() {
   var res = [[Blockly.Msg['SELECT_VARIABLE'], '']];
@@ -223,6 +225,63 @@ function addButton(category, text, onClick) {
   clickListeners.push(workspace => workspace.registerButtonCallback('callback' + callBackCounter, onClick))
 }
 
+function lighter(colorCode) {
+  colorCode = colorCode.toUpperCase()
+  var res = ''
+  for (var i of colorCode) {
+    var code = i.codePointAt(0) + 1
+    if (code > 70) code = 70
+    res += String.fromCharCode(code)
+  }
+  return res
+}
+
+function darker(colorCode) {
+  colorCode = colorCode.toUpperCase()
+  var res = ''
+  for (var i of colorCode) {
+    var code = i.codePointAt(0) - 1
+    if (code < 48) code = 48
+    res += String.fromCharCode(code)
+  }
+  return res
+}
+
+function createBlocksFromYAML(yml) {
+  let parsed = yaml.load(yml)
+  console.log(parsed);
+  for (var i of Object.keys(parsed)) {
+    if (parsed[i]['color']) {
+      let categoryName = i.replace(' ', '_').toLowerCase();
+      DarkTheme.blockStyles[categoryName + "_blocks"] = {
+        'colourPrimary': '#' + parsed[i]['color'],
+        'colourSecondary': '#' + lighter(parsed[i]['color']),
+        'colourTertiary': '#' + darker(parsed[i]['color']),
+      }
+      LightTheme.blockStyles["class_blocks"] = {
+        'colourPrimary': '#' + parsed[i]['color'],
+        'colourSecondary': '#' + lighter(parsed[i]['color']),
+        'colourTertiary': '#' + darker(parsed[i]['color']),
+      }
+      icons[categoryName] = parsed[i]['icon']
+      addCategory(categoryName, i, '#' + parsed[i]['color'])
+      for (var j of parsed[i]['blocks']) {
+        var messages = []
+        for (var k of j[Object.keys(j)[0]]['messages']) {
+          messages.push(k)
+          messages.push(null)
+        }
+        messages.pop()
+        addBlock(categoryName + '_' + Object.keys(j)[0], categoryName, j[Object.keys(j)[0]]['shadows']? createShadows(j[Object.keys(j)[0]]['shadows']):'', j[Object.keys(j)[0]]['function'],
+          Object.keys(j[Object.keys(j)[0]]['args']), j[Object.keys(j)[0]]['args']? Object.values(j[Object.keys(j)[0]]['args']).map(k => k == 'value'):[],
+          j[Object.keys(j)[0]]['code']? j[Object.keys(j)[0]]['code']:'', messages, j[Object.keys(j)[0]]['tooltip']? j[Object.keys(j)[0]]['tooltip']:'', j[Object.keys(j)[0]]['helpUrl']? j[Object.keys(j)[0]]['helpUrl']:'',
+          j[Object.keys(j)[0]]['hasReturn']? j[Object.keys(j)[0]]['hasReturn']:false, true
+          );
+        }
+    }
+  }
+}
+
 function initBlocks() {
   // addBlock("math_arithmetic", "Math", `<field name="OP">ADD</field>
   // <value name="A">
@@ -298,7 +357,7 @@ function initBlocks() {
   }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_IF_MSG_IF'], function(self, blockToAddField) {
     blockToAddField.setCheck(["Number", "Boolean"]);
   }, null,Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_IF_TOOLTIP'],
-    Blockly.Msg['CONTROLS_IF_HELPURL'], false, undefined, 'logic_blocks'
+    Blockly.Msg['CONTROLS_IF_HELPURL']
   );
 
   addBlock("logic_elseif", "Logic", '', function(block) {
@@ -317,7 +376,7 @@ function initBlocks() {
   }, [], [true, false],'', [null, Blockly.Msg['CONTROLS_IF_MSG_ELSEIF'], function(self, blockToAddField) {
     blockToAddField.setCheck(["Number", "Boolean"]);
   }, null,Blockly.Msg['CONTROLS_IF_MSG_THEN']], Blockly.Msg['CONTROLS_ELSE_IF_TOOLTIP'] || Blockly.Msg['CONTROLS_IF_TOOLTIP'],
-    Blockly.Msg['CONTROLS_ELSE_IF_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL'], false, undefined, 'logic_blocks'
+    Blockly.Msg['CONTROLS_ELSE_IF_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL']
   );
 
   addBlock("logic_else", "Logic", '', function(block) {
@@ -329,7 +388,7 @@ function initBlocks() {
     return ' else {\n' + code + '}\n';
   }, [], [false],'', [Blockly.Msg['CONTROLS_IF_MSG_ELSE'], null, Blockly.Msg['CONTROLS_IF_MSG_THEN']],
     Blockly.Msg['CONTROLS_ELSE_TOOLTIP'] || Blockly.Msg['CONTROLS_IF_TOOLTIP'],
-    Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL'], false, undefined, 'logic_blocks'
+    Blockly.Msg['CONTROLS_ELSE_HELPURL'] || Blockly.Msg['CONTROLS_IF_HELPURL']
   );
 
   addLabel("Advanced", "Logic", "smaller-title");
@@ -1496,4 +1555,4 @@ function initBlocks() {
   // Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE_METHOD'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'];
 }
 
-export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel, addButton, clickListeners };
+export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel, addButton, clickListeners, createBlocksFromYAML };
