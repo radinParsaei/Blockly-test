@@ -211,30 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
   })
-  let yml = `
----
-  Test:
-    color: ff0000
-    icon: text.svg
-    blocks:
-      - test:
-          shadows:
-            - 1
-          args:
-            a: value
-            b: statement
-          function: test
-          code: func test(a, b) {\
-  print(a)\
-  b()\
-}
-          messages:
-            - test
-            -
-          hasReturn: false
-          tooltip: test
-`
-  // createBlocksFromYAML(yml)
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
   Blockly.Msg["CATEGORY_LOGIC"] = "Logic";
   Blockly.Msg["CATEGORY_LOOPS"] = "Loops";
@@ -555,4 +531,9 @@ if (localStorage.getItem('currentDir') == null)
 
 var Messages = Blockly.Msg;
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners };
+function refreshBlockly() {
+  document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
+  injectBlockly();
+}
+
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly };

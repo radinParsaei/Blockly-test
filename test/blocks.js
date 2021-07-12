@@ -152,7 +152,7 @@ function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionNam
       if (output) return [code + ')', Blockly.genCode.ORDER_FUNCTION_CALL];
       else return code + ')\n';
     };
-    functionCodes += functionCode;
+    functionCodes += '\n' + functionCode;
   }
 }
 
@@ -249,9 +249,8 @@ function darker(colorCode) {
 
 function createBlocksFromYAML(yml) {
   let parsed = yaml.load(yml)
-  console.log(parsed);
   for (var i of Object.keys(parsed)) {
-    if (parsed[i]['color']) {
+    if (parsed[i]['color'] && parsed[i]['icon'] && parsed[i]['blocks']) {
       let categoryName = i.replace(' ', '_').toLowerCase();
       DarkTheme.blockStyles[categoryName + "_blocks"] = {
         'colourPrimary': '#' + parsed[i]['color'],
@@ -268,7 +267,8 @@ function createBlocksFromYAML(yml) {
       for (var j of parsed[i]['blocks']) {
         var messages = []
         for (var k of j[Object.keys(j)[0]]['messages']) {
-          messages.push(k)
+          if (typeof k == 'string') messages.push(Blockly.Msg[(categoryName + '_' + Object.keys(j)[0] + '_' + k.replace(' ', '_')).toUpperCase()] = k)
+          else messages.push(k)
           messages.push(null)
         }
         messages.pop()
