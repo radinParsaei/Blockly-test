@@ -14,6 +14,7 @@
     <meta name="author" content="radinParsaei">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   </head>
   <body style="margin: 0; padding: 0; height: 100% !important;" id="main" class="dark expand" onload="main()">
     <xml id="toolbox" style="display: none">
@@ -193,6 +194,7 @@
       </span>
       <a href="javascript:openFileBrowser()" class="material-icons home_btn" style="display:inline-block; float:right; margin-right: 5px">home</a>
     </div>
+    <div id="popup" hidden style="margin: 0; padding: 0; height: 100%"></div>
     <script type="text/javascript" src="https://unpkg.com/browserfs@2.0.0/dist/browserfs.min.js"></script>
     <script type="text/javascript">
       var functions = {};
@@ -225,6 +227,36 @@
         editor.resize();
       }
 
+      function openPopUp() {
+        const popup = document.getElementById('popup')
+        $('#popup').fadeIn(200)
+        popup.innerHTML = ''
+        return popup
+      }
+
+      function closePopUp() {
+        $('#popup').fadeOut(200)
+      }
+
+      window.addEventListener('click', function(e){   
+        if (document.getElementById('popup').contains(e.target) && !document.querySelector('#popup *').contains(e.target)){
+          closePopUp()
+        }
+      });
+
+      function createPopUpBody(popup) {
+        const body = document.createElement('div')
+        body.classList.add('popupbody')
+        popup.appendChild(body)
+        return body
+      }
+
+      function injectCss(css) {
+        const _css = document.createElement('style')
+        _css.innerHTML = css
+        document.head.appendChild(_css)
+      }
+
       function addMenuOption(imgSrc, name, callBack, id) {
         var child = document.createElement('img');
         child.setAttribute('src', imgSrc);
@@ -254,6 +286,39 @@
         openButtomSheet('console').appendChild(div);
         Compiler.run();
       }, 'run');
+
+      addMenuOption('logic.svg', 'add package', function() {
+        // Swal.fire({
+        //   title: 'please enter repository name',
+        //   input: 'text',
+        //   inputValidator: (value) => {
+        //     if (!value) {
+        //       return 'repository name can\'t be empty'
+        //     }
+        //   }
+        // }).then((repoName) => {
+        //   if (repoName.value) {
+        //     fetch(`https://api.github.com/repos/${repoName.value}/branches`).then(response => response.json())
+        //     .then(data => fetch(`https://raw.githubusercontent.com/${repoName.value}/${data[0].name}/${repoName.value.split('/')[1]}.js`).then(response => response.text()).then(code => eval(code)).catch(a => Swal.fire(a.toString())))
+        //     .catch(a => Swal.fire(a.toString()))
+        //   }
+        // })
+        const popup = createPopUpBody(openPopUp())
+        popup.setAttribute('style', 'direction: rtl')
+        popup.innerHTML = '<input class="input" id="pkginput" placeholder="search for package name/enter package repo" style="direction: ltr; margin-top: 20px; padding: 10px" type="text"/><div style="width: 100%; height: 57%"></div><button id="submitpkg" style="position: absolute; bottom: 5px; right: 3px" class="swal2-confirm swal2-styled">Add package</button>'
+        document.getElementById('submitpkg').addEventListener('click', function() {
+          closePopUp()
+          fetch(`https://api.github.com/repos/${document.getElementById('pkginput').value}/branches`).then(response => response.json())
+          .then(data => fetch(`https://raw.githubusercontent.com/${document.getElementById('pkginput').value}/${data[0].name}/${document.getElementById('pkginput').value.split('/')[1]}.js`).then(response => response.text()).then(code => eval(code)).catch(a => Swal.fire(a.toString())))
+          .catch(a => Swal.fire(a.toString()))
+        })
+      }, 'addpkg')
+
+      injectCss(`.menuitem#addpkg {
+        width: 95px;
+        max-width: 95px;
+        margin-right: 10px;
+      }`)
 
       function changeTheme2() {
          changeTheme();

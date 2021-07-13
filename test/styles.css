@@ -520,3 +520,43 @@ body.dark {
 #filepath.dark {
   color: white;
 }
+#popup {
+  background-color: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 98;
+}
+#menu img {
+  margin-top: 5px;
+  height: 25px;
+  margin-bottom: -3px;
+}
+.popupbody {
+  background-color: rgba(255, 255, 255);
+  width: 70%;
+  height: 80%;
+  position: absolute;
+  left: 15%;
+  top: 8%;
+  border-radius: 3%;
+}
+.dark .popupbody {
+  background-color: rgb(30, 34, 45);
+}
+.input {
+  background: none;
+  border: none;
+  user-select: none;
+  outline: 0;
+  width: 100%;
+  border-bottom: 1px rgba(0, 0, 0, 0.3) solid;
+  font-size: medium;
+  font-family: inherit;
+}
+.dark .input {
+  color: white;
+  border-bottom: 1px rgba(255, 255, 255, 0.3) solid;
+}

@@ -195,21 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     block.appendDummyInput().appendField(Blockly.Msg['IMPORT_IMPORT']).appendField(new Blockly.FieldTextInput(), "NAME");
   }], Blockly.Msg['IMPORT_IMPORT_TOOLTIP'], Blockly.Msg['IMPORT_IMPORT_HELPURL']);
   addButton('Import', 'import package', function() {
-    Swal.fire({
-      title: 'please enter repository name',
-      input: 'text',
-      inputValidator: (value) => {
-        if (!value) {
-          return 'repository name can\'t be empty'
-        }
-      }
-    }).then((repoName) => {
-      if (repoName.value) {
-        fetch(`https://api.github.com/repos/${repoName.value}/branches`).then(response => response.json())
-        .then(data => fetch(`https://raw.githubusercontent.com/${repoName.value}/${data[0].name}/${repoName.value.split('/')[1]}.js`).then(response => response.text()).then(code => eval(code)).catch(a => Swal.fire(a.toString())))
-        .catch(a => Swal.fire(a.toString()))
-      }
-    })
+    document.getElementById('addpkg').click()
   })
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
   Blockly.Msg["CATEGORY_LOGIC"] = "Logic";

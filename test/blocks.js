@@ -257,7 +257,7 @@ function createBlocksFromYAML(yml) {
         'colourSecondary': '#' + lighter(parsed[i]['color']),
         'colourTertiary': '#' + darker(parsed[i]['color']),
       }
-      LightTheme.blockStyles["class_blocks"] = {
+      LightTheme.blockStyles[categoryName + "_blocks"] = {
         'colourPrimary': '#' + parsed[i]['color'],
         'colourSecondary': '#' + lighter(parsed[i]['color']),
         'colourTertiary': '#' + darker(parsed[i]['color']),
