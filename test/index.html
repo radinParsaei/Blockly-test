@@ -305,7 +305,14 @@
         // })
         const popup = createPopUpBody(openPopUp())
         popup.setAttribute('style', 'direction: rtl')
-        popup.innerHTML = '<input class="input" id="pkginput" placeholder="search for package name/enter package repo" style="direction: ltr; margin-top: 20px; padding: 10px" type="text"/><div style="width: 100%; height: 57%"></div><button id="submitpkg" style="position: absolute; bottom: 5px; right: 3px" class="swal2-confirm swal2-styled">Add package</button>'
+        popup.innerHTML = '<input class="input" autocomplete="off" id="pkginput" placeholder="search for package name/enter package repo" style="direction: ltr; margin-top: 20px; padding: 10px" type="text"/><div style="width: 100%; height: calc(100% - 133px); margin-top: 10px; direction: ltr; padding-left: 10px; padding-right: 10px; overflow: scroll" class="layout2" id="category_grid"></div><button id="submitpkg" style="position: absolute; bottom: 5px; right: 3px" class="swal2-confirm swal2-styled">Add package</button>'
+        fetch('pkglist').then(response => response.text()).then(function(list) {
+          for (var i of list.split('\n')) {
+            if (i.trim() == '') continue
+            document.getElementById('category_grid').innerHTML += `<div class="package_item"><img style="width: 100%; max-height: 70%; object-fit: scale-down" src="https://opengraph.githubassets.com/a/${i}"/><p class="title" style="margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden">${i}</p><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" target="_blank" href="https://github.com/${i.split('/')[0]}">by ${i.split('/')[0]}</a><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" href="javascript:document.getElementById('pkginput').value='${i}';document.getElementById('submitpkg').click()">Add</a></div>`
+          }
+        }).catch(a => Swal.fire(a.toString()))
+          .catch(a => Swal.fire(a.toString()))
         document.getElementById('submitpkg').addEventListener('click', function() {
           closePopUp()
           fetch(`https://api.github.com/repos/${document.getElementById('pkginput').value}/branches`).then(response => response.json())

@@ -263,10 +263,34 @@ span[action=openCommandPallete] {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   grid-gap: 2.5%;
 }
+.layout2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-gap: 2.5%;
+}
+.package_item {
+  background-color: rgba(0, 0, 0, 0.3);
+  height: 48%;
+}
+@media only screen and (max-width: 1500px) {
+  .layout2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-gap: 2.5%;
+  }
+  .package_item {
+    height: 100%;
+  }
+}
 @media only screen and (max-width: 1000px) {
   .layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-gap: 2.5%;
+  }
+  .layout2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     grid-gap: 2.5%;
   }
 }
@@ -559,4 +583,17 @@ body.dark {
 .dark .input {
   color: white;
   border-bottom: 1px rgba(255, 255, 255, 0.3) solid;
+}
+div.child {
+  margin-bottom: 20px;
+}
+div.child.action {
+  margin-top: 0;
+  color: rgba(210, 210, 210);
+}
+.title {
+  font-size: larger;
+}
+.dark .title {
+  color: white;
 }
