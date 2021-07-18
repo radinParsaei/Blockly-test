@@ -457,7 +457,7 @@ public class BlockTool {
             String functionName = ((SyntaxTree.CallFunction) val).getFunctionName().split(":")[0];
             ((SyntaxTree.CallFunction) val).findFunction();
             StringBuilder tmp = new StringBuilder("<block type=\"");
-            if (((SyntaxTree.CallFunction) val).getFunctionName().startsWith("#C") && SyntaxTree.staticFunctions.contains(((SyntaxTree.CallFunction) val).getFunctionName())) {
+            if (((SyntaxTree.CallFunction) val).getFunctionName().startsWith("#C") && SyntaxTree.staticFunctions.contains(((SyntaxTree.CallFunction) val).getFunctionName()) && getFunctionBlock(((SyntaxTree.CallFunction) val).getFunctionName()) == null) {
                 if (parentIsExecuteValue) {
                     StringBuilder stringBuilder = new StringBuilder("<block type=\"class_call_static_method_statement\"><mutation items=\"")
                             .append(((SyntaxTree.CallFunction) val).getArgs().length).append("\"></mutation><field name=\"NAME\">")
@@ -633,6 +633,7 @@ public class BlockTool {
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
             boolean isInstanceOfArray = (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
+                    (((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance() != null) &&
                     Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE) &&
                     Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
                     Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array"));

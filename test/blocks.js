@@ -81,7 +81,9 @@ function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionNam
   element.setAttribute('type', blockName);
   document.getElementById(blockCategory + "Category").appendChild(element);
   element.innerHTML = blockDefaultValues;
+  const blockFunctionName_ = blockFunctionName;
   if (blockFunctionName != undefined) {
+    if (typeof blockFunctionName == 'string' && blockFunctionName.includes('.')) blockFunctionName = '#C' + blockFunctionName.replace('.', '#')
     var functionNameInBackend = blockFunctionName + ":";
     for (var tmp of blockFunctionParameters) {
       functionNameInBackend += "," + tmp;
@@ -141,7 +143,7 @@ function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionNam
   } else {
     Blockly.genCode.addReservedWords(blockFunctionName);
     Blockly.genCode[blockName] = function(block) {
-      var code = blockFunctionName + "(";
+      var code = blockFunctionName_ + "(";
       for (var i = 0; i < paramTypes.length; i++) {
         if (paramTypes[i])
           code += Blockly.genCode.valueToCode(block, 'ARG' + i, Blockly.genCode.ORDER_ATOMIC);
@@ -249,6 +251,7 @@ function darker(colorCode) {
 
 function createBlocksFromYAML(yml) {
   let parsed = yaml.load(yml)
+  console.log(parsed);
   for (var i of Object.keys(parsed)) {
     if (parsed[i]['color'] && parsed[i]['icon'] && parsed[i]['blocks']) {
       let categoryName = i.replace(' ', '_').toLowerCase();
@@ -272,6 +275,7 @@ function createBlocksFromYAML(yml) {
           messages.push(null)
         }
         messages.pop()
+        console.log(j[Object.keys(j)[0]]['function']);
         addBlock(categoryName + '_' + Object.keys(j)[0], categoryName, j[Object.keys(j)[0]]['shadows']? createShadows(j[Object.keys(j)[0]]['shadows']):'', j[Object.keys(j)[0]]['function'],
           Object.keys(j[Object.keys(j)[0]]['args']), j[Object.keys(j)[0]]['args']? Object.values(j[Object.keys(j)[0]]['args']).map(k => k == 'value'):[],
           j[Object.keys(j)[0]]['code']? j[Object.keys(j)[0]]['code']:'', messages, j[Object.keys(j)[0]]['tooltip']? j[Object.keys(j)[0]]['tooltip']:'', j[Object.keys(j)[0]]['helpUrl']? j[Object.keys(j)[0]]['helpUrl']:'',
