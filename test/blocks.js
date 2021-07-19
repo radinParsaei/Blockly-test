@@ -251,7 +251,6 @@ function darker(colorCode) {
 
 function createBlocksFromYAML(yml) {
   let parsed = yaml.load(yml)
-  console.log(parsed);
   for (var i of Object.keys(parsed)) {
     if (parsed[i]['color'] && parsed[i]['icon'] && parsed[i]['blocks']) {
       let categoryName = i.replace(' ', '_').toLowerCase();
@@ -275,7 +274,6 @@ function createBlocksFromYAML(yml) {
           messages.push(null)
         }
         messages.pop()
-        console.log(j[Object.keys(j)[0]]['function']);
         addBlock(categoryName + '_' + Object.keys(j)[0], categoryName, j[Object.keys(j)[0]]['shadows']? createShadows(j[Object.keys(j)[0]]['shadows']):'', j[Object.keys(j)[0]]['function'],
           Object.keys(j[Object.keys(j)[0]]['args']), j[Object.keys(j)[0]]['args']? Object.values(j[Object.keys(j)[0]]['args']).map(k => k == 'value'):[],
           j[Object.keys(j)[0]]['code']? j[Object.keys(j)[0]]['code']:'', messages, j[Object.keys(j)[0]]['tooltip']? j[Object.keys(j)[0]]['tooltip']:'', j[Object.keys(j)[0]]['helpUrl']? j[Object.keys(j)[0]]['helpUrl']:'',

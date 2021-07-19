@@ -17,139 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   </head>
   <body style="margin: 0; padding: 0; height: 100% !important;" id="main" class="dark expand" onload="main()">
-    <xml id="toolbox" style="display: none">
-      <category id="LogicCategory" name="%{BKY_CATEGORY_LOGIC}" colour="#48A1BD">
-        <block type="logic_boolean">
-          <field name="BOOL">TRUE</field>
-        </block>
-        <block type="logic_null"></block>
-        <block type="logic_compare"></block>
-        <block type="logic_operation"></block>
-        <block type="logic_negate"></block>
-      </category>
-      <category id="LoopsCategory" name="%{BKY_CATEGORY_LOOPS}" colour="#48BD4D"></category>
-      <category id="MathCategory" name="%{BKY_CATEGORY_MATH}" colour="#BD48A3">
-        <block type="math_number">
-          <field name="NUM">0</field>
-        </block>
-        <block type="math_arithmetic" gap="10">
-          <field name="OP">ADD</field>
-          <value name="A">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-          <value name="B">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-        </block>
-        <block type="math_arithmetic" gap="10">
-          <field name="OP">MINUS</field>
-          <value name="A">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-          <value name="B">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-        </block>
-        <block type="math_arithmetic" gap="10">
-          <field name="OP">MULTIPLY</field>
-          <value name="A">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-          <value name="B">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-        </block>
-        <block type="math_arithmetic" gap="10">
-          <field name="OP">DIVIDE</field>
-          <value name="A">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-          <value name="B">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-        </block>
-        <block type="math_arithmetic">
-          <field name="OP">POWER</field>
-          <value name="A">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-          <value name="B">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-        </block>
-        <block type="math_modulo">
-          <value name="DIVIDEND">
-            <shadow type="math_number">
-              <field name="NUM">64</field>
-            </shadow>
-          </value>
-          <value name="DIVISOR">
-            <shadow type="math_number">
-              <field name="NUM">10</field>
-            </shadow>
-          </value>
-        </block>
-      </category>
-      <category id="TextCategory" name="%{BKY_CATEGORY_TEXT}" colour="#CB660A">
-        <block type="text">
-          <field name="TEXT"></field>
-        </block>
-        <block type="text_changeCase">
-          <value name="TEXT">
-            <shadow type="text">
-              <field name="TEXT">abc</field>
-            </shadow>
-          </value>
-        </block>
-        <block type="text_trim">
-          <field name="MODE">BOTH</field>
-          <value name="TEXT">
-            <shadow type="text">
-              <field name="TEXT">abc</field>
-            </shadow>
-          </value>
-        </block>
-        <block type="text_charAt">
-          <mutation at="true"></mutation>
-          <field name="WHERE">FROM_START</field>
-          <value name="VALUE">
-            <shadow type="text">
-              <field name="TEXT">abc</field>
-            </shadow>
-          </value>
-        </block>
-      </category>
-      <category id="ListCategory" name="%{BKY_CATEGORY_LIST}" colour="#9FBD48">
-        <block type="lists_create_with" gap="10"><mutation items="0" ></mutation></block>
-        <block type="lists_create_with"></block>
-      </category>
-      <category name="%{BKY_CATEGORY_VARIABLE}" colour="#7815F5" id="VariablesCategory">
-        <block type="variable_declare"></block>
-        <block type="variable_set"></block>
-        <block type="variable_get"></block>
-      </category>
-      <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#9848BD" custom="PROCEDURE"></category>
-    </xml>
+    <xml id="toolbox" style="display: none"></xml>
     <div id="top_div" style="max-width: 100%; overflow: auto; display: inline-flex;">
       <a href="javascript:paste()"><span class="material-icons file_action top_bar_action" id="paste_button" style="margin-top: 10px">content_paste</span></a>
       <p id="filepath" class="dark"></p>
@@ -312,22 +180,30 @@
           for (var i of list.split('\n')) {
             if (i.trim() == '') continue
             packages.push(i)
-            document.getElementById('category_grid').innerHTML += `<div class="package_item"><img style="width: 100%; max-height: 70%; object-fit: scale-down" src="https://opengraph.githubassets.com/a/${i}"/><p class="title" style="margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden">${i}</p><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" target="_blank" href="https://github.com/${i.split('/')[0]}">by ${i.split('/')[0]}</a><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" href="javascript:document.getElementById('pkginput').value='${i}';document.getElementById('submitpkg').click()">Add</a></div>`
+            document.getElementById('category_grid').innerHTML += `<div class="package_item"><img style="width: 100%; max-height: 70%; object-fit: scale-down" src="https://opengraph.githubassets.com/a/${i}"/><p class="title" style="margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden">${i}</p><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" target="_blank" href="https://github.com/${i.split('/')[0]}">by ${i.split('/')[0]}</a><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" href="javascript:document.getElementById('pkginput').value='${i}';document.getElementById('submitpkg').click()">${Object.keys(localStorage).includes('plugin_' + i + '_code')? 'Remove':'Add'}</a></div>`
           }
         }).catch(a => Swal.fire(a.toString()))
           .catch(a => Swal.fire(a.toString()))
         document.getElementById('submitpkg').addEventListener('click', function() {
           closePopUp()
-          fetch(`https://api.github.com/repos/${document.getElementById('pkginput').value}/branches`).then(response => response.json())
-          .then(data => fetch(`https://raw.githubusercontent.com/${document.getElementById('pkginput').value}/${data[0].name}/${document.getElementById('pkginput').value.split('/')[1]}.js`).then(response => response.text()).then(code => eval(code)).catch(a => Swal.fire(a.toString())))
-          .catch(a => Swal.fire(a.toString()))
+          if (Object.keys(localStorage).includes('plugin_' + document.getElementById('pkginput').value + '_code')) {
+            localStorage.removeItem('plugin_' + document.getElementById('pkginput').value + '_code')
+            // reset everything to remove things plugins are done
+            Blockly.Extensions.unregister('text_indexOf_mutator')
+            Blockly.Extensions.unregister('create_instance_mutator')
+            populateDefaultBlocks()
+            initBlocks()
+          } else {
+            fetch(`https://api.github.com/repos/${document.getElementById('pkginput').value}/branches`).then(response => response.json())
+            .then(data => fetch(`https://raw.githubusercontent.com/${document.getElementById('pkginput').value}/${data[0].name}/${document.getElementById('pkginput').value.split('/')[1]}.js`).then(response => response.text()).then(code => {
+              eval(code)
+              localStorage.setItem('plugin_' + document.getElementById('pkginput').value + '_code', code)
+            }).catch(a => Swal.fire(a.toString())))
+            .catch(a => Swal.fire(a.toString()))
+          }
         })
         $('#pkginput').keyup(function(e) {
           document.getElementById('category_grid').innerHTML = ''
-          for (var i of packages) {
-            if (i.includes($(this).val()))
-              document.getElementById('category_grid').innerHTML += `<div class="package_item"><img style="width: 100%; max-height: 70%; object-fit: scale-down" src="https://opengraph.githubassets.com/a/${i}"/><p class="title" style="margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden">${i}</p><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" target="_blank" href="https://github.com/${i.split('/')[0]}">by ${i.split('/')[0]}</a><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" href="javascript:document.getElementById('pkginput').value='${i}';document.getElementById('submitpkg').click()">Add</a></div>`
-          }
         })
       }, 'addpkg')
 
@@ -623,6 +499,11 @@
       Messages['RENAME_FILE_PROMPT'] = 'new name:';
       Messages['DELETE_CONFIRM_MSG'] = 'do you want to remove "%1"';
       Messages['DELETE_CONFIRM'] = 'Yes, delete it!';
+      setTimeout(function() {
+        Object.keys(localStorage).map((pluginName) => {
+          if (pluginName.startsWith('plugin_') && pluginName.endsWith('_code')) eval(localStorage.getItem(pluginName))
+        })
+      }, 100)
     </script>
   </body>
 </html>
