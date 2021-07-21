@@ -13,6 +13,48 @@ import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 Blockly.Flyout.prototype.MARGIN = 70;
 
+var BlocklyOptions = {
+  toolbox: document.getElementById('toolbox'),
+  theme: isDark? DarkTheme : LightTheme,
+  renderer: 'zelos',
+  collapse : true,
+  comments : false,
+  disable : false,
+  maxBlocks : Infinity,
+  trashcan : true,
+  css : true,
+  // media : 'http://localhost:3000',
+  rtl : false,
+  scrollbars : true,
+  sounds : false,
+  oneBasedIndex : false,
+  grid : {
+    spacing : 20,
+    length : 2,
+    colour : isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
+    snap : true
+  },
+  zoom : {
+    controls : true,
+    wheel : true,
+    startScale : 1,
+    maxScale : 2,
+    minScale : 0.5,
+    scaleSpeed : 1.2,
+    controls: true,
+  },
+  scrollbars: true,
+  move: {
+      drag: true,
+      wheel: true
+  }
+}
+
+function setBlocksEditorGrid(grid) {
+  if (grid['colour'] == null && grid['color']) grid['colour'] = grid['color']
+  BlocklyOptions['grid'] = grid
+}
+
 function populateDefaultBlocks() {
   document.getElementById('toolbox').innerHTML = '<category id="LogicCategory" name="%{BKY_CATEGORY_LOGIC}" colour="#48A1BD"><block type="logic_boolean">  <field name="BOOL">TRUE</field></block><block type="logic_null"></block><block type="logic_compare"></block><block type="logic_operation"></block><block type="logic_negate"></block>  </category>  <category id="LoopsCategory" name="%{BKY_CATEGORY_LOOPS}" colour="#48BD4D"></category>  <category id="MathCategory" name="%{BKY_CATEGORY_MATH}" colour="#BD48A3"><block type="math_number">  <field name="NUM">0</field></block><block type="math_arithmetic" gap="10">  <field name="OP">ADD</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_arithmetic" gap="10">  <field name="OP">MINUS</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_arithmetic" gap="10">  <field name="OP">MULTIPLY</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_arithmetic" gap="10">  <field name="OP">DIVIDE</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_arithmetic">  <field name="OP">POWER</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_modulo">  <value name="DIVIDEND"><shadow type="math_number">  <field name="NUM">64</field></shadow>  </value>  <value name="DIVISOR"><shadow type="math_number">  <field name="NUM">10</field></shadow>  </value></block>  </category>  <category id="TextCategory" name="%{BKY_CATEGORY_TEXT}" colour="#CB660A"><block type="text">  <field name="TEXT"></field></block><block type="text_changeCase">  <value name="TEXT"><shadow type="text">  <field name="TEXT">abc</field></shadow>  </value></block><block type="text_trim">  <field name="MODE">BOTH</field>  <value name="TEXT"><shadow type="text">  <field name="TEXT">abc</field></shadow>  </value></block><block type="text_charAt">  <mutation at="true"></mutation>  <field name="WHERE">FROM_START</field>  <value name="VALUE"><shadow type="text">  <field name="TEXT">abc</field></shadow>  </value></block>  </category>  <category id="ListCategory" name="%{BKY_CATEGORY_LIST}" colour="#9FBD48"><block type="lists_create_with" gap="10"><mutation items="0" ></mutation></block><block type="lists_create_with"></block>  </category>  <category name="%{BKY_CATEGORY_VARIABLE}" colour="#7815F5" id="VariablesCategory"><block type="variable_declare"></block><block type="variable_set"></block><block type="variable_get"></block>  </category>  <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#9848BD" custom="PROCEDURE"></category>'
 }
@@ -122,55 +164,33 @@ function injectBlockly() {
   if (!isFirst) {
     xml = Blockly.Xml.workspaceToDom(workspace);
   }
-  const options = {
-    toolbox: document.getElementById('toolbox'),
-    theme: isDark? DarkTheme : LightTheme,
-    renderer: 'zelos',
-    collapse : true,
-    comments : false,
-    disable : false,
-    maxBlocks : Infinity,
-    trashcan : true,
-    css : true,
-    // media : 'http://localhost:3000',
-    rtl : false,
-    scrollbars : true,
-    sounds : false,
-    oneBasedIndex : false,
-    grid : {
-      spacing : 20,
-      length : 2,
-      colour : isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
-      snap : true
-    },
-    zoom : {
-      controls : true,
-      wheel : true,
-      startScale : 1,
-      maxScale : 2,
-      minScale : 0.5,
-      scaleSpeed : 1.2,
-      controls: true,
-    },
-    scrollbars: true,
-    move: {
-        drag: true,
-        wheel: true
-    }
-  };
+  BlocklyOptions['theme'] = isDark? DarkTheme : LightTheme;
+  if (BlocklyOptions['grid'] == {
+    spacing : 20,
+    length : 2,
+    colour : !isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
+    snap : true
+  } || BlocklyOptions['grid'] == {
+    spacing : 20,
+    length : 2,
+    colour : isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
+    snap : true
+  }) {
+    BlocklyOptions['grid']['colour'] = isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)'
+  }
   injecting = true;
   let element = document.getElementById('style');
   if (element != null) element.remove();
   let sheet = document.createElement('style');
   sheet.setAttribute('id', 'style');
   if (window.innerHeight > window.innerWidth) {
-    options['horizontalLayout'] = true;
-    options['toolboxPosition'] = 'end';
+    BlocklyOptions['horizontalLayout'] = true;
+    BlocklyOptions['toolboxPosition'] = 'end';
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
     Blockly.Flyout.prototype.MARGIN = 70;
     landscape = false;
   } else {
-    options['plugins'] = {
+    BlocklyOptions['plugins'] = {
       'toolbox': ContinuousToolbox,
       'flyoutsVerticalToolbox': ContinuousFlyout,
     }
@@ -179,7 +199,7 @@ function injectBlockly() {
     landscape = true;
   }
   document.body.appendChild(sheet);
-  createWorkspace(document.getElementById('root'), options);
+  createWorkspace(document.getElementById('root'), BlocklyOptions);
   for (var i of clickListeners) {
     i(workspace)
   }
@@ -528,4 +548,4 @@ function refreshBlockly() {
   injectBlockly();
 }
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks };
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, setBlocksEditorGrid };

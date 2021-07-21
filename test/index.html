@@ -191,13 +191,26 @@
             // reset everything to remove things plugins are done
             Blockly.Extensions.unregister('text_indexOf_mutator')
             Blockly.Extensions.unregister('create_instance_mutator')
+            setBlocksEditorGrid({
+              spacing : 20,
+              length : 2,
+              colour : localStorage.getItem('theme') == 'dark'? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
+              snap : true
+            })
             populateDefaultBlocks()
             initBlocks()
+            setTimeout(function() {
+              Object.keys(localStorage).map((pluginName) => {
+                if (pluginName.startsWith('plugin_') && pluginName.endsWith('_code')) eval(localStorage.getItem(pluginName))
+              })
+            }, 100)
+            refreshBlockly()
           } else {
             fetch(`https://api.github.com/repos/${document.getElementById('pkginput').value}/branches`).then(response => response.json())
             .then(data => fetch(`https://raw.githubusercontent.com/${document.getElementById('pkginput').value}/${data[0].name}/${document.getElementById('pkginput').value.split('/')[1]}.js`).then(response => response.text()).then(code => {
               eval(code)
               localStorage.setItem('plugin_' + document.getElementById('pkginput').value + '_code', code)
+              refreshBlockly()
             }).catch(a => Swal.fire(a.toString())))
             .catch(a => Swal.fire(a.toString()))
           }
@@ -503,6 +516,7 @@
         Object.keys(localStorage).map((pluginName) => {
           if (pluginName.startsWith('plugin_') && pluginName.endsWith('_code')) eval(localStorage.getItem(pluginName))
         })
+        refreshBlockly()
       }, 100)
     </script>
   </body>
