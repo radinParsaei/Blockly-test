@@ -455,6 +455,18 @@ public class BlockTool {
                 }
             }
             String functionName = ((SyntaxTree.CallFunction) val).getFunctionName().split(":")[0];
+            if (!functionParameters.containsKey(functionName)) {
+                functionParameters.put(functionName, new ArrayList<>());
+                String[] a = new String[((SyntaxTree.CallFunction) val).getArgs().length];
+                for (int i = 0; i < a.length; i++) {
+                    a[i] = ((char) ('a' + i)) + "";
+                    System.out.println(('a' + i) + "");
+                    functionParameters.get(functionName).add(a[i]);
+                }
+                SyntaxTree.Function func = new SyntaxTree.Function(((SyntaxTree.CallFunction) val).getFunctionName(), new SyntaxTree.Programs(), a);
+                func.eval();
+                syntaxTreeToBlocksXML1(func);
+            }
             ((SyntaxTree.CallFunction) val).findFunction();
             StringBuilder tmp = new StringBuilder("<block type=\"");
             if (((SyntaxTree.CallFunction) val).getFunctionName().startsWith("#C") && SyntaxTree.staticFunctions.contains(((SyntaxTree.CallFunction) val).getFunctionName()) && getFunctionBlock(((SyntaxTree.CallFunction) val).getFunctionName()) == null) {
