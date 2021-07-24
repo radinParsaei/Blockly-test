@@ -1,3 +1,4 @@
+// #define WASM_INPUT swalInput()
 #include "VM.h"
 #include <fstream>
 #include "VM_binaries.h"
@@ -8,7 +9,7 @@ using namespace VM_BINARIES;
 VM vm;
 vector<Value> mem;
 
-int main(){
+int main() {
   vm.attachMem(&mem);
   vm.autoKill = false;
 }
