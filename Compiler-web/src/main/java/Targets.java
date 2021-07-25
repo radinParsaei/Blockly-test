@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Targets {
+    public static boolean awaitedInput = true;
+
     @JSBody(params = { "fileName" }, script = "if(!fileName.startsWith('/')){fileName=localStorage.getItem('currentDir')+fileName} try{return fs.readFileSync(fileName)+'\\n'}catch(e){if(document.getElementById('console2'))document.getElementById('console2').innerHTML+='<div style=\"color: #f55; position: relative\"><img src=\"test/error.png\" height=\"20\" style=\"padding-right: 10px\"><span style=\"position: absolute\">file ' + fileName + ' does not exist' + '</span></div>';return '\\n'}")
     public static native String readFile(String fileName);
 

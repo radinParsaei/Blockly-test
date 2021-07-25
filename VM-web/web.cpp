@@ -2,6 +2,7 @@
 #include "VM.h"
 #include <fstream>
 #include "VM_binaries.h"
+#include <emscripten/emscripten.h>
 
 using namespace std;
 using namespace VM_BINARIES;
@@ -12,10 +13,16 @@ vector<Value> mem;
 int main() {
   vm.attachMem(&mem);
   vm.autoKill = false;
+  vm.setInternalLibraryFunction([] (Value value, VM* vm1) {
+    if (value == "runJS_str") {
+      vm1->push(emscripten_run_script_string(vm1->pop().toString().c_str()));
+    } else if (value == "runJS_int") {
+      vm1->push(emscripten_run_script_int(vm1->pop().toString().c_str()));
+    }
+  });
 }
 
 #include <stdio.h>
-#include <emscripten/emscripten.h>
 
 #ifdef __cplusplus
 extern "C" {

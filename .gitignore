@@ -18,3 +18,4 @@ Compiler-web/web.iml
 start.js.save
 webpackDevServer.config.js.save
 dist
+.vscode
