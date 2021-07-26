@@ -163,10 +163,23 @@ input:checked + .slider:before {
 .blocklyTreeRow div * {
   transition: background 0.22s ease-in-out;
 }
-path.blocklyPath[fill="none"], .blocklyOutlinePath[filter] {
+path.blocklyPath[fill="none"], .blocklyOutlinePath[filter], .blocklyReplaceable path {
   stroke: rgba(255, 255, 255, 0.7);
   stroke-width: 3.5px;
   filter: none;
+}
+.dark .blocklyMenu {
+  background: #232323 !important;
+}
+.dark .blocklyMenuItem {
+  color: white;
+}
+.dark .blocklyMenuItem.blocklyMenuItemDisabled {
+  color: #555;
+}
+.blocklyHighlightedConnectionPath {
+  stroke: rgba(255, 255, 255, 0.5) !important;
+  stroke-width: 3.5px;
 }
 .customIcon {
   color: white;

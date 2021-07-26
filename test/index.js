@@ -189,7 +189,13 @@ function injectBlockly() {
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
     Blockly.Flyout.prototype.MARGIN = 70;
     landscape = false;
+    BlocklyOptions['plugins'] = {
+      'toolbox': null,
+      'flyoutsVerticalToolbox': null,
+    }
   } else {
+    BlocklyOptions['horizontalLayout'] = false;
+    BlocklyOptions['toolboxPosition'] = 'right';
     BlocklyOptions['plugins'] = {
       'toolbox': ContinuousToolbox,
       'flyoutsVerticalToolbox': ContinuousFlyout,
