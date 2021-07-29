@@ -197,14 +197,15 @@
               colour : localStorage.getItem('theme') == 'dark'? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
               snap : true
             })
+            Editor.resetThemes()
             populateDefaultBlocks()
             initBlocks()
             setTimeout(function() {
               Object.keys(localStorage).map((pluginName) => {
                 if (pluginName.startsWith('plugin_') && pluginName.endsWith('_code')) eval(localStorage.getItem(pluginName))
               })
+              refreshBlockly()
             }, 100)
-            refreshBlockly()
           } else {
             fetch(`https://api.github.com/repos/${document.getElementById('pkginput').value}/branches`).then(response => response.json())
             .then(data => fetch(`https://raw.githubusercontent.com/${document.getElementById('pkginput').value}/${data[0].name}/${document.getElementById('pkginput').value.split('/')[1]}.js`).then(response => response.text()).then(code => {

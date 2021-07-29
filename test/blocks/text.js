@@ -395,7 +395,7 @@ Blockly.Blocks['text_print'] = {
       ],
       "previousStatement": null,
       "nextStatement": null,
-      "colour": document.getElementById("ConsoleCategory").getAttribute('colour'),
+      "style": 'console_blocks',
       "tooltip": Blockly.Msg['TEXT_PRINT_TOOLTIP'],
       "helpUrl": Blockly.Msg['TEXT_PRINT_HELPURL']
     });

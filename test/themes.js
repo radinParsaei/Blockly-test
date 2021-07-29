@@ -13,6 +13,11 @@ let DarkTheme = Blockly.Theme.defineTheme('DarkTheme', {
       'colourSecondary': '#AFCE59',
       'colourTertiary': '#8EAC37',
     },
+    'loop_blocks': {
+      'colourPrimary': '#48BD4D',
+      'colourSecondary': '#59CE5E',
+      'colourTertiary': '#37AC3C'
+    },
     'logic_blocks': {
       'colourPrimary': '#48A1BD',
       'colourSecondary': '#59B2CE',

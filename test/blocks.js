@@ -174,8 +174,20 @@ function addCategory(name, text, color) {
   var element = document.createElement("category");
   element.setAttribute('id', name + "Category");
   element.setAttribute('name', "%{BKY_CATEGORY_" + name.toUpperCase() + "}");
-  element.setAttribute('colour', color);
+  Blockly.Msg[name.toUpperCase() + "_CATEGORY_COLOR"] = color
+  element.setAttribute('colour', "%{BKY_" + name.toUpperCase() + "_CATEGORY_COLOR}");
   document.getElementById("toolbox").appendChild(element);
+  color = color.replace('#', '')
+  DarkTheme.blockStyles[name.toLowerCase() + "_blocks"] = {
+    'colourPrimary': color,
+    'colourSecondary': lighter(color),
+    'colourTertiary': darker(color),
+  }
+  LightTheme.blockStyles[name.toLowerCase() + "_blocks"] = {
+    'colourPrimary': color,
+    'colourSecondary': lighter(color),
+    'colourTertiary': darker(color),
+  }
 }
 
 function putValue(value) {
@@ -254,16 +266,6 @@ function createBlocksFromYAML(yml) {
   for (var i of Object.keys(parsed)) {
     if (parsed[i]['color'] && parsed[i]['icon'] && parsed[i]['blocks']) {
       let categoryName = i.replace(' ', '_').toLowerCase();
-      DarkTheme.blockStyles[categoryName + "_blocks"] = {
-        'colourPrimary': '#' + parsed[i]['color'],
-        'colourSecondary': '#' + lighter(parsed[i]['color']),
-        'colourTertiary': '#' + darker(parsed[i]['color']),
-      }
-      LightTheme.blockStyles[categoryName + "_blocks"] = {
-        'colourPrimary': '#' + parsed[i]['color'],
-        'colourSecondary': '#' + lighter(parsed[i]['color']),
-        'colourTertiary': '#' + darker(parsed[i]['color']),
-      }
       icons[categoryName] = parsed[i]['icon']
       addCategory(categoryName, i, '#' + parsed[i]['color'])
       for (var j of parsed[i]['blocks']) {
@@ -1555,6 +1557,16 @@ function initBlocks() {
   // Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'];
   Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'] = 'define method';
   // Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE_METHOD'] = Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'];
+  addCategory("Import", "Import", "#8855ff");
+  addBlock("import", "Import", "", function(block) {
+    Compiler.parseImport(block.getFieldValue('NAME'));
+    return 'import \'' + (block.getFieldValue('NAME') || 'unnamed') + '\'\n';
+  }, [], [], '', [function(block) {
+    block.appendDummyInput().appendField(Blockly.Msg['IMPORT_IMPORT']).appendField(new Blockly.FieldTextInput(), "NAME");
+  }], Blockly.Msg['IMPORT_IMPORT_TOOLTIP'], Blockly.Msg['IMPORT_IMPORT_HELPURL']);
+  addButton('Import', 'import package', function() {
+    document.getElementById('addpkg').click()
+  })
 }
 
-export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel, addButton, clickListeners, createBlocksFromYAML };
+export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel, addButton, clickListeners, createBlocksFromYAML, lighter, darker };

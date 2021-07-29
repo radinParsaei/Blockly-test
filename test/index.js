@@ -2,7 +2,7 @@ import * as Blockly from 'blockly/core';
 import * as En from 'blockly/msg/en';
 Blockly.setLocale(En);
 import {DisableTopBlocks} from '@blockly/disable-top-blocks';
-import { initBlocks, addCategory, addBlock, addButton, clickListeners, createShadows, createBlocksFromYAML } from './blocks.js';
+import { initBlocks, addCategory, addBlock, addButton, clickListeners, createShadows, createBlocksFromYAML, lighter, darker } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 import './procedures.js';
@@ -13,9 +13,137 @@ import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 Blockly.Flyout.prototype.MARGIN = 70;
 
+import { DarkTheme, LightTheme } from './themes.js';
+
+Blockly.Themes['DarkTheme'] = DarkTheme
+Blockly.Themes['LightTheme'] = LightTheme
+
+class Editor {
+  static resetThemes() {
+    Blockly.Themes['DarkTheme']['blockStyles'] = {
+      'colour_blocks': {
+        'colourPrimary': '#a5745b',
+        'colourSecondary': '#dbc7bd',
+        'colourTertiary': '#845d49',
+      },
+      'list_blocks': {
+        'colourPrimary': '#9FBD48',
+        'colourSecondary': '#AFCE59',
+        'colourTertiary': '#8EAC37',
+      },
+      'loop_blocks': {
+        'colourPrimary': '#48BD4D',
+        'colourSecondary': '#59CE5E',
+        'colourTertiary': '#37AC3C'
+      },
+      'logic_blocks': {
+        'colourPrimary': '#48A1BD',
+        'colourSecondary': '#59B2CE',
+        'colourTertiary': '#3790AC',
+      },
+      'loop_blocks': {
+        'colourPrimary': '#48BD4D',
+        'colourSecondary': '#59CE5E',
+        'colourTertiary': '#37AC3C',
+      },
+      'math_blocks': {
+        'colourPrimary': '#BD48A3',
+        'colourSecondary': '#CE59B4',
+        'colourTertiary': '#AC3792',
+      },
+      'procedure_blocks': {
+        'colourPrimary': '#9848BD',
+        'colourSecondary': '#F959CE',
+        'colourTertiary': '#8737AC',
+      },
+      'class_blocks': {
+        'colourPrimary': '#BD488E',
+        'colourSecondary': '#CE599F',
+        'colourTertiary': '#AC377D',
+      },
+      'text_blocks': {
+        'colourPrimary': '#DC771B',
+        'colourSecondary': '#ED882C',
+        'colourTertiary': '#CB660A',
+      },
+      'variable_blocks': {
+        'colourPrimary': '#7815F5',
+        'colourSecondary': '#8926F6',
+        'colourTertiary': '#6704E4',
+      },
+      'variable_dynamic_blocks': {
+        'colourPrimary': '#a55b99',
+        'colourSecondary': '#dbbdd6',
+        'colourTertiary': '#84497a',
+      },
+      'hat_blocks': {
+        'colourPrimary': '#a55b99',
+        'colourSecondary': '#dbbdd6',
+        'colourTertiary': '#84497a',
+        'hat': 'cap',
+      }
+    }
+    Blockly.Themes['LightTheme']['blockStyles'] = Blockly.Themes['DarkTheme']['blockStyles']
+  }
+  static setBlocksEditorGrid(grid) {
+    if (grid && grid['colour'] == null && grid['color']) grid['colour'] = grid['color']
+    BlocklyOptions['grid'] = grid
+  }
+  static setTheme(theme) {
+    if (theme != (isDark? 'dark':'light')) {
+      changeTheme()
+    }
+  }
+  static changeTheme() {
+    changeTheme()
+  }
+  static setLightThemeColorsOfBlocksOfCategory(cat, a, b, c) {
+    a = a.replace('#', '')
+    if (!b) b = lighter(a)
+    if (!c) c = darker(a)
+    b = b.replace('#', '')
+    c = c.replace('#', '')
+    Blockly.Themes['LightTheme']['blockStyles'][cat + "_blocks"] = {
+      'colourPrimary': a,
+      'colourSecondary': b,
+      'colourTertiary': c
+    }
+  }
+  static setDarkThemeColorsOfBlocksOfCategory(cat, a, b, c) {
+    a = a.replace('#', '')
+    if (!b) b = lighter(a)
+    if (!c) c = darker(a)
+    b = b.replace('#', '')
+    c = c.replace('#', '')
+    Blockly.Themes['DarkTheme']['blockStyles'][cat + "_blocks"] = {
+      'colourPrimary': a,
+      'colourSecondary': b,
+      'colourTertiary': c
+    }
+  }
+  static setColorsOfBlocksOfCategory(cat, a, b, c) {
+    a = a.replace('#', '')
+    if (!b) b = lighter(a)
+    if (!c) c = darker(a)
+    b = b.replace('#', '')
+    c = c.replace('#', '')
+    this.setDarkThemeColorsOfBlocksOfCategory(cat, a, b, c)
+    this.setLightThemeColorsOfBlocksOfCategory(cat, a, b, c)
+  }
+  static setCategoryColor(cat, color) {
+    Blockly.Msg[cat.toUpperCase() + '_CATEGORY_COLOR'] = color
+  }
+  static setCategoryAndItsBlocksColor(cat, color) {
+    this.setCategoryColor(cat, color)
+    this.setColorsOfBlocksOfCategory(cat, color)
+  }
+}
+
+Editor.resetThemes()
+
 var BlocklyOptions = {
   toolbox: document.getElementById('toolbox'),
-  theme: isDark? DarkTheme : LightTheme,
+  theme: isDark? Blockly.Themes['DarkTheme'] : Blockly.Themes['LightTheme'],
   renderer: 'zelos',
   collapse : true,
   comments : false,
@@ -41,22 +169,23 @@ var BlocklyOptions = {
     maxScale : 2,
     minScale : 0.5,
     scaleSpeed : 1.2,
-    controls: true,
   },
   scrollbars: true,
   move: {
-      drag: true,
-      wheel: true
+    drag: true,
+    wheel: true
   }
 }
 
-function setBlocksEditorGrid(grid) {
-  if (grid['colour'] == null && grid['color']) grid['colour'] = grid['color']
-  BlocklyOptions['grid'] = grid
-}
-
 function populateDefaultBlocks() {
-  document.getElementById('toolbox').innerHTML = '<category id="LogicCategory" name="%{BKY_CATEGORY_LOGIC}" colour="#48A1BD"><block type="logic_boolean">  <field name="BOOL">TRUE</field></block><block type="logic_null"></block><block type="logic_compare"></block><block type="logic_operation"></block><block type="logic_negate"></block>  </category>  <category id="LoopsCategory" name="%{BKY_CATEGORY_LOOPS}" colour="#48BD4D"></category>  <category id="MathCategory" name="%{BKY_CATEGORY_MATH}" colour="#BD48A3"><block type="math_number">  <field name="NUM">0</field></block><block type="math_arithmetic" gap="10">  <field name="OP">ADD</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_arithmetic" gap="10">  <field name="OP">MINUS</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_arithmetic" gap="10">  <field name="OP">MULTIPLY</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_arithmetic" gap="10">  <field name="OP">DIVIDE</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_arithmetic">  <field name="OP">POWER</field>  <value name="A"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value>  <value name="B"><shadow type="math_number">  <field name="NUM">1</field></shadow>  </value></block><block type="math_modulo">  <value name="DIVIDEND"><shadow type="math_number">  <field name="NUM">64</field></shadow>  </value>  <value name="DIVISOR"><shadow type="math_number">  <field name="NUM">10</field></shadow>  </value></block>  </category>  <category id="TextCategory" name="%{BKY_CATEGORY_TEXT}" colour="#CB660A"><block type="text">  <field name="TEXT"></field></block><block type="text_changeCase">  <value name="TEXT"><shadow type="text">  <field name="TEXT">abc</field></shadow>  </value></block><block type="text_trim">  <field name="MODE">BOTH</field>  <value name="TEXT"><shadow type="text">  <field name="TEXT">abc</field></shadow>  </value></block><block type="text_charAt">  <mutation at="true"></mutation>  <field name="WHERE">FROM_START</field>  <value name="VALUE"><shadow type="text">  <field name="TEXT">abc</field></shadow>  </value></block>  </category>  <category id="ListCategory" name="%{BKY_CATEGORY_LIST}" colour="#9FBD48"><block type="lists_create_with" gap="10"><mutation items="0" ></mutation></block><block type="lists_create_with"></block>  </category>  <category name="%{BKY_CATEGORY_VARIABLE}" colour="#7815F5" id="VariablesCategory"><block type="variable_declare"></block><block type="variable_set"></block><block type="variable_get"></block>  </category>  <category name="%{BKY_CATEGORY_FUNCTIONS}" colour="#9848BD" custom="PROCEDURE"></category>'
+  Blockly.Msg['LOGIC_CATEGORY_COLOR'] = '#48A1BD'
+  Blockly.Msg['LOOPS_CATEGORY_COLOR'] = '#48BD4D'
+  Blockly.Msg['MATH_CATEGORY_COLOR'] = '#BD48A3'
+  Blockly.Msg['TEXT_CATEGORY_COLOR'] = '#CB660A'
+  Blockly.Msg['LIST_CATEGORY_COLOR'] = '#9FBD48'
+  Blockly.Msg['VARIABLE_CATEGORY_COLOR'] = '#7815F5'
+  Blockly.Msg['FUNCTIONS_CATEGORY_COLOR'] = '#9848BD'
+  document.getElementById('toolbox').innerHTML = '<category id="LogicCategory" name="%{BKY_CATEGORY_LOGIC}" colour="%{BKY_LOGIC_CATEGORY_COLOR}"><block type="logic_boolean"><field name="BOOL">TRUE</field></block><block type="logic_null"></block><block type="logic_compare"></block><block type="logic_operation"></block><block type="logic_negate"></block></category><category id="LoopsCategory" name="%{BKY_CATEGORY_LOOPS}" colour="%{BKY_LOOPS_CATEGORY_COLOR}"></category><category id="MathCategory" name="%{BKY_CATEGORY_MATH}" colour="%{BKY_MATH_CATEGORY_COLOR}"><block type="math_number"><field name="NUM">0</field></block><block type="math_arithmetic" gap="10"><field name="OP">ADD</field><value name="A"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="math_arithmetic" gap="10"><field name="OP">MINUS</field><value name="A"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="math_arithmetic" gap="10"><field name="OP">MULTIPLY</field><value name="A"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="math_arithmetic" gap="10"><field name="OP">DIVIDE</field><value name="A"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="math_arithmetic"><field name="OP">POWER</field><value name="A"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="math_modulo"><value name="DIVIDEND"><shadow type="math_number"><field name="NUM">64</field></shadow></value><value name="DIVISOR"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block></category><category id="TextCategory" name="%{BKY_CATEGORY_TEXT}" colour="%{BKY_TEXT_CATEGORY_COLOR}"><block type="text"><field name="TEXT"></field></block><block type="text_changeCase"><value name="TEXT"><shadow type="text"><field name="TEXT">abc</field></shadow></value></block><block type="text_trim"><field name="MODE">BOTH</field><value name="TEXT"><shadow type="text"><field name="TEXT">abc</field></shadow></value></block><block type="text_charAt"><mutation at="true"></mutation><field name="WHERE">FROM_START</field><value name="VALUE"><shadow type="text"><field name="TEXT">abc</field></shadow></value></block></category><category id="ListCategory" name="%{BKY_CATEGORY_LIST}" colour="%{BKY_LIST_CATEGORY_COLOR}"><block type="lists_create_with" gap="10"><mutation items="0" ></mutation></block><block type="lists_create_with"></block></category><category name="%{BKY_CATEGORY_VARIABLE}" colour="%{BKY_VARIABLE_CATEGORY_COLOR}" id="VariablesCategory"><block type="variable_declare"></block><block type="variable_set"></block><block type="variable_get"></block></category><category name="%{BKY_CATEGORY_FUNCTIONS}" colour="%{BKY_FUNCTIONS_CATEGORY_COLOR}" custom="PROCEDURE"></category>'
 }
 
 populateDefaultBlocks()
@@ -157,14 +286,13 @@ function createWorkspace(blocklyDiv, options) {
 export { Blockly };
 
 import './genCode.js';
-import { DarkTheme, LightTheme } from './themes.js';
 
 function injectBlockly() {
   var xml;
   if (!isFirst) {
     xml = Blockly.Xml.workspaceToDom(workspace);
   }
-  BlocklyOptions['theme'] = isDark? DarkTheme : LightTheme;
+  BlocklyOptions['theme'] = isDark? Blockly.Themes['DarkTheme'] : Blockly.Themes['LightTheme'];
   if (BlocklyOptions['grid'] == {
     spacing : 20,
     length : 2,
@@ -219,16 +347,6 @@ function injectBlockly() {
 
 document.addEventListener('DOMContentLoaded', function() {
   initBlocks();
-  addCategory("Import", "Import", "#8855ff");
-  addBlock("import", "Import", "", function(block) {
-    Compiler.parseImport(block.getFieldValue('NAME'));
-    return 'import \'' + (block.getFieldValue('NAME') || 'unnamed') + '\'\n';
-  }, [], [], '', [function(block) {
-    block.appendDummyInput().appendField(Blockly.Msg['IMPORT_IMPORT']).appendField(new Blockly.FieldTextInput(), "NAME");
-  }], Blockly.Msg['IMPORT_IMPORT_TOOLTIP'], Blockly.Msg['IMPORT_IMPORT_HELPURL']);
-  addButton('Import', 'import package', function() {
-    document.getElementById('addpkg').click()
-  })
   Blockly.Msg["MATH_POWER_SYMBOL"] = "**";
   Blockly.Msg["CATEGORY_LOGIC"] = "Logic";
   Blockly.Msg["CATEGORY_LOOPS"] = "Loops";
@@ -554,4 +672,4 @@ function refreshBlockly() {
   injectBlockly();
 }
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, setBlocksEditorGrid };
+export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};
