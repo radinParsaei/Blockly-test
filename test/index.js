@@ -393,6 +393,7 @@ if (localStorage.getItem('allVariables') != null) {
 let langTools = ace.require("ace/ext/language_tools");
 let lang = ace.require("ace/lib/lang");
 var editor = ace.edit("editor");
+new AceScrollbars(editor);
 editor.setTheme("ace/theme/monokai0");
 editor.session.setMode("ace/mode/javascript");
 //Javascript moved to javascript0. javascript highlighting rules changed for github.com/radinParsaei/Compiler

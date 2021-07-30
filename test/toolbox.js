@@ -20,7 +20,7 @@ class CustomCategory extends Blockly.ToolboxCategory {
       label.style.color = this.colour_;
       this.iconDom_.style.color = this.colour_;
     } else {
-      this.rowDiv_.firstChild.childNodes[0].setAttribute('style', this.rowDiv_.firstChild.childNodes[0].getAttribute('style').replace(/background:.*\d+\); margin/, 'background:white; margin').replace(/background:.*\d+\); color/, 'background:white; color'));
+      this.rowDiv_.firstChild.childNodes[0].setAttribute('style', this.rowDiv_.firstChild.childNodes[0].getAttribute('style').replace(/background:.*\d+\)( none repeat scroll 0% 0%)?; margin/, 'background:white; margin').replace(/background:.*\d+\); color/, 'background:white; color'));
       this.rowDiv_.style.backgroundColor = this.colour_;
       label.style.color = 'white';
       this.iconDom_.style.color = 'white';

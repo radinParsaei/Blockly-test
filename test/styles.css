@@ -610,3 +610,32 @@ div.child.action {
 .dark .title {
   color: white;
 }
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+#ace_map {
+  display: none;
+}
+div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
+  background-color: rgba(128, 128, 128, 0.7);
+}
+.dark div#ace_pre-v, .dark div#ace_pre-h {
+  background-color: #232323;
+}
+#editor, #editor2 {
+  overflow: hidden !important;
+}
