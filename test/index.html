@@ -126,6 +126,11 @@
         const _css = document.createElement('style')
         _css.innerHTML = css
         document.head.appendChild(_css)
+        return _css
+      }
+
+      function revertCss(a) {
+        document.head.removeChild(a)
       }
 
       function addMenuOption(imgSrc, name, callBack, id) {
