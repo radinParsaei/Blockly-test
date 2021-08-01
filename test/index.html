@@ -198,7 +198,7 @@
             // reset everything to remove things plugins are done
             Blockly.Extensions.unregister('text_indexOf_mutator')
             Blockly.Extensions.unregister('create_instance_mutator')
-            setBlocksEditorGrid({
+            Editor.setBlocksEditorGrid({
               spacing : 20,
               length : 2,
               colour : localStorage.getItem('theme') == 'dark'? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',

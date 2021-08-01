@@ -19,6 +19,16 @@ Blockly.Themes['DarkTheme'] = DarkTheme
 Blockly.Themes['LightTheme'] = LightTheme
 
 class Editor {
+  static setTextEditorColorDark(key, color) {
+    injectCss(`:root {--text-editor-dark-color-${key}: ${color};}`)
+  }
+  static setTextEditorColorLight(key, color) {
+    injectCss(`:root {--text-editor-light-color-${key}: ${color};}`)
+  }
+  static setTextEditorColor(key, color) {
+    this.setTextEditorColorLight(key, color)
+    this.setTextEditorColorDark(key, color)
+  }
   static setEditorColor(color) {
     if (this.lastCssColor) revertCss(this.lastCssColor)
     this.lastCssColor = injectCss(`:root {--editor-color: ${color};}`)
