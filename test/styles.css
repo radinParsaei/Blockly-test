@@ -396,7 +396,7 @@ div.child p {
 .file_action {
   font-size: 40pt !important;
   color: var(--editor-color, #1A9FFF);
-  transition: color .3s;
+  transition: color .3s, filter .25s;
 }
 @media only screen and (max-width: 400px) {
   .child span {
@@ -450,7 +450,8 @@ div.child p {
   }
 }
 .file_action:hover {
-  color: #e33;
+  /* color: #e33; */
+  filter: brightness(120%);
 }
 .file_action.top_bar_action {
   float: left;

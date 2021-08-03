@@ -33,6 +33,10 @@ class Editor {
     if (this.lastCssColor) revertCss(this.lastCssColor)
     this.lastCssColor = injectCss(`:root {--editor-color: ${color};}`)
   }
+  static setEditorCancelColor(color) {
+    if (this.lastCssColor1) revertCss(this.lastCssColor1)
+    this.lastCssColor1 = injectCss(`:root {--cancel-color: ${color};}`)
+  }
   static resetThemes() {
     Blockly.Themes['DarkTheme']['blockStyles'] = {
       'colour_blocks': {

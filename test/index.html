@@ -274,6 +274,7 @@
       async function createFile() {
         const { value: name } = await Swal.fire({
           title: Messages['CREATE_FILE_FILENAME_PROMPT'],
+          confirmButtonColor: 'var(--editor-color, #1A9FFF)',
           input: 'text',
           inputValidator: (value) => {
             if (!value) {
@@ -295,6 +296,7 @@
       async function createDirectory() {
         const { value: dirname } = await Swal.fire({
           title: Messages['CREATE_DIR_DIRNAME_PROMPT'],
+          confirmButtonColor: 'var(--editor-color, #1A9FFF)',
           input: 'text',
           inputValidator: (value) => {
             if (!value) {
@@ -319,7 +321,8 @@
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#1A9FFF',
-          cancelButtonColor: '#f55',
+          cancelButtonColor: 'var(--cancel-color, #f55)',
+          confirmButtonColor: 'var(--editor-color, #1A9FFF)',
           confirmButtonText: Messages['DELETE_CONFIRM']
         }).then((result) => {
           if (result.isConfirmed) {
@@ -342,6 +345,7 @@
           title: Messages['RENAME_FILE_PROMPT'],
           input: 'text',
           inputValue: name,
+          confirmButtonColor: 'var(--editor-color, #1A9FFF)',
           inputValidator: (value) => {
             if (value == '') {
               return Messages['RENAME_NAME_EMPTY'];
@@ -405,7 +409,8 @@
           const { value: q } = await Swal.fire({
             title: t,
             input: 'text',
-            inputValue: v
+            inputValue: v,
+            confirmButtonColor: 'var(--editor-color, #1A9FFF)'
           });
           return q
         }
