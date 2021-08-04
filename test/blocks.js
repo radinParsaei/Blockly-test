@@ -1569,4 +1569,4 @@ function initBlocks() {
   })
 }
 
-export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel, addButton, clickListeners, createBlocksFromYAML, lighter, darker };
+export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel, addButton, clickListeners, createBlocksFromYAML, lighter, darker, icons };

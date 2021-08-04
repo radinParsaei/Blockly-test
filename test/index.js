@@ -2,7 +2,7 @@ import * as Blockly from 'blockly/core';
 import * as En from 'blockly/msg/en';
 Blockly.setLocale(En);
 import {DisableTopBlocks} from '@blockly/disable-top-blocks';
-import { initBlocks, addCategory, addBlock, addButton, clickListeners, createShadows, createBlocksFromYAML, lighter, darker } from './blocks.js';
+import { initBlocks, addCategory, addBlock, addButton, clickListeners, createShadows, createBlocksFromYAML, lighter, darker, icons } from './blocks.js';
 import {ContinuousToolbox} from '../continuous-toolbox/src/ContinuousToolbox';
 import {ContinuousFlyout} from '../continuous-toolbox/src/ContinuousFlyout';
 import './procedures.js';
@@ -19,6 +19,9 @@ Blockly.Themes['DarkTheme'] = DarkTheme
 Blockly.Themes['LightTheme'] = LightTheme
 
 class Editor {
+  static setIconForCategory(cat, icon) {
+    icons[cat] = icon
+  }
   static setTextEditorColorDark(key, color) {
     injectCss(`:root {--text-editor-dark-color-${key}: ${color};}`)
   }
