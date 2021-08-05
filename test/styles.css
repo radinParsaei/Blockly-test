@@ -1,9 +1,6 @@
 .label {
   font-family: "Source Code Pro", monospace !important;
 }
-* {
-  box-sizing: border-box;
-}
 #menu.dark {
   background: #232323;
   color: white;
@@ -486,14 +483,12 @@ div.child p {
 
 #theme_div {
   position: fixed;
-  bottom: 50px;
-  right: 40px;
-  transform: scale(1.3);
+  bottom: 30px;
+  right: 25px;
   background: #FFFFFF;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 100px;
-  padding-right: 20px;
-  transition: background 0.2s ease-out;
+  transition: background 0.2s سease-out;
 }
 
 #theme_div.dark {
@@ -504,10 +499,12 @@ div.child p {
   fill: #0094FF;
   padding: 10px;
   transition: fill 0.55s ease-out, padding 0.15s ease-out;
+  width: 27px;
+  height: 27px;
 }
 
 #light_svg.enabled, #dark_svg.enabled {
-  fill: #E5E5E5;
+  fill: #E5E5E5 !important;
   border-radius: 100px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   background: #0094FF;
@@ -515,7 +512,7 @@ div.child p {
   padding-bottom: 20px;
 }
 
-@-moz-document url-prefix() {
+/* @-moz-document url-prefix() {
   #theme_div {
     padding-right: 0px;
   }
@@ -533,7 +530,7 @@ div.child p {
     background: #0094FF;
     padding: 10px;
   }
-}
+} */
 
 #dark_svg {
   margin-bottom: -4px;
@@ -580,6 +577,9 @@ body.dark {
   left: 15%;
   top: 8%;
   border-radius: 3%;
+}
+.popupbody, .popupbody * {
+  box-sizing: border-box;
 }
 .dark .popupbody {
   background-color: rgb(30, 34, 45);
