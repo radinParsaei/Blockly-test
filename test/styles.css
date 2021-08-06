@@ -1,5 +1,5 @@
 .label {
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
 }
 #menu.dark {
   background: #232323;
@@ -22,7 +22,7 @@
   height: 100%;
 }
 #console2 {
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
   overflow-y: scroll;
   max-height: calc(100% - 30px);
 }
@@ -41,7 +41,7 @@
   margin: 0;
 }
 h4 {
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
 }
 .expand {
   height: 100%;
@@ -55,7 +55,7 @@ button.mode {
   padding: 5px;
   padding-top: 3px;
   padding-bottom: 5.75px;
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
   margin-left: -6.3px;
   outline:none;
 }
@@ -129,7 +129,7 @@ input:checked + .slider:before {
 }
 
 .blocklyTreeLabel {
-	font-family: "Roboto" !important;
+	font-family: var(--toolbox-font, "Roboto") !important;
   font-size: 19px;
   margin: 14px;
   margin-left: -4px;
@@ -200,11 +200,11 @@ path.blocklyPath[fill="none"], .blocklyOutlinePath[filter], .blocklyReplaceable 
 }
 
 .ace_editor {
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
 }
 
 .ace_tooltip {
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
   /* background-color: rgba(128, 128, 128, 0.5); */
   border: none;
 }
@@ -222,10 +222,10 @@ span[action=openCommandPallete] {
   display: none;
 }
 #menu {
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
 }
 .buttom_sheet {
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
   height: 0;
   width: 100%;
   overflow-x: scroll;
@@ -330,7 +330,7 @@ span[action=openCommandPallete] {
   display: none !important;
 }
 div.child {
-  font-family: "Source Code Pro", monospace !important;
+  font-family: var(--font, "Source Code Pro"), monospace !important;
   background: rgba(180, 180, 180, 0.35);
   text-align: center;
   user-select: none;
@@ -485,10 +485,11 @@ div.child p {
   position: fixed;
   bottom: 30px;
   right: 25px;
+  transform: scale(1.1);
   background: #FFFFFF;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 100px;
-  transition: background 0.2s سease-out;
+  transition: background 0.2s ease-out;
 }
 
 #theme_div.dark {

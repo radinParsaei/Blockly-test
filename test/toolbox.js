@@ -31,7 +31,6 @@ class CustomCategory extends Blockly.ToolboxCategory {
   createIconDom_() {
     const icon = document.createElement('img');
     // icon.src = this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg';
-    console.log(this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase());
     let url = Object.keys(icons).includes(this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase())? icons[this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase()] : this.name.substring(0, this.name.length - 1).replace('%{BKY_CATEGORY_', '').toLowerCase() + '.svg';
     icon.setAttribute('style', '-webkit-mask:url("' + url + '") center/contain;mask:url("' + url + '") center/contain;display:inline-block;background:white')
     // console.log(icon.src);

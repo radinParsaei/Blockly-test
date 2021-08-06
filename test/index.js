@@ -22,11 +22,26 @@ class Editor {
   static setIconForCategory(cat, icon) {
     icons[cat] = icon
   }
+  static setFont(font) {
+    injectCss(`:root {--font: ${font};}`)
+  }
+  static setFonts(font) {
+    this.setFont(font)
+    this.setToolBoxFont(font)
+    this.setBlocksFont(font)
+  }
+  static setToolBoxFont(font) {
+    injectCss(`:root {--toolbox-font: ${font};}`)
+  }
+  static setBlocksFont(font) {
+    Blockly.Themes['DarkTheme']['fontStyle']["family"] = font
+    Blockly.Themes['LightTheme']['fontStyle']["family"] = Blockly.Themes['DarkTheme']['fontStyle']["family"]
+  }
   static setTextEditorColorDark(key, color) {
-    injectCss(`:root {--text-editor-dark-color-${key}: ${color};}`)
+    this.stylesToClear.push(injectCss(`:root {--text-editor-dark-color-${key}: ${color};}`))
   }
   static setTextEditorColorLight(key, color) {
-    injectCss(`:root {--text-editor-light-color-${key}: ${color};}`)
+    this.stylesToClear.push(injectCss(`:root {--text-editor-light-color-${key}: ${color};}`))
   }
   static setTextEditorColor(key, color) {
     this.setTextEditorColorLight(key, color)
@@ -41,6 +56,16 @@ class Editor {
     this.lastCssColor1 = injectCss(`:root {--cancel-color: ${color};}`)
   }
   static resetThemes() {
+    if (!this.stylesToClear) this.stylesToClear = []
+    for (var i of this.stylesToClear) {
+      revertCss(i)
+    }
+    Blockly.Themes['DarkTheme']['fontStyle'] = {
+      "family": "Source Code Pro, monospace",
+      "weight": "bold",
+      "size": 12
+    }
+    Blockly.Themes['LightTheme']['fontStyle'] = Blockly.Themes['DarkTheme']['fontStyle']
     Blockly.Themes['DarkTheme']['blockStyles'] = {
       'colour_blocks': {
         'colourPrimary': '#a5745b',
