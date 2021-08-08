@@ -719,4 +719,13 @@ function refreshBlockly() {
   injectBlockly();
 }
 
+document.addEventListener('keydown', function(e) {
+  console.log(e.key);
+  if (e.ctrlKey && e.key === 'r' && !document.getElementById('main_editor').hidden) {
+    e.preventDefault()
+    e.stopPropagation()
+    document.getElementById('run').click()
+  }
+}, false);
+
 export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};
