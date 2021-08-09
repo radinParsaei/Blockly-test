@@ -18,7 +18,14 @@ import { DarkTheme, LightTheme } from './themes.js';
 Blockly.Themes['DarkTheme'] = DarkTheme
 Blockly.Themes['LightTheme'] = LightTheme
 
+var Messages = Blockly.Msg;
+let defaultMessages = Blockly.Msg
+
 class Editor {
+  static _resetTranslations() {
+    Blockly.Msg = defaultMessages
+    Messages = defaultMessages
+  }
   static setIconForCategory(cat, icon) {
     icons[cat] = icon
   }
@@ -711,8 +718,6 @@ Blockly.ContextMenuRegistry.registry.register(screenshot);
 if (localStorage.getItem('currentDir') == null)
     localStorage.setItem('currentDir', '/');
   loadFiles();
-
-var Messages = Blockly.Msg;
 
 function refreshBlockly() {
   document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);

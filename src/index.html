@@ -196,6 +196,7 @@
             if (Object.keys(localStorage).includes('plugin_' + document.getElementById('pkginput').value + '_code')) {
               localStorage.removeItem('plugin_' + document.getElementById('pkginput').value + '_code')
               // reset everything to remove things plugins are done
+              Editor._resetTranslations()
               document.getElementById('menu').innerHTML = `<span class="label" style="font-size: 75%;position: absolute;">Dark Mode</span>
         <label class="switch" style="margin-top: 16px">
           <input type="checkbox" id="theme" onchange="changeTheme2()">
