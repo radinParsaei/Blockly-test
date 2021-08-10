@@ -26,6 +26,24 @@ class Editor {
     Blockly.Msg = defaultMessages
     Messages = defaultMessages
   }
+  static isPluginInstalled(pluginName) {
+    return Object.keys(localStorage).includes('plugin_' + pluginName + '_code')
+  }
+  static requirePlugin(pluginName, callback) {
+    if (!this.isPluginInstalled(pluginName)) {
+      fetch(`https://api.github.com/repos/${pluginName}/branches`).then(response => response.json())
+      .then(data => fetch(`https://raw.githubusercontent.com/${pluginName}/${data[0].name}/${pluginName.split('/')[1]}.js`).then(response => response.text()).then(code => {
+        eval(code)
+        localStorage.setItem('plugin_' + pluginName + '_code', code)
+        refreshBlockly()
+        if (callback) callback()
+      }).catch(a => {if (callback) callback(a)}))
+      .catch(a => {if (callback) callback(a)})
+    }
+  }
+  static isDark() {
+    return isDark
+  }
   static setIconForCategory(cat, icon) {
     icons[cat] = icon
   }
@@ -725,7 +743,6 @@ function refreshBlockly() {
 }
 
 document.addEventListener('keydown', function(e) {
-  console.log(e.key);
   if (e.ctrlKey && e.key === 'r' && !document.getElementById('main_editor').hidden) {
     e.preventDefault()
     e.stopPropagation()

@@ -205,6 +205,9 @@
         <span id="modeContainer">
           <button id="gotoblock" class="mode" onclick="goToBlock()">Blocks</button>
           <button id="gotocode" class="selected mode" onclick="goToCode()">Code</button>`
+              if (Editor.isDark()) {
+                document.getElementById('theme').checked = true
+              }
               addButtons()
               Blockly.Extensions.unregister('text_indexOf_mutator')
               Blockly.Extensions.unregister('create_instance_mutator')
