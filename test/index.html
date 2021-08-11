@@ -156,6 +156,9 @@
 
       function addButtons() {
         addMenuOptionWithCustomImageElement(element, "Run", function() {
+          for (let i of Editor.onCodeExecutedCallbacks) {
+            i()
+          }
           let div = document.createElement('div');
           div.setAttribute('id', 'console2');
           div.setAttribute('class', 'dark');

@@ -26,6 +26,9 @@ class Editor {
     Blockly.Msg = defaultMessages
     Messages = defaultMessages
   }
+  static addOnCodeExecutedEvent(event) {
+    this.onCodeExecutedCallbacks.push(event)
+  }
   static isPluginInstalled(pluginName) {
     return Object.keys(localStorage).includes('plugin_' + pluginName + '_code')
   }
@@ -211,6 +214,7 @@ class Editor {
 }
 
 Editor.resetThemes()
+Editor.onCodeExecutedCallbacks = []
 
 var BlocklyOptions = {
   toolbox: document.getElementById('toolbox'),
