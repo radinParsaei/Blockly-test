@@ -26,6 +26,32 @@ class Editor {
     Blockly.Msg = defaultMessages
     Messages = defaultMessages
   }
+  static registerSnippet(snippet) {
+    const createSnippets = snippets =>
+      (Array.isArray(snippets) ? snippets : [snippets])
+          .map(({ name, code }) =>
+              [
+                  'snippet ' + name,
+                  code
+                      .split('\n')
+                      .map(c => '\t' + c)
+                      .join('\n'),
+              ].join('\n')
+          )
+          .join('\n')
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+    })
+    var snippetManager = ace.require('ace/snippets').snippetManager
+    var id = editor.session.$mode.$id || ''
+    var m = snippetManager.files[id]
+    m.scope = 'javascript'
+    let snippetText = createSnippets(snippet)
+    m.snippetText = snippetText
+    m.snippet = snippetManager.parseSnippetFile(snippetText, m.scope)
+    snippetManager.register(m.snippet, m.scope)
+  }
   static addOnCodeExecutedEvent(event) {
     this.onCodeExecutedCallbacks.push(event)
   }
