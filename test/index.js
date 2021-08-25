@@ -26,6 +26,12 @@ class Editor {
     Blockly.Msg = defaultMessages
     Messages = defaultMessages
   }
+  static getBlockly() {
+    return Blockly
+  }
+  static getAceEditor() {
+    return editor
+  }
   static registerSnippet(snippet) {
     const createSnippets = snippets =>
       (Array.isArray(snippets) ? snippets : [snippets])
@@ -194,9 +200,6 @@ class Editor {
       changeTheme()
     }
   }
-  static changeTheme() {
-    changeTheme()
-  }
   static setLightThemeColorsOfBlocksOfCategory(cat, a, b, c) {
     a = a.replace('#', '')
     if (!b) b = lighter(a)
@@ -241,6 +244,8 @@ class Editor {
 
 Editor.resetThemes()
 Editor.onCodeExecutedCallbacks = []
+Editor.changeView = changeView
+Editor.changeTheme = changeTheme
 
 var BlocklyOptions = {
   toolbox: document.getElementById('toolbox'),
@@ -780,4 +785,4 @@ document.addEventListener('keydown', function(e) {
   }
 }, false);
 
-export { workspace, changeTheme, changeView, genPhoto, injectBlockly, runCode, editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};
+export { editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};

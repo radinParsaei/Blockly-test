@@ -497,7 +497,7 @@ div.child p {
 }
 
 #light_svg, #dark_svg {
-  fill: #0094FF;
+  fill: var(--editor-color, #0094FF);
   padding: 10px;
   transition: fill 0.55s ease-out, padding 0.15s ease-out;
   width: 27px;
@@ -508,7 +508,7 @@ div.child p {
   fill: #E5E5E5 !important;
   border-radius: 100px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  background: #0094FF;
+  background: var(--editor-color, #0094FF);
   padding-top: 20px;
   padding-bottom: 20px;
 }

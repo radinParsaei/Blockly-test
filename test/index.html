@@ -26,12 +26,12 @@
     </div>
     <div class="layout dark" id="grid"></div>
     <div id="theme_div" class="dark">
-      <div onclick="changeTheme()">
+      <div onclick="Editor.changeTheme()">
         <svg viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg" id="light_svg">
         <path d="M16.5 12.375C18.7687 12.375 20.625 14.2312 20.625 16.5C20.625 18.7687 18.7687 20.625 16.5 20.625C14.2312 20.625 12.375 18.7687 12.375 16.5C12.375 14.2312 14.2312 12.375 16.5 12.375ZM16.5 9.625C12.705 9.625 9.625 12.705 9.625 16.5C9.625 20.295 12.705 23.375 16.5 23.375C20.295 23.375 23.375 20.295 23.375 16.5C23.375 12.705 20.295 9.625 16.5 9.625ZM2.75 17.875H5.5C6.25625 17.875 6.875 17.2563 6.875 16.5C6.875 15.7437 6.25625 15.125 5.5 15.125H2.75C1.99375 15.125 1.375 15.7437 1.375 16.5C1.375 17.2563 1.99375 17.875 2.75 17.875ZM27.5 17.875H30.25C31.0063 17.875 31.625 17.2563 31.625 16.5C31.625 15.7437 31.0063 15.125 30.25 15.125H27.5C26.7437 15.125 26.125 15.7437 26.125 16.5C26.125 17.2563 26.7437 17.875 27.5 17.875ZM15.125 2.75V5.5C15.125 6.25625 15.7437 6.875 16.5 6.875C17.2563 6.875 17.875 6.25625 17.875 5.5V2.75C17.875 1.99375 17.2563 1.375 16.5 1.375C15.7437 1.375 15.125 1.99375 15.125 2.75ZM15.125 27.5V30.25C15.125 31.0063 15.7437 31.625 16.5 31.625C17.2563 31.625 17.875 31.0063 17.875 30.25V27.5C17.875 26.7437 17.2563 26.125 16.5 26.125C15.7437 26.125 15.125 26.7437 15.125 27.5ZM8.23625 6.2975C7.7 5.76125 6.82 5.76125 6.2975 6.2975C5.76125 6.83375 5.76125 7.71375 6.2975 8.23625L7.755 9.69375C8.29125 10.23 9.17125 10.23 9.69375 9.69375C10.2163 9.1575 10.23 8.2775 9.69375 7.755L8.23625 6.2975ZM25.245 23.3063C24.7088 22.77 23.8288 22.77 23.3063 23.3063C22.77 23.8425 22.77 24.7225 23.3063 25.245L24.7638 26.7025C25.3 27.2388 26.18 27.2388 26.7025 26.7025C27.2388 26.1663 27.2388 25.2863 26.7025 24.7638L25.245 23.3063ZM26.7025 8.23625C27.2388 7.7 27.2388 6.82 26.7025 6.2975C26.1663 5.76125 25.2863 5.76125 24.7638 6.2975L23.3063 7.755C22.77 8.29125 22.77 9.17125 23.3063 9.69375C23.8425 10.2163 24.7225 10.23 25.245 9.69375L26.7025 8.23625ZM9.69375 25.245C10.23 24.7088 10.23 23.8288 9.69375 23.3063C9.1575 22.77 8.2775 22.77 7.755 23.3063L6.2975 24.7638C5.76125 25.3 5.76125 26.18 6.2975 26.7025C6.83375 27.225 7.71375 27.2388 8.23625 26.7025L9.69375 25.245Z"/>
         </svg>
       </div>
-      <div onclick="changeTheme()">
+      <div onclick="Editor.changeTheme()">
         <svg class="enabled" viewBox="0 0 33 34" fill="none" xmlns="http://www.w3.org/2000/svg" id="dark_svg">
         <path d="M12.8837 7.80583C12.6362 8.7125 12.5125 9.66167 12.5125 10.625C12.5125 16.405 17.0775 21.1083 22.6875 21.1083C23.6225 21.1083 24.5437 20.9808 25.4237 20.7258C23.9937 24.3525 20.5287 26.9167 16.5 26.9167C11.1925 26.9167 6.875 22.4683 6.875 17C6.875 12.8492 9.36375 9.27917 12.8837 7.80583ZM16.5 4.25C9.66625 4.25 4.125 9.95917 4.125 17C4.125 24.0408 9.66625 29.75 16.5 29.75C23.3337 29.75 28.875 24.0408 28.875 17C28.875 16.3483 28.82 15.6967 28.7375 15.0733C27.39 17.0142 25.19 18.275 22.6875 18.275C18.59 18.275 15.2625 14.8467 15.2625 10.625C15.2625 8.06083 16.4862 5.78 18.37 4.39167C17.765 4.30667 17.1325 4.25 16.5 4.25Z"/>
         </svg>
@@ -84,7 +84,7 @@
         setTimeout(function() {
           document.getElementById("main_editor").style.height = "calc(100% - 300px)";
           Blockly.svgResize(Blockly.mainWorkspace)
-          editor.resize();
+          Editor.getAceEditor().resize();
         }, 200);
         if (title) document.getElementById("buttom_sheet_title").innerHTML = title;
         document.getElementById("buttom_sheet_div").innerHTML = '';
@@ -95,7 +95,7 @@
         document.getElementById("buttom_sheet").style.height = "0";
         document.getElementById("main_editor").style.height = "calc(100% - 50px)";
         Blockly.svgResize(Blockly.mainWorkspace)
-        editor.resize();
+        Editor.getAceEditor().resize();
       }
 
       function openPopUp() {
@@ -254,15 +254,16 @@
       }`)
 
       function changeTheme2() {
-         changeTheme();
-         document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
-         injectBlockly();
+        Editor.changeTheme();
+        //  document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
+        //  injectBlockly();
+        refreshBlockly()
       }
       function goToBlock() {
-        if (localStorage.getItem('mode') == 'code') changeView();
+        if (localStorage.getItem('mode') == 'code') Editor.changeView();
       }
       function goToCode() {
-        if (localStorage.getItem('mode') == 'block') changeView();
+        if (localStorage.getItem('mode') == 'block') Editor.changeView();
       }
 
       BrowserFS.install(window);
@@ -490,13 +491,12 @@
         document.getElementById('main_editor').hidden = false;
         document.getElementById('menu').hidden = false;
         document.getElementById('theme_div').hidden = true;
-        editor.session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
-        editor.session.selection.moveTo(0, 0);
+        Editor.getAceEditor().session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
+        Editor.getAceEditor().session.selection.moveTo(0, 0);
         genBlocksCalled = true;
         document.getElementById('genBlocks').click();
         Blockly.getMainWorkspace().cleanUp();
-        document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
-        injectBlockly();
+        refreshBlockly()
         setInterval(function() {
           genBlocksCalled = false;
         }, 200);
