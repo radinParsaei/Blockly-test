@@ -26,6 +26,12 @@ class Editor {
     Blockly.Msg = defaultMessages
     Messages = defaultMessages
   }
+  static getSwal() {
+    return Swal
+  }
+  static getCode() {
+    return editor.getValue()
+  }
   static getBlockly() {
     return Blockly
   }
@@ -243,6 +249,7 @@ class Editor {
 }
 
 Editor.resetThemes()
+Editor.addButton = addButton
 Editor.onCodeExecutedCallbacks = []
 Editor.changeView = changeView
 Editor.changeTheme = changeTheme
@@ -727,10 +734,10 @@ function changeViewWithoutSwap() {
     // injectBlockly();
     Blockly.svgResize(Blockly.mainWorkspace);
     if (editorCodeChanged1 && document.getElementById("editor2").hidden) {
-      document.getElementById("genBlocks").click();
+      Compiler.genBlocks()
     }
     Blockly.mainWorkspace.scroll(0, 0);
-    document.getElementsByClassName('blocklyMenuItem')[0].click();
+    document.getElementsByClassName('blocklyMenuItem')[0].clsick();
   } catch(e) {}
   document.getElementById("gotocode").classList.toggle('selected');
   document.getElementById("gotoblock").classList.toggle('selected');
@@ -785,4 +792,4 @@ document.addEventListener('keydown', function(e) {
   }
 }, false);
 
-export { editor, Messages, Swal, clickListeners, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};
+export { Messages, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};

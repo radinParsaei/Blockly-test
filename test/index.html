@@ -167,7 +167,7 @@
           Compiler.run();
         }, 'run');
         addMenuOption('import.svg', 'add package', function() {
-          // Swal.fire({
+          // Editor.getSwal().fire({
           //   title: 'please enter repository name',
           //   input: 'text',
           //   inputValidator: (value) => {
@@ -178,8 +178,8 @@
           // }).then((repoName) => {
           //   if (repoName.value) {
           //     fetch(`https://api.github.com/repos/${repoName.value}/branches`).then(response => response.json())
-          //     .then(data => fetch(`https://raw.githubusercontent.com/${repoName.value}/${data[0].name}/${repoName.value.split('/')[1]}.js`).then(response => response.text()).then(code => eval(code)).catch(a => Swal.fire(a.toString())))
-          //     .catch(a => Swal.fire(a.toString()))
+          //     .then(data => fetch(`https://raw.githubusercontent.com/${repoName.value}/${data[0].name}/${repoName.value.split('/')[1]}.js`).then(response => response.text()).then(code => eval(code)).catch(a => Editor.getSwal().fire(a.toString())))
+          //     .catch(a => Editor.getSwal().fire(a.toString()))
           //   }
           // })
           const popup = createPopUpBody(openPopUp())
@@ -192,14 +192,15 @@
               packages.push(i)
               document.getElementById('category_grid').innerHTML += `<div class="package_item"><img style="width: 100%; max-height: 70%; object-fit: scale-down" src="https://opengraph.githubassets.com/a/${i}"/><p class="title" style="margin-left: 20px; margin-top: -1px; max-width: calc(100% - 40px); overflow: hidden">${i}</p><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" target="_blank" href="https://github.com/${i.split('/')[0]}">by ${i.split('/')[0]}</a><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" href="javascript:document.getElementById('pkginput').value='${i}';document.getElementById('submitpkg').click()">${Object.keys(localStorage).includes('plugin_' + i + '_code')? 'Remove':'Add'}</a></div>`
             }
-          }).catch(a => Swal.fire(a.toString()))
-            .catch(a => Swal.fire(a.toString()))
+          }).catch(a => Editor.getSwal().fire(a.toString()))
+            .catch(a => Editor.getSwal().fire(a.toString()))
           document.getElementById('submitpkg').addEventListener('click', function() {
             closePopUp()
             if (Object.keys(localStorage).includes('plugin_' + document.getElementById('pkginput').value + '_code')) {
               localStorage.removeItem('plugin_' + document.getElementById('pkginput').value + '_code')
               // reset everything to remove things plugins are done
               Editor._resetTranslations()
+              Editor.onCodeExecutedCallbacks = []
               document.getElementById('menu').innerHTML = `<span class="label" style="font-size: 75%;position: absolute;">Dark Mode</span>
         <label class="switch" style="margin-top: 16px">
           <input type="checkbox" id="theme" onchange="changeTheme2()">
@@ -235,8 +236,8 @@
                 eval(code)
                 localStorage.setItem('plugin_' + document.getElementById('pkginput').value + '_code', code)
                 refreshBlockly()
-              }).catch(a => Swal.fire(a.toString())))
-              .catch(a => Swal.fire(a.toString()))
+              }).catch(a => Editor.getSwal().fire(a.toString())))
+              .catch(a => Editor.getSwal().fire(a.toString()))
             }
           })
           $('#pkginput').keyup(function(e) {
@@ -292,7 +293,7 @@
       };
 
       async function createFile() {
-        const { value: name } = await Swal.fire({
+        const { value: name } = await Editor.getSwal().fire({
           title: Messages['CREATE_FILE_FILENAME_PROMPT'],
           confirmButtonColor: 'var(--editor-color, #1A9FFF)',
           input: 'text',
@@ -305,7 +306,7 @@
 
         if (name) {
           if (fs.existsSync(localStorage.getItem('currentDir') + name)) {
-            Swal.fire(Messages['FILE_ALREADY_EXIST']);
+            Editor.getSwal().fire(Messages['FILE_ALREADY_EXIST']);
             return;
           }
           fs.writeFile(localStorage.getItem('currentDir') + name, '\n', function(err) {});
@@ -314,7 +315,7 @@
       }
 
       async function createDirectory() {
-        const { value: dirname } = await Swal.fire({
+        const { value: dirname } = await Editor.getSwal().fire({
           title: Messages['CREATE_DIR_DIRNAME_PROMPT'],
           confirmButtonColor: 'var(--editor-color, #1A9FFF)',
           input: 'text',
@@ -328,14 +329,14 @@
           if (!fs.existsSync(localStorage.getItem('currentDir') + dirname)){
             fs.mkdirSync(localStorage.getItem('currentDir') + dirname);
           } else {
-            Swal.fire(Messages['DIR_NAME_ALREADY_USED']);
+            Editor.getSwal().fire(Messages['DIR_NAME_ALREADY_USED']);
           }
           loadFiles();
         }
       }
 
       function deleteFile(name) {
-        Swal.fire({
+        Editor.getSwal().fire({
           title: Messages['DELETE_CONFIRM_MSG'].replace("%1", name),
           // text: "You won't be able to revert this!",
           icon: 'warning',
@@ -361,7 +362,7 @@
       }
 
       async function renameFile(name) {
-        const { value: q } = await Swal.fire({
+        const { value: q } = await Editor.getSwal().fire({
           title: Messages['RENAME_FILE_PROMPT'],
           input: 'text',
           inputValue: name,
@@ -426,7 +427,7 @@
 
       async function paste() {
         let prompt = async function(t, v) {
-          const { value: q } = await Swal.fire({
+          const { value: q } = await Editor.getSwal().fire({
             title: t,
             input: 'text',
             inputValue: v,
@@ -444,7 +445,7 @@
         }
         if (fs.lstatSync(copiedFilePath).isDirectory()) {
           if (localStorage.getItem('currentDir').startsWith(copiedFilePath)) {
-            Swal.fire(Messages['ERR_COPY_FOLDER_IN_ITSELF'])
+            Editor.getSwal().fire(Messages['ERR_COPY_FOLDER_IN_ITSELF'])
             return;
           }
           copyDir(copiedFilePath, localStorage.getItem("currentDir") + copiedFileName);
@@ -494,7 +495,7 @@
         Editor.getAceEditor().session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
         Editor.getAceEditor().session.selection.moveTo(0, 0);
         genBlocksCalled = true;
-        document.getElementById('genBlocks').click();
+        Compiler.genBlocks()
         Blockly.getMainWorkspace().cleanUp();
         refreshBlockly()
         setInterval(function() {

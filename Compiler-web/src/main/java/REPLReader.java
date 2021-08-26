@@ -2,7 +2,7 @@ import org.teavm.jso.JSBody;
 
 public class REPLReader {
 	private static boolean readCode = true;
-	@JSBody(script = "return editor.getValue()")
+	@JSBody(script = "return Editor.getCode()")
 	public static native String readCode();
 
 	@JSBody(script = "return functionCodes")

@@ -5,6 +5,6 @@
 #include <emscripten/emscripten.h>
 
 inline std::string swalInput() {
-  emscripten_run_script("Swal.fire({input: \'text\'}).then(res => window[\'__COMPILER_INPUT\'] = res.value || \'\')");
+  emscripten_run_script("Editor.getSwal().fire({input: \'text\'}).then(res => window[\'__COMPILER_INPUT\'] = res.value || \'\')");
   return "";
 }
