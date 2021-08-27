@@ -263,7 +263,8 @@ export class ContinuousFlyout extends Blockly.VerticalFlyout {
             targetWorkspaceMetrics.absoluteLeft - this.width_;
       }
     }
-    this.positionAt_(this.width_, this.height_, x, y);
+    if (Editor.isRTL) this.positionAt_(this.width_, this.height_, x - this.width_, y);
+    else this.positionAt_(this.width_, this.height_, x, y);
   }
 
   /**

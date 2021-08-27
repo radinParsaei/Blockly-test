@@ -248,7 +248,7 @@ export class ContinuousToolbox extends Blockly.Toolbox {
       viewLeft: -this.scrollX, //+ (flyoutDimensions.width * 10),
 
       absoluteTop: absoluteTop,
-      absoluteLeft: absoluteLeft - flyoutDimensions.width,
+      absoluteLeft: absoluteLeft - (Editor.isRTL? 0:flyoutDimensions.width),
 
       // svgHeight: svgSize.height,
       // svgWidth: svgSize.width,

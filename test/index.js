@@ -21,10 +21,50 @@ Blockly.Themes['LightTheme'] = LightTheme
 var Messages = Blockly.Msg;
 let defaultMessages = Blockly.Msg
 
+var BlocklyOptions = {
+  toolbox: document.getElementById('toolbox'),
+  theme: isDark? Blockly.Themes['DarkTheme'] : Blockly.Themes['LightTheme'],
+  renderer: 'zelos',
+  collapse : true,
+  comments : false,
+  disable : false,
+  maxBlocks : Infinity,
+  trashcan : true,
+  css : true,
+  // media : 'http://localhost:3000',
+  rtl : false,
+  scrollbars : true,
+  sounds : false,
+  oneBasedIndex : false,
+  grid : {
+    spacing : 20,
+    length : 2,
+    colour : isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
+    snap : true
+  },
+  zoom : {
+    controls : true,
+    wheel : true,
+    startScale : 1,
+    maxScale : 2,
+    minScale : 0.5,
+    scaleSpeed : 1.2,
+  },
+  scrollbars: true,
+  move: {
+    drag: true,
+    wheel: true
+  }
+}
+
 class Editor {
   static _resetTranslations() {
     Blockly.Msg = defaultMessages
     Messages = defaultMessages
+  }
+  static setBlocksEditorRTL(rtl) {
+    BlocklyOptions['rtl'] = rtl
+    Editor.isRTL = rtl
   }
   static getSwal() {
     return Swal
@@ -122,6 +162,7 @@ class Editor {
     this.lastCssColor1 = injectCss(`:root {--cancel-color: ${color};}`)
   }
   static resetThemes() {
+    this.setBlocksEditorRTL(false)
     if (!this.stylesToClear) this.stylesToClear = []
     for (var i of this.stylesToClear) {
       revertCss(i)
@@ -253,42 +294,6 @@ Editor.addButton = addButton
 Editor.onCodeExecutedCallbacks = []
 Editor.changeView = changeView
 Editor.changeTheme = changeTheme
-
-var BlocklyOptions = {
-  toolbox: document.getElementById('toolbox'),
-  theme: isDark? Blockly.Themes['DarkTheme'] : Blockly.Themes['LightTheme'],
-  renderer: 'zelos',
-  collapse : true,
-  comments : false,
-  disable : false,
-  maxBlocks : Infinity,
-  trashcan : true,
-  css : true,
-  // media : 'http://localhost:3000',
-  rtl : false,
-  scrollbars : true,
-  sounds : false,
-  oneBasedIndex : false,
-  grid : {
-    spacing : 20,
-    length : 2,
-    colour : isDark? 'rgba(255, 255, 255, 0.12)':'rgba(150, 150, 150, 0.3)',
-    snap : true
-  },
-  zoom : {
-    controls : true,
-    wheel : true,
-    startScale : 1,
-    maxScale : 2,
-    minScale : 0.5,
-    scaleSpeed : 1.2,
-  },
-  scrollbars: true,
-  move: {
-    drag: true,
-    wheel: true
-  }
-}
 
 function populateDefaultBlocks() {
   Blockly.Msg['LOGIC_CATEGORY_COLOR'] = '#48A1BD'
@@ -791,5 +796,5 @@ document.addEventListener('keydown', function(e) {
     document.getElementById('run').click()
   }
 }, false);
-
+Messages['_lang_'] = 'EN'
 export { Messages, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};
