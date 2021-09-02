@@ -233,7 +233,16 @@ var clickListeners = []
 
 function addButton(category, text, onClick) {
   var element = document.createElement("button");
-  element.setAttribute('text', text);
+  let num = ''
+  while (Blockly.Msg['BUTTON_' + text.replace(' ', '_').toUpperCase() + num]) {
+    if (typeof num == 'string') {
+      num = 0
+    } else {
+      num++
+    }
+  }
+  Blockly.Msg['BUTTON_' + text.replace(' ', '_').toUpperCase() + num] = text
+  element.setAttribute('text', '%{BKY_BUTTON_' + text.replace(' ', '_').toUpperCase() + num + '}');
   element.setAttribute('callbackKey', 'callback' + (++callBackCounter));
   document.getElementById(category + "Category").appendChild(element);
   clickListeners.push(workspace => workspace.registerButtonCallback('callback' + callBackCounter, onClick))
