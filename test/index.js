@@ -10,6 +10,8 @@ import html2canvas from 'html2canvas';
 // import Swal from 'sweetalert2';
 import './toolbox.js';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import * as OfflinePluginRuntime from 'offline-plugin/runtime';
+OfflinePluginRuntime.install();
 
 Blockly.Flyout.prototype.MARGIN = 70;
 

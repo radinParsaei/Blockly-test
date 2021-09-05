@@ -5,6 +5,7 @@ const path = require('path');
 const resolve = require('resolve');
 const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+var OfflinePlugin = require('offline-plugin');
 
 const appDirectory = fs.realpathSync(process.cwd());
 const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath);
@@ -32,7 +33,7 @@ module.exports = (env) => {
     ).forEach((ext) => {
       entry = `./test/index.${ext}`;
     });
-    outputFile = 'test_bundle.js';
+    outputFile = 'index.js';
   } else if (isTest) { // Test.
     // Create an entry point for each .mocha.js file.
     fs.readdirSync('./test/')
@@ -107,6 +108,7 @@ module.exports = (env) => {
       ],
     },
     plugins: [
+      new OfflinePlugin({appShell: '/', publicPath: '/Blockly-test', autoUpdate: 1000 * 60 * 60 * 5, externals: ['/index.html', '/dist/index.js']}),
       // Typecheck TS.
       isTypescript &&
       new ForkTsCheckerWebpackPlugin({
