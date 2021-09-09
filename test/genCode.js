@@ -127,7 +127,7 @@ Blockly.genCode.finish = function(code) {
       vars += "var " + Object.keys(usedVariables)[i] + "\n";
     }
   }
-  return (vars + '\n' + definitions.join('\n\n') + '\n' + code).trim();
+  return (vars + '\n' + code + "\n" + definitions.join('\n\n')).trim();
 };
 
 Blockly.genCode.scrubNakedValue = function(line) {
