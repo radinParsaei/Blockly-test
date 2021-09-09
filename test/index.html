@@ -78,6 +78,7 @@
       var functionsInImportedFiles = {};
       var variablesInImportedFiles = [];
       var packages = []
+      var publicVariables = []
 
       function openButtomSheet(title) {
         document.getElementById("buttom_sheet").style.height = "250px";
@@ -530,7 +531,7 @@
     <button hidden id="genBlocks"></button>
     <script src="src-min/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="src-min/ext-language_tools.js"></script>
-    <script src="build/test_bundle.js"></script>
+    <script src="build/index.js"></script>
     <script>
       Messages['FILENAME_CANT_BE_EMPTY'] = "filename can't be empty";
       Messages['FILE_ALREADY_EXIST'] = 'file with this name is already exists';

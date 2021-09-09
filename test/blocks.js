@@ -151,7 +151,7 @@ function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionNam
           code += "() -> {\n" + Blockly.genCode.statementToCode(block, 'ARG' + i) + "}";
         if (i != paramTypes.length - 1) code += ', ';
       }
-      if (output) return [code + ')', Blockly.genCode.ORDER_FUNCTION_CALL];
+      if (output && output != 'parent') return [code + ')', Blockly.genCode.ORDER_FUNCTION_CALL];
       else return code + ')\n';
     };
     functionCodes += '\n' + functionCode;
@@ -1423,6 +1423,11 @@ function initBlocks() {
               this.menuGenerator_.push([i, i]);
             }
           }
+          for (var i_ of Blockly.getMainWorkspace().topBlocks_) {
+            if (i_.type == prevType && prevType != 'main_entry') {
+              for (var _j of publicVariables) this.menuGenerator_.push([_j, _j]);
+            }
+          }
           prev = prev.getPreviousBlock();
           prevType = prev && prev.type;
         }
@@ -1449,6 +1454,11 @@ function initBlocks() {
           } else if (prevType == 'procedures_defnoreturn' || prevType == 'procedures_defreturn') {
             for (var i of prev.getVars()) {
               this.menuGenerator_.push([i, i]);
+            }
+          }
+          for (var i_ of Blockly.getMainWorkspace().topBlocks_) {
+            if (i_.type == prevType && prevType != 'main_entry') {
+              for (var _j of publicVariables) this.menuGenerator_.push([_j, _j]);
             }
           }
           prev = prev.getPreviousBlock() || prev.getParent();

@@ -541,6 +541,12 @@ Blockly.genCode['control_continue'] = function(block) {
 Blockly.genCode['main_entry'] = function(block) {
   block.disabled = onStartUsed != 0;
   onStartUsed++;
+  publicVariables = [];
+  for (var i of block.childBlocks_) {
+    if (i.type == 'variable_declare' && i.getField('NAME').getValue() != '') {
+      publicVariables.push(i.getField('NAME').getValue());
+    }
+  }
   return Blockly.genCode.statementToCode(block, 'STACK').replace(/^(\t|  )/gm, '');
 };
 

@@ -165,7 +165,7 @@ path.blocklyPath[fill="none"], .blocklyOutlinePath[filter], .blocklyReplaceable 
   stroke-width: 3.5px;
   filter: none;
 }
-.dark .blocklyMenu {
+.dark .blocklyMenu:not(.blocklyDropdownMenu) {
   background: #232323 !important;
 }
 .dark .blocklyMenuItem {
