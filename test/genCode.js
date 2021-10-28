@@ -397,8 +397,9 @@ Blockly.genCode['procedures_defreturn'] = function(block) {
   var varName;
   var workspace = block.workspace;
   var variables = Blockly.Variables.allUsedVarModels(workspace) || [];
-  var funcName = Blockly.genCode.functionsDB_.getName(
-      block.getFieldValue('NAME'), Blockly.PROCEDURE_CATEGORY_NAME);
+  // var funcName = Blockly.genCode.functionsDB_.getName(
+      // block.getFieldValue('NAME'), Blockly.PROCEDURE_CATEGORY_NAME);
+  var funcName = block.getFieldValue('NAME').replace(/[^A-Za-z0-9_]/g, '_')
   var xfix1 = '';
   if (Blockly.genCode.STATEMENT_PREFIX) {
     xfix1 += Blockly.genCode.injectId(Blockly.genCode.STATEMENT_PREFIX, block);
@@ -437,6 +438,7 @@ Blockly.genCode['procedures_defreturn'] = function(block) {
      xfix1 + loopTrap + branch + xfix2 + returnValue + '}\n';
   code = Blockly.genCode.scrub_(block, code);
   // Add % so as not to collide with helper functions in definitions list.
+  while (Blockly.genCode.definitions_['%' + funcName]) funcName = '%' + funcName
   Blockly.genCode.definitions_['%' + funcName] = code;
   return null;
 };
@@ -448,8 +450,9 @@ Blockly.genCode['procedures_defnoreturn'] =
 
 Blockly.genCode['procedures_callreturn'] = function(block) {
   // Call a procedure with a return value.
-  var funcName = Blockly.genCode.functionsDB_.getName(block.getFieldValue('NAME'),
-      Blockly.PROCEDURE_CATEGORY_NAME);
+  // var funcName = Blockly.genCode.functionsDB_.getName(block.getFieldValue('NAME'),
+  //     Blockly.PROCEDURE_CATEGORY_NAME);
+  var funcName = block.getFieldValue('NAME').replace(/[^A-Za-z0-9_]/g, '_')
   var args = [];
   var variables = block.getVars();
   for (var i = 0; i < variables.length; i++) {

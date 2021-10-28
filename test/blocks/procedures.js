@@ -852,54 +852,54 @@ Blockly.Blocks['procedures_callnoreturn'] = {
         // The signatures don't match.
         def = null;
       }
-      if (!def) {
-        Blockly.Events.setGroup(event.group);
-        /**
-         * Create matching definition block.
-         * <xml xmlns="https://developers.google.com/blockly/xml">
-         *   <block type="procedures_defreturn" x="10" y="20">
-         *     <mutation name="test">
-         *       <arg name="x"></arg>
-         *     </mutation>
-         *     <field name="NAME">test</field>
-         *   </block>
-         * </xml>
-         */
-        var xml = Blockly.utils.xml.createElement('xml');
-        var block = Blockly.utils.xml.createElement('block');
-        block.setAttribute('type', this.defType_);
-        var xy = this.getRelativeToSurfaceXY();
-        var x = xy.x + Blockly.SNAP_RADIUS * (this.RTL ? -1 : 1);
-        var y = xy.y + Blockly.SNAP_RADIUS * 2;
-        block.setAttribute('x', x);
-        block.setAttribute('y', y);
-        var mutation = this.mutationToDom();
-        block.appendChild(mutation);
-        var field = Blockly.utils.xml.createElement('field');
-        field.setAttribute('name', 'NAME');
-        var callName = this.getProcedureCall();
-        if (!callName) {
-          // Rename if name is empty string.
-          callName = Blockly.Procedures.findLegalName('', this);
-          this.renameProcedure('', callName);
-        }
-        field.appendChild(Blockly.utils.xml.createTextNode(callName));
-        block.appendChild(field);
-        xml.appendChild(block);
-        Blockly.Xml.domToWorkspace(xml, this.workspace);
-        Blockly.Events.setGroup(false);
-      }
+      // if (!def) {
+      //   Blockly.Events.setGroup(event.group);
+      //   /**
+      //    * Create matching definition block.
+      //    * <xml xmlns="https://developers.google.com/blockly/xml">
+      //    *   <block type="procedures_defreturn" x="10" y="20">
+      //    *     <mutation name="test">
+      //    *       <arg name="x"></arg>
+      //    *     </mutation>
+      //    *     <field name="NAME">test</field>
+      //    *   </block>
+      //    * </xml>
+      //    */
+      //   var xml = Blockly.utils.xml.createElement('xml');
+      //   var block = Blockly.utils.xml.createElement('block');
+      //   block.setAttribute('type', this.defType_);
+      //   var xy = this.getRelativeToSurfaceXY();
+      //   var x = xy.x + Blockly.SNAP_RADIUS * (this.RTL ? -1 : 1);
+      //   var y = xy.y + Blockly.SNAP_RADIUS * 2;
+      //   block.setAttribute('x', x);
+      //   block.setAttribute('y', y);
+      //   var mutation = this.mutationToDom();
+      //   block.appendChild(mutation);
+      //   var field = Blockly.utils.xml.createElement('field');
+      //   field.setAttribute('name', 'NAME');
+      //   var callName = this.getProcedureCall();
+      //   if (!callName) {
+      //     // Rename if name is empty string.
+      //     callName = Blockly.Procedures.findLegalName('', this);
+      //     this.renameProcedure('', callName);
+      //   }
+      //   field.appendChild(Blockly.utils.xml.createTextNode(callName));
+      //   block.appendChild(field);
+      //   xml.appendChild(block);
+      //   Blockly.Xml.domToWorkspace(xml, this.workspace);
+      //   Blockly.Events.setGroup(false);
+      // }
     } else if (event.type == Blockly.Events.BLOCK_DELETE) {
       // Look for the case where a procedure definition has been deleted,
       // leaving this block (a procedure call) orphaned.  In this case, delete
       // the orphan.
       var name = this.getProcedureCall();
       var def = Blockly.Procedures.getDefinition(name, this.workspace);
-      if (!def) {
-        Blockly.Events.setGroup(event.group);
-        this.dispose(true);
-        Blockly.Events.setGroup(false);
-      }
+      // if (!def) {
+        // Blockly.Events.setGroup(event.group);
+        // this.dispose(true);
+        // Blockly.Events.setGroup(false);
+      // }
     } else if (event.type == Blockly.Events.CHANGE && event.element == 'disabled') {
       var name = this.getProcedureCall();
       var def = Blockly.Procedures.getDefinition(name, this.workspace);

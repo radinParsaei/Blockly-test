@@ -250,6 +250,7 @@ class Editor {
     }
   }
   static setLightThemeColorsOfBlocksOfCategory(cat, a, b, c) {
+    cat = cat.toLowerCase()
     a = a.replace('#', '')
     if (!b) b = lighter(a)
     if (!c) c = darker(a)
@@ -262,6 +263,7 @@ class Editor {
     }
   }
   static setDarkThemeColorsOfBlocksOfCategory(cat, a, b, c) {
+    cat = cat.toLowerCase()
     a = a.replace('#', '')
     if (!b) b = lighter(a)
     if (!c) c = darker(a)
@@ -798,5 +800,6 @@ document.addEventListener('keydown', function(e) {
     document.getElementById('run').click()
   }
 }, false);
+Blockly.Procedures.isLegalName_ = function() { return true; }
 Messages['_lang_'] = 'EN'
 export { Messages, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};
