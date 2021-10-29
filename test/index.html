@@ -188,15 +188,34 @@
           popup.innerHTML = '<input class="input" autocomplete="off" id="pkginput" placeholder="search for package name/enter package repo" style="direction: ltr; margin-top: 20px; padding: 10px" type="text"/><div style="width: 100%; height: calc(100% - 133px); margin-top: 10px; direction: ltr; padding-left: 10px; padding-right: 10px; overflow: scroll" class="layout2" id="category_grid"></div><button id="submitpkg" style="position: absolute; bottom: 5px; right: 3px" class="swal2-confirm swal2-styled">Add package</button>'
           fetch('pkglist').then(response => response.text()).then(function(list) {
             packages = []
-            for (var i of list.split('\n')) {
+            for (let i of list.split('\n')) {
               if (i.trim() == '') continue
               packages.push(i)
-              document.getElementById('category_grid').innerHTML += `<div class="package_item"><img style="width: 100%; max-height: 70%; object-fit: scale-down" src="https://opengraph.githubassets.com/a/${i}"/><p class="title" style="margin-left: 20px; margin-top: -1px; max-width: calc(100% - 40px); overflow: hidden">${i}</p><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" target="_blank" href="https://github.com/${i.split('/')[0]}">by ${i.split('/')[0]}</a><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" href="javascript:document.getElementById('pkginput').value='${i}';document.getElementById('submitpkg').click()">${Object.keys(localStorage).includes('plugin_' + i + '_code')? 'Remove':'Add'}</a></div>`
+              document.getElementById('category_grid').innerHTML += `<div class="package_item" id="plug_${i}"><img style="width: 100%; max-height: 70%; object-fit: scale-down" src="https://opengraph.githubassets.com/a/${i}"/><p class="title" style="margin-left: 20px; margin-top: -1px; max-width: calc(100% - 40px); overflow: hidden">${i}</p><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" target="_blank" href="https://github.com/${i.split('/')[0]}">by ${i.split('/')[0]}</a><a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" href="javascript:document.getElementById('pkginput').value='${i}';document.getElementById('submitpkg').click()">${Object.keys(localStorage).includes('plugin_' + i + '_code')? 'Remove':'Add'}</a></div>`
+              if (Object.keys(localStorage).includes('plugin_' + i + '_code')) {
+                fetch(`https://api.github.com/repos/${i}/branches`).then(response => response.json())
+                .then(data => fetch(`https://raw.githubusercontent.com/${i}/${data[0].name}/${i.split('/')[1]}.js`).then(response => response.text()).then(code => {
+                  let ver = code.match(/^\/\/ver=.+/gm)
+                  if (ver && ver.length == 1) ver = ver[0].split('=')[1]
+                  else ver = 'N/A'
+                  let ver_ = localStorage.getItem('plugin_' + i + '_code').match(/^\/\/ver=.+/gm)
+                  if (ver_ && ver_.length == 1) ver_ = ver_[0].split('=')[1]
+                  else ver_ = 'N/A'
+                  if (ver != ver_) document.getElementById('plug_' + i).innerHTML += `<a style="color: white; position: relative; bottom: 15px; margin-left: 20px; max-width: calc(100% - 40px); overflow: hidden" href="javascript:document.getElementById('pkginput').value=':!U${i}';document.getElementById('submitpkg').click()">Update</a>`
+                })).catch(ignored => {})
+              }
             }
           }).catch(a => Editor.getSwal().fire(a.toString()))
             .catch(a => Editor.getSwal().fire(a.toString()))
           document.getElementById('submitpkg').addEventListener('click', function() {
-            closePopUp()
+            if (document.getElementById('pkginput').value.includes(':!U')) {
+              document.getElementById('pkginput').value = document.getElementById('pkginput').value.replace(':!U', '')
+              setTimeout(function() {
+                document.getElementById('submitpkg').click()
+              }, 500)
+            } else {
+              closePopUp()
+            }
             if (Object.keys(localStorage).includes('plugin_' + document.getElementById('pkginput').value + '_code')) {
               localStorage.removeItem('plugin_' + document.getElementById('pkginput').value + '_code')
               // reset everything to remove things plugins are done
