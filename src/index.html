@@ -61,6 +61,9 @@
       <span id="modeContainer">
         <button id="gotoblock" class="mode" onclick="goToBlock()">Blocks</button>
         <button id="gotocode" class="selected mode" onclick="goToCode()">Code</button>
+        <select onchange="Editor._changeLang()" id="langs" style="margin-right: 10px; background: none; border: none; user-select: none">
+          <option value="0">Default</option>
+        </select>
       </span>
       <a href="javascript:openFileBrowser()" class="material-icons home_btn" style="display:inline-block; float:right; margin-right: 5px">home</a>
     </div>
@@ -371,6 +374,7 @@
               deleteDirectory(localStorage.getItem('currentDir') + name);
             } else {
               try {
+                localStorage.removeItem('langOfFile_' + localStorage.getItem('currentDir') + editingFile)
                 fs.unlinkSync(localStorage.getItem('currentDir') + name);
               } catch(err) {
                 console.error(err);
@@ -512,6 +516,9 @@
         document.getElementById('main_editor').hidden = false;
         document.getElementById('menu').hidden = false;
         document.getElementById('theme_div').hidden = true;
+        document.getElementById('langs').value = localStorage.getItem('langOfFile_' + localStorage.getItem('currentDir') + editingFile)
+        document.getElementById('langs').value = document.getElementById('langs').value? document.getElementById('langs').value:'0'
+        document.getElementById('langs').onchange()
         Editor.getAceEditor().session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
         Editor.getAceEditor().session.selection.moveTo(0, 0);
         genBlocksCalled = true;

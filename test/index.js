@@ -22,6 +22,8 @@ Blockly.Themes['LightTheme'] = LightTheme
 
 var Messages = Blockly.Msg;
 let defaultMessages = Blockly.Msg
+let langs = {}
+let lastLang = '0'
 
 var BlocklyOptions = {
   toolbox: document.getElementById('toolbox'),
@@ -64,6 +66,38 @@ class Editor {
     Blockly.Msg = defaultMessages
     Messages = defaultMessages
   }
+// you can test this function using this code
+// Editor.addLang('Java Script', function() {
+//     Editor.getAceEditor().session.setMode("ace/mode/javascript0")
+// }, function() {
+//     return Editor.getCode().replace('print', 'console.log')
+// }, function() {
+//     return Editor.getCode().replace('console.log', 'print')
+// })
+  static _changeLang() {
+    if (lastLang == '0' && document.getElementById('langs').value != '0') {
+      langs[document.getElementById('langs').value][0]()
+      editor.session.setValue(langs[document.getElementById('langs').value][1]())
+    } else if (lastLang != '0' && document.getElementById('langs').value == '0') {
+      editor.session.setMode("ace/mode/javascript");
+      editor.session.setValue(langs[lastLang][2]())
+    } else if (lastLang != '0' && document.getElementById('langs').value != '0') {
+      editor.session.setMode("ace/mode/javascript");
+      editor.session.setValue(langs[lastLang][2]())
+      langs[document.getElementById('langs').value][0]()
+      editor.session.setValue(langs[document.getElementById('langs').value][1]())
+    }
+    lastLang = document.getElementById('langs').value
+  }
+  static addLang(langName, initEditor, from, to) {
+    langs[langName] = [initEditor, from, to]
+    let tmp = '<option value="0">Default</option>'
+    for (let i of Object.keys(langs)) {
+      tmp += `<option value="${i}">${i}</option>`
+    }
+    document.getElementById('langs').innerHTML = tmp
+    document.getElementById('langs').hidden = !(!document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
+  }
   static setBlocksEditorRTL(rtl) {
     BlocklyOptions['rtl'] = rtl
     Editor.isRTL = rtl
@@ -72,7 +106,7 @@ class Editor {
     return Swal
   }
   static getCode() {
-    return editor.getValue()
+    return this.codeInDefaultLang? this.codeInDefaultLang:editor.getValue()
   }
   static getBlockly() {
     return Blockly
@@ -295,6 +329,7 @@ class Editor {
 
 Editor.resetThemes()
 Editor.addButton = addButton
+Editor.codeInDefaultLang = null
 Editor.onCodeExecutedCallbacks = []
 Editor.changeView = changeView
 Editor.changeTheme = changeTheme
@@ -675,6 +710,7 @@ setInterval(function() {
   if (editorCodeChanged) {
     editorCodeChanged = false;
     fs.writeFile(localStorage.getItem('currentDir') + editingFile, editor.getValue(), function(){});
+    localStorage.setItem('langOfFile_' + localStorage.getItem('currentDir') + editingFile, document.getElementById('langs').value)
   }
 }, 2000);
 
@@ -733,6 +769,8 @@ if (localStorage.getItem('theme') == "light") {
   changeThemeWithoutSwap();
 }
 
+document.getElementById('langs').hidden = !(!document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
+
 function changeViewWithoutSwap() {
   try {
     document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
@@ -743,8 +781,13 @@ function changeViewWithoutSwap() {
     // injectBlockly();
     Blockly.svgResize(Blockly.mainWorkspace);
     if (editorCodeChanged1 && document.getElementById("editor2").hidden) {
+      if (document.getElementById('langs').value != '0') {
+        Editor.codeInDefaultLang = langs[document.getElementById('langs').value][2]()
+      }
       Compiler.genBlocks()
+      Editor.codeInDefaultLang = null
     }
+    document.getElementById('langs').hidden = !(!document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
     Blockly.mainWorkspace.scroll(0, 0);
     document.getElementsByClassName('blocklyMenuItem')[0].clsick();
   } catch(e) {}
@@ -792,6 +835,15 @@ function refreshBlockly() {
   document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
   injectBlockly();
 }
+
+document.getElementById('run').addEventListener('click', function() {
+  if (document.getElementById('langs').value != '0') {
+    Editor.codeInDefaultLang = langs[document.getElementById('langs').value][2]()
+  }
+  setTimeout(function() {
+    Editor.codeInDefaultLang = null
+  }, 100)
+})
 
 document.addEventListener('keydown', function(e) {
   if (e.ctrlKey && e.key === 'r' && !document.getElementById('main_editor').hidden) {

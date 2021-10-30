@@ -641,3 +641,11 @@ div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
 #editor, #editor2 {
   overflow: hidden !important;
 }
+.dark #langs {
+  color: white;
+}
+
+#langs {
+  transition: color 0.3s ease-in-out;
+  color: black;
+}
