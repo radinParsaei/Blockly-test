@@ -426,7 +426,18 @@ const disableTopBlocksPlugin = new DisableTopBlocks();
 disableTopBlocksPlugin.init();
 
 function createWorkspace(blocklyDiv, options) {
-  workspace = Blockly.inject(blocklyDiv, options);
+  workspace = Blockly.inject(blocklyDiv, options)
+  let searchBox = document.createElement('input')
+  searchBox.style = 'background: none; position: absolute; bottom: 0; margin-right: 2px; margin-left: 2px; font-size: 18px; padding-bottom: 5px'
+  searchBox.classList.add('input')
+  searchBox.classList.add('top_border')
+  searchBox.addEventListener('keyup', () => {
+    Editor.blocksSearchQuery = searchBox.value.trim() == ''? null:searchBox.value
+    Blockly.refreshFlyout()
+    document.getElementById('root').focus()
+  })
+  searchBox.placeholder = 'Search...'
+  document.querySelector("#root > div > div").appendChild(searchBox)
   workspace.addChangeListener(function(event) {
     Blockly.Events.disableOrphans(event);
     if (event.element == undefined && event.recordUndo && event.oldXml && event.oldXml.attributes.type.value == 'main_entry') {

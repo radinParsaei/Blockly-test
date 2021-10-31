@@ -14,7 +14,7 @@ import {ContinuousToolbox} from './ContinuousToolbox';
 /**
  * Class for continuous flyout.
  */
-export class ContinuousFlyout extends Blockly.VerticalFlyout {
+class ContinuousFlyout extends Blockly.VerticalFlyout {
   /** @override */
   constructor(workspaceOptions) {
     super(workspaceOptions);
@@ -415,3 +415,5 @@ export class ContinuousFlyout extends Blockly.VerticalFlyout {
     this.recycleBlocks_.push(block);
   }
 }
+
+export {ContinuousFlyout}

@@ -595,6 +595,12 @@ body.dark {
   font-size: medium;
   font-family: inherit;
 }
+.input.top_border {
+  border-top: 1px rgba(0, 0, 0, 0.3) solid;
+}
+.dark .input.top_border {
+  border-top: 1px rgba(255, 255, 255, 0.3) solid;
+}
 .dark .input {
   color: white;
   border-bottom: 1px rgba(255, 255, 255, 0.3) solid;

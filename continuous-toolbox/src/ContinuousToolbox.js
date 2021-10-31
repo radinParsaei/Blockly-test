@@ -9,6 +9,7 @@
  */
 
 import * as Blockly from 'blockly/core';
+import { Editor } from '../../test';
 import {ContinuousFlyout} from './ContinuousFlyout';
 
 var swap = false;
@@ -38,10 +39,15 @@ export class ContinuousToolbox extends Blockly.Toolbox {
     // TODO(https://github.com/google/blockly/issues/4377): Replace via
     // options struct when possible.
     this.workspace_.getMetrics =
-        this.workspaceGetMetrics_.bind(this.workspace_);
+        this.workspaceGetMetrics_.bind(this.workspace_)
     let self = this;
-    Blockly.hideFlyOut = function() {
-      self.getFlyout().hide(self.getInitialFlyoutContents_());
+    Blockly.hideFlyOut = () => {
+      self.getFlyout().hide(self.getInitialFlyoutContents_())
+    }
+    Blockly.refreshFlyout = () => {
+      self.getFlyout().hide(self.getInitialFlyoutContents_())
+      self.getFlyout().show(self.getInitialFlyoutContents_())
+      self.selectCategoryByName('Logic')
     }
   }
 
@@ -80,6 +86,17 @@ export class ContinuousToolbox extends Blockly.Toolbox {
         contents = contents.concat(itemContents);
       }
     }
+    if (Editor.blocksSearchQuery) {
+      let searchRes_ = [{kind: 'LABEL', text: Blockly.Msg['SEARCH_RESULTS'] || 'Search Results'}]
+      if (Editor.blocksSearchQuery) {
+        for (let i of contents) {
+          if(i.kind == 'BLOCK' && i.type.toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) { 
+            searchRes_.push(i)
+          }
+        }
+        return searchRes_
+      }
+    }
     return contents;
   }
 
@@ -91,6 +108,7 @@ export class ContinuousToolbox extends Blockly.Toolbox {
 
   /** @override */
   updateFlyout_(_oldItem, newItem) {
+    if (Editor.blocksSearchQuery) return
     if (_oldItem == newItem) {
       this.getFlyout().hide(this.getInitialFlyoutContents_());
       this.deselectItem_(_oldItem);

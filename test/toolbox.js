@@ -13,6 +13,7 @@ class CustomCategory extends Blockly.ToolboxCategory {
   }
 
   setSelected(isSelected){
+    if (Editor.blocksSearchQuery) return
     var label = this.rowDiv_.getElementsByClassName('blocklyTreeLabel')[0];
     if (isSelected) {
       this.rowDiv_.firstChild.childNodes[0].setAttribute('style', this.rowDiv_.firstChild.childNodes[0].getAttribute('style').replace('background:white', 'background:' + this.colour_).replace('background: white', 'background:' + this.colour_));
