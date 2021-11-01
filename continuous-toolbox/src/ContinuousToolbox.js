@@ -42,12 +42,26 @@ export class ContinuousToolbox extends Blockly.Toolbox {
         this.workspaceGetMetrics_.bind(this.workspace_)
     let self = this;
     Blockly.hideFlyOut = () => {
-      self.getFlyout().hide(self.getInitialFlyoutContents_())
+      if (Editor.blocksSearchQuery == null) self.getFlyout().hide(self.getInitialFlyoutContents_())
+    }
+    Blockly.deselectItem = (name) => {
+      var item = this.getCategoryByName(name);
+      if (!item) {
+        return;
+      }
+      this.deselectItem_(item);
     }
     Blockly.refreshFlyout = () => {
       self.getFlyout().hide(self.getInitialFlyoutContents_())
       self.getFlyout().show(self.getInitialFlyoutContents_())
-      self.selectCategoryByName('Logic')
+    }
+    Blockly.isFlyoutOpen = () => {
+      return this.getFlyout().isVisible()
+    }
+    Blockly.gotoStartOfFlyout = () => {
+      const target = this.getFlyout()
+            .getCategoryScrollPosition("Logic").y;
+        this.getFlyout().scrollTo(target);
     }
   }
 
@@ -88,14 +102,12 @@ export class ContinuousToolbox extends Blockly.Toolbox {
     }
     if (Editor.blocksSearchQuery) {
       let searchRes_ = [{kind: 'LABEL', text: Blockly.Msg['SEARCH_RESULTS'] || 'Search Results'}]
-      if (Editor.blocksSearchQuery) {
-        for (let i of contents) {
-          if(i.kind == 'BLOCK' && i.type.toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) { 
-            searchRes_.push(i)
-          }
+      for (let i of contents) {
+        if(i.kind == 'BLOCK' && i.type.toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) { 
+          searchRes_.push(i)
         }
-        return searchRes_
       }
+      return searchRes_
     }
     return contents;
   }

@@ -161,6 +161,7 @@
 
       function addButtons() {
         addMenuOptionWithCustomImageElement(element, "Run", function() {
+          if (!window['Compiler']) return;
           for (let i of Editor.onCodeExecutedCallbacks) {
             i()
           }
@@ -511,6 +512,7 @@
       }
 
       function openFile(filename) {
+        if (!window['Compiler']) return;
         editingFile = filename;
         document.getElementById('grid').hidden = true;
         document.getElementById('top_div').hidden = true;
@@ -580,6 +582,5 @@
         refreshBlockly()
       }, 100)
     </script>
-    
   </body>
 </html>

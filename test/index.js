@@ -427,18 +427,28 @@ disableTopBlocksPlugin.init();
 
 function createWorkspace(blocklyDiv, options) {
   workspace = Blockly.inject(blocklyDiv, options)
-  let searchBox = document.createElement('input')
-  searchBox.style = 'background: none; position: absolute; bottom: 0; margin-right: 2px; margin-left: 2px; font-size: 18px; padding-bottom: 5px'
-  searchBox.classList.add('input')
-  searchBox.classList.add('top_border')
-  searchBox.addEventListener('keyup', () => {
-    Editor.blocksSearchQuery = searchBox.value.trim() == ''? null:searchBox.value
-    Blockly.refreshFlyout()
-    document.getElementById('root').focus()
-  })
-  searchBox.placeholder = 'Search...'
-  document.querySelector("#root > div > div").appendChild(searchBox)
+  if (BlocklyOptions['toolboxPosition'] != 'end') {
+    let searchBox = document.createElement('input')
+    searchBox.style = 'background: none; font-size: 18px; padding-bottom: 7px; margin-top: 10px; margin-bottom: 5px; width: 133.5px; margin-left: 6px'
+    searchBox.classList.add('input')
+    searchBox.id = 'blocks_search_box'
+    searchBox.addEventListener('keyup', () => {
+      Editor.blocksSearchQuery = searchBox.value.trim() == ''? null:searchBox.value
+      Blockly.refreshFlyout()
+      Blockly.gotoStartOfFlyout()
+    })
+    searchBox.placeholder = 'Search...'
+    let container = document.querySelector("#root > div > div")
+    container.insertBefore(searchBox, container.firstChild)
+  }
   workspace.addChangeListener(function(event) {
+    if (event instanceof Blockly.Events.Create && Editor.blocksSearchQuery) {
+      document.getElementById('blocks_search_box').value = ''
+      document.getElementById('blocks_search_box').dispatchEvent(new Event('keyup'))
+      document.getElementById('blocks_search_box').blur()
+      Blockly.hideFlyOut()
+      Blockly.deselectItem("Logic")
+    }
     Blockly.Events.disableOrphans(event);
     if (event.element == undefined && event.recordUndo && event.oldXml && event.oldXml.attributes.type.value == 'main_entry') {
       onStartUsed--;
@@ -482,6 +492,7 @@ function injectBlockly() {
   if (window.innerHeight > window.innerWidth) {
     BlocklyOptions['horizontalLayout'] = true;
     BlocklyOptions['toolboxPosition'] = 'end';
+    if (document.getElementById('blocks_search_box')) document.getElementById('blocks_search_box').hidden = true
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
     Blockly.Flyout.prototype.MARGIN = 70;
     landscape = false;
@@ -492,6 +503,7 @@ function injectBlockly() {
   } else {
     BlocklyOptions['horizontalLayout'] = false;
     BlocklyOptions['toolboxPosition'] = 'right';
+    if (document.getElementById('blocks_search_box')) document.getElementById('blocks_search_box').hidden = false
     BlocklyOptions['plugins'] = {
       'toolbox': ContinuousToolbox,
       'flyoutsVerticalToolbox': ContinuousFlyout,
@@ -861,6 +873,19 @@ document.addEventListener('keydown', function(e) {
     e.preventDefault()
     e.stopPropagation()
     document.getElementById('run').click()
+  } else if ((navigator.userAgent.indexOf("Mac OS X") != -1? e.metaKey:e.ctrlKey) && e.key == 'f') {
+    e.preventDefault()
+    e.stopPropagation()
+    document.getElementById('blocks_search_box').focus()
+  } else if (e.key == 'Escape') {
+    if (Editor.blocksSearchQuery) {
+      document.getElementById('blocks_search_box').value = ''
+      document.getElementById('blocks_search_box').dispatchEvent(new Event('keyup'))
+      document.getElementById('blocks_search_box').blur()
+    } else if (localStorage.getItem('mode') == 'block' && Blockly.isFlyoutOpen()) {
+      document.getElementById('blocks_search_box').blur()
+      Blockly.hideFlyOut()
+    }
   }
 }, false);
 Blockly.Procedures.isLegalName_ = function() { return true; }
