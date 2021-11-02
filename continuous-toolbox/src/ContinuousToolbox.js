@@ -45,11 +45,11 @@ export class ContinuousToolbox extends Blockly.Toolbox {
       if (Editor.blocksSearchQuery == null) self.getFlyout().hide(self.getInitialFlyoutContents_())
     }
     Blockly.deselectItem = (name) => {
-      var item = this.getCategoryByName(name);
+      var item = self.getCategoryByName(name);
       if (!item) {
         return;
       }
-      this.deselectItem_(item);
+      self.deselectItem_(item);
     }
     Blockly.refreshFlyout = () => {
       self.getFlyout().hide(self.getInitialFlyoutContents_())
@@ -59,9 +59,7 @@ export class ContinuousToolbox extends Blockly.Toolbox {
       return this.getFlyout().isVisible()
     }
     Blockly.gotoStartOfFlyout = () => {
-      const target = this.getFlyout()
-            .getCategoryScrollPosition("Logic").y;
-        this.getFlyout().scrollTo(target);
+      self.getFlyout().scrollTo(0);
     }
   }
 
@@ -138,6 +136,12 @@ export class ContinuousToolbox extends Blockly.Toolbox {
         this.getFlyout().scrollTo(target);
       } catch (e) {}
     }
+  }
+
+  /** @override */
+  onClick_(a) {
+    Blockly.Touch.clearTouchIdentifier()
+    if (a.target.tagName != 'INPUT') super.onClick_(a)
   }
 
   /** @override */
