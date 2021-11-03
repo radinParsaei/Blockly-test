@@ -493,6 +493,7 @@ function injectBlockly() {
     BlocklyOptions['horizontalLayout'] = true;
     BlocklyOptions['toolboxPosition'] = 'end';
     if (document.getElementById('blocks_search_box')) document.getElementById('blocks_search_box').hidden = true
+    Editor.blocksSearchQuery = null
     sheet.innerHTML = ".blocklyTreeRowContentContainer{padding: 5px !important;}";
     Blockly.Flyout.prototype.MARGIN = 70;
     landscape = false;
