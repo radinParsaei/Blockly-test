@@ -851,6 +851,67 @@ var screenshot = {
 };
 Blockly.ContextMenuRegistry.registry.register(screenshot);
 
+function shareCode() {
+  let name = editingFile
+  if (name == '') name = 'unnamed'
+  let url = new URL(window.location.href)
+  let main = `${url.host + url.pathname}/?name=${name}&url=`
+  let host = 'https://radinparsaei.pythonanywhere.com/'
+  fetch(host, {
+    body: Editor.getCode(),
+    method: "POST"
+  }).then(response => response.text()).then(function(res) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: true,
+    })
+
+    Toast.fire({
+      icon: 'success',
+      title: `share link copied to clipboard!\n<a style="color: inherit" href="${main}${host}${res}">${main}${host}${res}</a>`
+    })
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(`${main}${host}${res}`)
+    }
+    if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = `${main}${host}${res}`
+        textarea.style.position = "fixed"
+        document.body.appendChild(textarea)
+        textarea.select()
+        try {
+            return document.execCommand("copy")
+        }
+        catch (ex) {
+            console.warn("Copy to clipboard failed", ex)
+        }
+        finally {
+            document.body.removeChild(textarea)
+        }
+    }
+  }).catch(function(e) {
+    console.error(e)
+  })
+}
+
+Blockly.Msg['sharecode'] = 'Share'
+
+Blockly.ContextMenuRegistry.registry.register({
+  displayText: function() {
+    return Blockly.Msg['sharecode'];
+  },
+  preconditionFn: function(scope) {
+    return 'enabled';
+  },
+  callback: function(scope) {
+    shareCode();
+  },
+  scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
+  id: 'share-code',
+  weight: 1,
+});
+
 if (localStorage.getItem('currentDir') == null)
     localStorage.setItem('currentDir', '/');
   loadFiles();

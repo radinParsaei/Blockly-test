@@ -655,3 +655,6 @@ div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
   transition: color 0.3s ease-in-out;
   color: black;
 }
+.dark .swal2-popup.swal2-toast {
+  box-shadow: 0 0 0.625em #444444 !important;
+}

@@ -579,6 +579,23 @@
           if (pluginName.startsWith('plugin_') && pluginName.endsWith('_code')) eval(localStorage.getItem(pluginName))
         })
         refreshBlockly()
+        var url = new URL(window.location.href);
+        var name = url.searchParams.get("name") || 'unnamed';
+        url = url.searchParams.get("url");
+        if (url) {
+          fetch(url).then(res => res.text()).then(function(res) {
+            while (fs.existsSync('/' + name)) {
+              name += '_'
+            }
+            fs.writeFileSync('/' + name, res)
+            loadFiles()
+            if (window['Compiler']) openFile(name)
+            else setTimeout(function() {if (window['Compiler']) {openFile(name)} else {setTimeout(function() {openFile(name)}, 1000)}}, 300)
+          }).catch(function(e) {
+            console.error(e)
+            Editor.getSwal().fire('Sorry. couldn\'t fetch shared file')
+          })
+        }
       }, 100)
     </script>
   </body>
