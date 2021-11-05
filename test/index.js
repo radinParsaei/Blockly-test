@@ -855,8 +855,9 @@ function shareCode() {
   let name = editingFile
   if (name == '') name = 'unnamed'
   let url = new URL(window.location.href)
-  let main = `${url.host + url.pathname}/?name=${name}&url=`
+  let main = `${url.protocol}//${url.host}${url.pathname}?name=${name}&url=`
   let host = 'https://radinparsaei.pythonanywhere.com/'
+  // let host = 'http://0.0.0.0:8088/'
   fetch(host, {
     body: Editor.getCode(),
     method: "POST"

@@ -587,10 +587,15 @@
             while (fs.existsSync('/' + name)) {
               name += '_'
             }
+            localStorage.setItem('currentDir', '/')
             fs.writeFileSync('/' + name, res)
             loadFiles()
-            if (window['Compiler']) openFile(name)
-            else setTimeout(function() {if (window['Compiler']) {openFile(name)} else {setTimeout(function() {openFile(name)}, 1000)}}, 300)
+            let tmp = setInterval(function() {
+              if (window['Compiler']) {
+                openFile(name)
+                clearInterval(tmp)
+              }
+            }, 100)
           }).catch(function(e) {
             console.error(e)
             Editor.getSwal().fire('Sorry. couldn\'t fetch shared file')

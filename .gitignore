@@ -19,3 +19,4 @@ start.js.save
 webpackDevServer.config.js.save
 dist
 .vscode
+sharedFiles
