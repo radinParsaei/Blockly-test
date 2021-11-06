@@ -360,7 +360,7 @@ function genPhoto() {
   let div = document.createElement("div");
   div.setAttribute('width', bbox.width);
   div.setAttribute('height', bbox.height);
-  div.setAttribute('style', 'width: min-content;position: absolute;right: 5000px;top:-5000px;');
+  div.setAttribute('style', 'width: min-content;position: absolute;right: 5000px;top:-5000px');
   div.appendChild(svg);
   document.body.appendChild(div);
   loadFont(div);
@@ -375,6 +375,128 @@ function genPhoto() {
         element.click();
         DOMURL.revokeObjectURL(element.href);
         document.body.removeChild(div);
+      });
+    } catch(e) {
+      alert(e);
+    }
+  }, 1000);
+}
+
+function createCard() {
+  if (localStorage.getItem('mode') != 'block') changeView()
+  let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let bbox = document.getElementsByClassName("blocklyBlockCanvas")[0].getBBox();
+  svg.setAttribute('class', "zelos-renderer DarkTheme-theme");
+  svg.setAttribute('width', bbox.width);
+  svg.setAttribute('height', bbox.height);
+  svg.setAttribute('viewBox', bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height);
+  let child = Blockly.mainWorkspace.svgBlockCanvas_.cloneNode(true);
+  child.removeAttribute("transform");
+  svg.appendChild(child);
+  let div = document.createElement("div");
+  div.setAttribute('width', bbox.width);
+  div.setAttribute('height', bbox.height);
+  div.setAttribute('style', `width: min-content;position: absolute;right: 5000px;top:-5000px; background: ${Editor.isDark()? '#343434':'#FFFFFF'}`);
+  div.appendChild(svg);
+  document.body.appendChild(div);
+  loadFont(div);
+  setTimeout(() => {
+    let camClickDiv = document.createElement('div')
+    camClickDiv.style = 'position: absolute; top: 0; z-index: 1001; background: white; height: 100%; width: 100%' //1001 to cover ace editor's map row
+    document.body.appendChild(camClickDiv)
+    try {
+      html2canvas(div, {logging: false}).then(function(canvas) {
+        let DOMURL = self.URL || self.webkitURL || self;
+        let img = canvas.toDataURL("image/png");
+        let element = document.createElement('img');
+        element.src = img;
+        document.body.removeChild(div);
+        if (localStorage.getItem('mode') != 'code') changeView()
+        let a = editor.getValue().split('\n')
+        editor.session.selection.moveTo(a.length, a[a.length - 1].length) // to make last line selected in gutter
+        setTimeout(() => {
+          let tmp = document.getElementById('editor').getAttribute('style')
+          document.getElementById('editor').setAttribute('style', tmp + `;height: ${editor.getSession().getDocument().getLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth() + 10}px; width: ${
+            editor.renderer.gutterWidth + editor.getValue().split('\n').sort(
+              function (a, b) {
+                  return b.length - a.length;
+              }
+            )[0].length * editor.renderer.characterWidth + 20
+          }px`)
+          document.getElementById('ace_map-row').hidden = true
+          document.getElementById('ace_bar-v').hidden = true
+          document.getElementById('ace_pre-v').hidden = true
+          document.getElementById('ace_bar-h').hidden = true
+          document.getElementById('ace_pre-h').hidden = true
+          document.querySelector('.ace_marker-layer').hidden = true
+          document.querySelector('.ace_cursor-layer').hidden = true
+          html2canvas(editor.container, {logging: false}).then(function(canvas_) {
+            document.getElementById('ace_map-row').hidden = false
+            document.getElementById('ace_bar-v').hidden = false
+            document.getElementById('ace_pre-v').hidden = false
+            document.getElementById('ace_bar-h').hidden = false
+            document.getElementById('ace_pre-h').hidden = false
+            document.querySelector('.ace_marker-layer').hidden = false
+            document.querySelector('.ace_cursor-layer').hidden = false
+            $(camClickDiv).fadeOut(150)
+            document.getElementById('editor').setAttribute('style', tmp)
+            let img_ = canvas_.toDataURL("image/png");
+            let element_ = document.createElement('img');
+            element_.src = img_;
+            element.setAttribute('style', 'max-width: 100%')
+            element_.setAttribute('style', 'max-width: 100%')
+            let popup = createPopUpBody(openPopUp())
+            let imageDiv = document.createElement('div')
+            let descDiv = document.createElement('div')
+            let desc = document.createElement('div')
+            let title = document.createElement('div')
+            descDiv.setAttribute('style', 'background: #f55')
+            descDiv.appendChild(title)
+            descDiv.appendChild(desc)
+            desc.setAttribute('style', 'margin-left: 5px; font-size: 18px')
+            title.setAttribute('style', 'color: white; font-size: 26px; margin: 10px; margin-left: 5px; padding-bottom: 5px')
+            imageDiv.setAttribute('style', 'color: white; width: 460px; margin-left: 5px; background: ' + (Editor.isDark()? '#343434':'#FFFFFF'))
+            imageDiv.appendChild(element)
+            imageDiv.appendChild(document.createElement('br'))
+            imageDiv.appendChild(element_)
+            imageDiv.appendChild(descDiv)
+            let textArea = document.createElement('textarea')
+            textArea.placeholder = 'Write some description...'
+            textArea.setAttribute('style', 'width: calc(100% - 460px); position: absolute; font-size: 18px; right: 0; top: 10%; height: 90%; resize: none; outline: none; background: transparent; padding-left: 5px; border: none;' + (Editor.isDark()? 'color: white':''))
+            textArea.addEventListener('keyup', () => {
+              desc.innerText = textArea.value
+              descDiv.hidden = textArea.value.trim() == '' && titleInput.value.trim() == ''
+            })
+            let titleInput = document.createElement('input')
+            titleInput.placeholder = 'Title'
+            titleInput.setAttribute('style', 'width: calc(100% - 460px); font-size: 26px; position: absolute; right: 0; top: 0; height: 10%; resize: none; outline: none; background: transparent; padding-left: 5px; border: none;' + (Editor.isDark()? 'color: white':''))
+            titleInput.addEventListener('keyup', () => {
+              title.innerText = titleInput.value
+              descDiv.hidden = textArea.value.trim() == '' && titleInput.value.trim() == ''
+            })
+            descDiv.hidden = true
+            popup.appendChild(imageDiv)
+            popup.appendChild(titleInput)
+            popup.appendChild(textArea)
+            let saveButton = document.createElement('button')
+            saveButton.addEventListener('click', function() {
+              html2canvas(imageDiv, {logging: false}).then(function(canvas__) {
+                let DOMURL = self.URL || self.webkitURL || self;
+                let img = canvas__.toDataURL("image/png");
+                let element = document.createElement('a');
+                element.href = img;
+                element.download = 'capture.png';
+                element.click();
+                DOMURL.revokeObjectURL(element.href);
+              })
+            })
+            saveButton.setAttribute('class', 'swal2-confirm swal2-styled')
+            saveButton.innerHTML = 'Save'
+            popup.appendChild(saveButton)
+            DOMURL.revokeObjectURL(element.src);
+            DOMURL.revokeObjectURL(element_.src);
+          });
+        }, 100)
       });
     } catch(e) {
       alert(e);
@@ -813,7 +935,7 @@ function changeViewWithoutSwap() {
     }
     document.getElementById('langs').hidden = !(!document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
     Blockly.mainWorkspace.scroll(0, 0);
-    document.getElementsByClassName('blocklyMenuItem')[0].clsick();
+    document.getElementsByClassName('blocklyMenuItem')[0].click();
   } catch(e) {}
   document.getElementById("gotocode").classList.toggle('selected');
   document.getElementById("gotoblock").classList.toggle('selected');
@@ -910,6 +1032,23 @@ Blockly.ContextMenuRegistry.registry.register({
   },
   scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
   id: 'share-code',
+  weight: 1,
+});
+
+Blockly.Msg['createcard'] = 'Create Flashcard'
+
+Blockly.ContextMenuRegistry.registry.register({
+  displayText: function() {
+    return Blockly.Msg['createcard'];
+  },
+  preconditionFn: function(scope) {
+    return 'enabled';
+  },
+  callback: function(scope) {
+    createCard();
+  },
+  scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
+  id: 'create-card',
   weight: 1,
 });
 
