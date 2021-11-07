@@ -12,6 +12,7 @@ import './toolbox.js';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 OfflinePluginRuntime.install();
+let QRCode = require('qrcode')
 
 Blockly.Flyout.prototype.MARGIN = 70;
 
@@ -382,6 +383,8 @@ function genPhoto() {
   }, 1000);
 }
 
+Blockly.Msg['openineditor'] = 'Open In Editor'
+
 function createCard() {
   if (localStorage.getItem('mode') != 'block') changeView()
   let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -462,7 +465,7 @@ function createCard() {
             imageDiv.appendChild(descDiv)
             let textArea = document.createElement('textarea')
             textArea.placeholder = 'Write some description...'
-            textArea.setAttribute('style', 'width: calc(100% - 460px); position: absolute; font-size: 18px; right: 0; top: 10%; height: 90%; resize: none; outline: none; background: transparent; padding-left: 5px; border: none;' + (Editor.isDark()? 'color: white':''))
+            textArea.setAttribute('style', 'width: calc(100% - 460px); position: absolute; font-size: 18px; right: 0; top: 10%; height: 85%; resize: none; outline: none; background: transparent; padding-left: 5px; border: none;' + (Editor.isDark()? 'color: white':''))
             textArea.addEventListener('keyup', () => {
               desc.innerText = textArea.value
               descDiv.hidden = textArea.value.trim() == '' && titleInput.value.trim() == ''
@@ -478,17 +481,60 @@ function createCard() {
             popup.appendChild(imageDiv)
             popup.appendChild(titleInput)
             popup.appendChild(textArea)
+            let shareCheckDiv = document.createElement('div')
+            shareCheckDiv.setAttribute('style', `position: absolute; right: 0; top: 95%${Editor.isDark()? ";color: white":""}`)
+            shareCheckDiv.innerHTML = "Add QRCode"
+            let addQr = document.createElement('input')
+            addQr.type = 'checkbox'
+            addQr.checked = true
+            shareCheckDiv.appendChild(addQr)
+            popup.appendChild(shareCheckDiv)
             let saveButton = document.createElement('button')
             saveButton.addEventListener('click', function() {
-              html2canvas(imageDiv, {logging: false}).then(function(canvas__) {
-                let DOMURL = self.URL || self.webkitURL || self;
-                let img = canvas__.toDataURL("image/png");
-                let element = document.createElement('a');
-                element.href = img;
-                element.download = 'capture.png';
-                element.click();
-                DOMURL.revokeObjectURL(element.href);
-              })
+              if (addQr.checked) {
+                let name = editingFile.replace(' ', '_')
+                if (name == '') name = 'unnamed'
+                let url = new URL(window.location.href)
+                let main = `${url.protocol}//${url.host}${url.pathname}?name=${name}&url=`
+                let host = 'https://radinparsaei.pythonanywhere.com/'
+                // let host = 'http://0.0.0.0:8088/'
+                fetch(host, {
+                  body: Editor.getCode(),
+                  method: "POST"
+                }).then(response => response.text()).then(function(res) {
+                  let canvas = document.createElement('canvas')
+                  QRCode.toCanvas(canvas, `${main}${host}${res}`, function (error) {
+                    if (error) console.error(error)
+                  })
+                  canvas.setAttribute('style', 'height: 75px; width: 75px; margin: 7px')
+                  imageDiv.insertBefore(canvas, imageDiv.firstChild)
+                  let openInEditor = document.createElement('span')
+                  openInEditor.setAttribute('style', 'position: relative; bottom: 10px')
+                  openInEditor.innerHTML = Blockly.Msg['openineditor']
+                  imageDiv.insertBefore(openInEditor, imageDiv.childNodes[1])
+                  html2canvas(imageDiv, {logging: false}).then(function(canvas__) {
+                    let DOMURL = self.URL || self.webkitURL || self;
+                    let img = canvas__.toDataURL("image/png");
+                    let element = document.createElement('a');
+                    element.href = img;
+                    element.download = 'capture.png';
+                    element.click();
+                    DOMURL.revokeObjectURL(element.href);
+                    imageDiv.removeChild(canvas)
+                    imageDiv.removeChild(openInEditor)
+                  })
+                })
+              } else {
+                html2canvas(imageDiv, {logging: false}).then(function(canvas__) {
+                  let DOMURL = self.URL || self.webkitURL || self;
+                  let img = canvas__.toDataURL("image/png");
+                  let element = document.createElement('a');
+                  element.href = img;
+                  element.download = 'capture.png';
+                  element.click();
+                  DOMURL.revokeObjectURL(element.href);
+                })
+              }
             })
             saveButton.setAttribute('class', 'swal2-confirm swal2-styled')
             saveButton.innerHTML = 'Save'
@@ -974,7 +1020,7 @@ var screenshot = {
 Blockly.ContextMenuRegistry.registry.register(screenshot);
 
 function shareCode() {
-  let name = editingFile
+  let name = editingFile.replace(' ', '_')
   if (name == '') name = 'unnamed'
   let url = new URL(window.location.href)
   let main = `${url.protocol}//${url.host}${url.pathname}?name=${name}&url=`

@@ -26,6 +26,7 @@
     "js-yaml": "^4.1.0",
     "offline-plugin": "^5.0.7",
     "patch-package": "^6.4.7",
+    "qrcode": "^1.4.4",
     "sweetalert2": "^11.0.11"
   }
 }
