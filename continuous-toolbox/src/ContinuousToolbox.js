@@ -59,7 +59,7 @@ export class ContinuousToolbox extends Blockly.Toolbox {
       return this.getFlyout().isVisible()
     }
     Blockly.gotoStartOfFlyout = () => {
-      self.getFlyout().scrollTo(0);
+      self.getFlyout().scrollTo(1)
     }
   }
 

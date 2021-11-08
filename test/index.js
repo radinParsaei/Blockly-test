@@ -386,7 +386,8 @@ function genPhoto() {
 Blockly.Msg['openineditor'] = 'Open In Editor'
 
 function createCard() {
-  if (localStorage.getItem('mode') != 'block') changeView()
+  let viewChanged = localStorage.getItem('mode') != 'block'
+  if (viewChanged) changeView()
   let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   let bbox = document.getElementsByClassName("blocklyBlockCanvas")[0].getBBox();
   svg.setAttribute('class', "zelos-renderer DarkTheme-theme");
@@ -441,38 +442,49 @@ function createCard() {
             document.getElementById('ace_pre-h').hidden = false
             document.querySelector('.ace_marker-layer').hidden = false
             document.querySelector('.ace_cursor-layer').hidden = false
+            if (!viewChanged) changeView()
             $(camClickDiv).fadeOut(150)
             document.getElementById('editor').setAttribute('style', tmp)
             let img_ = canvas_.toDataURL("image/png");
             let element_ = document.createElement('img');
             element_.src = img_;
-            element.setAttribute('style', 'max-width: 100%')
-            element_.setAttribute('style', 'max-width: 100%')
-            let popup = createPopUpBody(openPopUp())
+            element.setAttribute('style', 'max-width: 100%;max-height: 50%')
+            element_.setAttribute('style', 'max-width: 100%;max-height: 50%')
+            let popup_ = openPopUp()
+            let popup = createPopUpBody(popup_)
+            popup.style.width = '90%'
+            popup.style.left = '5%'
+            popup.setAttribute('style', 'overflow: scroll')
             let imageDiv = document.createElement('div')
             let descDiv = document.createElement('div')
             let desc = document.createElement('div')
             let title = document.createElement('div')
-            descDiv.setAttribute('style', 'background: #f55')
+            descDiv.setAttribute('style', 'background: var(--editor-color, #1A9FFF); min-height: 146px')
             descDiv.appendChild(title)
             descDiv.appendChild(desc)
             desc.setAttribute('style', 'margin-left: 5px; font-size: 18px')
-            title.setAttribute('style', 'color: white; font-size: 26px; margin: 10px; margin-left: 5px; padding-bottom: 5px')
-            imageDiv.setAttribute('style', 'color: white; width: 460px; margin-left: 5px; background: ' + (Editor.isDark()? '#343434':'#FFFFFF'))
+            title.setAttribute('style', 'font-size: 26px; margin: 10px; margin-left: 5px; padding-bottom: 5px')
+            imageDiv.setAttribute('style', 'color: white; width: 460px; height: 460px; margin-left: 5px; background: ' + (Editor.isDark()? '#343434':'#FFFFFF'))
             imageDiv.appendChild(element)
             imageDiv.appendChild(document.createElement('br'))
             imageDiv.appendChild(element_)
             imageDiv.appendChild(descDiv)
+            let size = '460px'
+            if (window.screen.width < 1000) {
+              imageDiv.style.transform = 'scale(0.5)'
+              imageDiv.style.margin = '-100px'
+              size = '250px'
+            }
             let textArea = document.createElement('textarea')
             textArea.placeholder = 'Write some description...'
-            textArea.setAttribute('style', 'width: calc(100% - 460px); position: absolute; font-size: 18px; right: 0; top: 10%; height: 85%; resize: none; outline: none; background: transparent; padding-left: 5px; border: none;' + (Editor.isDark()? 'color: white':''))
+            textArea.setAttribute('style', 'width: calc(100% - ' + size + '); min-width: 100px; position: absolute; font-size: 18px; right: 0; top: 10%; height: 75%; resize: none; outline: none; background: transparent; padding-left: 5px; border: none;' + (Editor.isDark()? 'color: white':''))
             textArea.addEventListener('keyup', () => {
               desc.innerText = textArea.value
               descDiv.hidden = textArea.value.trim() == '' && titleInput.value.trim() == ''
             })
             let titleInput = document.createElement('input')
             titleInput.placeholder = 'Title'
-            titleInput.setAttribute('style', 'width: calc(100% - 460px); font-size: 26px; position: absolute; right: 0; top: 0; height: 10%; resize: none; outline: none; background: transparent; padding-left: 5px; border: none;' + (Editor.isDark()? 'color: white':''))
+            titleInput.setAttribute('style', 'width: calc(100% - ' + size + '); min-width: 100px; font-size: 26px; position: absolute; right: 0; top: 0; height: 10%; resize: none; outline: none; background: transparent; padding-left: 5px; border: none;' + (Editor.isDark()? 'color: white':''))
             titleInput.addEventListener('keyup', () => {
               title.innerText = titleInput.value
               descDiv.hidden = textArea.value.trim() == '' && titleInput.value.trim() == ''
@@ -482,15 +494,45 @@ function createCard() {
             popup.appendChild(titleInput)
             popup.appendChild(textArea)
             let shareCheckDiv = document.createElement('div')
-            shareCheckDiv.setAttribute('style', `position: absolute; right: 0; top: 95%${Editor.isDark()? ";color: white":""}`)
-            shareCheckDiv.innerHTML = "Add QRCode"
+            shareCheckDiv.setAttribute('style', `position: absolute; right: 0; top: 85%${Editor.isDark()? ";color: white":""}`)
+            shareCheckDiv.innerHTML = 'Add QRCode'
+            let colorLabel = document.createElement('span')
+            colorLabel.innerHTML = 'Color: '
+            let foregroundColorLabel = document.createElement('span')
+            foregroundColorLabel.innerHTML = 'Foreground Color: '
             let addQr = document.createElement('input')
             addQr.type = 'checkbox'
             addQr.checked = true
+            addQr.setAttribute('style', 'margin: 7px')
             shareCheckDiv.appendChild(addQr)
+            let cardColor = document.createElement('input')
+            cardColor.type = 'color'
+            cardColor.value = getComputedStyle(document.body).getPropertyValue('--editor-color') || '#1A9FFF'
+            cardColor.setAttribute('style', 'margin: 5px')
+            cardColor.addEventListener('input', function() {
+              descDiv.style.backgroundColor = cardColor.value
+            })
+            shareCheckDiv.appendChild(document.createElement('br'))
+            shareCheckDiv.appendChild(colorLabel)
+            shareCheckDiv.appendChild(cardColor)
+            shareCheckDiv.appendChild(document.createElement('br'))
+            let foregroundCardColor = document.createElement('input')
+            foregroundCardColor.type = 'color'
+            foregroundCardColor.value = '#FFFFFF'
+            foregroundCardColor.setAttribute('style', 'margin: 5px')
+            foregroundCardColor.addEventListener('input', function() {
+              descDiv.style.color = foregroundCardColor.value
+            })
+            shareCheckDiv.appendChild(foregroundColorLabel)
+            shareCheckDiv.appendChild(foregroundCardColor)
+            shareCheckDiv.appendChild(document.createElement('br'))
             popup.appendChild(shareCheckDiv)
             let saveButton = document.createElement('button')
+            // saveButton.setAttribute('style', 'position: absolute; right: 0; bottom: 95%')
             saveButton.addEventListener('click', function() {
+              element.style.height = getComputedStyle(element).height
+              element_.style.height = getComputedStyle(element_).height
+              imageDiv.style.height = 'auto'
               if (addQr.checked) {
                 let name = editingFile.replace(' ', '_')
                 if (name == '') name = 'unnamed'
@@ -512,6 +554,8 @@ function createCard() {
                   openInEditor.setAttribute('style', 'position: relative; bottom: 10px')
                   openInEditor.innerHTML = Blockly.Msg['openineditor']
                   imageDiv.insertBefore(openInEditor, imageDiv.childNodes[1])
+                  let br = document.createElement('br')
+                  imageDiv.insertBefore(br, imageDiv.childNodes[2])
                   html2canvas(imageDiv, {logging: false}).then(function(canvas__) {
                     let DOMURL = self.URL || self.webkitURL || self;
                     let img = canvas__.toDataURL("image/png");
@@ -537,8 +581,9 @@ function createCard() {
               }
             })
             saveButton.setAttribute('class', 'swal2-confirm swal2-styled')
+            saveButton.setAttribute('style', 'position: relative; top: 88%; left: 15%')
             saveButton.innerHTML = 'Save'
-            popup.appendChild(saveButton)
+            popup_.appendChild(saveButton)
             DOMURL.revokeObjectURL(element.src);
             DOMURL.revokeObjectURL(element_.src);
           });
@@ -1028,7 +1073,7 @@ function shareCode() {
   // let host = 'http://0.0.0.0:8088/'
   fetch(host, {
     body: Editor.getCode(),
-    method: "POST"
+    method: "POST",
   }).then(response => response.text()).then(function(res) {
     const Toast = Swal.mixin({
       toast: true,
