@@ -452,6 +452,7 @@ function createCard() {
             element_.setAttribute('style', 'max-width: 100%;max-height: 50%')
             let popup_ = openPopUp()
             let popup = createPopUpBody(popup_)
+            popup.style.textAlign = ''
             popup.style.width = '90%'
             popup.style.left = '5%'
             popup.setAttribute('style', 'overflow: scroll')
@@ -1083,7 +1084,41 @@ function shareCode() {
 
     Toast.fire({
       icon: 'success',
-      title: `share link copied to clipboard!\n<a style="color: inherit" href="${main}${host}${res}">${main}${host}${res}</a>`
+      title: `share link copied to clipboard!\n<a style="color: inherit" href="${main}${host}${res}">${main}${host}${res}</a>`,
+      html: `<center><button class="swal2-confirm swal2-styled" id="genQRButton">${Blockly.Msg['genqrcode'] || 'Generate QR Code'}</button></center>`
+    })
+    document.getElementById('genQRButton').addEventListener('click', function() {
+      console.log(10)
+      let canvas = document.createElement('canvas')
+      QRCode.toCanvas(canvas, `${main}${host}${res}`, function (error) {
+        if (error) console.error(error)
+        canvas.setAttribute('style', 'position: absolute; top: 50%; margin-top: -22%; width: 30%; left: 50%; margin-left: -15%')
+        let popup = openPopUp()
+        popup.style['z-index'] = 1100
+        popup.appendChild(canvas)
+        let downloadButton = document.createElement('button')
+        downloadButton.classList.add("swal2-confirm")
+        downloadButton.classList.add("swal2-styled")
+        setTimeout(function() {
+          let canvasCalculatedStyles = getComputedStyle(canvas)
+          downloadButton.setAttribute('style', `position: absolute; top: ${Number(canvasCalculatedStyles.height.replace('px', '')) + Number(canvasCalculatedStyles.top.replace('px', '')) +  + Number(canvasCalculatedStyles.marginTop.replace('px', '')) + 10}px; color: white; background: rgb(2 171 41); margin-left: -${Number(getComputedStyle(downloadButton).width.replace('px', '')) / 2}px`)
+        }, 1)
+        downloadButton.innerHTML = Blockly.Msg['qrdownload'] || 'Download'
+        downloadButton.addEventListener('click', function() {
+          html2canvas(canvas, {logging: false}).then(function(canvas) {
+            let DOMURL = self.URL || self.webkitURL || self;
+            let img = canvas.toDataURL("image/png");
+            let element = document.createElement('a');
+            element.href = img;
+            element.download = 'capture.png';
+            element.click();
+            DOMURL.revokeObjectURL(element.href);
+            document.body.removeChild(div);
+          });
+        })
+        popup.appendChild(downloadButton)
+        popup.style.textAlign = 'center'
+      })
     })
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(`${main}${host}${res}`)
