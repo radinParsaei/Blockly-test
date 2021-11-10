@@ -52,7 +52,7 @@
       <a style="position: relative; top: -40px; left: 0px;" class="closebtn" onclick="closeButtomSheet()">&times;</a>
       <div style="height: calc(100% - 22px); position: relative; top: -40px" id="buttom_sheet_div"></div>
     </div>
-    <div class="dark" hidden id="menu" style="height: 50px; float: top">
+    <div class="dark" hidden id="menu" style="height: 50px">
       <span class="label" style="font-size: 75%;position: absolute;">Dark Mode</span>
       <label class="switch" style="margin-top: 16px">
         <input type="checkbox" id="theme" onchange="changeTheme2()">
@@ -61,7 +61,7 @@
       <span id="modeContainer">
         <button id="gotoblock" class="mode" onclick="goToBlock()">Blocks</button>
         <button id="gotocode" class="selected mode" onclick="goToCode()">Code</button>
-        <select onchange="Editor._changeLang()" id="langs" style="margin-right: 10px; background: none; border: none; user-select: none">
+        <select onchange="Editor._changeLang()" id="langs" style="margin-right: 10px; background: none; border: none; user-select: none; outline: none;">
           <option value="0">Default</option>
         </select>
       </span>

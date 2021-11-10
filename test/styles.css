@@ -658,3 +658,17 @@ div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
 .dark .swal2-popup.swal2-toast {
   box-shadow: 0 0 0.625em #444444 !important;
 }
+.dark .blocklyTooltipDiv {
+  background-color: #232323;
+  color: white;
+}
+.blocklyTooltipDiv {
+  background-color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 7px;
+  font-size: 14px;
+}
+.dark select option {
+  background: #232323;
+}
