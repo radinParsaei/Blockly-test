@@ -52,7 +52,8 @@
       <a style="position: relative; top: -40px; left: 0px;" class="closebtn" onclick="closeButtomSheet()">&times;</a>
       <div style="height: calc(100% - 22px); position: relative; top: -40px" id="buttom_sheet_div"></div>
     </div>
-    <div class="dark" hidden id="menu" style="height: 50px; float: top">
+    <div class="dark" hidden id="overflowedMenu"></div>
+    <div class="dark" hidden id="menu" style="height: 50px">
       <span class="label" style="font-size: 75%;position: absolute;">Dark Mode</span>
       <label class="switch" style="margin-top: 16px">
         <input type="checkbox" id="theme" onchange="changeTheme2()">
@@ -61,7 +62,7 @@
       <span id="modeContainer">
         <button id="gotoblock" class="mode" onclick="goToBlock()">Blocks</button>
         <button id="gotocode" class="selected mode" onclick="goToCode()">Code</button>
-        <select onchange="Editor._changeLang()" id="langs" style="margin-right: 10px; background: none; border: none; user-select: none">
+        <select onchange="Editor._changeLang()" id="langs" style="margin-right: 10px; background: none; border: none; user-select: none; outline: none;">
           <option value="0">Default</option>
         </select>
       </span>
@@ -114,7 +115,7 @@
       }
 
       window.addEventListener('click', function(e) {
-        if (e.target.id == 'popup' && document.getElementById('popup').contains(e.target) && !document.querySelector('#popup *').contains(e.target)){
+        if (e.target.id == 'popup') {
           closePopUp()
         }
       });
@@ -137,6 +138,33 @@
         document.head.removeChild(a)
       }
 
+      let checkingOverflow = false
+
+      function checkMenuOverflow() {
+        if (!window['Editor']) return
+        checkingOverflow = true
+        let menu = document.getElementById('menu')
+        if (Editor.utils.isOverflown(menu)) {
+          var element = document.createElement("p");
+          element.innerHTML = "&#9658;";
+          element.setAttribute('style', "font-size: 28px; margin: 0; margin-bottom: -5px; padding: 0; font-family: auto; transform: rotate(270deg)");
+          addMenuOptionWithCustomImageElement(element, '', function() {
+            let popup = openPopUp()
+            let clone = $(document.getElementById('overflowedMenu')).clone(true, true)
+            clone.removeAttr('hidden')
+            clone.css("margin", '20px')
+            clone.appendTo($(popup))
+          })
+          while (Editor.utils.isOverflown(menu)) {
+            document.getElementById('overflowedMenu').insertBefore(menu.lastChild.previousSibling, document.getElementById('overflowedMenu').firstChild)
+          }
+        }
+        checkingOverflow = false
+      }
+
+      let callbacks = {}
+      let lastCallback = 0
+
       function addMenuOption(imgSrc, name, callBack, id) {
         var child = document.createElement('img');
         child.setAttribute('src', imgSrc);
@@ -150,9 +178,11 @@
         child1.innerHTML = name;
         child.appendChild(child1);
         child.setAttribute("class", "menuitem")
-        child.onclick = callBack;
+        callbacks[lastCallback++] = callBack
+        child.setAttribute('onclick', `callbacks[${lastCallback - 1}]()`)
         child.setAttribute('id', id);
         document.getElementById("menu").appendChild(child);
+        if (!checkingOverflow) checkMenuOverflow();
       }
       var element = document.createElement("p");
       element.innerHTML = "&#9658;";
@@ -527,6 +557,7 @@
         Compiler.genBlocks()
         Blockly.getMainWorkspace().cleanUp();
         refreshBlockly()
+        checkMenuOverflow()
         setInterval(function() {
           genBlocksCalled = false;
         }, 200);

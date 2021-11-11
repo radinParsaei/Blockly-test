@@ -334,6 +334,11 @@ Editor.codeInDefaultLang = null
 Editor.onCodeExecutedCallbacks = []
 Editor.changeView = changeView
 Editor.changeTheme = changeTheme
+Editor.utils = class {
+  static isOverflown(element) {
+    return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+  }
+}
 
 function populateDefaultBlocks() {
   Blockly.Msg['LOGIC_CATEGORY_COLOR'] = '#48A1BD'
