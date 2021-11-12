@@ -59,6 +59,26 @@ button.mode {
   margin-left: -6.3px;
   outline:none;
 }
+@media only screen and (max-width: 420px) {
+  button.mode {
+    margin-top: 14px;
+    font-size: 12px;
+  }
+  #modeContainer {
+    padding-top: 0 !important;
+  }
+  .switch, span.label {
+    display: none !important;
+  }
+  select#langs {
+    font-size: 10px;
+  }
+}
+@media only screen and (max-width: 330px) {
+  #run {
+    width: 24px !important;
+  }
+}
 #modeContainer {
   padding: 7px;
   padding-right: .8px;
@@ -671,4 +691,7 @@ div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
 }
 .dark select option {
   background: #232323;
+}
+.ace_dark > .ace_mobile-menu {
+  box-shadow: 1px 3px 2px #232323 !important;
 }

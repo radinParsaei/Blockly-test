@@ -900,11 +900,20 @@ event.addListener(editor.container, "drop", function(e) {
 });
 
 window.onresize = function() {
+  checkMenuOverflow()
   if (((window.innerHeight > window.innerWidth) && landscape) || ((window.innerHeight <= window.innerWidth) && !landscape)) {
     document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
     injectBlockly();
   }
 }
+
+window.onbeforeunload = function (e) {
+  if (editorCodeChanged) {
+    editorCodeChanged = false;
+    fs.writeFile(localStorage.getItem('currentDir') + editingFile, editor.getValue(), function(){});
+    localStorage.setItem('langOfFile_' + localStorage.getItem('currentDir') + editingFile, document.getElementById('langs').value)
+  }
+};
 
 editor.setKeyboardHandler('ace/keyboard/sublime')
 editor.commands.addCommands([{
@@ -1013,6 +1022,36 @@ if (localStorage.getItem('theme') == "light") {
 }
 
 document.getElementById('langs').hidden = !(!document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
+
+function checkMenuOverflow() {
+  document.getElementById('langs').hidden = !(!document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
+  checkingOverflow = true
+  let menu = document.getElementById('menu')
+  if (!rebuildingMenu) {
+    while (document.getElementById('overflowedMenu').firstChild) {
+      menu.appendChild(document.getElementById('overflowedMenu').firstChild)
+    }
+  }
+  if (document.getElementById('openOverflowedMenu')) document.getElementById('openOverflowedMenu').remove()
+  document.getElementById('overflowedMenu').innerHTML = ''
+  if (Editor.utils.isOverflown(menu)) {
+    var element = document.createElement("p");
+    element.innerHTML = "&#9658;";
+    element.setAttribute('style', "font-size: 28px; margin: 0; margin-bottom: -5px; padding: 0; font-family: Roboto, sans-serif !important; transform: rotate(270deg)");
+    addMenuOptionWithCustomImageElement(element, '', function() {
+      let popup = openPopUp()
+      let clone = $(document.getElementById('overflowedMenu')).clone(true, true)
+      clone.removeAttr('hidden')
+      clone.css("margin", '20px')
+      clone.appendTo($(popup))
+      popup.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
+    }, 'openOverflowedMenu')
+    while (Editor.utils.isOverflown(menu)) {
+      document.getElementById('overflowedMenu').insertBefore(menu.lastChild.previousSibling, document.getElementById('overflowedMenu').firstChild)
+    }
+  }
+  checkingOverflow = false
+}
 
 function changeViewWithoutSwap() {
   try {
@@ -1223,4 +1262,4 @@ document.addEventListener('keydown', function(e) {
 }, false);
 Blockly.Procedures.isLegalName_ = function() { return true; }
 Messages['_lang_'] = 'EN'
-export { Messages, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor};
+export { Messages, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor, checkMenuOverflow};
