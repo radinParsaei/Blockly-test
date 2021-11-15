@@ -74,6 +74,10 @@ Blockly.Msg['MATH_LEFT_SHIFT'] = 'left shift';
 Blockly.Msg['MATH_RIGHT_SHIFT'] = 'right shift';
 Blockly.Msg['MATH_LEFT_SHIFT_WITH'] = 'with';
 Blockly.Msg['LOGIC_BITWISE_NOT'] = 'bitwise not';
+Blockly.Msg['MATH_DECREASE'] = 'decrease';
+Blockly.Msg['MATH_INCREASE'] = 'increase';
+Blockly.Msg['MATH_INCREASE_AND_GET_WHAT_IT_WAS'] = 'and get what it was'
+Blockly.Msg['MATH_INCREASE_AND_GET'] = 'and get'
 
 function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
   blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
@@ -352,6 +356,20 @@ function initBlocks() {
         Blockly.genCode.ORDER_NONE) || '0';
     return [data1 + (side == 'LEFT'? ' << ':' >> ') + data, Blockly.genCode.ORDER_BITWISE_SHIFT];
   }, [], [true, true, true], '', [null, [[Blockly.Msg['MATH_LEFT_SHIFT'], 'LEFT'], [Blockly.Msg['MATH_RIGHT_SHIFT'], 'RIGHT']], null, Blockly.Msg['MATH_LEFT_SHIFT_WITH']], Blockly.Msg['MATH_LEFT_SHIFT_TOOLTIP'], Blockly.Msg['MATH_LEFT_SHIFT_HELPURL'], true, true);
+
+  addBlock("math_increase", "Math", '', function(block) {
+    let side = block.getFieldValue('ARG1');
+    let data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || '0';
+    return [data + side, Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, [[Blockly.Msg['MATH_INCREASE'], '++'], [Blockly.Msg['MATH_DECREASE'], '--']], Blockly.Msg['MATH_INCREASE_AND_GET_WHAT_IT_WAS']], Blockly.Msg['MATH_INCREASE_TOOLTIP'], Blockly.Msg['MATH_INCREASE_HELPURL'], true, true);
+
+  addBlock("math_increase_prefix", "Math", '', function(block) {
+    let side = block.getFieldValue('ARG1');
+    let data = Blockly.genCode.valueToCode(block, 'ARG0',
+        Blockly.genCode.ORDER_NONE) || '0';
+    return [data + side, Blockly.genCode.ORDER_ATOMIC];
+  }, [], [true, true], '', [null, [[Blockly.Msg['MATH_INCREASE'], '++'], [Blockly.Msg['MATH_DECREASE'], '--']], Blockly.Msg['MATH_INCREASE_AND_GET']], Blockly.Msg['MATH_INCREASE_TOOLTIP'], Blockly.Msg['MATH_INCREASE_HELPURL'], true, true);
 
   addLabel("Statements", "Logic", "smaller-title");
 

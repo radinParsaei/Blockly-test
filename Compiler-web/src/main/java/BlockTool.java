@@ -57,6 +57,22 @@ public class BlockTool {
             return "<block type=\"text\"><field name=\"TEXT\">" + ("" + val).replace("\n", "\\n")
                     .replace("\f", "\\f").replace("\t", "\\t").replace("\r", "\\r")
                     .replace("\b", "\\b").replace("\"", "\\").replace("\\", "\\\\") + "</field></block>";
+        } else if (val instanceof SyntaxTree.Increase) {
+            if (((SyntaxTree.Increase) val).isPostfix()) {
+                return "<block type=\"math_increase\"><field name=\"ARG1\">++</field><value name=\"ARG0\">" +
+                        putValue(((SyntaxTree.Increase) val).getVariable()) + "</value></block>";
+            } else {
+                return "<block type=\"math_increase_prefix\"><field name=\"ARG1\">++</field><value name=\"ARG0\">" +
+                        putValue(((SyntaxTree.Increase) val).getVariable()) + "</value></block>";
+            }
+        } else if (val instanceof SyntaxTree.Decrease) {
+            if (((SyntaxTree.Decrease) val).isPostfix()) {
+                return "<block type=\"math_increase\"><field name=\"ARG1\">--</field><value name=\"ARG0\">" +
+                        putValue(((SyntaxTree.Decrease) val).getVariable()) + "</value></block>";
+            } else {
+                return "<block type=\"math_increase_prefix\"><field name=\"ARG1\">--</field><value name=\"ARG0\">" +
+                        putValue(((SyntaxTree.Decrease) val).getVariable()) + "</value></block>";
+            }
         } else if (val instanceof SyntaxTree.CreateInstance) {
             if (Analyzer.matches(val, Analyzer.INSTANCE) &&
                     Analyzer.getPossibleInstanceNames(val).size() == 1 && Analyzer.getPossibleInstanceNames(val).get(0).matches("%Array")) {
