@@ -58,6 +58,11 @@ public class BlockTool {
                     .replace("\f", "\\f").replace("\t", "\\t").replace("\r", "\\r")
                     .replace("\b", "\\b").replace("\"", "\\").replace("\\", "\\\\") + "</field></block>";
         } else if (val instanceof SyntaxTree.Increase) {
+            if (parentIsExecuteValue) {
+                SyntaxTree.SetVariable setVariable = ((SyntaxTree.Increase) val).getVariableSetter();
+                setVariable.setVariableValue(new SyntaxTree.Add(((SyntaxTree.Increase) val).getVariable(), new SyntaxTree.Number(1)));
+                return syntaxTreeToBlocksXML1(setVariable);
+            }
             if (((SyntaxTree.Increase) val).isPostfix()) {
                 return "<block type=\"math_increase\"><field name=\"ARG1\">++</field><value name=\"ARG0\">" +
                         putValue(((SyntaxTree.Increase) val).getVariable()) + "</value></block>";
@@ -66,6 +71,11 @@ public class BlockTool {
                         putValue(((SyntaxTree.Increase) val).getVariable()) + "</value></block>";
             }
         } else if (val instanceof SyntaxTree.Decrease) {
+            if (parentIsExecuteValue) {
+                SyntaxTree.SetVariable setVariable = ((SyntaxTree.Decrease) val).getVariableSetter();
+                setVariable.setVariableValue(new SyntaxTree.Sub(((SyntaxTree.Decrease) val).getVariable(), new SyntaxTree.Number(1)));
+                return syntaxTreeToBlocksXML1(setVariable);
+            }
             if (((SyntaxTree.Decrease) val).isPostfix()) {
                 return "<block type=\"math_increase\"><field name=\"ARG1\">--</field><value name=\"ARG0\">" +
                         putValue(((SyntaxTree.Decrease) val).getVariable()) + "</value></block>";
@@ -663,24 +673,29 @@ public class BlockTool {
             blockCount++;
         } else if (program instanceof SyntaxTree.ExecuteValue) {
             parentIsExecuteValue = true;
-            boolean isInstanceOfArray = (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
-                    (((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance() != null) &&
-                    Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE) &&
-                    Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
-                    Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array"));
-            if (isInstanceOfArray || !(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
-                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction ||
-                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.ExitFunction ||
-                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.AwaitedValue) ||
-                    (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
-                    Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.TEXT))) {
-                if (isInstanceOfArray && !((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty")) {
-                    result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
-                } else {
-                    nakedValues.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
-                }
-            } else {
+            if (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.Increase ||
+                    ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.Decrease) {
                 result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
+            } else {
+                boolean isInstanceOfArray = (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
+                        (((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance() != null) &&
+                        Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE) &&
+                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
+                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array"));
+                if (isInstanceOfArray || !(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
+                        ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction ||
+                        ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.ExitFunction ||
+                        ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.AwaitedValue) ||
+                        (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
+                                Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.TEXT))) {
+                    if (isInstanceOfArray && !((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty")) {
+                        result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
+                    } else {
+                        nakedValues.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
+                    }
+                } else {
+                    result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
+                }
             }
             parentIsExecuteValue = false;
         } else if (program instanceof SyntaxTree.Return) {
