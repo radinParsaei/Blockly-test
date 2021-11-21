@@ -16,7 +16,6 @@ public class Targets {
     public static final boolean isInThread = true;
     public static final boolean systemPrint = false;
     public static int count = 0;
-    public static final boolean useAnalyzer = true;
 
 //    public static ArrayList<Integer> getIntervalCodes() {
 //        return intervalCodes;

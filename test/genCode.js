@@ -4,8 +4,8 @@ Blockly.genCode = new Blockly.Generator('genCode');
 
 var usedVariables = {};
 
-Blockly.genCode.addReservedWords(
-    'func,if,return,var,while,null,true,false,class,for,this,init,new,break,continue');
+// Blockly.genCode.addReservedWords(
+//     'func,if,return,var,while,null,true,false,class,for,this,init,new,break,continue');
 
 //copied from Blockly python generator
 Blockly.genCode.ORDER_ATOMIC = 0;            // 0 "" ...
@@ -66,6 +66,7 @@ Blockly.genCode.ORDER_OVERRIDES = [
 Blockly.genCode.init = function(workspace) {
   onStartUsed = 0;
   allVariables = [];
+  Blockly.genCode.RESERVED_WORDS_ = 'func,if,return,var,while,null,true,false,class,for,this,init,new,break,continue';
   Blockly.genCode.definitions_ = Object.create(null);
   Blockly.genCode.functionNames_ = Object.create(null);
 
@@ -127,7 +128,18 @@ Blockly.genCode.finish = function(code) {
       vars += "var " + Object.keys(usedVariables)[i] + "\n";
     }
   }
-  return (vars + '\n' + code + "\n" + definitions.join('\n\n')).trim();
+  let code_ = (vars + '\n' + definitions.join('\n\n') + '\n' + code + "\n").trim();
+  let re = new RegExp(/^var +([A-Za-z]*\d*_*)+ *=.*$/, 'gm');
+  let match = code_.match(re);
+  code_ = code_.replace(re, '');
+  if (match) {
+    match.reverse();
+    let c = 0
+    for (var i of match) {
+      code_ = i + ((c++ == match.length - 1)? '\n\n':'\n') + code_;
+    }
+  }
+  return code_;
 };
 
 Blockly.genCode.scrubNakedValue = function(line) {

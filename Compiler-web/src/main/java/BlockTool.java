@@ -17,6 +17,7 @@ public class BlockTool {
     private String parentClassName = null;
     private final StringBuilder nakedValues = new StringBuilder();
     static final HashMap<String, ArrayList<String>> importedFunctionParameters = new HashMap<>();
+    private Analyzer analyzer;
 
 //    private String getVariableName(String name) {
 //        String[] tmp = name.split(":");
@@ -84,8 +85,8 @@ public class BlockTool {
                         putValue(((SyntaxTree.Decrease) val).getVariable()) + "</value></block>";
             }
         } else if (val instanceof SyntaxTree.CreateInstance) {
-            if (Analyzer.matches(val, Analyzer.INSTANCE) &&
-                    Analyzer.getPossibleInstanceNames(val).size() == 1 && Analyzer.getPossibleInstanceNames(val).get(0).matches("%Array")) {
+            if (analyzer.matches(val, Analyzer.INSTANCE) &&
+                    analyzer.getPossibleInstanceNames(val).size() == 1 && analyzer.getPossibleInstanceNames(val).get(0).matches("%Array")) {
                 ArrayList<ValueBase> values = (ArrayList<ValueBase>) ((SyntaxTree.CreateInstance) val).getArgs()[0].getData();
                 StringBuilder stringBuilder = new StringBuilder("<block type=\"lists_create_with\"><mutation items=\"").append(values.size()).append("\"></mutation>");
                 for (int i = 0; i < values.size(); i++) {
@@ -217,7 +218,7 @@ public class BlockTool {
             }
         } else if (val instanceof SyntaxTree.CallFunction) {
             if (((SyntaxTree.CallFunction) val).getInstance() != null) {
-                if (Analyzer.matches(((SyntaxTree.CallFunction) val).getInstance(), Analyzer.TEXT)) {
+                if (analyzer.matches(((SyntaxTree.CallFunction) val).getInstance(), Analyzer.TEXT)) {
                     if (((SyntaxTree.CallFunction) val).getFunctionName().equals("replace") && ((SyntaxTree.CallFunction) val).getArgs().length == 2) {
                             return "<block type=\"text_replace\"><value name=\"ARG2\">" +
                                     putValue(((SyntaxTree.CallFunction) val).getInstance()) + "</value><value name=\"ARG1\">" +
@@ -369,9 +370,9 @@ public class BlockTool {
                                 "</value><value name=\"FIND\">" + putValue(((SyntaxTree.CallFunction) val).getArgs()[0]) +
                                 "</value><value name=\"INDEX\">" + putValue(((SyntaxTree.CallFunction) val).getArgs()[1]) + "</value></block>";
                     }
-                } else if (Analyzer.matches(((SyntaxTree.CallFunction) val).getInstance(), Analyzer.INSTANCE) &&
-                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) val).getInstance()).size() == 1 &&
-                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) val).getInstance()).get(0).equals("%Array")) {
+                } else if (analyzer.matches(((SyntaxTree.CallFunction) val).getInstance(), Analyzer.INSTANCE) &&
+                        analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) val).getInstance()).size() == 1 &&
+                        analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) val).getInstance()).get(0).equals("%Array")) {
                      if ((((SyntaxTree.CallFunction) val).getFunctionName().equals("getFirstItem") && ((SyntaxTree.CallFunction) val).getArgs().length == 0) ||
                              ((SyntaxTree.CallFunction) val).getFunctionName().equals("get") && ((SyntaxTree.CallFunction) val).getArgs().length == 1 &&
                              ((SyntaxTree.CallFunction) val).getArgs()[0] instanceof SyntaxTree.Number &&
@@ -481,7 +482,7 @@ public class BlockTool {
                 }
             }
             String functionName = ((SyntaxTree.CallFunction) val).getFunctionName().split(":")[0];
-            if (!functionParameters.containsKey(functionName + ((SyntaxTree.CallFunction) val).getArgs().length)) {
+            if (!analyzer.functionExists(functionName, ((SyntaxTree.CallFunction) val).getArgs().length)) {
                 functionParameters.put(functionName + ((SyntaxTree.CallFunction) val).getArgs().length, new ArrayList<>());
                 String[] a = new String[((SyntaxTree.CallFunction) val).getArgs().length];
                 for (int i = 0; i < a.length; i++) {
@@ -592,6 +593,7 @@ public class BlockTool {
     }
 
     public String syntaxTreeToBlocksXML(ProgramBase program) {
+        analyzer = new Analyzer(program);
         for (Map.Entry<String, ArrayList<String>> entry : importedFunctionParameters.entrySet())
             functionParameters.put(entry.getKey(), entry.getValue());
         StringBuilder tmp = new StringBuilder("<xml xmlns=\"https://developers.google.com/blockly/xml\">");
@@ -679,15 +681,15 @@ public class BlockTool {
             } else {
                 boolean isInstanceOfArray = (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
                         (((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance() != null) &&
-                        Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE) &&
-                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
-                        Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array"));
+                        analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.INSTANCE) &&
+                        analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).size() == 1 &&
+                        analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance()).get(0).equals("%Array"));
                 if (isInstanceOfArray || !(((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction ||
                         ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.PrintFunction ||
                         ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.ExitFunction ||
                         ((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.AwaitedValue) ||
                         (((SyntaxTree.ExecuteValue) program).getValue() instanceof SyntaxTree.CallFunction &&
-                                Analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.TEXT))) {
+                                analyzer.matches(((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getInstance(), Analyzer.TEXT))) {
                     if (isInstanceOfArray && !((SyntaxTree.CallFunction) ((SyntaxTree.ExecuteValue) program).getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty")) {
                         result.append(putValue(((SyntaxTree.ExecuteValue) program).getValue()));
                     } else {
@@ -818,15 +820,15 @@ public class BlockTool {
 
     private boolean executeValueNeedsNext(SyntaxTree.ExecuteValue program) {
         boolean isInstanceOfArray = (program.getValue() instanceof SyntaxTree.CallFunction &&
-                Analyzer.matches(((SyntaxTree.CallFunction) program.getValue()).getInstance(), Analyzer.INSTANCE) &&
-                Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) program.getValue()).getInstance()).size() == 1 &&
-                Analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) program.getValue()).getInstance()).get(0).equals("%Array"));
+                analyzer.matches(((SyntaxTree.CallFunction) program.getValue()).getInstance(), Analyzer.INSTANCE) &&
+                analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) program.getValue()).getInstance()).size() == 1 &&
+                analyzer.getPossibleInstanceNames(((SyntaxTree.CallFunction) program.getValue()).getInstance()).get(0).equals("%Array"));
         if (isInstanceOfArray || !(program.getValue() instanceof SyntaxTree.CallFunction ||
                 program.getValue() instanceof SyntaxTree.PrintFunction ||
                 program.getValue() instanceof SyntaxTree.ExitFunction ||
                 program.getValue() instanceof SyntaxTree.AwaitedValue) ||
                 (program.getValue() instanceof SyntaxTree.CallFunction &&
-                        Analyzer.matches(((SyntaxTree.CallFunction) program.getValue()).getInstance(), Analyzer.TEXT))) {
+                        analyzer.matches(((SyntaxTree.CallFunction) program.getValue()).getInstance(), Analyzer.TEXT))) {
             return isInstanceOfArray && !((SyntaxTree.CallFunction) program.getValue()).getFunctionName().matches("get|length|indexOf|getFromEnd|getRandomItem|getFirstItem|getLastItem|isEmpty");
         } else {
             return true;
