@@ -406,7 +406,6 @@ Blockly.genCode['text_trim'] = function(block) {
 };
 
 Blockly.genCode['procedures_defreturn'] = function(block) {
-  var varName;
   var workspace = block.workspace;
   var variables = Blockly.Variables.allUsedVarModels(workspace) || [];
   // var funcName = Blockly.genCode.functionsDB_.getName(

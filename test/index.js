@@ -1055,13 +1055,15 @@ function checkMenuOverflow() {
 
 function changeViewWithoutSwap() {
   try {
-    document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
-    document.getElementById("root").hidden = !document.getElementById("root").hidden;
+    document.getElementById('main_editor').style.opacity = 0
+    setTimeout(() => {
+      document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
+      document.getElementById("root").hidden = !document.getElementById("root").hidden;
+      Blockly.svgResize(Blockly.mainWorkspace);
+      document.getElementById('main_editor').style.opacity = 1
+    }, 200)
     if (isDark) editor.setTheme("ace/theme/monokai0");
     else editor.setTheme("ace/theme/xcode0");
-    // document.getElementById('root').removeChild(Blockly.getMainWorkspace().injectionDiv_);
-    // injectBlockly();
-    Blockly.svgResize(Blockly.mainWorkspace);
     if (editorCodeChanged1 && document.getElementById("editor2").hidden) {
       if (document.getElementById('langs').value != '0') {
         Editor.codeInDefaultLang = langs[document.getElementById('langs').value][2]()

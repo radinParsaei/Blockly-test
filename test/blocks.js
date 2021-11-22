@@ -586,6 +586,7 @@ function initBlocks() {
 
   // addBlock("procedures_defnoreturn_method", "Class");
   addBlock("procedures_defreturn_method", "Class");
+  addBlock("procedures_defreturn_static_method", "Class");
   addBlock("create_instance", "Class");
   addBlock("class_get_property", "Class");
   addBlock("class_set_property", "Class");

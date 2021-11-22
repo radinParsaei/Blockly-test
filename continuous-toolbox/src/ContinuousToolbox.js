@@ -11,6 +11,8 @@
 import * as Blockly from 'blockly/core';
 import { Editor } from '../../test';
 import {ContinuousFlyout} from './ContinuousFlyout';
+import 'lodash';
+import _ from 'lodash';
 
 var swap = false;
 
@@ -99,10 +101,120 @@ export class ContinuousToolbox extends Blockly.Toolbox {
       }
     }
     if (Editor.blocksSearchQuery) {
+      Editor.blocksSearchQuery = Editor.blocksSearchQuery.replaceAll('\\', '\\\\').replaceAll('(', '\\(').replaceAll(')', '\\)')
+      .replaceAll('[', '\\[').replaceAll(']', '\\]').replaceAll('.', '\\.').replaceAll('?', '\\?').replaceAll('*', '\\*').replaceAll('+', '\\+')
+      let message = ''
+      let blocks = _.cloneDeep(Blockly.Blocks)
+      for (let c of Object.keys(blocks)) {
+        if (blocks[c] && !blocks[c]['block_message']) {
+          blocks[c].jsonInit = function(a) {
+            for (let j of Object.keys(a)) {
+              if (j.startsWith('message')) {
+                let messageOfBlock = a[j].replace(/%\d+/g, '')
+                message = messageOfBlock
+              }
+            }
+          }
+          blocks[c].appendDummyInput = function() {
+            return class {
+              static appendField(a) {
+                if (typeof a == 'string') {
+                  message += a + ' '
+                }
+                return this
+              }
+            }
+          }
+          blocks[c].appendValueInput = function() {
+            return class {
+              static appendField(a) {
+                if (typeof a == 'string') {
+                  message += a + ' '
+                }
+                return this
+              }
+              static setCheck() {return this}
+              static setAlign() {return this}
+            }
+          }
+          blocks[c].appendStatementInput = function() {
+            return class {
+              static appendField(a) {
+                if (typeof a == 'string') {
+                  message += a + ' '
+                }
+                return this
+              }
+              static setCheck() {return this}
+              static setAlign() {return this}
+            }
+          }
+          blocks[c].setOutput = function() {}
+          blocks[c].setStyle = function() {}
+          blocks[c].setColour = function() {}
+          blocks[c].setHelpUrl = function() {}
+          blocks[c].setTooltip = function() {}
+          blocks[c].setPreviousStatement = function() {}
+          blocks[c].setNextStatement = function() {}
+          blocks[c].setInputsInline = function() {}
+          blocks[c].removeInput = function() {}
+          blocks[c].moveInputBefore = function() {}
+          blocks[c].mixin = function() {}
+          blocks[c].newQuote_ = function() {}
+          blocks[c].getInput = function() {
+            return class {
+              static appendField(a) {
+                if (typeof a == 'string') {
+                  message += a + ' '
+                }
+              }
+              static setCheck() {return this}
+            }
+          }
+          message = ''
+          try {
+            blocks[c].init()
+          } catch (e) {}
+          while (message.includes('%{BKY_')) {
+            let indexOfVariable = message.indexOf('%{BKY_')
+            if (indexOfVariable != -1) {
+              let var_ = message.substring(indexOfVariable + 6, message.indexOf('}', indexOfVariable))
+              message = message.replace(`%{BKY_${var_}}`, Blockly.Msg[var_])
+            }
+          }
+          Blockly.Blocks[c]['block_message'] = message
+        }
+      }
       let searchRes_ = [{kind: 'LABEL', text: Blockly.Msg['SEARCH_RESULTS'] || 'Search Results'}]
       for (let i of contents) {
-        if(i.kind == 'BLOCK' && i.type.toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) { 
-          searchRes_.push(i)
+        if (i.kind == 'CATEGORY' && i.custom == 'PROCEDURE') {
+          i = []
+          for (var x of Blockly.Procedures.flyoutCategory(Blockly.getMainWorkspace())) {
+            i.push({kind: 'BLOCK', type: x.attributes[0].value, blockxml: x})
+          }
+        }
+        if (i instanceof Array) {
+          for (let j of i) {
+            if (j.kind == 'BLOCK' && j.type.includes('def') && (Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'] + Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'] + Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_STATIC_METHOD']).toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) {
+              searchRes_.push(j)
+              continue
+            }
+            if (j.kind == 'BLOCK' && j.type.startsWith('procedures_call') && j.blockxml.firstChild.attributes[0].value.toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) {
+              searchRes_.push(j)
+            } else {
+              if (j.kind == 'BLOCK' && (Blockly.Blocks[j.type]['block_message'] && Blockly.Blocks[j.type]['block_message'].trim() != ''? Blockly.Blocks[j.type]['block_message'] : j.type).toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) { 
+                searchRes_.push(j)
+              }
+            }
+          }
+        } else {
+          if (i.kind == 'BLOCK' && i.type.includes('def') && (Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'] + Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_METHOD'] + Blockly.Msg['PROCEDURES_DEFRETURN_TITLE_STATIC_METHOD']).toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) {
+            searchRes_.push(i)
+            continue
+          }
+          if (i.kind == 'BLOCK' && (Blockly.Blocks[i.type]['block_message'] && Blockly.Blocks[i.type]['block_message'].trim() != ''? Blockly.Blocks[i.type]['block_message'] : i.type).toLowerCase().match(Editor.blocksSearchQuery.replace(' ', '.').toLowerCase())) { 
+            searchRes_.push(i)
+          }
         }
       }
       return searchRes_

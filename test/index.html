@@ -99,8 +99,12 @@
       function closeButtomSheet() {
         document.getElementById("buttom_sheet").style.height = "0";
         document.getElementById("main_editor").style.height = "calc(100% - 50px)";
+        document.body.style.overflowY = 'hidden'
         Blockly.svgResize(Blockly.mainWorkspace)
         Editor.getAceEditor().resize();
+        setTimeout(function() {
+          document.body.style.overflowY = 'auto'
+        }, 100)
       }
 
       function openPopUp() {
@@ -622,6 +626,9 @@
           })
         }
       }, 100)
+      window.addEventListener('load', function() {
+        $('.material-icons').css('opacity','1')
+      })
     </script>
   </body>
 </html>

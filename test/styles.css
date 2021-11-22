@@ -695,3 +695,10 @@ div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
 .ace_dark > .ace_mobile-menu {
   box-shadow: 1px 3px 2px #232323 !important;
 }
+.material-icons {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+#main_editor {
+  transition: opacity 0.2s;
+}

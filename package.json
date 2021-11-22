@@ -24,6 +24,7 @@
     "@blockly/disable-top-blocks": "^0.1.2",
     "html2canvas": "^1.3.2",
     "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
     "offline-plugin": "^5.0.7",
     "patch-package": "^6.4.7",
     "qrcode": "^1.4.4",
