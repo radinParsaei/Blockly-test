@@ -78,6 +78,8 @@ Blockly.Msg['MATH_DECREASE'] = 'decrease';
 Blockly.Msg['MATH_INCREASE'] = 'increase';
 Blockly.Msg['MATH_INCREASE_AND_GET_WHAT_IT_WAS'] = 'and get what it was'
 Blockly.Msg['MATH_INCREASE_AND_GET'] = 'and get'
+Blockly.Msg['LINKER_SET_RANDOM_WALLPAPER'] = 'set random image as wallpaper'
+
 
 function addBlock(blockName, blockCategory, blockDefaultValues, blockFunctionName,
   blockFunctionParameters, paramTypes, functionCode, blockUI, tooltip, helpUrl, output, inline) {
@@ -260,7 +262,7 @@ function lighter(colorCode) {
     if (code > 70) code = 70
     res += String.fromCharCode(code)
   }
-  return res
+  return res.replaceAll(':', 'A')
 }
 
 function darker(colorCode) {
@@ -271,7 +273,7 @@ function darker(colorCode) {
     if (code < 48) code = 48
     res += String.fromCharCode(code)
   }
-  return res
+  return res.replaceAll('@', 'A')
 }
 
 function createBlocksFromYAML(yml) {
@@ -1605,6 +1607,12 @@ function initBlocks() {
   addButton('Import', 'import package', function() {
     document.getElementById('addpkg').click()
   })
+  addCategory('Linker', 'Linker', '#DDBB33')
+  addBlock("set_random_wallpaper", "Linker", '', "setRandomWallpaper", [], [],
+  `declareNativeFunction(".", "runJS_str", 1)
+func setRandomWallpaper() {
+  runJS_str("Linker.setWallpaper('https://picsum.photos/1600/900')")
+}`, [Blockly.Msg['LINKER_SET_RANDOM_WALLPAPER']], Blockly.Msg['LINKER_SET_RANDOM_WALLPAPER_TOOLTIP'], Blockly.Msg['LINKER_SET_RANDOM_WALLPAPER_HELPURL']);
 }
 
 export { initBlocks, createShadows, putValue, addBlock, addCategory, addLabel, addButton, clickListeners, createBlocksFromYAML, lighter, darker, icons };

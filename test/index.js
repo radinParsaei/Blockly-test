@@ -353,6 +353,25 @@ function populateDefaultBlocks() {
 
 populateDefaultBlocks()
 
+let Linker = class {
+  static setWallpaper(path) {
+    this.socket.send(`{"set-wallpaper": "${path}"}`)
+  }
+}
+
+Linker.available = false
+function initLinker() {
+  Linker.socket = new WebSocket('ws://localhost:8443/')
+  Linker.socket.addEventListener('open', function (event) {
+    Linker.available = true
+  })
+  Linker.socket.addEventListener('close', function (event) {
+    Linker.available = false
+    setTimeout(initLinker, 5000)
+  })
+}
+initLinker()
+
 function genPhoto() {
   let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   let bbox = document.getElementsByClassName("blocklyBlockCanvas")[0].getBBox();
@@ -1264,4 +1283,4 @@ document.addEventListener('keydown', function(e) {
 }, false);
 Blockly.Procedures.isLegalName_ = function() { return true; }
 Messages['_lang_'] = 'EN'
-export { Messages, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor, checkMenuOverflow};
+export { Messages, createBlocksFromYAML, refreshBlockly, initBlocks, populateDefaultBlocks, Editor, checkMenuOverflow, Linker};
