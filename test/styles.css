@@ -702,3 +702,17 @@ div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
 #main_editor {
   transition: opacity 0.2s;
 }
+.dark .ser-item {
+  color: white;
+}
+.ser-item {
+  padding: 2%;
+  padding-left: 3%;
+  transition: font 0.15s;
+}
+.ser-item:hover {
+  padding: 2%;
+  padding-left: 3%;
+  font-weight: bold;
+  font-size: 18px;
+}

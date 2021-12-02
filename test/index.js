@@ -357,13 +357,65 @@ let Linker = class {
   static setWallpaper(path) {
     this.socket.send(`{"set-wallpaper": "${path}"}`)
   }
+
+  static _initPortList() {
+    this._ports = []
+    this.socket.send('{"list-serial-ports": ""}')
+  }
+
+  static _connectSerial(port, confs = {}) {
+    this.socket.send(`{"connect-to-serial-port": "${port}", "confs": ${JSON.stringify(confs)}}`)
+  }
+
+  static waitForSuccess() {
+    return new Promise((resolve, reject) => {
+      this._resolves.push(resolve)
+    })
+  }
+
+  static _writeToPort(port, data) {
+    this.socket.send(`{"write-ser": "${port}", "d": ${JSON.stringify(data)}}`)
+  }
+
+  static _closePort(port) {
+    this.socket.send(`{"close-port": "${port}"}`)
+  }
+
+  static _setDTR(port, value) {
+    this.socket.send(`{"set-dtr": "${port}", "v": ${value}}`)
+  }
+
+  static _setRTS(port, value) {
+    this.socket.send(`{"set-rts": "${port}", "v": ${value}}`)
+  }
+
+  static _setBreak(port, value) {
+    this.socket.send(`{"set-br": "${port}", "v": ${value}}`)
+  }
 }
+
+Linker._ports = []
+Linker._resolves = []
+Linker._portsCallbacks = {}
 
 Linker.available = false
 function initLinker() {
   Linker.socket = new WebSocket('ws://localhost:8443/')
   Linker.socket.addEventListener('open', function (event) {
     Linker.available = true
+    Linker.socket.addEventListener('message', function (event) {
+      if (event.data.startsWith('serial-port: ')) {
+        Linker._ports.push(event.data.split(':')[1].trim())
+      } else if (event.data.startsWith('sermsg:')) {
+        let callback = Linker._portsCallbacks[event.data.split(':')[1]]
+        if (callback) callback(String.fromCharCode(event.data.split(':')[2]))
+      } else if (event.data == '1') {
+        if (Linker._resolves[0]) {
+          Linker._resolves[0]()
+          Linker._resolves.pop()
+        }
+      }
+    });
   })
   Linker.socket.addEventListener('close', function (event) {
     Linker.available = false

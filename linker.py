@@ -1,3 +1,6 @@
+from typing import Union
+
+import serial.tools.list_ports
 import asyncio
 import json
 import os
@@ -6,6 +9,9 @@ import time
 import websockets
 import platform
 import urllib.request
+import _thread
+
+portHandles = {}
 
 if platform.system() == "Windows":
     import ctypes
@@ -59,6 +65,47 @@ async def _main(websocket, path):
                 os.remove(f'wallpaper{filename}.jpg')
             else:
                 change_wallpaper(parsed['set-wallpaper'])
+        elif list(parsed.keys())[0] == 'list-serial-ports':
+            ports = serial.tools.list_ports.comports()
+            for port, desc, hwid in sorted(ports):
+                await websocket.send(f'serial-port: {port}')
+        elif list(parsed.keys())[0] == 'write-ser':
+            portHandles[parsed['write-ser']].write(parsed['d'].encode())
+        elif list(parsed.keys())[0] == 'close-port':
+            portHandles[parsed['close-port']].close()
+            del portHandles[parsed['close-port']]
+        elif list(parsed.keys())[0] == 'set-dtr':
+            portHandles[parsed['set-dtr']].setDTR(parsed['v'])
+        elif list(parsed.keys())[0] == 'set-rts':
+            portHandles[parsed['set-rts']].setRTS(parsed['v'])
+        elif list(parsed.keys())[0] == 'set-br':
+            portHandles[parsed['set-br']].break_condition = parsed['v']
+        elif list(parsed.keys())[0] == 'connect-to-serial-port':
+            baudRate = 9600
+            dataBits = serial.EIGHTBITS
+            parity = "N"
+            if "baudRate" in parsed['confs']:
+                baudRate = parsed['confs']['baudRate']
+            if "stopBits" in parsed['confs']:
+                dataBits = parsed['confs']['stopBits']
+            if "parity" in parsed['confs']:
+                parity = parsed['confs']['parity'].title()[0]
+            portHandles[parsed['connect-to-serial-port']] = serial.Serial(parsed['connect-to-serial-port'],
+                                                                          baudrate=baudRate, bytesize=dataBits, parity=parity)
+
+            async def check_for_data(portName, ws):
+                while True:
+                    if portName in portHandles:
+                        try:
+                            for i in portHandles[portName].read():
+                                await ws.send(f'sermsg:{portName}:{i}')
+                        except Exception:
+                            pass
+
+            def check_for_data_(portName, ws):
+                asyncio.new_event_loop().run_until_complete(check_for_data(portName, ws))
+
+            _thread.start_new_thread(check_for_data_, (parsed['connect-to-serial-port'], websocket))
         await websocket.send('1')
 
 

@@ -629,6 +629,103 @@
       window.addEventListener('load', function() {
         $('.material-icons').css('opacity','1')
       })
+      class Serial {
+        init = async() => {
+          if ('serial' in navigator) {
+            this.port = await navigator.serial.requestPort()
+          } else {
+            if (Linker.available) {
+              Linker._initPortList()
+              let promise = new Promise((resolve, reject) => {
+                let self = this
+                setTimeout(() => {
+                  let popUp = createPopUpBody(openPopUp())
+                  popUp.style.paddingTop = '30px'
+                  for (let i of Linker._ports) {
+                    let item = document.createElement('div')
+                    item.innerHTML = i
+                    item.classList.add('ser-item')
+                    item.addEventListener('click', () => {
+                      self.port = i
+                      closePopUp()
+                      resolve()
+                    })
+                    popUp.appendChild(item)
+                  }
+                }, 100)
+              })
+              return promise
+            } else {
+              throw 'WebSerial is not supported and linker is not available'
+            }
+          }
+        }
+        open = async (conf = {}, onMessage) => {
+          if (!('baudRate' in conf)) conf['baudRate'] = 9600
+          if ('serial' in navigator) {
+            await this.port.open(conf)
+            this.textDecoder = new TextDecoderStream()
+            this.readableStreamClosed = this.port.readable.pipeTo(this.textDecoder.writable)
+            this.reader = this.textDecoder.readable.getReader()
+            this.textEncoder = new TextEncoderStream()
+            this.writableStreamClosed = this.textEncoder.readable.pipeTo(this.port.writable)
+            this.writer = this.textEncoder.writable.getWriter()
+            while (true) {
+              const { value, done } = await this.reader.read()
+              if (value) {
+                onMessage(value)
+              }
+              if (done) {
+                this.reader.releaseLock()
+                break
+              }
+            }
+          } else {
+            Linker._connectSerial(this.port, conf)
+            Linker._portsCallbacks[this.port] = onMessage
+            await Linker.waitForSuccess()
+          }
+        }
+        write = (data) => {
+          if ('serial' in navigator) {
+            this.writer.write(data)
+          } else {
+            Linker._writeToPort(this.port, data)
+          }
+        }
+        close = async (data) => {
+          if ('serial' in navigator) {
+            this.reader.cancel()
+            await this.readableStreamClosed.catch(() => {})
+            this.writer.close()
+            await this.writableStreamClosed
+            await this.port.close()
+          } else {
+            Linker._closePort(this.port)
+          }
+        }
+        setDTR = async (value) => {
+          if ('serial' in navigator) {
+            await this.port.setSignals({ dataTerminalReady: value });
+          } else {
+            Linker._setDTR(this.port, value)
+          }
+        }
+        setRTS = async (value) => {
+          if ('serial' in navigator) {
+            await this.port.setSignals({ requestToSend: value });
+          } else {
+            Linker._setRTS(this.port, value)
+          }
+        }
+        setBreak = async (value) => {
+          if ('serial' in navigator) {
+            await this.port.setSignals({ "break": value });
+          } else {
+            Linker._setBreak(this.port, value)
+          }
+        }
+      }
     </script>
   </body>
 </html>
