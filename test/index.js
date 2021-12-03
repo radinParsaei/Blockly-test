@@ -334,6 +334,7 @@ Editor.codeInDefaultLang = null
 Editor.onCodeExecutedCallbacks = []
 Editor.changeView = changeView
 Editor.changeTheme = changeTheme
+Editor._langs = langs
 Editor.utils = class {
   static isOverflown(element) {
     return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
@@ -837,6 +838,10 @@ function runCode() {
   variablesInImportedFiles = [];
   try { Compiler.clearImports(); } catch (e) {}
   let code = Blockly.genCode.workspaceToCode(workspace);
+  if (document.getElementById('langs').value != '0') {
+    editor.setValue(code)
+    code = langs[document.getElementById('langs').value][1]()
+  }
   editor.setValue(code);
   editor.session.selection.moveTo(0, 0);
   editorCodeChanged1 = false;
@@ -844,8 +849,15 @@ function runCode() {
 
 window.onbeforeunload = function (e) {
   localStorage.setItem('allVariables', allVariables);
-  const xml = Blockly.Xml.workspaceToDom(workspace);
-  localStorage.setItem("blocks", Blockly.Xml.domToPrettyText(xml));
+  if (editorCodeChanged) {
+    editorCodeChanged = false
+    if (document.getElementById('langs').value != '0') {
+      Editor.codeInDefaultLang = langs[document.getElementById('langs').value][2]()
+    }
+    fs.writeFile(localStorage.getItem('currentDir') + editingFile, Editor.getCode(), function(){})
+    Editor.codeInDefaultLang = null
+    localStorage.setItem('langOfFile_' + localStorage.getItem('currentDir') + editingFile, document.getElementById('langs').value)
+  }
 };
 
 if (localStorage.getItem('allVariables') != null) {
@@ -978,14 +990,6 @@ window.onresize = function() {
   }
 }
 
-window.onbeforeunload = function (e) {
-  if (editorCodeChanged) {
-    editorCodeChanged = false;
-    fs.writeFile(localStorage.getItem('currentDir') + editingFile, editor.getValue(), function(){});
-    localStorage.setItem('langOfFile_' + localStorage.getItem('currentDir') + editingFile, document.getElementById('langs').value)
-  }
-};
-
 editor.setKeyboardHandler('ace/keyboard/sublime')
 editor.commands.addCommands([{
 //     name: "showKeyboardShortcuts",
@@ -1031,8 +1035,12 @@ editor.session.on('change', function(delta) {
 
 setInterval(function() {
   if (editorCodeChanged) {
-    editorCodeChanged = false;
-    fs.writeFile(localStorage.getItem('currentDir') + editingFile, editor.getValue(), function(){});
+    editorCodeChanged = false
+    if (document.getElementById('langs').value != '0') {
+      Editor.codeInDefaultLang = langs[document.getElementById('langs').value][2]()
+    }
+    fs.writeFile(localStorage.getItem('currentDir') + editingFile, Editor.getCode(), function(){})
+    Editor.codeInDefaultLang = null
     localStorage.setItem('langOfFile_' + localStorage.getItem('currentDir') + editingFile, document.getElementById('langs').value)
   }
 }, 2000);
@@ -1127,11 +1135,18 @@ function checkMenuOverflow() {
 function changeViewWithoutSwap() {
   try {
     document.getElementById('main_editor').style.opacity = 0
+    document.getElementById('langs').style.opacity = 0
     setTimeout(() => {
+      document.getElementById('langs').hidden = !(document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
       document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
       document.getElementById("root").hidden = !document.getElementById("root").hidden;
       Blockly.svgResize(Blockly.mainWorkspace);
       document.getElementById('main_editor').style.opacity = 1
+      if (!document.getElementById('langs').hidden) {
+        document.getElementById('langs').style.opacity = 1
+      } else {
+        document.getElementById('langs').style.opacity = 0
+      }
     }, 200)
     if (isDark) editor.setTheme("ace/theme/monokai0");
     else editor.setTheme("ace/theme/xcode0");
@@ -1142,7 +1157,6 @@ function changeViewWithoutSwap() {
       Compiler.genBlocks()
       Editor.codeInDefaultLang = null
     }
-    document.getElementById('langs').hidden = !(!document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
     Blockly.mainWorkspace.scroll(0, 0);
     document.getElementsByClassName('blocklyMenuItem')[0].click();
   } catch(e) {}
@@ -1205,7 +1219,6 @@ function shareCode() {
       html: `<center><button class="swal2-confirm swal2-styled" id="genQRButton">${Blockly.Msg['genqrcode'] || 'Generate QR Code'}</button></center>`
     })
     document.getElementById('genQRButton').addEventListener('click', function() {
-      console.log(10)
       let canvas = document.createElement('canvas')
       QRCode.toCanvas(canvas, `${main}${host}${res}`, function (error) {
         if (error) console.error(error)

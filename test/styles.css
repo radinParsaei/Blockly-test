@@ -672,7 +672,7 @@ div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
 }
 
 #langs {
-  transition: color 0.3s ease-in-out;
+  transition: color 0.15s ease-in-out, opacity 0.3s ease-in-out;
   color: black;
 }
 .dark .swal2-popup.swal2-toast {
@@ -715,4 +715,7 @@ div.ace_scroll-v.ace_thumb-v, div.ace_scroll-h.ace_thumb-h {
   padding-left: 3%;
   font-weight: bold;
   font-size: 18px;
+}
+#langs[hidden] {
+  opacity: 0;
 }

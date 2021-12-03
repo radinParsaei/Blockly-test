@@ -182,7 +182,7 @@
           div.setAttribute('id', 'console2');
           div.setAttribute('class', 'dark');
           div.setAttribute('style', 'padding: 10px; padding-top: 0; height: 200px; background-color: rgba(60, 60, 60, 0.5)');
-          openButtomSheet('console').appendChild(div);
+          openBottomSheet('console').appendChild(div);
           Compiler.run();
         }, 'run');
         addMenuOption('import.svg', 'add package', function() {
@@ -543,11 +543,16 @@
         document.getElementById('theme_div').hidden = true;
         document.getElementById('langs').value = localStorage.getItem('langOfFile_' + localStorage.getItem('currentDir') + editingFile)
         document.getElementById('langs').value = document.getElementById('langs').value? document.getElementById('langs').value:'0'
+        Editor.getAceEditor().session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString())
+        Editor.getAceEditor().session.selection.moveTo(0, 0)
         document.getElementById('langs').onchange()
-        Editor.getAceEditor().session.setValue(fs.readFileSync(localStorage.getItem('currentDir') + filename).toString());
-        Editor.getAceEditor().session.selection.moveTo(0, 0);
+        Editor._changeLang()
         genBlocksCalled = true;
+        if (document.getElementById('langs').value != '0') {
+          Editor.codeInDefaultLang = Editor._langs[document.getElementById('langs').value][2]()
+        }
         Compiler.genBlocks()
+        Editor.codeInDefaultLang = null
         Blockly.getMainWorkspace().cleanUp();
         refreshBlockly()
         if (window['checkMenuOverflow']) checkMenuOverflow()
