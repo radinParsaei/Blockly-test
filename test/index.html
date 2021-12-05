@@ -84,7 +84,7 @@
       var packages = []
       var publicVariables = []
 
-      function openButtomSheet(title) {
+      function openBottomSheet(title) {
         document.getElementById("buttom_sheet").style.height = "250px";
         setTimeout(function() {
           document.getElementById("main_editor").style.height = "calc(100% - 300px)";
@@ -237,6 +237,9 @@
             if (Object.keys(localStorage).includes('plugin_' + document.getElementById('pkginput').value + '_code')) {
               localStorage.removeItem('plugin_' + document.getElementById('pkginput').value + '_code')
               // reset everything to remove things plugins are done
+              for (let i of Object.keys(Editor._langs)) {
+                delete Editor._langs[i]
+              }
               Editor._resetTranslations()
               Editor.onCodeExecutedCallbacks = []
               rebuildingMenu = true
@@ -246,8 +249,8 @@
           <span class="slider round"></span>
         </label>
         <span id="modeContainer">
-          <button id="gotoblock" class="mode" onclick="goToBlock()">Blocks</button>
-          <button id="gotocode" class="selected mode" onclick="goToCode()">Code</button>
+          <button id="gotoblock" class="${localStorage['mode'] == 'block'? "selected":""} mode" onclick="goToBlock()">Blocks</button>
+          <button id="gotocode" class="${localStorage['mode'] == 'code'? "selected":""} mode" onclick="goToCode()">Code</button>
           <select onchange="Editor._changeLang()" id="langs" style="margin-right: 10px; background: none; border: none; user-select: none; outline: none;">
             <option value="0">Default</option>
           </select>

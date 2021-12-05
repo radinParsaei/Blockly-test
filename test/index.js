@@ -1137,7 +1137,7 @@ function changeViewWithoutSwap() {
     document.getElementById('main_editor').style.opacity = 0
     document.getElementById('langs').style.opacity = 0
     setTimeout(() => {
-      document.getElementById('langs').hidden = !(document.getElementById("editor2").hidden && Object.keys(langs).length > 0)
+      document.getElementById('langs').hidden = Object.keys(langs).length > 0? !(document.getElementById("editor2").hidden):true
       document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
       document.getElementById("root").hidden = !document.getElementById("root").hidden;
       Blockly.svgResize(Blockly.mainWorkspace);
@@ -1150,7 +1150,7 @@ function changeViewWithoutSwap() {
     }, 200)
     if (isDark) editor.setTheme("ace/theme/monokai0");
     else editor.setTheme("ace/theme/xcode0");
-    if (editorCodeChanged1 && document.getElementById("editor2").hidden) {
+    if (editorCodeChanged1 && document.getElementById("editor2").hidden || (document.getElementById("main_editor").style.opacity == 0)) {
       if (document.getElementById('langs').value != '0') {
         Editor.codeInDefaultLang = langs[document.getElementById('langs').value][2]()
       }
