@@ -42,6 +42,9 @@ public class Client extends CompilerMain {
                 SyntaxTree.resetNameSpaces();
                 document.getElementById("console2").setInnerHTML("");
                 compile(compiler);
+                SyntaxTree.getClassesParameters().clear();
+                SyntaxTree.getFunctions().clear();
+                SyntaxTree.getVariables().clear();
                 REPLReader.setReadCode(true);
                 compile(compiler);
             });
@@ -74,6 +77,9 @@ public class Client extends CompilerMain {
             CustomCompileStep.used = false;
             REPLReader.setReadCode(false);
             compile(compiler);
+            SyntaxTree.getClassesParameters().clear();
+            SyntaxTree.getFunctions().clear();
+            SyntaxTree.getVariables().clear();
             REPLReader.setReadCode(true);
             CustomCompileStep.used = true;
             compile(compiler);

@@ -20,3 +20,4 @@ webpackDevServer.config.js.save
 dist
 .vscode
 sharedFiles
+webpack.config.js.save

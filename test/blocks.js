@@ -23,6 +23,8 @@ function listVariables() {
   return res;
 }
 
+Blockly.Msg['CONSOLE_PRINTLN_TITLE'] = 'print'
+Blockly.Msg['CONSOLE_PRINT_TITLE'] = 'write and stay in the same line'
 Blockly.Msg['TEXT_REPLACE_REPLACE'] = 'replace';
 Blockly.Msg['TEXT_REPLACE_WITH'] = 'with';
 Blockly.Msg['TEXT_REPLACE_IN'] = 'in';
@@ -574,9 +576,11 @@ function initBlocks() {
 
   addCategory("Class", "Classes", "#BD488E");
   addCategory("Console", "Console", "3344dd");
-  addBlock("text_print", "Console", createShadows(['abc']).replace('ARG0', 'TEXT'))
+  addBlock("text_println", "Console", createShadows(['abc']).replace('ARG0', 'TEXT'))
   addBlock("text_input", "Console", createShadows([1, 10]), "input", [], [], '',
   [Blockly.Msg['TEXT_INPUT']], Blockly.Msg['TEXT_INPUT_TOOLTIP'], Blockly.Msg['TEXT_INPUT_HELPURL'], "Text");
+  addLabel("Advanced", "Console", "smaller-title");
+  addBlock("text_print", "Console", createShadows(['abc']).replace('ARG0', 'TEXT'))
 
   addBlock("create_class", "Class", "", function(block) {
     var code = Blockly.genCode.statementToCode(block, 'ARG0',

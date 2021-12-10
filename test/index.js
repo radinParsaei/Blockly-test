@@ -492,7 +492,7 @@ function createCard() {
         let element = document.createElement('img');
         element.src = img;
         document.body.removeChild(div);
-        if (localStorage.getItem('mode') != 'code') changeView()
+        if (localStorage.getItem('mode') != 'code') changeView(true)
         let a = editor.getValue().split('\n')
         editor.session.selection.moveTo(a.length, a[a.length - 1].length) // to make last line selected in gutter
         setTimeout(() => {
@@ -1132,22 +1132,27 @@ function checkMenuOverflow() {
   checkingOverflow = false
 }
 
-function changeViewWithoutSwap() {
+function changeViewWithoutSwap(emidiately) {
   try {
-    document.getElementById('main_editor').style.opacity = 0
-    document.getElementById('langs').style.opacity = 0
-    setTimeout(() => {
-      document.getElementById('langs').hidden = Object.keys(langs).length > 0? !(document.getElementById("editor2").hidden):true
+    if (emidiately) {
       document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
       document.getElementById("root").hidden = !document.getElementById("root").hidden;
-      Blockly.svgResize(Blockly.mainWorkspace);
-      document.getElementById('main_editor').style.opacity = 1
-      if (!document.getElementById('langs').hidden) {
-        document.getElementById('langs').style.opacity = 1
-      } else {
-        document.getElementById('langs').style.opacity = 0
-      }
-    }, 200)
+    } else {
+      document.getElementById('main_editor').style.opacity = 0
+      document.getElementById('langs').style.opacity = 0
+      setTimeout(() => {
+        document.getElementById('langs').hidden = Object.keys(langs).length > 0? !(document.getElementById("editor2").hidden):true
+        document.getElementById("editor2").hidden = !document.getElementById("editor2").hidden;
+        document.getElementById("root").hidden = !document.getElementById("root").hidden;
+        Blockly.svgResize(Blockly.mainWorkspace);
+        document.getElementById('main_editor').style.opacity = 1
+        if (!document.getElementById('langs').hidden) {
+          document.getElementById('langs').style.opacity = 1
+        } else {
+          document.getElementById('langs').style.opacity = 0
+        }
+      }, 200)
+    }
     if (isDark) editor.setTheme("ace/theme/monokai0");
     else editor.setTheme("ace/theme/xcode0");
     if (editorCodeChanged1 && document.getElementById("editor2").hidden || (document.getElementById("main_editor").style.opacity == 0)) {
@@ -1164,8 +1169,8 @@ function changeViewWithoutSwap() {
   document.getElementById("gotoblock").classList.toggle('selected');
 }
 
-function changeView() {
-  changeViewWithoutSwap();
+function changeView(emidiately) {
+  changeViewWithoutSwap(emidiately);
   var tmp = localStorage.getItem('mode');
   if (tmp == "code")
       localStorage.setItem('mode', 'block');

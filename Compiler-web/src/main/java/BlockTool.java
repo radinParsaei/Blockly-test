@@ -625,14 +625,21 @@ public class BlockTool {
             }
         } else if (program instanceof SyntaxTree.Print) {
             ValueBase[] args = ((SyntaxTree.Print) program).getArgs();
-            for (int i = 0; i < args.length; i++) {
-                result.append("<block type=\"text_print\">" + "<value name=\"TEXT\">").append(putValue(args[i]))
+            if (args.length == 2 && args[1].toString().equals("\n") && ((SyntaxTree.Print) program).getSeparator().toString().isEmpty()) {
+                result.append("<block type=\"text_println\">" + "<value name=\"TEXT\">").append(putValue(args[0]))
                         .append("</value>");
                 blockCount++;
-                if (i < args.length - 1) {
-                    result.append("<next><block type=\"text_print\">" + "<value name=\"TEXT\">").append(putValue(((SyntaxTree.Print) program).getSeparator()))
+            } else {
+                for (int i = 0; i < args.length; i++) {
+                    if (i > 0) result.append("<next>");
+                    result.append("<block type=\"text_print\">" + "<value name=\"TEXT\">").append(putValue(args[i]))
                             .append("</value>");
                     blockCount++;
+                    if (i < args.length - 1) {
+                        result.append("<next><block type=\"text_print\">" + "<value name=\"TEXT\">").append(putValue(((SyntaxTree.Print) program).getSeparator()))
+                                .append("</value>");
+                        blockCount++;
+                    }
                 }
             }
         } else if (program instanceof SyntaxTree.AwaitedProgram) {

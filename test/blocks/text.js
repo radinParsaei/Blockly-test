@@ -386,7 +386,30 @@ Blockly.Blocks['text_print'] = {
    */
   init: function() {
     this.jsonInit({
-      "message0": Blockly.Msg['TEXT_PRINT_TITLE'],
+      "message0": '%{BKY_CONSOLE_PRINT_TITLE} %1',
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "TEXT"
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": 'console_blocks',
+      "tooltip": Blockly.Msg['TEXT_PRINT_TOOLTIP'],
+      "helpUrl": Blockly.Msg['TEXT_PRINT_HELPURL']
+    });
+  }
+};
+
+Blockly.Blocks['text_println'] = {
+  /**
+   * Block for print statement.
+   * @this {Blockly.Block}
+   */
+  init: function() {
+    this.jsonInit({
+      "message0": '%{BKY_CONSOLE_PRINTLN_TITLE} %1',
       "args0": [
         {
           "type": "input_value",

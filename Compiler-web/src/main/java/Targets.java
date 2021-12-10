@@ -66,6 +66,10 @@ public class Targets {
 
     public static final boolean customWhile = false;
 
+    public static boolean fileExists(String fileName) {
+        return false;
+    }
+
     public interface CustomWhileInterface {
         boolean run();
     }

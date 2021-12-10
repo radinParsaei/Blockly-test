@@ -152,7 +152,7 @@ define("ace/mode/doc_comment_highlight_rules", ["require", "exports", "module", 
                     keyword: "else|func|if|return|for|var|while|break|continue|class|init|new|this|import|static",
                     "storage.type": "var|func",
                     "constant.language": "null",
-                    "support.function": "print",
+                    "support.function": "print|write",
                     "constant.language.boolean": "true|false"
                 }, "identifier"),
                 n = "else|return",

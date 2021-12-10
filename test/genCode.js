@@ -280,10 +280,16 @@ Blockly.genCode['lists_create_with'] = function(block) {
   return [code, Blockly.genCode.ORDER_ATOMIC];
 };
 
-Blockly.genCode['text_print'] = function(block) {
+Blockly.genCode['text_println'] = function(block) {
   var msg = Blockly.genCode.valueToCode(block, 'TEXT',
       Blockly.genCode.ORDER_NONE) || '\'\'';
   return 'print(' + msg + ')\n';
+};
+
+Blockly.genCode['text_print'] = function(block) {
+  var msg = Blockly.genCode.valueToCode(block, 'TEXT',
+      Blockly.genCode.ORDER_NONE) || '\'\'';
+  return 'write(' + msg + ')\n';
 };
 
 Blockly.genCode['math_number'] = function(block) {
