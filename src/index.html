@@ -2,20 +2,20 @@
 <html style="height: 100%;">
   <head>
     <meta charset="utf-8">
-    <script type="text/javascript" charset="utf-8" src="VM.js"></script>
-    <script type="text/javascript" charset="utf-8" src="teavm/classes.js"></script>
-    <link rel="stylesheet" type="text/css" href="ukandrewc_Ace-Scrollbars/ext-scrollbar.min.css">
+    <script async type="text/javascript" charset="utf-8" src="VM.js"></script>
+    <script async type="text/javascript" charset="utf-8" src="teavm/classes.js"></script>
+    <link rel="stylesheet" media type="text/css" href="ukandrewc_Ace-Scrollbars/ext-scrollbar.min.css">
     <script src="ukandrewc_Ace-Scrollbars/ext-scrollbar.min.js"></script>
     <title>Editor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="test/styles.css">
+    <link media href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <link media href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" media href="test/styles.css">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta charset="UTF-8">
     <meta name="description" content="test for compiler (github.com/radinParsaei/Compiler)">
     <meta name="author" content="radinParsaei">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link media href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   </head>
   <body style="margin: 0; padding: 0; height: 100% !important; overflow-x: hidden;" id="main" class="dark expand" onload="main()">
@@ -533,6 +533,7 @@
                                + i + "</p></div></a>";
             document.getElementById('grid').appendChild(element);
           }
+          if (document.readyState === "complete") $('.material-icons').css('opacity','1')
         });
       }
 
